@@ -1,0 +1,51 @@
+.root
+  padding: 20px
+  display: flex
+  flex-direction: column
+
+.header
+  margin-bottom: 8px
+  display: grid
+  grid-template-columns: 1fr auto
+  grid-template-rows: 1fr 1fr
+  .title
+    grid-column: 1
+    grid-row: 1
+    margin-bottom: 8px
+    .symbol
+      padding: 4px 0
+    .warning
+      padding: 4px 8px
+      margin-left: 12px
+      color: var(--text-color-error)
+      background: rgba(235, 81, 102, 0.2)
+      border-radius: 32px
+  .balance
+    grid-column: 1
+    grid-row: 2
+  .icon
+    grid-column: 2
+    grid-row: 1 / span 2    
+    width: 40px
+    height: 40px
+
+.chart
+  margin-top: 20px
+  height: 40px !important
+
+.amounts
+  margin-top: 20px
+  margin-bottom: 20px
+  & > *
+    width: 50%
+    min-width: 120px
+    margin-right: 40px
+    & > *
+      &:first-child
+        margin-bottom: 8px
+
+.buttons
+  display: grid
+  grid-template-columns: 1fr 1fr
+  column-gap: 16px !important
+    

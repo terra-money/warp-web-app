@@ -1,0 +1,67 @@
+.root
+  width: 100%
+
+  > *
+    user-select: none
+
+.days
+  display: grid
+  grid-gap: 8px !important
+  grid-template: auto / auto auto auto auto auto auto auto
+
+.day
+  display: flex
+  align-items: center
+  padding: 0 !important
+  min-width: 0
+  width: 52px
+
+  > *
+    color: var(--text-color-primary)
+
+.disabled
+  opacity: 0.4
+
+.left, .right
+  cursor: pointer
+  width: 16px
+  height: 16px
+
+.day_labels
+  display: grid
+  grid-gap: 8px !important
+  grid-template: auto / auto auto auto auto auto auto auto
+
+  > *
+    width: 52px
+    display: flex
+    justify-content: center
+
+.left
+  margin-right: 16px
+
+.right
+  margin-left: 16px
+
+.month
+  font-size: 16px
+  width: auto
+  justify-content: center
+  display: flex
+
+.months
+  padding: 0 8px
+  justify-content: space-between
+  width: 100%
+  margin-bottom: 12px
+
+  > *
+    color: var(--text-color-primary)
+
+  .left, .right
+    path
+      fill: var(--text-color-primary)
+      fill-opacity: 1
+
+.content
+  height: 460px

@@ -1,0 +1,72 @@
+.root
+  color: var(--text-color-primary)
+  width: 100%
+  height: 100%
+  background: var(--section-background-color)
+  backdrop-filter: blur(50px)
+  border-radius: 16px
+  padding: 40px 16px 20px 32px
+
+.button
+  width: 90px
+
+.title
+  font-size: 24px
+  margin-bottom: 12px
+  font-weight: 600
+
+.divider_header,
+.divider_footer
+  background-color: #292C2E
+  height: 1px
+  margin-left: -32px
+  margin-right: -16px
+
+.divider_footer
+  margin-bottom: 20px
+
+.divider_header
+  margin-top: 20px
+  margin-bottom: 20px
+
+.pagination_footer
+  color: var(--text-color-secondary)
+  font-size: 14px
+  height: 20px
+  min-height: 20px
+  width: 100%
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-direction: row
+  position: relative
+
+.pagination
+  position: absolute
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+
+.pagination_item
+  color: var(--text-color-primary) !important
+  width: 52px !important
+  border-radius: 40px !important
+  background: var(--button-background-color)
+
+.pagination_item_selected
+  background: var(--button-background-color-secondary) !important
+
+.pagination_label
+  white-space: pre
+
+.pagination_text_button
+  min-width: unset
+  background-color: transparent !important
+  // margin-right: 20px
+
+.arrows_disabled
+  opacity: 0.4
+  cursor: default
+
+.arrows_left
+  transform: rotate(180deg)

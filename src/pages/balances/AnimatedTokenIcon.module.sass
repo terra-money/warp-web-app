@@ -1,0 +1,52 @@
+.root
+  position: relative
+  width: 28px
+  height: 28px
+  display: flex
+  border-radius: 50%
+  align-items: center
+  justify-content: center
+  .front, .back
+    width: 28px
+    height: 28px
+    position: absolute
+    backface-visibility: hidden
+  .front
+    transform: rotateY(180deg)
+  .back
+    filter: grayscale(100%)
+
+  // &.active
+  //   .front
+  //     animation: frontIn 400ms normal linear
+  //     animation-fill-mode: forwards
+  //   .back
+  //     animation: backIn 400ms normal linear
+  //     animation-fill-mode: forwards
+  // &:not(.active)
+  //   .front
+  //     animation: frontOut 400ms normal linear
+  //     animation-fill-mode: forwards
+  //   .back
+  //     animation: backOut 400ms normal linear
+  //     animation-fill-mode: forwards
+
+@keyframes frontIn
+  100% 
+    transform: rotateY(0deg)
+
+@keyframes frontOut
+  0% 
+    transform: rotateY(0deg)
+  100% 
+    transform: rotateY(180deg)
+
+@keyframes backIn
+  100% 
+    transform: rotateY(180deg)
+  
+@keyframes backOut
+  0% 
+    transform: rotateY(180deg)
+  100% 
+    transform: rotateY(0deg)

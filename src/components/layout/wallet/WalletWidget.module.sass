@@ -1,0 +1,66 @@
+.root
+  height: 50px
+  display: flex
+  flex-direction: column
+  position: relative
+
+.not_connected,
+.initializing,
+.connected
+  height: 100%
+  position: relative
+
+  button
+    padding: 10px 16px
+    min-width: 0 !important
+
+.connected
+  svg
+    width: 18px
+    height: 20px
+
+  &:after
+    content: ''
+    border-radius: 50%
+    position: absolute
+    width: 8px
+    height: 8px
+    left: 42px
+    top: 18px
+    background: #BFFF6F
+    border: 3px solid #131414
+
+.not_connected
+  svg
+    width: 18px
+    height: 20px
+
+  &:after
+    content: ''
+    border-radius: 50%
+    position: absolute
+    width: 8px
+    height: 8px
+    left: 42px
+    top: 18px
+    background: #F86363
+    border: 3px solid #131414
+
+.initializing
+  svg
+    width: 18px
+    height: 20px
+
+  &:after
+    content: ''
+    border-radius: 50%
+    position: absolute
+    width: 8px
+    height: 8px
+    left: 42px
+    top: 18px
+    background: yellow
+    border: 3px solid #131414
+
+.menu
+  bottom: 0

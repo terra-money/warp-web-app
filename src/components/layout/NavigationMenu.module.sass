@@ -1,0 +1,26 @@
+.route
+  cursor: pointer
+  padding: 24px 0
+  text-decoration: none
+  padding: 10px 16px
+  width: 56px
+  height: 44px
+  display: flex
+  flex-direction: row
+  justify-content: center
+  align-items: center
+  border-radius: 40px
+
+  &:not(&:last-child)
+    margin-bottom: 28px
+
+  svg
+    path
+      stroke: rgba(215, 224, 223, 1)
+
+  &:global(.active)
+    background: rgba(209, 227, 251, 1)
+
+    svg
+      path
+        stroke: rgb(51, 53, 55)

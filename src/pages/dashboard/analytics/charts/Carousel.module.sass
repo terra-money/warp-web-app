@@ -1,0 +1,84 @@
+.root
+  position: relative
+  display: grid
+  grid-template-columns: 1fr 1fr 1fr 1fr
+  column-gap: 16px !important
+  [data-direction="left"]
+    .transitionEnter
+      transform: translateX(100%)
+    .transitionEnterActive
+      transform: translateX(0%)
+      transition: transform 250ms ease-in-out
+    .transitionExit
+      transform: translateX(0%)
+    .transitionExitActive
+      transform: translateX(-100%)
+      transition: transform 250ms ease-in-out
+  [data-direction="right"]
+    .transitionEnter
+      z-index: 1
+      transform: translateX(-100%)
+    .transitionEnterActive
+      transform: translateX(0%)
+      transition: transform 250ms ease-in-out
+    .transitionExit
+      transform: translateX(0%)
+    .transitionExitActive
+      transform: translateX(100%)
+      transition: transform 250ms ease-in-out
+
+.container
+  overflow: hidden
+  position: relative
+  height: 260px
+  grid-row: 1
+  &:nth-of-type(1)
+    grid-column: 1
+
+  &:nth-of-type(2)
+    grid-column: 2
+
+  &:nth-of-type(3)
+    grid-column: 3
+
+  &:nth-of-type(4)
+    grid-column: 4
+
+.leftArrow, .rightArrow
+  cursor: pointer
+  width: 20px
+  grid-row: 1
+  display: flex
+  align-items: center
+  justify-content: center
+  svg
+    width: 16px
+    height: 12px
+
+  &:hover
+    background-color: var(--button-background-color-secondary-hover)
+  &:active
+    background-color: var(--button-background-color-secondary-pressed)
+
+.arrows
+  position: absolute
+  right: 0
+  top: -64px
+  display: flex
+  align-items: center
+  justify-content: center
+
+  > *
+    width: 48px
+    min-width: 0
+    background-color: transparent !important
+    border: 1px solid #34383A
+
+    &:not(&:first-child)
+      margin-left: 8px
+
+    svg
+      path
+        fill: #FFFFFF !important
+        fill-opacity: 1
+

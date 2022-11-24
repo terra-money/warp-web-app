@@ -1,0 +1,146 @@
+.root
+  height: auto
+  margin-bottom: auto
+  position: relative
+
+  // inputs
+  :global(.Mui-disabled)
+    -webkit-text-fill-color: inherit !important
+
+  > *
+    z-index: 1
+
+    &:first-child
+      margin-left: 0 !important
+
+.exclude_extra_padding
+  margin-left: 0 !important
+
+.and_node,
+.or_node
+  height: auto
+  display: flex
+  flex-direction: row
+
+.node
+  > .empty_node
+    margin-left: 0 !important
+
+.cond_btn
+  z-index: 2
+
+  > *
+    z-index: 2
+
+.expr_node
+  position: relative
+  border-radius: 16px
+  display: flex
+  flex-direction: column
+  padding: 24px
+  background: rgba(209, 227, 251, 0.05)
+
+  .label
+    margin-bottom: 12px
+
+  .exprs
+    display: flex
+    flex-direction: row
+
+    > *
+      &:not(&:last-child)
+        margin-right: 16px
+        z-index: 2
+
+  .delete_btn
+    background-color: transparent !important
+    height: auto
+    min-width: 0
+    width: 74px
+    min-height: 0
+    margin: 0
+
+    svg
+      width: 16px
+      height: 16px
+      margin: auto
+      cursor: pointer
+
+      path
+        fill: #F86363
+
+.timestamp_input
+  width: 300px
+
+.blockheight_input
+
+.timestamp_expr,
+.blockheight_expr,
+.int_expr,
+.decimal_expr
+  &_op
+    width: 140px !important
+
+  &_menu
+    margin-top: 12px
+    width: 140px !important
+
+.string_expr
+  &_op
+    width: 140px !important
+
+  &_menu
+    margin-top: 12px
+    width: 140px !important
+
+.query_node
+  &:first-child
+    margin-bottom: 16px
+  &:last-child
+    margin-top: 16px
+
+.node
+  margin-left: 40px
+  height: 100%
+  display: flex
+  align-items: center
+
+.not_node
+  display: flex
+  flex-direction: row
+
+.content
+  display: flex
+  flex-direction: column
+
+  > *
+    &:not(&:only-child):not(&:last-child)
+      margin-bottom: 64px
+
+.many_node
+  height: 100%
+
+.cond_btn
+  margin: auto 0
+
+.and_btn
+  background-color: #E9FF92 !important
+  text-transform: uppercase
+  font-weight: 600
+
+.or_btn
+  background-color: #FFC7A7 !important
+  text-transform: uppercase
+  font-weight: 600
+
+.not_btn
+  background-color: #FF7B7B !important
+  text-transform: uppercase
+  font-weight: 600
+
+.empty_node
+  position: relative
+
+.expr_submenu
+  margin-top: -303px
+  margin-left: 202px

@@ -1,0 +1,49 @@
+$line-height: 2.5em
+$left-margin: 2em
+
+.item
+  position: relative
+  line-height: $line-height
+
+.list
+  list-style: none
+  position: relative
+  margin: 0
+  margin-left: $left-margin
+  padding-left: 0
+
+.tree_label
+  list-style: none
+  line-height: $line-height
+  // font-weight: 600
+
+
+.first_label
+  margin-left: calc($left-margin * 0.25)
+
+.item::before
+  content: ""
+  position: absolute
+  left: calc($left-margin * -0.5)
+  border-left: 1px solid var(--text-color-secondary)
+  height: 100%
+  width: 0
+  top: 0
+
+.item:last-child::before
+  content: ""
+  position: absolute
+  left: calc($left-margin * -0.5)
+  border-left: 1px solid var(--text-color-secondary)
+  height: calc(100% - $line-height* 0.5)
+  width: 0
+  top: 0
+
+.item::after
+  content: ""
+  position: absolute
+  left: calc($left-margin * -0.5)
+  border-bottom: 1px solid var(--text-color-secondary)
+  height: 0
+  width: calc($left-margin  * 0.25)
+  top: calc($line-height * 0.5)

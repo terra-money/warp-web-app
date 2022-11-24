@@ -1,0 +1,40 @@
+.menu
+  position: absolute
+  width: 200px
+  left: 80px
+  z-index: 1000
+  border-radius: 6px
+  box-sizing: border-box
+
+.menu_content
+  padding: 24px
+  border: 1px solid var(--background-color)
+  background: var(--widget-background-color)
+  border-radius: 6px
+
+.menu_item
+  cursor: pointer
+  font-weight: 500
+  font-size: 14px
+  color: var(--text-color-primary)
+
+  &:not(&:last-child)
+    margin-bottom: 24px
+
+  &:hover
+    color: #DFE1EE
+
+.chevron
+  width: 24px
+  height: 24px
+  margin-left: 4px
+  margin-right: 4px
+  path
+    fill-opacity: 0.6
+    fill: #F6F7FA !important
+
+.submenu
+  width: 100%
+  display: flex
+  align-items: center
+  justify-content: space-between

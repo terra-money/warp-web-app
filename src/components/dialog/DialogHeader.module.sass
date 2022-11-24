@@ -1,0 +1,41 @@
+.root
+  width: 100%
+  padding: 24px 32px
+  padding-bottom: 0
+  display: grid
+  grid-template-columns: 1fr auto auto
+  grid-template-rows: auto auto 1fr
+
+  .close
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 40px
+    height: 40px
+    grid-row: 1
+    grid-column: 2
+    cursor: pointer
+    background: #1B1D22
+    border-radius: 8px
+
+  .close_icon
+    width: 14px
+    height: 14px
+
+  .back
+    margin-right: auto
+    grid-row: 1
+    grid-column: 1
+    min-height: 0
+
+  .children
+    grid-row: 3
+    grid-column: 1 / span 2
+    width: 100%
+
+  .title
+    color: var(--text-color-title)
+    grid-row: 2
+    font-weight: 600
+    grid-column: 1 / span 2
+    justify-self: flex-start
