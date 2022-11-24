@@ -1,7 +1,6 @@
 {
   "name": "@warp-protocol/app",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "build": "react-app-rewired build",
     "format": "prettier --write \"**/*.{js,ts,tsx}\"",
