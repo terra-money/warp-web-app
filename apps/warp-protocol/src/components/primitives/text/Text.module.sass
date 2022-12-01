@@ -1,0 +1,78 @@
+.root
+  display: flex
+  align-items: center
+
+.normal
+  font-weight: 400 !important
+
+.bold
+  font-weight: 600 !important  
+
+.clickable
+  cursor: pointer
+
+.tooltip
+  :global(.MuiTooltip-tooltip)
+    font-family: PolySans
+    color: var(--text-color-secondary)
+    font-size: 12px
+    line-height: 16px
+    background-color: var(--popup-background-color)
+    padding: 8px 12px
+  :global(.MuiTooltip-arrow)
+    &:before
+      background-color: var(--popup-background-color)  
+
+.tooltipIcon
+  color: rgb(153, 153, 153)
+  opacity: 1
+  font-size: 13px
+  margin-left: 8px
+  width: 16px
+  height: 16px
+
+.text
+  font-family: PolySans
+  color: var(--text-color-primary)
+  font-size: 14px
+  line-height: 20px
+
+.heading1,
+.heading2,
+.heading3,
+.heading4
+  margin: 0
+  padding: 0
+
+.heading1
+  font-family: PolySans
+  color: var(--text-color-title)
+  font-style: normal
+  font-size: 28px
+
+.heading2
+  font-family: PolySans
+  color: var(--text-color-title)
+  font-style: normal
+  font-size: 24px
+
+.heading3
+  font-family: PolySans
+  color: var(--text-color-primary)
+  font-size: 16px
+
+.heading4
+  font-family: PolySans
+  color: var(--text-color-primary)
+  font-size: 14px
+
+.label, .link
+  font-family: PolySans
+  color: var(--text-color-secondary)
+  font-size: 14px
+
+.link
+  text-decoration-color: var(--link-decoration-color) !important
+  text-underline-offset: 6px
+  text-decoration: underline
+  text-decoration-style: dashed

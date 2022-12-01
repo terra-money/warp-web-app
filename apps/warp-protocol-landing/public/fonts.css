@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'PolySans';
+  src: url(./fonts/PolySans-Neutral.woff2) format('woff2'),
+    url(./fonts/PolySans-Neutral.woff) format('woff');
+  font-weight: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'PolySans';
+  src: url(./fonts/PolySans-Median.woff2) format('woff2'),
+    url(./fonts/PolySans-Median.woff) format('woff');
+  font-weight: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'PolySans';
+  src: url(./fonts/PolySans-MedianWide.woff2) format('woff2'),
+    url(./fonts/PolySans-MedianWide.woff) format('woff');
+  font-weight: normal;
+  font-weight: 600;
+}

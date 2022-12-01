@@ -1,0 +1,94 @@
+
+.container
+  padding: 20px
+  justify-content: space-between
+
+.logo
+  font-size: 24px
+  color: #DFE2E1
+  font-weight: 600
+  text-transform: lowercase
+
+.menu_btn
+  z-index: 10
+  min-width: 0 !important
+  padding: 0 !important
+
+  path
+    fill: var(--text-color-primary) !important
+
+.button
+  background-color: inherit
+  min-width: 0 !important
+  margin-right: 20px
+  padding: 0
+  height: auto
+  width: auto
+
+  > svg
+    margin: 0 !important
+    padding: 0 !important
+
+    path
+      fill: rgba(255, 255, 255, 0.6) !important
+      fill-opacity: 1
+
+  &:hover
+    background-color: inherit
+
+.menu_btn_inner
+  min-width: 0 !important
+  padding: 0 !important
+  margin-left: auto
+
+  path
+    fill: var(--text-color-primary) !important
+
+.drawer
+  padding: 20px
+  padding-left: 32px
+  display: flex
+  width: 80%
+  flex-direction: column
+  background-color: rgba(25, 28, 31, 1) !important
+  color: white !important
+
+  .top
+    display: flex
+    flex-direction: row
+
+.label
+  color: rgba(243, 244, 245, 0.5) !important
+
+.menu_label
+  margin-top: 32px
+
+.menu_heading
+  color: rgba(243, 244, 245, 1) !important
+  font-size: 24px !important
+  line-height: 28px
+  margin-top: 36px
+
+  &:not(&:first-child)
+    margin-top: 40px
+
+.bottom
+  margin-top: auto
+
+.social_media_label
+  margin-bottom: 20px
+
+.footer_icons
+  margin-bottom: 10px
+
+  > *
+    &:hover
+      path
+        fill: rgba(243, 244, 245, 0.8) !important
+        fill-opacity: 1 !important
+
+    > svg
+
+      path
+        fill: rgba(243, 244, 245, 0.2) !important
+        fill-opacity: 1 !important
