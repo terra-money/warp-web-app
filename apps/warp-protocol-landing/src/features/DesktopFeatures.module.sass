@@ -1,0 +1,70 @@
+.root
+  // position: relative
+  display: flex
+  height: 800px
+  justify-content: center
+  align-items: flex-start
+  padding-top: 100px
+
+.watch
+  margin-bottom: 32px
+
+.feature
+  background: rgba(47, 51, 57, 0.6)
+  backdrop-filter: blur(50px)
+  border-radius: 16px
+  padding: 20px
+  width: 300px
+  cursor: pointer
+
+  &:not(&:last-child)
+    margin-top: 16px
+
+  > .description
+    // color: #DFE2E1
+    font-size: 14px
+    font-weight: 600
+
+  > .heading
+    // color: rgba(223, 226, 225, 0.4)
+    font-size: 12px
+    margin-bottom: 8px
+
+.selected_feature
+  background: #D1E3FB
+
+  > .description
+    color: #292C2E !important
+
+  > .heading
+    color: #292C2E !important
+
+.nav
+  margin-right: 64px
+
+.footer
+  margin-top: 40px
+  width: 300px
+
+  > .label
+    margin-bottom: 8px
+
+  > .description
+    line-height: 20px
+
+.slide
+  height: 100%
+  width: 925px
+  z-index: 1 !important
+
+.big_background
+  position: absolute
+  z-index: -1
+  top: 380px
+  height: 1000px
+  left: 35%
+
+
+@media (max-width: 768px) 
+  .slide
+    z-index: 0 !important
