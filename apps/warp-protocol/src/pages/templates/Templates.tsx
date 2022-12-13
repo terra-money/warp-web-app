@@ -24,7 +24,7 @@ const mockTemplates = (): Template[] => [
       {
         wasm: {
           execute: {
-            contract_addr: 'test',
+            contract_addr: 'test-addr',
             msg: {
               test_msg: {
                 id: '123',
