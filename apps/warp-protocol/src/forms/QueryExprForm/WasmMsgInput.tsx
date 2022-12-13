@@ -12,10 +12,11 @@ import { Container } from '@terra-money/apps/components';
 
 interface WasmMsgInputProps {
   className?: string;
-  label: string;
+  label?: string;
   error?: string;
   valid?: boolean;
-  example?: object;
+  example?: any;
+  mode?: string;
   placeholder?: string;
   value?: string;
   onChange?: (value?: string) => void;
@@ -46,6 +47,7 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
     error,
     placeholder,
     value,
+    mode = 'json',
     onChange,
     readOnly,
     example = defaultExample(contractAddr),
@@ -68,9 +70,11 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
             justifyContent: 'space-between',
           }}
         >
-          <Text variant="text" className={styles.label}>
-            {label ?? 'Message'}
-          </Text>
+          {label && (
+            <Text variant="text" className={styles.label}>
+              {label ?? 'Message'}
+            </Text>
+          )}
 
           {endLabel}
         </Container>
@@ -94,7 +98,7 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
             fontSize={14}
             onFocus={() => setFocused(true)}
             className={styles.editor}
-            mode="json"
+            mode={mode}
             readOnly={readOnly}
             theme="merbivore"
             onChange={onChange}
@@ -113,7 +117,7 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
           {error}
         </Text>
 
-        {focused && !value && !readOnly && (
+        {focused && !value && !readOnly && example && (
           <div className={styles.example_container}>
             <Text variant={'text'}>Example</Text>
             <pre className={styles.example_message}>{formattedExample}</pre>

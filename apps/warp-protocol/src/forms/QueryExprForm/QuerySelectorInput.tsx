@@ -1,17 +1,16 @@
-import styles from './QuerySelectorInput.module.sass';
-
-import { Autocomplete, InputAdornment } from '@mui/material';
 import { FormControl } from 'components/form-control/FormControl';
-import { MenuItem } from 'components/menu';
-import { Text, TextInput, TextInputProps } from 'components/primitives';
+import { TextInputProps } from 'components/primitives';
+import { QuerySelectorInputField } from './QuerySelectorInputField';
 
 interface BaseProps extends Pick<TextInputProps, 'value'> {
   className?: string;
-  label: string;
+  label?: string;
   error?: string;
   valid?: boolean;
+  hideAdornment?: boolean;
   onChange: (input: string) => void;
   value: string;
+  placeholder?: string;
 }
 
 interface QuerySelectorInputProps extends BaseProps {
@@ -19,46 +18,26 @@ interface QuerySelectorInputProps extends BaseProps {
 }
 
 const QuerySelectorInput = (props: QuerySelectorInputProps) => {
-  const { className, error, value, onChange, options } = props;
+  const {
+    className,
+    error,
+    value,
+    onChange,
+    hideAdornment,
+    label = 'Query selector',
+    options,
+    placeholder = 'Type your query selector here (i.e. $.field)',
+  } = props;
 
   return (
-    <FormControl label="Query selector" className={className} fullWidth>
-      <Autocomplete
+    <FormControl label={label} className={className} fullWidth>
+      <QuerySelectorInputField
+        error={error}
         value={value}
-        fullWidth
-        ListboxProps={{
-          className: styles.autocomplete_listbox,
-        }}
+        onChange={onChange}
+        hideAdornment={hideAdornment}
         options={options}
-        freeSolo
-        onChange={(event, newValue) => {
-          onChange(newValue as string);
-        }}
-        onInputChange={(event, value) => {
-          onChange(value);
-        }}
-        renderOption={(props, option) => (
-          <MenuItem {...(props as any)} className={styles.autocomplete_option}>
-            {option}
-          </MenuItem>
-        )}
-        renderInput={(params) => (
-          <TextInput
-            {...params}
-            placeholder="Type your query selector here (i.e. $.field)"
-            margin="none"
-            fullWidth
-            error={error !== undefined}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <InputAdornment position="end">
-                  {!!value && value.length > 0 && <Text variant="label">{`${value?.length ?? 0}/140`}</Text>}
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+        placeholder={placeholder}
       />
     </FormControl>
   );
