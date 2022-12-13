@@ -2,7 +2,8 @@ import { useContractAddress } from '@terra-money/apps/hooks';
 import { CW20Token } from 'types';
 
 export const useWarpToken = (): CW20Token => {
-  const contractAddress = useContractAddress('warp-token');
+  // TODO: add token address
+  const contractAddress = useContractAddress('warp-controller');
 
   return {
     protocol: 'Warp',

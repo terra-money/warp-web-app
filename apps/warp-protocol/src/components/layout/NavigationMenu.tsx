@@ -5,6 +5,7 @@ import { ReactComponent as NewIcon } from 'components/assets/New.svg';
 import { ReactComponent as DashboardIcon } from 'components/assets/Dashboard.svg';
 import { ReactComponent as LightningStrokeIcon } from 'components/assets/LightningStroke.svg';
 import { ReactComponent as DotsCircleIcon } from 'components/assets/DotsCircle.svg';
+import { ReactComponent as AddressbookIcon } from 'components/assets/Addressbook.svg';
 import { NavLink } from 'react-router-dom';
 import styles from './NavigationMenu.module.sass';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
@@ -21,6 +22,7 @@ const routes: (clearJobStorage: () => void) => RouteProps[] = (clearJobStorage) 
     { to: '/jobs', label: 'Jobs', icon: <JobsIcon /> },
     { to: '/balances', label: 'Balances', icon: <DotsCircleIcon /> },
     { to: '/queries', label: 'Queries', icon: <LightningStrokeIcon /> },
+    { to: '/templates', label: 'Templates', icon: <AddressbookIcon /> },
     {
       to: '/job-new',
       label: 'New',
