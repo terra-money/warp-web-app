@@ -1,0 +1,97 @@
+.root
+  height: 100%
+  display: block
+  width: 100%
+
+.form
+  height: calc(100% + 120px)
+  display: flex
+  flex-direction: row
+  width: 100%
+  justify-items: stretch
+  row-gap: 24px !important
+
+.left
+  height: max(340px, calc(100vh - 500px))
+  overflow: auto
+  width: 600px
+  margin-right: 80px
+
+  > *
+    margin-bottom: 20px !important
+
+.new_variable
+  margin-top: 20px !important
+  max-width: 0 !important
+  min-width: 68px !important
+
+.right
+  width: 600px
+
+.title_container
+  position: relative
+  display: flex
+  width: 800px
+  flex-direction: column
+  align-items: flex-start
+  margin-bottom: 40px
+
+.title
+  font-weight: 600
+  font-size: 32px
+
+.jobs
+  height: 100%
+
+.back
+  min-height: 0
+  margin-top: 24px
+
+.content
+  height: 100%
+  width: 100%
+
+.bottom
+  flex-direction: row
+  height: 100%
+  width: 100%
+
+.description
+  margin-top: 24px
+  line-height: 22px
+
+.wasm_msg
+  height: 200px
+
+.variable
+  width: 100%
+  justify-content: center
+  align-items: flex-start
+
+.variable_input
+  width: 100%
+
+.variable_inputs
+  width: 100%
+  overflow: auto
+
+  > *
+    margin-bottom: 12px !important
+
+.delete_btn
+  margin-top: 48px !important
+  background-color: transparent !important
+  height: auto
+  min-width: 0
+  width: 74px
+  min-height: 0
+  margin: 0
+
+  svg
+    width: 16px
+    height: 16px
+    margin: auto
+    cursor: pointer
+
+    path
+      fill: #F86363 !important
