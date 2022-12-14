@@ -20,7 +20,7 @@ export const TopContent = (props: TopContentProps) => {
       </div>
       <Text variant='label' className={styles.description}>
         Sign future transactions. Program serverless bots. Enable automated
-        features in your dApp
+        features in your dApp.
       </Text>
       <div className={styles.buttons}>
         <Button
