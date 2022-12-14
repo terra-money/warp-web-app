@@ -1,20 +1,24 @@
 import classNames from 'classnames';
 import styles from './WasmMsgInput.module.sass';
-import { ReactNode, useCallback, useId, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Text, Button } from 'components/primitives';
 import { ClickAwayListener } from '@mui/material';
 
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/mode-text';
 import 'ace-builds/src-noconflict/theme-merbivore';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { Container } from '@terra-money/apps/components';
+import CustomTextSyntaxMode from './CustomTextSyntaxMode';
 
 interface WasmMsgInputProps {
   className?: string;
+  rootClassName?: string;
   label?: string;
   error?: string;
   valid?: boolean;
+  theme?: string;
   example?: any;
   mode?: string;
   placeholder?: string;
@@ -43,10 +47,12 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
   const {
     endLabel,
     className,
+    rootClassName,
     label,
     error,
     placeholder,
     value,
+    theme = 'merbivore',
     mode = 'json',
     onChange,
     readOnly,
@@ -61,9 +67,18 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
     onChange?.(formattedExample);
   }, [onChange, formattedExample]);
 
+  const editorRef = useRef<AceEditor>(null);
+
+  useEffect(() => {
+    if (editorRef.current && mode === 'text') {
+      const customMode = new CustomTextSyntaxMode();
+      editorRef.current.editor.getSession().setMode(customMode as any);
+    }
+  }, [mode]);
+
   return (
     <ClickAwayListener onClickAway={() => setFocused(false)}>
-      <div className={styles.root}>
+      <div className={classNames(styles.root, rootClassName)}>
         <Container
           direction={'row'}
           style={{
@@ -95,12 +110,13 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
             </Text>
           )}
           <AceEditor
+            ref={editorRef}
             fontSize={14}
             onFocus={() => setFocused(true)}
             className={styles.editor}
             mode={mode}
             readOnly={readOnly}
-            theme="merbivore"
+            theme={theme}
             onChange={onChange}
             name={editorId}
             wrapEnabled
