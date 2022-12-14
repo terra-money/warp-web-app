@@ -647,4 +647,19 @@ export module warp_controller {
   export interface SimulateResponse {
     response: string;
   }
+  export interface Template {
+    formatted_str: string;
+    id: Uint64;
+    kind: TemplateKind;
+    msg: string;
+    name: string;
+    owner: Addr;
+    vars: TemplateVar[];
+  }
+  export interface TemplateResponse {
+    template: Template;
+  }
+  export interface TemplatesResponse {
+    templates: Template[];
+  }
 }
