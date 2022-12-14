@@ -40,5 +40,13 @@ input {
 
 /* Necessary for ace override */
 .ace-merbivore .ace_marker-layer .ace_selection {
-  background: var(--background-color) !important
+  background: var(--background-color) !important;
+}
+
+.ace_highlighted_text {
+  color: #a9fc50;
+  font-weight: bold;
+  background: rgba(47, 51, 57, 0.6);
+  border-radius: 24px;
+  padding: 4px;
 }

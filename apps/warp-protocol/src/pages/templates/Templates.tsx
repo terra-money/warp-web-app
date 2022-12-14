@@ -16,10 +16,10 @@ type TabType = 'job' | 'query';
 
 const tabTypes = ['job', 'query'] as TabType[];
 
-const mockTemplates = (): Template[] => [
+export const mockTemplates = (): Template[] => [
   {
     name: 'test template',
-    formattedStr: 'send {token} to exchange {exchange}',
+    formattedStr: 'Purchase Luna for {purchase amount} axlUSDC every {weeks} weeks on Astroport Luna/axlUSDC LP.',
     msg: JSON.stringify(
       {
         wasm: {
@@ -27,7 +27,8 @@ const mockTemplates = (): Template[] => [
             contract_addr: 'test-addr',
             msg: {
               test_msg: {
-                id: '123',
+                amount: '123',
+                weeks: '123',
               },
             },
             funds: [],
@@ -40,12 +41,12 @@ const mockTemplates = (): Template[] => [
     type: 'job',
     vars: [
       {
-        name: 'token',
-        path: '$.wasm.execute.contract_addr',
+        name: 'purchase amount',
+        path: '$.wasm.execute.msg.test_msg.amount',
       },
       {
-        name: 'exchange',
-        path: '$.wasm.execute.funds',
+        name: 'weeks',
+        path: '$.wasm.execute.msg.test_msg.weeks',
       },
     ],
   },
