@@ -42,13 +42,13 @@ export module warp_controller {
         update_config: UpdateConfigMsg;
       }
     | {
-        submit_msg_template: SubmitTemplateMsg;
+        submit_template: SubmitTemplateMsg;
       }
     | {
-        edit_msg_template: EditTemplateMsg;
+        edit_template: EditTemplateMsg;
       }
     | {
-        delete_msg_template: DeleteTemplateMsg;
+        delete_template: DeleteTemplateMsg;
       };
   export type Condition =
     | {
@@ -595,10 +595,10 @@ export module warp_controller {
         query_config: QueryConfigMsg;
       }
     | {
-        query_msg_template: QueryTemplateMsg;
+        query_template: QueryTemplateMsg;
       }
     | {
-        query_msg_templates: QueryTemplatesMsg;
+        query_templates: QueryTemplatesMsg;
       };
   export interface QueryJobMsg {
     id: Uint64;
