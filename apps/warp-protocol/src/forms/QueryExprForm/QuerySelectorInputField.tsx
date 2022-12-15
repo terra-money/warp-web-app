@@ -36,7 +36,7 @@ const QuerySelectorInputField = (props: QuerySelectorInputFieldProps) => {
       fullWidth
       className={classNames(styles.root, className)}
       ListboxProps={{
-        className: styles.autocomplete_listbox,
+        className: classNames(styles.autocomplete_listbox, options.length < 4 && styles.full_height),
       }}
       options={options}
       freeSolo
