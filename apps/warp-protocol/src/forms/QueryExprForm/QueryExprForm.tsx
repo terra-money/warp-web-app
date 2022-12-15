@@ -99,6 +99,7 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
       </FormControl>
       <WasmMsgInput
         label="Query json"
+        className={styles.query_json}
         error={queryJsonError}
         example={queryExample}
         valid={Boolean(queryJsonError)}

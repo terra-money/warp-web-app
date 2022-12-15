@@ -41,7 +41,7 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
       <Container className={styles.bottom} direction="column">
         {selectedTabType === 'message' && (
           <WasmMsgInput
-            className={styles.wasm_msg}
+            rootClassName={styles.wasm_msg}
             mode="json"
             placeholder="Type message here"
             value={message}
@@ -50,7 +50,7 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
         )}
         {selectedTabType === 'template' && (
           <WasmMsgInput
-            className={styles.wasm_msg}
+            rootClassName={styles.wasm_msg}
             example={null}
             mode="text"
             placeholder="Type template here"
