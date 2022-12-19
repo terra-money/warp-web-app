@@ -15,9 +15,10 @@ import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
 import { generateAllPaths } from '../../utils';
 import { usePreviewQueryDialog } from '../../components/dialog/preview-query/PreviewQueryDialog';
-import { TemplateForm, TemplateVars } from 'pages/job-new/details-form/DetailsForm';
+import { TemplateVars } from 'pages/job-new/details-form/DetailsForm';
 import { warp_controller } from 'types';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
+import { TemplateForm } from 'pages/job-new/details-form/template-form/TemplateForm';
 
 export type QueryExprFormProps = UIElementProps & {
   input: QueryExprFormInput;
