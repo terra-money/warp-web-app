@@ -16,6 +16,8 @@ import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputF
 import { TemplateMessageInput } from './template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
 import { useCreateTemplateTx } from 'tx';
+import { TemplateKindInput } from './template-kind-input/TemplateKindInput';
+import { TemplateVarKindInput } from './template-var-kind-input/TemplateVarKindInput';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -37,6 +39,18 @@ export const parseJsonValue = (str?: string) => {
   return value;
 };
 
+const templateKinds: warp_controller.TemplateKind[] = ['query', 'msg'];
+const templateVarKinds: warp_controller.TemplateVarKind[] = [
+  'string',
+  'uint',
+  'int',
+  'decimal',
+  'bool',
+  'amount',
+  'asset',
+  'timestamp',
+];
+
 export const TemplateNew = (props: TemplateNewProps) => {
   const { className } = props;
 
@@ -45,6 +59,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
   const [templateVars, setTemplateVars] = useState<TemplateVars>({});
   const [templateName, setTemplateName] = useState<string>();
   const [templateStr, setTemplateStr] = useState<string>();
+  const [templateKind, setTemplateKind] = useState<warp_controller.TemplateKind>();
   const [message, setMessage] = useState<string>();
 
   const messageJson = parseJsonValue(message);
@@ -68,38 +83,68 @@ export const TemplateNew = (props: TemplateNewProps) => {
       </Container>
       <Form className={styles.form}>
         <Container className={styles.left} direction="column">
-          <FormControl label="Template name">
-            <TextInput
-              placeholder="Type template name here"
-              margin="none"
-              value={templateName}
-              onChange={(value) => {
-                setTemplateName(value.target.value);
-              }}
+          <Container className={styles.top}>
+            <FormControl label="Template name" className={styles.name_input}>
+              <TextInput
+                placeholder="Type template name here"
+                margin="none"
+                value={templateName}
+                onChange={(value) => {
+                  setTemplateName(value.target.value);
+                }}
+              />
+            </FormControl>
+            <TemplateKindInput
+              value={templateKind}
+              placeholder="Select template type"
+              className={styles.template_kind_input}
+              onChange={(val) => setTemplateKind(val)}
+              label="Template type"
+              options={templateKinds}
             />
-          </FormControl>
+          </Container>
           {Object.values(templateVars).map((templateVar, idx) => {
             return (
               <Container className={styles.variable} direction="row">
                 <Container className={styles.variable_inputs} direction="column">
-                  <FormControl label={`Variable ${idx + 1}`}>
-                    <TextInput
-                      placeholder="Type variable name here"
-                      margin="none"
-                      value={templateVar.name}
+                  <Container>
+                    <FormControl label={`Variable ${idx + 1}`} className={styles.variable_name_input}>
+                      <TextInput
+                        placeholder="Type variable name here"
+                        margin="none"
+                        value={templateVar.name}
+                        onChange={(value) => {
+                          setTemplateVars((tvs) => {
+                            return {
+                              ...tvs,
+                              [templateVar.key]: {
+                                ...templateVar,
+                                name: value.target.value,
+                              },
+                            };
+                          });
+                        }}
+                      />
+                    </FormControl>
+                    <TemplateVarKindInput
+                      label=""
+                      className={styles.variable_kind_input}
+                      value={templateVar.kind}
+                      options={templateVarKinds}
+                      placeholder="Select variable type"
                       onChange={(value) => {
                         setTemplateVars((tvs) => {
                           return {
                             ...tvs,
                             [templateVar.key]: {
                               ...templateVar,
-                              name: value.target.value,
+                              kind: value as warp_controller.TemplateVarKind,
                             },
                           };
                         });
                       }}
                     />
-                  </FormControl>
+                  </Container>
                   <QuerySelectorInputField
                     hideAdornment={true}
                     placeholder="Type variable path here"
