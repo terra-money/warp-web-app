@@ -3,8 +3,12 @@ import { useCallback, useMemo } from 'react';
 import { warp_controller } from 'types';
 import { useLocalStorage } from 'usehooks-ts';
 
+type Query = warp_controller.QueryExpr & {
+  templateId?: string;
+};
+
 type QueriesStorage = {
-  [key: string]: warp_controller.QueryExpr[];
+  [key: string]: Query[];
 };
 
 const storageKey = (connectedWallet: ConnectedWallet) =>
