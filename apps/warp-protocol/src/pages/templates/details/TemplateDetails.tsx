@@ -2,10 +2,9 @@ import { Container, Form, UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import { Panel } from 'components/panel';
 import { isMatch } from 'lodash';
-import { Button, Text, TextInput } from 'components/primitives';
+import { Button, Text, TextInput, Throbber } from 'components/primitives';
 import { useEffect, useMemo } from 'react';
 import styles from './TemplateDetails.module.sass';
-import { Template } from '../useTemplateStorage';
 import { ReactComponent as TrashIcon } from 'components/assets/Trash.svg';
 import { ReactComponent as PlusIcon } from 'components/assets/Plus.svg';
 import { templateToInput, useTemplateNewForm } from 'pages/template-new/useTemplateNewForm';
@@ -14,15 +13,18 @@ import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputF
 import { parseJsonValue } from 'pages/template-new/TemplateNew';
 import { generateAllPaths } from 'utils';
 import { TemplateMessageInput } from 'pages/template-new/template-message/TemplateMessageInput';
+import { warp_controller } from 'types';
+import { useDeleteTemplateTx, useEditTemplateTx } from 'tx';
 
 type TemplateDetailsProps = UIElementProps & {
-  selectedTemplate: Template | undefined;
-  saveTemplate: (template: Template) => void;
-  deleteTemplate: (template: Template) => void;
+  selectedTemplate: warp_controller.Template | undefined;
+  onSaveTemplate: (template: warp_controller.Template) => void;
+  onDeleteTemplate: (template: warp_controller.Template) => void;
+  isLoading: boolean;
 };
 
 export const TemplateDetails = (props: TemplateDetailsProps) => {
-  const { className, selectedTemplate, deleteTemplate } = props;
+  const { className, selectedTemplate, onSaveTemplate, onDeleteTemplate, isLoading } = props;
 
   const [input, formState] = useTemplateNewForm(selectedTemplate);
 
@@ -39,6 +41,9 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
     () => !isMatch(templateToInput(selectedTemplate), { msg, formattedStr, vars, name }),
     [selectedTemplate, name, formattedStr, vars, msg]
   );
+
+  const [editTemplateTxResult, editTemplateTx] = useEditTemplateTx();
+  const [deleteTemplateTxResult, deleteTemplateTx] = useDeleteTemplateTx();
 
   const messageJson = parseJsonValue(msg);
   const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
@@ -87,17 +92,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                         options={paths}
                       />
                     </Container>
-                    <Button
-                      className={styles.delete_btn}
-                      icon={
-                        <TrashIcon
-                          onClick={() => {
-                            // TODO: implement
-                          }}
-                        />
-                      }
-                      iconGap="none"
-                    />
+                    <Button className={styles.delete_btn} icon={<TrashIcon onClick={() => {}} />} iconGap="none" />
                   </Container>
                 );
               })}
@@ -126,17 +121,35 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
             <Button
               variant="primary"
               disabled={submitDisabled || !templateModified}
+              loading={editTemplateTxResult.loading}
               onClick={async () => {
-                // TODO: implement
+                // TODO: add other fields
+                const res = await editTemplateTx({ id: selectedTemplate.id });
+
+                if (res.success) {
+                  onSaveTemplate(selectedTemplate);
+                }
               }}
             >
               Save
             </Button>
-            <Button variant="danger" onClick={() => deleteTemplate(selectedTemplate)}>
+            <Button
+              variant="danger"
+              loading={deleteTemplateTxResult.loading}
+              onClick={async () => {
+                const res = await deleteTemplateTx({ id: selectedTemplate.id });
+
+                if (res.success) {
+                  onDeleteTemplate(selectedTemplate);
+                }
+              }}
+            >
               Delete
             </Button>
           </Container>
         </>
+      ) : isLoading ? (
+        <Throbber className={styles.loading} />
       ) : (
         <Container className={styles.empty}>Select template for preview.</Container>
       )}

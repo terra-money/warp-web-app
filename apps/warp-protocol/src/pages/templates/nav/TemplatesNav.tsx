@@ -2,13 +2,13 @@ import { UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import { Panel } from 'components/panel';
 import { Text } from 'components/primitives';
-import { Template } from '../useTemplateStorage';
+import { warp_controller } from 'types';
 import styles from './TemplatesNav.module.sass';
 
 type TemplatesNavProps = UIElementProps & {
-  templates: Template[];
-  selectedTemplate: Template | undefined;
-  setSelectedTemplate: (template: Template) => void;
+  templates: warp_controller.Template[];
+  selectedTemplate: warp_controller.Template | undefined;
+  setSelectedTemplate: (template: warp_controller.Template) => void;
 };
 
 export const TemplatesNav = (props: TemplatesNavProps) => {

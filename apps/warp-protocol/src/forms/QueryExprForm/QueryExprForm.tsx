@@ -16,8 +16,8 @@ import { useSimulateQuery } from 'queries/useSimulateQuery';
 import { generateAllPaths } from '../../utils';
 import { usePreviewQueryDialog } from '../../components/dialog/preview-query/PreviewQueryDialog';
 import { TemplateForm, TemplateVars } from 'pages/job-new/details-form/DetailsForm';
-import { Template } from 'pages/templates/useTemplateStorage';
-import { mockQueryTemplates } from 'pages/templates/Templates';
+import { warp_controller } from 'types';
+import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 
 export type QueryExprFormProps = UIElementProps & {
   input: QueryExprFormInput;
@@ -84,10 +84,10 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
 
   const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
 
-  const [template, setTemplate] = useState<Template | undefined>();
+  const [template, setTemplate] = useState<warp_controller.Template | undefined>();
   const [templateVars, setTemplateVars] = useState<TemplateVars>({});
 
-  const options = mockQueryTemplates();
+  const { data: options = [] } = useTemplatesQuery();
 
   return (
     <Form className={classNames(styles.root, className)}>

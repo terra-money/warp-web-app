@@ -1,7 +1,6 @@
 import styles from './Templates.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Text } from 'components/primitives';
-import { Template, useTemplateStorage } from './useTemplateStorage';
 import { useEffect, useState } from 'react';
 import { TemplateDetails } from './details/TemplateDetails';
 import { IfConnected } from 'components/if-connected';
@@ -9,6 +8,8 @@ import { NotConnected } from 'components/not-connected';
 import { useNavigate } from 'react-router';
 import { TemplatesNav } from './nav/TemplatesNav';
 import classNames from 'classnames';
+import { warp_controller } from 'types';
+import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 
 type TemplatesContentProps = {};
 
@@ -16,99 +17,16 @@ type TabType = 'job' | 'query';
 
 const tabTypes = ['job', 'query'] as TabType[];
 
-export const mockExecuteTemplates = (): Template[] => [
-  {
-    name: 'message template',
-    formattedStr: 'Purchase Luna for {purchase amount} axlUSDC every {weeks} weeks on Astroport Luna/axlUSDC LP.',
-    msg: JSON.stringify(
-      {
-        wasm: {
-          execute: {
-            contract_addr: 'test-addr',
-            msg: {
-              test_msg: {
-                amount: '123',
-                weeks: '123',
-              },
-            },
-            funds: [],
-          },
-        },
-      },
-      null,
-      2
-    ),
-    type: 'job',
-    vars: [
-      {
-        name: 'purchase amount',
-        path: '$.wasm.execute.msg.test_msg.amount',
-      },
-      {
-        name: 'weeks',
-        path: '$.wasm.execute.msg.test_msg.weeks',
-      },
-    ],
-  },
-];
-
-export const mockQueryTemplates = (): Template[] => [
-  {
-    name: 'query template',
-    formattedStr: 'Simulate swap operations from Luna to {contract addr} with {amount}.',
-    msg: JSON.stringify(
-      {
-        wasm: {
-          smart: {
-            contract_addr: 'terra1na348k6rvwxje9jj6ftpsapfeyaejxjeq6tuzdmzysps20l6z23smnlv64',
-            msg: {
-              simulate_swap_operations: {
-                offer_amount: '1000000',
-                operations: [
-                  {
-                    astro_swap: {
-                      ask_asset_info: {
-                        token: {
-                          contract_addr: 'terra167dsqkh2alurx997wmycw9ydkyu54gyswe3ygmrs4lwume3vmwks8ruqnv',
-                        },
-                      },
-                      offer_asset_info: {
-                        native_token: {
-                          denom: 'uluna',
-                        },
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-      null,
-      2
-    ),
-    type: 'job',
-    vars: [
-      {
-        name: 'contract addr',
-        path: '$.wasm.smart.simulate_swap_operations.operations[0].astro_swap.ask_asset_info.token.contract_addr',
-      },
-      {
-        name: 'amount',
-        path: '$.wasm.smart.simulate_swap_operations.offer_amount',
-      },
-    ],
-  },
-];
-
 const TemplatesContent = (props: TemplatesContentProps) => {
-  const { saveTemplate, removeTemplate } = useTemplateStorage();
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
+  const [selectedTemplate, setSelectedTemplate] = useState<warp_controller.Template | undefined>(undefined);
 
   const [selectedTabType, setSelectedTabType] = useState<TabType>('job');
 
-  const templates: Template[] = selectedTabType === 'job' ? mockExecuteTemplates() : mockQueryTemplates();
+  const { data: jobTemplates = [], isLoading: isJobTemplatesLoading } = useTemplatesQuery();
+
+  const templates: warp_controller.Template[] = selectedTabType === 'job' ? jobTemplates : jobTemplates;
+
+  const isLoading = isJobTemplatesLoading;
 
   const navigate = useNavigate();
 
@@ -145,14 +63,13 @@ const TemplatesContent = (props: TemplatesContentProps) => {
           setSelectedTemplate={setSelectedTemplate}
         />
         <TemplateDetails
+          isLoading={isLoading}
           className={styles.details}
           selectedTemplate={selectedTemplate}
-          saveTemplate={(q) => {
-            saveTemplate(q);
+          onSaveTemplate={(q) => {
             setSelectedTemplate(q);
           }}
-          deleteTemplate={(q) => {
-            removeTemplate(q);
+          onDeleteTemplate={(q) => {
             setSelectedTemplate(undefined);
           }}
         />

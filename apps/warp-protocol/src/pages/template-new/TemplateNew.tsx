@@ -14,12 +14,12 @@ import { useMemo, useState } from 'react';
 import { generateAllPaths } from 'utils';
 import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputField';
 import { TemplateMessageInput } from './template-message/TemplateMessageInput';
+import { warp_controller } from 'types';
+import { useCreateTemplateTx } from 'tx';
 
 type TemplateNewProps = UIElementProps & {};
 
-type TemplateVar = {
-  path: string;
-  name: string;
+type TemplateVar = warp_controller.TemplateVar & {
   key: string;
 };
 
@@ -49,6 +49,8 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const messageJson = parseJsonValue(message);
   const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
+
+  const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -148,6 +150,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                     key,
                     path: '',
                     name: '',
+                    kind: 'string',
                   },
                 };
               });
@@ -166,11 +169,23 @@ export const TemplateNew = (props: TemplateNewProps) => {
       <Footer>
         <Button
           variant="primary"
+          loading={createTemplateTxResult.loading}
           // disabled={submitDisabled}
           onClick={async () => {
-            // if (name && reward && message) {
-            //   onNext({ name, reward, message });
-            // }
+            const result = await createTemplateTx({
+              formatted_str: templateStr ?? '',
+              kind: 'msg',
+              msg: message ?? '',
+              name: templateName ?? '',
+              vars: Object.values(templateVars).map((v) => {
+                const { key: omit, ...rest } = v;
+                return rest;
+              }),
+            });
+
+            if (result.success) {
+              navigate(-1);
+            }
           }}
         >
           Save

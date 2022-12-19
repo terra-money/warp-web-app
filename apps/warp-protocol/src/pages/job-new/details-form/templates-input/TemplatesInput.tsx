@@ -5,16 +5,16 @@ import classNames from 'classnames';
 import { MenuAction } from 'components/menu-button/MenuAction';
 import { FormControl } from 'components/form-control/FormControl';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
-import { Template } from 'pages/templates/useTemplateStorage';
 import { useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
+import { warp_controller } from 'types';
 
 type TemplatesInputProps = UIElementProps & {
-  value?: Template | null;
+  value?: warp_controller.Template | null;
   label: string;
-  options: Template[];
+  options: warp_controller.Template[];
   placeholder: string;
-  onChange: (value: Template | undefined) => void;
+  onChange: (value: warp_controller.Template | undefined) => void;
 };
 
 export function TemplatesInput(props: TemplatesInputProps) {

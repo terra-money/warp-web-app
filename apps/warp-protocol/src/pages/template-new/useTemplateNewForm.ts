@@ -1,11 +1,11 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
-import { Template, TemplateVar } from 'pages/templates/useTemplateStorage';
 import { useMemo } from 'react';
+import { warp_controller } from 'types';
 
 interface TemplateNewInput {
   name: string;
-  type: string;
-  vars: TemplateVar[];
+  kind: warp_controller.TemplateKind;
+  vars: warp_controller.TemplateVar[];
   formattedStr: string;
   msg: string;
 }
@@ -16,17 +16,17 @@ export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNe
 
 export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 
-export const templateToInput = (template?: Template): TemplateNewInput => {
+export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
-    type: template?.type ?? '',
+    kind: template?.kind ?? 'msg',
     vars: template?.vars ?? [],
-    formattedStr: template?.formattedStr ?? '',
+    formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
   };
 };
 
-export const useTemplateNewForm = (template?: Template) => {
+export const useTemplateNewForm = (template?: warp_controller.Template) => {
   const initialValue = useMemo<TemplateNewState>(() => {
     const res = {
       ...templateToInput(template),

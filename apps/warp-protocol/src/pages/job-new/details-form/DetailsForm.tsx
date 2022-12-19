@@ -8,22 +8,23 @@ import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { useNavigate } from 'react-router';
-import { LUNA } from 'types';
+import { LUNA, warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import jsonpath from 'jsonpath';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useEffect, useState } from 'react';
 import { TemplatesInput } from './templates-input/TemplatesInput';
-import { mockExecuteTemplates } from 'pages/templates/Templates';
-import { Template } from 'pages/templates/useTemplateStorage';
+import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
   detailsInput?: DetailsFormInput;
 };
 
-const composeMsgFromTemplate = (template: Template, vars: TemplateVar[]): string => {
+type TemplateVar = warp_controller.TemplateVar & { value: string };
+
+const composeMsgFromTemplate = (template: warp_controller.Template, vars: TemplateVar[]): string => {
   let json = JSON.parse(template.msg);
 
   vars.forEach((v) => {
@@ -39,17 +40,11 @@ const tabTypes = ['template', 'message'] as TabType[];
 
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
-  template?: Template;
-  setTemplate: React.Dispatch<React.SetStateAction<Template | undefined>>;
+  template?: warp_controller.Template;
+  setTemplate: React.Dispatch<React.SetStateAction<warp_controller.Template | undefined>>;
   templateVars: TemplateVars;
   setTemplateVars: React.Dispatch<React.SetStateAction<TemplateVars>>;
-  options: Template[];
-};
-
-type TemplateVar = {
-  value: string;
-  name: string;
-  path: string;
+  options: warp_controller.Template[];
 };
 
 export type TemplateVars = {
@@ -124,7 +119,7 @@ export const TemplateForm = (props: TemplateFormProps) => {
             mode="text"
             label="Template message"
             placeholder="Type template here"
-            value={template.formattedStr}
+            value={template.formatted_str}
             readOnly={true}
           />
         </>
@@ -136,7 +131,7 @@ export const TemplateForm = (props: TemplateFormProps) => {
 export const DetailsForm = (props: DetailsFormProps) => {
   const { onNext, className, detailsInput } = props;
 
-  const [template, setTemplate] = useState<Template | undefined>();
+  const [template, setTemplate] = useState<warp_controller.Template | undefined>();
   const [templateVars, setTemplateVars] = useState<TemplateVars>({});
 
   const [
@@ -159,7 +154,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const navigate = useNavigate();
 
-  const options = mockExecuteTemplates();
+  const { data: options = [] } = useTemplatesQuery();
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
