@@ -102,7 +102,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
               ...tvs,
               [templateVar.name]: {
                 ...templateVar,
-                value: microfy(value.target.value, 6).toString(),
+                value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
               },
             };
           })
