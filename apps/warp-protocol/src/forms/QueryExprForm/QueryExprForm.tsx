@@ -1,8 +1,8 @@
-import { UIElementProps } from '@terra-money/apps/components';
-import { Dispatch, useMemo } from 'react';
+import { Container, UIElementProps } from '@terra-money/apps/components';
+import { Dispatch, useMemo, useState } from 'react';
 import { QueryExprFormInput, QueryExprState } from 'forms/QueryExprForm/useQueryExprForm';
 import { FormControl } from 'components/form-control/FormControl';
-import { Text, TextInput, Throbber } from 'components/primitives';
+import { Button, Text, TextInput, Throbber } from 'components/primitives';
 import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { Form } from 'components/form/Form';
@@ -15,6 +15,9 @@ import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
 import { generateAllPaths } from '../../utils';
 import { usePreviewQueryDialog } from '../../components/dialog/preview-query/PreviewQueryDialog';
+import { TemplateForm, TemplateVars } from 'pages/job-new/details-form/DetailsForm';
+import { Template } from 'pages/templates/useTemplateStorage';
+import { mockQueryTemplates } from 'pages/templates/Templates';
 
 export type QueryExprFormProps = UIElementProps & {
   input: QueryExprFormInput;
@@ -37,6 +40,10 @@ export const useQueryExample = () => {
     [contractAddress]
   );
 };
+
+type TabType = 'template' | 'message';
+
+const tabTypes = ['template', 'message'] as TabType[];
 
 export const QueryExprForm = (props: QueryExprFormProps) => {
   const { input, state, className, querySelectorOptions } = props;
@@ -75,9 +82,16 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
     return undefined;
   }, [data, isLoading, isFetching, openPreview, queryJson, queryJsonError, error]);
 
+  const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
+
+  const [template, setTemplate] = useState<Template | undefined>();
+  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
+
+  const options = mockQueryTemplates();
+
   return (
     <Form className={classNames(styles.root, className)}>
-      <FormControl label="Name" fullWidth>
+      <FormControl label="Name" fullWidth className={styles.name_input}>
         <TextInput
           placeholder="Type name here"
           margin="none"
@@ -97,19 +111,49 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
           }}
         />
       </FormControl>
-      <WasmMsgInput
-        label="Query json"
-        className={styles.query_json}
-        error={queryJsonError}
-        example={queryExample}
-        valid={Boolean(queryJsonError)}
-        placeholder="Type your query json here"
-        value={queryJson}
-        onChange={(value) => input({ queryJson: value })}
-        endLabel={endLabel}
-      />
+
+      <Container className={styles.tabs} direction="row">
+        {tabTypes.map((tabType) => (
+          <Button
+            className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
+            onClick={() => setSelectedTabType(tabType)}
+            variant="secondary"
+          >
+            {tabType}
+          </Button>
+        ))}
+      </Container>
+      {selectedTabType === 'template' && (
+        <>
+          <TemplateForm
+            options={options}
+            template={template}
+            setTemplate={setTemplate}
+            setTemplateVars={setTemplateVars}
+            templateVars={templateVars}
+            onMessageComposed={(message) => input({ queryJson: message })}
+          />
+        </>
+      )}
+      {selectedTabType === 'message' && (
+        <>
+          <WasmMsgInput
+            rootClassName={styles.msg_input}
+            label="Message"
+            className={styles.msg_input_inner}
+            error={queryJsonError}
+            example={queryExample}
+            valid={Boolean(queryJsonError)}
+            placeholder="Type your message here"
+            value={queryJson}
+            onChange={(value) => input({ queryJson: value })}
+          />
+        </>
+      )}
 
       <QuerySelectorInput
+        endLabel={endLabel}
+        className={styles.selector_input}
         label={'Query Selector'}
         onChange={(val) =>
           input({

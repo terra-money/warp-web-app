@@ -9,10 +9,11 @@ import styles from './DropdownMenu.module.sass';
 export type DropdownMenuProps = UIElementProps & {
   action: JSX.Element;
   menuClass?: string;
+  menuStyle?: React.CSSProperties;
 };
 
 export function DropdownMenuInner(props: DropdownMenuProps) {
-  const { className, children, action, menuClass } = props;
+  const { className, children, action, menuClass, menuStyle } = props;
   const { open: dropdownOpen, setOpen: setDropdownOpen } = useContext(MenuContext);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +50,11 @@ export function DropdownMenuInner(props: DropdownMenuProps) {
         })}
         {dropdownOpen && (
           <Portal>
-            <Menu className={classNames(styles.menu, menuClass)} style={coords} ref={(el) => setMenuEl(el)}>
+            <Menu
+              className={classNames(styles.menu, menuClass)}
+              style={{ ...coords, ...menuStyle }}
+              ref={(el) => setMenuEl(el)}
+            >
               {children}
             </Menu>
           </Portal>

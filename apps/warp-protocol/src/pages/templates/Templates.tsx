@@ -2,7 +2,7 @@ import styles from './Templates.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Text } from 'components/primitives';
 import { Template, useTemplateStorage } from './useTemplateStorage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TemplateDetails } from './details/TemplateDetails';
 import { IfConnected } from 'components/if-connected';
 import { NotConnected } from 'components/not-connected';
@@ -16,9 +16,9 @@ type TabType = 'job' | 'query';
 
 const tabTypes = ['job', 'query'] as TabType[];
 
-export const mockTemplates = (): Template[] => [
+export const mockExecuteTemplates = (): Template[] => [
   {
-    name: 'test template',
+    name: 'message template',
     formattedStr: 'Purchase Luna for {purchase amount} axlUSDC every {weeks} weeks on Astroport Luna/axlUSDC LP.',
     msg: JSON.stringify(
       {
@@ -52,15 +52,69 @@ export const mockTemplates = (): Template[] => [
   },
 ];
 
+export const mockQueryTemplates = (): Template[] => [
+  {
+    name: 'query template',
+    formattedStr: 'Simulate swap operations from Luna to {contract addr} with {amount}.',
+    msg: JSON.stringify(
+      {
+        wasm: {
+          smart: {
+            contract_addr: 'terra1na348k6rvwxje9jj6ftpsapfeyaejxjeq6tuzdmzysps20l6z23smnlv64',
+            msg: {
+              simulate_swap_operations: {
+                offer_amount: '1000000',
+                operations: [
+                  {
+                    astro_swap: {
+                      ask_asset_info: {
+                        token: {
+                          contract_addr: 'terra167dsqkh2alurx997wmycw9ydkyu54gyswe3ygmrs4lwume3vmwks8ruqnv',
+                        },
+                      },
+                      offer_asset_info: {
+                        native_token: {
+                          denom: 'uluna',
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      null,
+      2
+    ),
+    type: 'job',
+    vars: [
+      {
+        name: 'contract addr',
+        path: '$.wasm.smart.simulate_swap_operations.operations[0].astro_swap.ask_asset_info.token.contract_addr',
+      },
+      {
+        name: 'amount',
+        path: '$.wasm.smart.simulate_swap_operations.offer_amount',
+      },
+    ],
+  },
+];
+
 const TemplatesContent = (props: TemplatesContentProps) => {
   const { saveTemplate, removeTemplate } = useTemplateStorage();
   const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>(undefined);
 
   const [selectedTabType, setSelectedTabType] = useState<TabType>('job');
 
-  const templates: Template[] = mockTemplates();
+  const templates: Template[] = selectedTabType === 'job' ? mockExecuteTemplates() : mockQueryTemplates();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSelectedTemplate(undefined);
+  }, [selectedTabType]);
 
   return (
     <Container direction="column" className={styles.content}>

@@ -15,7 +15,7 @@ import jsonpath from 'jsonpath';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useEffect, useState } from 'react';
 import { TemplatesInput } from './templates-input/TemplatesInput';
-import { mockTemplates } from 'pages/templates/Templates';
+import { mockExecuteTemplates } from 'pages/templates/Templates';
 import { Template } from 'pages/templates/useTemplateStorage';
 
 type DetailsFormProps = UIElementProps & {
@@ -39,9 +39,12 @@ const tabTypes = ['template', 'message'] as TabType[];
 
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
+  template?: Template;
+  setTemplate: React.Dispatch<React.SetStateAction<Template | undefined>>;
+  templateVars: TemplateVars;
+  setTemplateVars: React.Dispatch<React.SetStateAction<TemplateVars>>;
+  options: Template[];
 };
-
-const templates = mockTemplates();
 
 type TemplateVar = {
   value: string;
@@ -53,11 +56,8 @@ export type TemplateVars = {
   [k: string]: TemplateVar;
 };
 
-const TemplateForm = (props: TemplateFormProps) => {
-  const { onMessageComposed } = props;
-  const [template, setTemplate] = useState<Template | undefined>();
-  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
-
+export const TemplateForm = (props: TemplateFormProps) => {
+  const { onMessageComposed, template, setTemplate, templateVars, setTemplateVars, options } = props;
   useEffect(() => {
     if (template) {
       setTemplateVars(
@@ -87,7 +87,7 @@ const TemplateForm = (props: TemplateFormProps) => {
       <TemplatesInput
         label="Template"
         className={styles.template_input}
-        options={templates}
+        options={options}
         placeholder="Select a template"
         value={template}
         onChange={(tmpl) => setTemplate(tmpl)}
@@ -136,6 +136,9 @@ const TemplateForm = (props: TemplateFormProps) => {
 export const DetailsForm = (props: DetailsFormProps) => {
   const { onNext, className, detailsInput } = props;
 
+  const [template, setTemplate] = useState<Template | undefined>();
+  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
+
   const [
     input,
     {
@@ -155,6 +158,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
 
   const navigate = useNavigate();
+
+  const options = mockExecuteTemplates();
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -219,7 +224,14 @@ export const DetailsForm = (props: DetailsFormProps) => {
         </Container>
         {selectedTabType === 'template' && (
           <>
-            <TemplateForm onMessageComposed={(message) => input({ message })} />
+            <TemplateForm
+              options={options}
+              template={template}
+              setTemplate={setTemplate}
+              setTemplateVars={setTemplateVars}
+              templateVars={templateVars}
+              onMessageComposed={(message) => input({ message })}
+            />
           </>
         )}
         {selectedTabType === 'message' && (

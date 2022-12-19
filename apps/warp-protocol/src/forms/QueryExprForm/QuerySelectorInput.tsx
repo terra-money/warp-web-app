@@ -1,6 +1,8 @@
 import { FormControl } from 'components/form-control/FormControl';
 import { TextInputProps } from 'components/primitives';
 import { QuerySelectorInputField } from './QuerySelectorInputField';
+import styles from './QuerySelectorInput.module.sass';
+import classNames from 'classnames';
 
 interface BaseProps extends Pick<TextInputProps, 'value'> {
   className?: string;
@@ -10,6 +12,7 @@ interface BaseProps extends Pick<TextInputProps, 'value'> {
   hideAdornment?: boolean;
   onChange: (input: string) => void;
   value: string;
+  endLabel?: JSX.Element;
   placeholder?: string;
 }
 
@@ -24,13 +27,15 @@ const QuerySelectorInput = (props: QuerySelectorInputProps) => {
     value,
     onChange,
     hideAdornment,
+    endLabel,
     label = 'Query selector',
     options,
     placeholder = 'Type your query selector here (i.e. $.field)',
   } = props;
 
   return (
-    <FormControl label={label} className={className} fullWidth>
+    <FormControl label={label} className={classNames(styles.root, className)} fullWidth>
+      {endLabel && <div className={styles.endLabel}>{endLabel}</div>}
       <QuerySelectorInputField
         error={error}
         value={value}

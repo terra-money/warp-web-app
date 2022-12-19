@@ -5,9 +5,11 @@
   width: 100%
 
 .form
+  height: auto
   display: grid
   width: 1000px
   grid-template-columns: 1fr 1fr
+  grid-template-rows: repeat(3, min-content)
   row-gap: 24px !important
   column-gap: 24px !important
 
@@ -29,7 +31,7 @@
 .template_input,
 .template_vars,
 .template_msg_input
-  width: 540px
+  width: 100%
 
 .name_input
   grid-row: 1
