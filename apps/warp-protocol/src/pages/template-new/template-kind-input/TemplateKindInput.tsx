@@ -17,13 +17,21 @@ type TemplateKindInputProps = UIElementProps & {
   onChange: (value: warp_controller.TemplateKind | undefined) => void;
 };
 
+const renderValue = (value?: warp_controller.TemplateKind) => {
+  if (value === 'msg') {
+    return 'job';
+  }
+
+  return value;
+};
+
 export function TemplateKindInput(props: TemplateKindInputProps) {
   const { value, onChange, placeholder, className, options, label } = props;
 
   const component = !value ? (
     <span className={styles.placeholder}>{placeholder}</span>
   ) : (
-    <span className={styles.text}>{value}</span>
+    <span className={styles.text}>{renderValue(value)}</span>
   );
 
   const parentRef = useRef<HTMLDivElement>();
@@ -48,7 +56,7 @@ export function TemplateKindInput(props: TemplateKindInputProps) {
       >
         {options.map((option) => (
           <MenuAction key={option} onClick={() => onChange(option)}>
-            {option}
+            {renderValue(option)}
           </MenuAction>
         ))}
       </DropdownMenu>
