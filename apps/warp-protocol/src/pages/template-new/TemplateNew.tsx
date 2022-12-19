@@ -9,8 +9,7 @@ import { TextInput } from 'components/primitives/text-input';
 import { useNavigate } from 'react-router';
 import { Footer } from '../job-new/footer/Footer';
 import styles from './TemplateNew.module.sass';
-import { v4 as uuid } from 'uuid';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { generateAllPaths } from 'utils';
 import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputField';
 import { TemplateMessageInput } from './template-message/TemplateMessageInput';
@@ -18,16 +17,9 @@ import { warp_controller } from 'types';
 import { useCreateTemplateTx } from 'tx';
 import { TemplateKindInput } from './template-kind-input/TemplateKindInput';
 import { TemplateVarKindInput } from './template-var-kind-input/TemplateVarKindInput';
+import { useTemplateNewForm } from './useTemplateNewForm';
 
 type TemplateNewProps = UIElementProps & {};
-
-type TemplateVar = warp_controller.TemplateVar & {
-  key: string;
-};
-
-type TemplateVars = {
-  [k: string]: TemplateVar;
-};
 
 export const parseJsonValue = (str?: string) => {
   let value = undefined;
@@ -56,13 +48,18 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const navigate = useNavigate();
 
-  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
-  const [templateName, setTemplateName] = useState<string>();
-  const [templateStr, setTemplateStr] = useState<string>();
-  const [templateKind, setTemplateKind] = useState<warp_controller.TemplateKind>();
-  const [message, setMessage] = useState<string>();
+  const [input, formState] = useTemplateNewForm();
 
-  const messageJson = parseJsonValue(message);
+  const { name, msg, submitDisabled, formattedStr, vars, kind } = formState;
+
+  const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
+    const updatedVars = [...vars];
+    const prev = updatedVars[idx];
+    updatedVars[idx] = { ...prev, ...updates };
+    return updatedVars;
+  };
+
+  const messageJson = parseJsonValue(msg);
   const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
 
   const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
@@ -88,22 +85,22 @@ export const TemplateNew = (props: TemplateNewProps) => {
               <TextInput
                 placeholder="Type template name here"
                 margin="none"
-                value={templateName}
+                value={name}
                 onChange={(value) => {
-                  setTemplateName(value.target.value);
+                  input({ name: value.target.value });
                 }}
               />
             </FormControl>
             <TemplateKindInput
-              value={templateKind}
+              value={kind}
               placeholder="Select template type"
               className={styles.template_kind_input}
-              onChange={(val) => setTemplateKind(val)}
+              onChange={(val) => input({ kind: val })}
               label="Template type"
               options={templateKinds}
             />
           </Container>
-          {Object.values(templateVars).map((templateVar, idx) => {
+          {Object.values(vars).map((templateVar, idx) => {
             return (
               <Container className={styles.variable} direction="row">
                 <Container className={styles.variable_inputs} direction="column">
@@ -114,15 +111,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                         margin="none"
                         value={templateVar.name}
                         onChange={(value) => {
-                          setTemplateVars((tvs) => {
-                            return {
-                              ...tvs,
-                              [templateVar.key]: {
-                                ...templateVar,
-                                name: value.target.value,
-                              },
-                            };
-                          });
+                          input({ vars: updateTemplateVar(idx, { name: value.target.value }) });
                         }}
                       />
                     </FormControl>
@@ -133,15 +122,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                       options={templateVarKinds}
                       placeholder="Select variable type"
                       onChange={(value) => {
-                        setTemplateVars((tvs) => {
-                          return {
-                            ...tvs,
-                            [templateVar.key]: {
-                              ...templateVar,
-                              kind: value as warp_controller.TemplateVarKind,
-                            },
-                          };
-                        });
+                        input({ vars: updateTemplateVar(idx, { kind: value }) });
                       }}
                     />
                   </Container>
@@ -149,17 +130,9 @@ export const TemplateNew = (props: TemplateNewProps) => {
                     hideAdornment={true}
                     placeholder="Type variable path here"
                     className={styles.variable_input}
-                    onChange={(val) =>
-                      setTemplateVars((tvs) => {
-                        return {
-                          ...tvs,
-                          [templateVar.key]: {
-                            ...templateVar,
-                            path: val,
-                          },
-                        };
-                      })
-                    }
+                    onChange={(val) => {
+                      input({ vars: updateTemplateVar(idx, { path: val }) });
+                    }}
                     value={templateVar.path}
                     options={paths}
                   />
@@ -169,10 +142,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                   icon={
                     <TrashIcon
                       onClick={() => {
-                        setTemplateVars((tvs) => {
-                          const { [templateVar.key]: _omit, ...rest } = tvs;
-                          return rest;
-                        });
+                        input({ vars: vars.filter((v) => v.name !== templateVar.name) });
                       }}
                     />
                   }
@@ -187,27 +157,25 @@ export const TemplateNew = (props: TemplateNewProps) => {
             iconGap="none"
             icon={<PlusIcon className={styles.new_icon} />}
             onClick={() => {
-              setTemplateVars((tvs) => {
-                const key = uuid();
-                return {
-                  ...tvs,
-                  [key]: {
-                    key,
+              input({
+                vars: [
+                  ...vars,
+                  {
                     path: '',
                     name: '',
                     kind: 'string',
                   },
-                };
+                ],
               });
             }}
           />
         </Container>
         <Container className={styles.right} direction="column">
           <TemplateMessageInput
-            message={message}
-            setMessage={setMessage}
-            templateStr={templateStr}
-            setTemplateStr={setTemplateStr}
+            message={msg}
+            setMessage={(msg) => input({ msg })}
+            templateStr={formattedStr}
+            setTemplateStr={(formattedStr) => input({ formattedStr })}
           />
         </Container>
       </Form>
@@ -215,20 +183,17 @@ export const TemplateNew = (props: TemplateNewProps) => {
         <Button
           variant="primary"
           loading={createTemplateTxResult.loading}
-          // disabled={submitDisabled}
+          disabled={submitDisabled}
           onClick={async () => {
-            const result = await createTemplateTx({
-              formatted_str: templateStr ?? '',
-              kind: 'msg',
-              msg: message ?? '',
-              name: templateName ?? '',
-              vars: Object.values(templateVars).map((v) => {
-                const { key: omit, ...rest } = v;
-                return rest;
-              }),
+            const res = await createTemplateTx({
+              formatted_str: formattedStr,
+              msg,
+              kind,
+              vars,
+              name,
             });
 
-            if (result.success) {
+            if (res.success) {
               navigate(-1);
             }
           }}

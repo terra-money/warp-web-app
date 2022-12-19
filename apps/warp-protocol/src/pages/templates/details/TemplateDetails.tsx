@@ -1,7 +1,7 @@
 import { Container, Form, UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import { Panel } from 'components/panel';
-import { isMatch } from 'lodash';
+import { isMatch, isEqual } from 'lodash';
 import { Button, Text, TextInput, Throbber } from 'components/primitives';
 import { useEffect, useMemo } from 'react';
 import styles from './TemplateDetails.module.sass';
@@ -15,6 +15,7 @@ import { generateAllPaths } from 'utils';
 import { TemplateMessageInput } from 'pages/template-new/template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
 import { useDeleteTemplateTx, useEditTemplateTx } from 'tx';
+import { TemplateVarKindInput } from 'pages/template-new/template-var-kind-input/TemplateVarKindInput';
 
 type TemplateDetailsProps = UIElementProps & {
   selectedTemplate: warp_controller.Template | undefined;
@@ -22,6 +23,17 @@ type TemplateDetailsProps = UIElementProps & {
   onDeleteTemplate: (template: warp_controller.Template) => void;
   isLoading: boolean;
 };
+
+const templateVarKinds: warp_controller.TemplateVarKind[] = [
+  'string',
+  'uint',
+  'int',
+  'decimal',
+  'bool',
+  'amount',
+  'asset',
+  'timestamp',
+];
 
 export const TemplateDetails = (props: TemplateDetailsProps) => {
   const { className, selectedTemplate, onSaveTemplate, onDeleteTemplate, isLoading } = props;
@@ -38,7 +50,9 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
   }, [selectedTemplate]);
 
   const templateModified = useMemo(
-    () => !isMatch(templateToInput(selectedTemplate), { msg, formattedStr, vars, name }),
+    () =>
+      !isMatch(templateToInput(selectedTemplate), { msg, formattedStr, vars, name }) ||
+      !isEqual(selectedTemplate?.vars ?? [], vars),
     [selectedTemplate, name, formattedStr, vars, msg]
   );
 
@@ -47,6 +61,13 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
 
   const messageJson = parseJsonValue(msg);
   const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
+
+  const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
+    const updatedVars = [...vars];
+    const prev = updatedVars[idx];
+    updatedVars[idx] = { ...prev, ...updates };
+    return updatedVars;
+  };
 
   return (
     <Panel className={classNames(styles.root, className)}>
@@ -71,28 +92,50 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                 return (
                   <Container className={styles.variable} direction="row">
                     <Container className={styles.variable_inputs} direction="column">
-                      <FormControl label={`Variable ${idx + 1}`}>
-                        <TextInput
-                          placeholder="Type variable name here"
-                          margin="none"
-                          value={templateVar.name}
+                      <Container>
+                        <FormControl label={`Variable ${idx + 1}`} className={styles.variable_name_input}>
+                          <TextInput
+                            placeholder="Type variable name here"
+                            margin="none"
+                            value={templateVar.name}
+                            onChange={(value) => {
+                              input({ vars: updateTemplateVar(idx, { name: value.target.value }) });
+                            }}
+                          />
+                        </FormControl>
+                        <TemplateVarKindInput
+                          label=""
+                          className={styles.variable_kind_input}
+                          value={templateVar.kind}
+                          options={templateVarKinds}
+                          placeholder="Select variable type"
                           onChange={(value) => {
-                            // TODO: implement
+                            input({ vars: updateTemplateVar(idx, { kind: value }) });
                           }}
                         />
-                      </FormControl>
+                      </Container>
                       <QuerySelectorInputField
                         hideAdornment={true}
                         placeholder="Type variable path here"
                         className={styles.variable_input}
                         onChange={(val) => {
-                          // TODO: implement
+                          input({ vars: updateTemplateVar(idx, { path: val }) });
                         }}
                         value={templateVar.path}
                         options={paths}
                       />
                     </Container>
-                    <Button className={styles.delete_btn} icon={<TrashIcon onClick={() => {}} />} iconGap="none" />
+                    <Button
+                      className={styles.delete_btn}
+                      icon={
+                        <TrashIcon
+                          onClick={() => {
+                            input({ vars: vars.filter((v) => v.name !== templateVar.name) });
+                          }}
+                        />
+                      }
+                      iconGap="none"
+                    />
                   </Container>
                 );
               })}
@@ -102,7 +145,16 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                 iconGap="none"
                 icon={<PlusIcon className={styles.new_icon} />}
                 onClick={() => {
-                  // TODO: implement
+                  input({
+                    vars: [
+                      ...vars,
+                      {
+                        path: '',
+                        name: '',
+                        kind: 'string',
+                      },
+                    ],
+                  });
                 }}
               />
             </Container>
@@ -123,8 +175,13 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
               disabled={submitDisabled || !templateModified}
               loading={editTemplateTxResult.loading}
               onClick={async () => {
-                // TODO: add other fields
-                const res = await editTemplateTx({ id: selectedTemplate.id });
+                const res = await editTemplateTx({
+                  id: selectedTemplate.id,
+                  formatted_str: formattedStr,
+                  msg,
+                  vars,
+                  name,
+                });
 
                 if (res.success) {
                   onSaveTemplate(selectedTemplate);
