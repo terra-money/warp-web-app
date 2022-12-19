@@ -246,7 +246,7 @@ export module warp_controller {
   export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
   export type TimeOp = 'lt' | 'gt';
   export type TemplateKind = 'query' | 'msg';
-  export type TemplateVarKind = 'string' | 'uint' | 'int' | 'decimal' | 'bool';
+  export type TemplateVarKind = 'string' | 'uint' | 'int' | 'decimal' | 'bool' | 'amount' | 'asset' | 'timestamp';
   export interface CreateJobMsg {
     condition: Condition;
     msgs: string[];
