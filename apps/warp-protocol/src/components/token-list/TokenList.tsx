@@ -79,7 +79,7 @@ const TokenListDialog = (props: DialogProps<void, Token>) => {
 
   return (
     <Dialog>
-      <DialogHeader title="Add token" onClose={() => closeDialog(undefined)}>
+      <DialogHeader title="Select token" onClose={() => closeDialog(undefined)}>
         <SearchTextInput
           className={styles.searchTextInput}
           placeholder="Search for a token"

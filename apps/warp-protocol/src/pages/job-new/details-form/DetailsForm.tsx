@@ -16,6 +16,13 @@ import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useEffect, useState } from 'react';
 import { TemplatesInput } from './templates-input/TemplatesInput';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
+import { demicrofy, microfy } from '@terra-money/apps/libs/formatting';
+import { u } from '@terra-money/apps/types';
+import Big from 'big.js';
+import { TokenInput } from 'pages/balances/token-input/TokenInput';
+import { DateInput } from 'pages/dashboard/jobs-widget/inputs/DateInput';
+import { useTokens } from '@terra-money/apps/hooks';
+import { NumericInput } from 'components/primitives/numeric-input';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
@@ -49,6 +56,124 @@ type TemplateFormProps = {
 
 export type TemplateVars = {
   [k: string]: TemplateVar;
+};
+
+type TemplateVarInputProps = UIElementProps & {
+  templateVar: TemplateVar;
+  setTemplateVars: React.Dispatch<React.SetStateAction<TemplateVars>>;
+};
+
+export const TemplateVarInput = (props: TemplateVarInputProps) => {
+  const { templateVar, setTemplateVars } = props;
+
+  const { tokens } = useTokens();
+
+  if (['int', 'uint', 'decimal'].includes(templateVar.kind)) {
+    return (
+      <FormControl label={capitalize(templateVar.name)}>
+        <NumericInput
+          placeholder={`Type ${templateVar.name} here`}
+          margin="none"
+          value={templateVar.value}
+          onChange={(value) => {
+            setTemplateVars((tvs) => {
+              return {
+                ...tvs,
+                [templateVar.name]: {
+                  ...templateVar,
+                  value: value.target.value,
+                },
+              };
+            });
+          }}
+        />
+      </FormControl>
+    );
+  }
+
+  if (templateVar.kind === 'amount') {
+    return (
+      <AmountInput
+        label={capitalize(templateVar.name)}
+        value={templateVar.value && demicrofy(Big(templateVar.value) as u<Big>, 6)}
+        onChange={(value) =>
+          setTemplateVars((tvs) => {
+            return {
+              ...tvs,
+              [templateVar.name]: {
+                ...templateVar,
+                value: microfy(value.target.value, 6).toString(),
+              },
+            };
+          })
+        }
+      />
+    );
+  }
+
+  if (templateVar.kind === 'timestamp') {
+    const date = templateVar.value ? new Date(Number(templateVar.value) * 1000) : undefined;
+
+    return (
+      <DateInput
+        label={capitalize(templateVar.name)}
+        placeholder={`Example: "tomorrow at 15:30"`}
+        value={date}
+        onChange={(v) =>
+          setTemplateVars((tvs) => {
+            return {
+              ...tvs,
+              [templateVar.name]: {
+                ...templateVar,
+                value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
+              },
+            };
+          })
+        }
+      />
+    );
+  }
+
+  if (templateVar.kind === 'asset') {
+    return (
+      <TokenInput
+        label={capitalize(templateVar.name)}
+        value={tokens[templateVar.value]}
+        onChange={(token) => {
+          setTemplateVars((tvs) => {
+            return {
+              ...tvs,
+              [templateVar.name]: {
+                ...templateVar,
+                value: token.key,
+              },
+            };
+          });
+        }}
+      />
+    );
+  }
+
+  return (
+    <FormControl label={capitalize(templateVar.name)}>
+      <TextInput
+        placeholder={`Type ${templateVar.name} here`}
+        margin="none"
+        value={templateVar.value}
+        onChange={(value) => {
+          setTemplateVars((tvs) => {
+            return {
+              ...tvs,
+              [templateVar.name]: {
+                ...templateVar,
+                value: value.target.value,
+              },
+            };
+          });
+        }}
+      />
+    </FormControl>
+  );
 };
 
 export const TemplateForm = (props: TemplateFormProps) => {
@@ -91,26 +216,7 @@ export const TemplateForm = (props: TemplateFormProps) => {
         <>
           <Container className={styles.template_vars}>
             {Object.values(templateVars).map((templateVar) => {
-              return (
-                <FormControl label={capitalize(templateVar.name)}>
-                  <TextInput
-                    placeholder={`Type ${templateVar.name} here`}
-                    margin="none"
-                    value={templateVar.value}
-                    onChange={(value) => {
-                      setTemplateVars((tvs) => {
-                        return {
-                          ...tvs,
-                          [templateVar.name]: {
-                            ...templateVar,
-                            value: value.target.value,
-                          },
-                        };
-                      });
-                    }}
-                  />
-                </FormControl>
-              );
+              return <TemplateVarInput templateVar={templateVar} setTemplateVars={setTemplateVars} />;
             })}
           </Container>
           <WasmMsgInput
