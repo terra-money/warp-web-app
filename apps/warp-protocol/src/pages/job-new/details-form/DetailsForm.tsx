@@ -12,7 +12,8 @@ import { LUNA, warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { isEmpty } from 'lodash';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
 
@@ -37,6 +38,22 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const [template, setTemplate] = useState<warp_controller.Template | undefined>();
   const [templateVars, setTemplateVars] = useState<TemplateVars>({});
 
+  useEffect(() => {
+    if (template) {
+      setTemplateVars(
+        template.vars.reduce((acc, curr) => {
+          return {
+            ...acc,
+            [curr.name]: {
+              ...curr,
+              value: '',
+            },
+          };
+        }, {})
+      );
+    }
+  }, [template, setTemplateVars]);
+
   const [
     input,
     {
@@ -58,6 +75,14 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const navigate = useNavigate();
 
   const { data: options = [] } = useTemplatesQuery();
+
+  const variablesValid = useMemo(
+    () =>
+      selectedTabType === 'template'
+        ? Object.values(templateVars).reduce((acc, curr) => acc && !isEmpty(curr.value), true)
+        : true,
+    [templateVars, selectedTabType]
+  );
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -150,7 +175,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
       <Footer>
         <Button
           variant="primary"
-          disabled={submitDisabled}
+          disabled={submitDisabled || !variablesValid}
           onClick={async () => {
             if (name && reward && message) {
               onNext({ name, reward, message });

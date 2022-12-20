@@ -36,22 +36,6 @@ export const TemplateForm = (props: TemplateFormProps) => {
   const { onMessageComposed, template, setTemplate, templateVars, setTemplateVars, options } = props;
 
   useEffect(() => {
-    if (template) {
-      setTemplateVars(
-        template.vars.reduce((acc, curr) => {
-          return {
-            ...acc,
-            [curr.name]: {
-              ...curr,
-              value: '',
-            },
-          };
-        }, {})
-      );
-    }
-  }, [template, setTemplateVars]);
-
-  useEffect(() => {
     if (template && templateVars) {
       const msg = composeMsgFromTemplate(template, Object.values(templateVars));
       onMessageComposed(msg);
