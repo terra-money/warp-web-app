@@ -1,5 +1,6 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
+import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
 
 interface TemplateNewInput {
@@ -19,7 +20,7 @@ export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
-    kind: template?.kind ?? 'msg',
+    kind: template?.kind ?? ('' as any),
     vars: template?.vars ?? [],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
@@ -54,13 +55,24 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
+    const varsError = Boolean(state.vars.find((v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path)))
+      ? 'All variables must be filled.'
+      : undefined;
+
+    const kindError = isEmpty(state.kind) ? 'Template type must be assigned.' : undefined;
+
+    const formattedStrError = isEmpty(state.msg) ? 'Template must must be set' : undefined;
+
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
         state.name.length < 1 ||
         nameError ||
         state.msg === undefined ||
-        state.msgError
+        state.msgError ||
+        varsError ||
+        kindError ||
+        formattedStrError
     );
 
     dispatch({
@@ -68,6 +80,9 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       nameError,
       msgError,
       submitDisabled,
+      varsError,
+      kindError,
+      formattedStrError,
     });
   };
 
