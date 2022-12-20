@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import styles from './WasmMsgInput.module.sass';
 import { ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Text, Button } from 'components/primitives';
-import { ClickAwayListener } from '@mui/material';
+import { ClickAwayListener, Portal } from '@mui/material';
 
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
@@ -134,14 +134,27 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
         </Text>
 
         {focused && !value && !readOnly && example && (
-          <div className={styles.example_container}>
-            <Text variant={'text'}>Example</Text>
-            <pre className={styles.example_message}>{formattedExample}</pre>
-            <div className={styles.shadow_mask} tabIndex={-1} />
-            <Button className={styles.copy_button} onClick={handleCopyExampleClick}>
-              {'Copy'}
-            </Button>
-          </div>
+          <Portal>
+            <div
+              className={styles.example_container}
+              style={{
+                top:
+                  (inputContainerRef.current?.getBoundingClientRect().top ?? 0) +
+                  (inputContainerRef.current?.getBoundingClientRect().height ?? 0) -
+                  20,
+                bottom: inputContainerRef.current?.getBoundingClientRect().bottom ?? 0,
+                left: inputContainerRef.current?.getBoundingClientRect().left ?? 0,
+                width: inputContainerRef.current?.getBoundingClientRect().width ?? 0,
+              }}
+            >
+              <Text variant={'text'}>Example</Text>
+              <pre className={styles.example_message}>{formattedExample}</pre>
+              <div className={styles.shadow_mask} tabIndex={-1} />
+              <Button className={styles.copy_button} onClick={handleCopyExampleClick}>
+                {'Copy'}
+              </Button>
+            </div>
+          </Portal>
         )}
       </div>
     </ClickAwayListener>
