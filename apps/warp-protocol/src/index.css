@@ -44,9 +44,20 @@ input {
 }
 
 .ace_highlighted_text {
+  position: relative;
   color: #a9fc50;
   font-weight: bold;
+}
+
+.ace_highlighted_text:after {
+  content: '';
+  position: absolute;
+  border-radius: 20px;
   background: rgba(47, 51, 57, 0.6);
-  border-radius: 24px;
-  padding: 4px;
+  z-index: -1;
+  top: -2px;
+  left: -4px;
+  bottom: -2px;
+  right: -4px;
+  height: calc(100% + 4px);
 }
