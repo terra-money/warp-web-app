@@ -1,5 +1,5 @@
 import { Container, UIElementProps } from '@terra-money/apps/components';
-import { Dispatch, useMemo, useState } from 'react';
+import { Dispatch, useMemo } from 'react';
 import { QueryExprFormInput, QueryExprState } from 'forms/QueryExprForm/useQueryExprForm';
 import { FormControl } from 'components/form-control/FormControl';
 import { Button, Text, TextInput, Throbber } from 'components/primitives';
@@ -7,7 +7,6 @@ import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { Form } from 'components/form/Form';
 import { InputAdornment } from '@mui/material';
-
 import styles from './QueryExprForm.module.sass';
 import classNames from 'classnames';
 import { useContractAddress } from '@terra-money/apps/hooks';
@@ -15,10 +14,9 @@ import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
 import { generateAllPaths } from '../../utils';
 import { usePreviewQueryDialog } from '../../components/dialog/preview-query/PreviewQueryDialog';
-import { TemplateVars } from 'pages/job-new/details-form/DetailsForm';
-import { warp_controller } from 'types';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from 'pages/job-new/details-form/template-form/TemplateForm';
+import { warp_controller } from 'types';
 
 export type QueryExprFormProps = UIElementProps & {
   input: QueryExprFormInput;
@@ -83,11 +81,6 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
     return undefined;
   }, [data, isLoading, isFetching, openPreview, queryJson, queryJsonError, error]);
 
-  const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
-
-  const [template, setTemplate] = useState<warp_controller.Template | undefined>();
-  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
-
   const { data: options = [] } = useTemplatesQuery();
 
   return (
@@ -116,27 +109,27 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
       <Container className={styles.tabs} direction="row">
         {tabTypes.map((tabType) => (
           <Button
-            className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
-            onClick={() => setSelectedTabType(tabType)}
+            className={classNames(styles.tab, tabType === state.selectedTabType && styles.selected_tab)}
+            onClick={() => input({ selectedTabType: tabType })}
             variant="secondary"
           >
             {tabType}
           </Button>
         ))}
       </Container>
-      {selectedTabType === 'template' && (
+      {state.selectedTabType === 'template' && (
         <>
           <TemplateForm
             options={options}
-            template={template}
-            setTemplate={setTemplate}
-            setTemplateVars={setTemplateVars}
-            templateVars={templateVars}
+            template={state.template}
+            setTemplate={(template) => input({ template })}
+            setTemplateVars={(vars) => input({ template: { ...(state.template as warp_controller.Template), vars } })}
+            templateVars={state.template?.vars ?? []}
             onMessageComposed={(message) => input({ queryJson: message })}
           />
         </>
       )}
-      {selectedTabType === 'message' && (
+      {state.selectedTabType === 'message' && (
         <>
           <WasmMsgInput
             rootClassName={styles.msg_input}

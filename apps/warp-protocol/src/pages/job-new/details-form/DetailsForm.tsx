@@ -12,8 +12,6 @@ import { LUNA, warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
-import { useEffect, useMemo, useState } from 'react';
-import { isEmpty } from 'lodash';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
 
@@ -35,25 +33,6 @@ export type TemplateVars = {
 export const DetailsForm = (props: DetailsFormProps) => {
   const { onNext, className, detailsInput } = props;
 
-  const [template, setTemplate] = useState<warp_controller.Template | undefined>();
-  const [templateVars, setTemplateVars] = useState<TemplateVars>({});
-
-  useEffect(() => {
-    if (template) {
-      setTemplateVars(
-        template.vars.reduce((acc, curr) => {
-          return {
-            ...acc,
-            [curr.name]: {
-              ...curr,
-              value: '',
-            },
-          };
-        }, {})
-      );
-    }
-  }, [template, setTemplateVars]);
-
   const [
     input,
     {
@@ -63,6 +42,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
       rewardError,
       rewardValid,
       message,
+      selectedTabType,
+      template,
       messageError,
       submitDisabled,
       tokenBalance,
@@ -70,19 +51,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
     },
   ] = useDetailsForm(detailsInput);
 
-  const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
-
   const navigate = useNavigate();
 
   const { data: options = [] } = useTemplatesQuery();
-
-  const variablesValid = useMemo(
-    () =>
-      selectedTabType === 'template'
-        ? Object.values(templateVars).reduce((acc, curr) => acc && !isEmpty(curr.value), true)
-        : true,
-    [templateVars, selectedTabType]
-  );
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -137,8 +108,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
         <Container className={styles.tabs} direction="row">
           {tabTypes.map((tabType) => (
             <Button
+              key={tabType}
               className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
-              onClick={() => setSelectedTabType(tabType)}
+              onClick={() => input({ selectedTabType: tabType })}
               variant="secondary"
             >
               {tabType}
@@ -150,9 +122,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
             <TemplateForm
               options={options}
               template={template}
-              setTemplate={setTemplate}
-              setTemplateVars={setTemplateVars}
-              templateVars={templateVars}
+              setTemplate={(template) => input({ template })}
+              setTemplateVars={(vars) => input({ template: { ...(template as warp_controller.Template), vars } })}
+              templateVars={template?.vars ?? []}
               onMessageComposed={(message) => input({ message })}
             />
           </>
@@ -175,10 +147,10 @@ export const DetailsForm = (props: DetailsFormProps) => {
       <Footer>
         <Button
           variant="primary"
-          disabled={submitDisabled || !variablesValid}
+          disabled={submitDisabled}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message });
+              onNext({ name, reward, message, template, selectedTabType });
             }
           }}
         >

@@ -1,24 +1,22 @@
-import { FormFunction, FormInitializer, FormModifier, useForm } from '@terra-money/apps/hooks';
+import { FormFunction, FormInitializer, FormModifier, FormState, useForm } from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
 import { LUNA, Token, u } from '@terra-money/apps/types';
 import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
 import Big from 'big.js';
+import { TemplateWithVarValues } from 'forms/QueryExprForm';
 import { useMemo } from 'react';
+import { isEmpty } from 'lodash';
 
 export interface DetailsFormInput {
   name: string;
   reward: string;
   message: string;
+  template?: TemplateWithVarValues;
+  selectedTabType?: 'template' | 'message';
 }
 
-interface DetailsFormState extends DetailsFormInput {
-  nameError?: string;
-  rewardError?: string;
-  nameValid?: boolean;
-  rewardValid?: boolean;
-  messageValid?: boolean;
-  messageError?: string;
+interface DetailsFormState extends FormState<DetailsFormInput> {
   submitDisabled: boolean;
   tokenBalance: u<Big>;
   tokenBalanceLoading: boolean;
@@ -57,15 +55,16 @@ const dispatchBalance = async (
 export const useDetailsForm = (input?: DetailsFormInput) => {
   const initialValue = useMemo<DetailsFormState>(
     () => ({
-      name: '',
-      reward: '',
-      message: '',
+      name: input?.name ?? '',
+      reward: input?.reward ?? '',
+      message: input?.message ?? '',
+      template: input?.template ?? undefined,
+      selectedTabType: input?.selectedTabType ?? 'template',
       submitDisabled: input ? false : true,
       tokenBalance: Big(0) as u<Big>,
       tokenBalanceLoading: false,
       nativeBalance: Big(0) as u<Big>,
       nativeBalanceLoading: false,
-      ...input,
     }),
     [input]
   );
@@ -107,6 +106,10 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
 
     const messageValid = Boolean(state.message) && messageError === undefined;
 
+    const templateError = Boolean(state.template?.vars.find((v) => isEmpty(v.value)))
+      ? 'All variables must be filled.'
+      : undefined;
+
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
@@ -116,7 +119,8 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
         messageError ||
         rewardError ||
         !rewardValid ||
-        !messageValid
+        !messageValid ||
+        templateError
     );
 
     dispatch({
@@ -126,6 +130,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       nameError,
       messageValid,
       messageError,
+      templateError,
       submitDisabled,
     });
   };

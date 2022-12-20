@@ -19,7 +19,7 @@ export function QueryInput(props: QueryInputProps) {
   const openQueryExprDialog = useQueryExprDialog();
 
   const onQueryDialogClick = async () => {
-    const queryExpr = await openQueryExprDialog({ queryExpr: value, includeNav: true });
+    const queryExpr = await openQueryExprDialog({ query: value, includeNav: true });
     onChange(queryExpr ?? ({} as warp_controller.QueryExpr));
   };
 

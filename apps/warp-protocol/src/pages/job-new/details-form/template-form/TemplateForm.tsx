@@ -6,6 +6,7 @@ import jsonpath from 'jsonpath';
 import { useEffect } from 'react';
 import { TemplatesInput } from '../templates-input/TemplatesInput';
 import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
+import { TemplateWithVarValues } from 'forms/QueryExprForm';
 
 type TemplateVar = warp_controller.TemplateVar & { value: string };
 
@@ -22,14 +23,10 @@ const composeMsgFromTemplate = (template: warp_controller.Template, vars: Templa
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
   template?: warp_controller.Template;
-  setTemplate: React.Dispatch<React.SetStateAction<warp_controller.Template | undefined>>;
-  templateVars: TemplateVars;
-  setTemplateVars: React.Dispatch<React.SetStateAction<TemplateVars>>;
+  setTemplate: (template: TemplateWithVarValues | undefined) => void;
+  templateVars: TemplateVar[];
+  setTemplateVars: (vars: TemplateVar[]) => void;
   options: warp_controller.Template[];
-};
-
-export type TemplateVars = {
-  [k: string]: TemplateVar;
 };
 
 export const TemplateForm = (props: TemplateFormProps) => {
@@ -52,13 +49,19 @@ export const TemplateForm = (props: TemplateFormProps) => {
         options={options}
         placeholder="Select a template"
         value={template}
-        onChange={(tmpl) => setTemplate(tmpl)}
+        onChange={(tmpl) => setTemplate(tmpl && { ...tmpl, vars: tmpl.vars.map((v) => ({ ...v, value: '' })) })}
       />
       {template && (
         <>
           <Container className={styles.template_vars}>
             {Object.values(templateVars).map((templateVar) => {
-              return <TemplateVarInput templateVar={templateVar} setTemplateVars={setTemplateVars} />;
+              return (
+                <TemplateVarInput
+                  templateVar={templateVar}
+                  templateVars={templateVars}
+                  setTemplateVars={setTemplateVars}
+                />
+              );
             })}
           </Container>
           <WasmMsgInput

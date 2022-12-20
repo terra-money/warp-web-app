@@ -1,40 +1,44 @@
-import { FormFunction, FormInput, useForm } from '@terra-money/apps/hooks';
+import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
+import { Query } from 'pages/queries/useQueryStorage';
 import { useMemo } from 'react';
+import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
+
+export type TemplateWithVarValues = Omit<warp_controller.Template, 'vars'> & {
+  vars: (warp_controller.TemplateVar & { value: string })[];
+};
 
 interface QueryExprInput {
   name: string;
   querySelector: string;
   queryJson: string;
+  template?: TemplateWithVarValues;
+  selectedTabType?: 'template' | 'message';
 }
 
-export interface QueryExprState extends QueryExprInput {
-  nameError?: string;
-  nameValid?: boolean;
-  queryJsonValid?: boolean;
-  queryJsonError?: string;
-  querySelectorValid?: boolean;
-  querySelectorError?: string;
+export interface QueryExprState extends FormState<QueryExprInput> {
   submitDisabled: boolean;
 }
 
 export type QueryExprFormInput = FormInput<QueryExprInput>;
 
-export const queryExprToInput = (query?: warp_controller.QueryExpr): QueryExprInput => {
+export const queryExprToInput = (query?: Query): QueryExprInput => {
   return {
     name: query?.name ?? '',
     querySelector: query?.selector ?? '',
     queryJson: query ? JSON.stringify(decodeQuery(query.query), null, 2) : '',
+    selectedTabType: !Boolean(query?.template) && Boolean(query?.query) ? 'message' : 'template',
+    template: query?.template ?? undefined,
   };
 };
 
-export const useQueryExprForm = (queryExpr?: warp_controller.QueryExpr) => {
+export const useQueryExprForm = (query?: Query) => {
   const initialValue = useMemo<QueryExprState>(
     () => ({
-      ...queryExprToInput(queryExpr),
+      ...queryExprToInput(query),
       submitDisabled: true,
     }),
-    [queryExpr]
+    [query]
   );
 
   const form: FormFunction<QueryExprInput, QueryExprState> = async (input, getState, dispatch) => {
@@ -61,6 +65,10 @@ export const useQueryExprForm = (queryExpr?: warp_controller.QueryExpr) => {
       state.querySelector === null || state.querySelector.length < 1 || querySelectorError
     );
 
+    const templateError = Boolean(state.template?.vars.find((v) => isEmpty(v.value)))
+      ? 'All variables must be filled.'
+      : undefined;
+
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
@@ -69,7 +77,8 @@ export const useQueryExprForm = (queryExpr?: warp_controller.QueryExpr) => {
         state.queryJson === undefined ||
         state.queryJsonError ||
         querySelectorError ||
-        !querySelectorValid
+        !querySelectorValid ||
+        templateError
     );
 
     dispatch({
@@ -78,6 +87,7 @@ export const useQueryExprForm = (queryExpr?: warp_controller.QueryExpr) => {
       queryJsonError,
       querySelectorValid,
       querySelectorError,
+      templateError,
       submitDisabled,
     });
   };

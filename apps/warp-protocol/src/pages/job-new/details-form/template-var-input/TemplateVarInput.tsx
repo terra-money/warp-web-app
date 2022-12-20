@@ -12,21 +12,26 @@ import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { warp_controller } from 'types';
 
-type TemplateVars = {
-  [k: string]: TemplateVar;
-};
-
 type TemplateVar = warp_controller.TemplateVar & { value: string };
 
 type TemplateVarInputProps = UIElementProps & {
   templateVar: TemplateVar;
-  setTemplateVars: React.Dispatch<React.SetStateAction<TemplateVars>>;
+  templateVars: TemplateVar[];
+  setTemplateVars: (vars: TemplateVar[]) => void;
 };
 
 export const TemplateVarInput = (props: TemplateVarInputProps) => {
-  const { templateVar, setTemplateVars } = props;
+  const { templateVar, setTemplateVars, templateVars } = props;
 
   const { tokens } = useTokens();
+
+  const updateTemplateVar = (name: string, updates: Partial<TemplateVar>) => {
+    const updatedVars = [...templateVars];
+    const idx = templateVars.findIndex((tv) => tv.name === name);
+    const prev = updatedVars[idx];
+    updatedVars[idx] = { ...prev, ...updates };
+    return updatedVars;
+  };
 
   if (['int', 'uint', 'decimal'].includes(templateVar.kind)) {
     return (
@@ -36,15 +41,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
           margin="none"
           value={templateVar.value}
           onChange={(value) => {
-            setTemplateVars((tvs) => {
-              return {
-                ...tvs,
-                [templateVar.name]: {
-                  ...templateVar,
-                  value: value.target.value,
-                },
-              };
-            });
+            setTemplateVars(
+              updateTemplateVar(templateVar.name, {
+                value: value.target.value,
+              })
+            );
           }}
         />
       </FormControl>
@@ -57,15 +58,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         label={capitalize(templateVar.name)}
         value={templateVar.value && demicrofy(Big(templateVar.value) as u<Big>, 6)}
         onChange={(value) =>
-          setTemplateVars((tvs) => {
-            return {
-              ...tvs,
-              [templateVar.name]: {
-                ...templateVar,
-                value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
-              },
-            };
-          })
+          setTemplateVars(
+            updateTemplateVar(templateVar.name, {
+              value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
+            })
+          )
         }
       />
     );
@@ -80,15 +77,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         placeholder={`Example: "tomorrow at 15:30"`}
         value={date}
         onChange={(v) =>
-          setTemplateVars((tvs) => {
-            return {
-              ...tvs,
-              [templateVar.name]: {
-                ...templateVar,
-                value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
-              },
-            };
-          })
+          setTemplateVars(
+            updateTemplateVar(templateVar.name, {
+              value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
+            })
+          )
         }
       />
     );
@@ -100,15 +93,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         label={capitalize(templateVar.name)}
         value={tokens[templateVar.value]}
         onChange={(token) => {
-          setTemplateVars((tvs) => {
-            return {
-              ...tvs,
-              [templateVar.name]: {
-                ...templateVar,
-                value: token.key,
-              },
-            };
-          });
+          setTemplateVars(
+            updateTemplateVar(templateVar.name, {
+              value: token.key,
+            })
+          );
         }}
       />
     );
@@ -121,15 +110,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         margin="none"
         value={templateVar.value}
         onChange={(value) => {
-          setTemplateVars((tvs) => {
-            return {
-              ...tvs,
-              [templateVar.name]: {
-                ...templateVar,
-                value: value.target.value,
-              },
-            };
-          });
+          setTemplateVars(
+            updateTemplateVar(templateVar.name, {
+              value: value.target.value,
+            })
+          );
         }}
       />
     </FormControl>
