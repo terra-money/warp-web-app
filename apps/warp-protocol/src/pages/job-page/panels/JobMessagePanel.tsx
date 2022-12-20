@@ -22,11 +22,11 @@ export const JobMessagePanel = (props: JobMessagePanelProps) => {
       <Container className={styles.top} direction="row">
         <Text variant="label">Message</Text>
         <Container className={styles.btns}>
-          <Button variant="secondary" onClick={copy}>
-            Copy
-          </Button>
           <Button variant="secondary" onClick={copyRaw}>
             Raw
+          </Button>
+          <Button variant="secondary" onClick={copy}>
+            Copy
           </Button>
         </Container>
       </Container>
