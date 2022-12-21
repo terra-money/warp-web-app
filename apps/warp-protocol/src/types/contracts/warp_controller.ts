@@ -639,6 +639,7 @@ export module warp_controller {
   }
   export interface QueryTemplatesMsg {
     ids?: Uint64[] | null;
+    kind?: TemplateKind | null;
     limit?: number | null;
     name?: string | null;
     owner?: Addr | null;

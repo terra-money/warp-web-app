@@ -81,7 +81,7 @@ export const QueryExprForm = (props: QueryExprFormProps) => {
     return undefined;
   }, [data, isLoading, isFetching, openPreview, queryJson, queryJsonError, error]);
 
-  const { data: options = [] } = useTemplatesQuery();
+  const { data: options = [] } = useTemplatesQuery({ kind: 'query' });
 
   return (
     <Form className={classNames(styles.root, className)}>

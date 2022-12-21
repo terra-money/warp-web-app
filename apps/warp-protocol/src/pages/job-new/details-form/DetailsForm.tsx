@@ -53,7 +53,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const navigate = useNavigate();
 
-  const { data: options = [] } = useTemplatesQuery();
+  const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>

@@ -22,11 +22,7 @@ const TemplatesContent = (props: TemplatesContentProps) => {
 
   const [selectedTabType, setSelectedTabType] = useState<TabType>('job');
 
-  const { data: jobTemplates = [], isLoading: isJobTemplatesLoading } = useTemplatesQuery();
-
-  const templates: warp_controller.Template[] = selectedTabType === 'job' ? jobTemplates : jobTemplates;
-
-  const isLoading = isJobTemplatesLoading;
+  const { data: templates = [], isLoading } = useTemplatesQuery({ kind: selectedTabType === 'job' ? 'msg' : 'query' });
 
   const navigate = useNavigate();
 
