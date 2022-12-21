@@ -2,13 +2,13 @@ import { UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import { Panel } from 'components/panel';
 import { Text } from 'components/primitives';
-import { warp_controller } from 'types';
+import { Query } from '../useQueryStorage';
 import styles from './QueriesNav.module.sass';
 
 type QueriesNavProps = UIElementProps & {
-  queries: warp_controller.QueryExpr[];
-  selectedQuery: warp_controller.QueryExpr | undefined;
-  setSelectedQuery: (query: warp_controller.QueryExpr) => void;
+  queries: Query[];
+  selectedQuery: Query | undefined;
+  setSelectedQuery: (query: Query) => void;
 };
 
 export const QueriesNav = (props: QueriesNavProps) => {

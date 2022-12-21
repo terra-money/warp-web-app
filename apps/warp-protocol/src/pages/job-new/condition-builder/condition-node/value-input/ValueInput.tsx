@@ -32,7 +32,7 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
 
   const onQueryDialogClick = async (value: T, setValue: (queryExpr?: warp_controller.QueryExpr) => void) => {
     const queryExpr = await openQueryExprDialog({
-      queryExpr: 'query' in value ? value.query : undefined,
+      query: 'query' in value ? value.query : undefined,
       includeNav: true,
     });
 

@@ -21,7 +21,10 @@ const CompletedSnackbarMessages: TxMessages = {
   [TX_KEY.EXECUTE_JOB]: 'Job executed successfully',
   [TX_KEY.ADD_FUNDS]: 'Funds added successfully',
   [TX_KEY.WITHDRAW_FUNDS]: 'Funds withdrawed successfully',
-  [TX_KEY.CREATE_ACCOUNT]: 'Account created succesfully',
+  [TX_KEY.CREATE_ACCOUNT]: 'Account created successfully',
+  [TX_KEY.CREATE_TEMPLATE]: 'Template created successfully',
+  [TX_KEY.EDIT_TEMPLATE]: 'Template edited successfully',
+  [TX_KEY.DELETE_TEMPLATE]: 'Template deleted successfully',
 };
 
 const FailedSnackbarMessages: TxMessages = {
@@ -32,6 +35,9 @@ const FailedSnackbarMessages: TxMessages = {
   [TX_KEY.ADD_FUNDS]: 'Failed to add funds',
   [TX_KEY.WITHDRAW_FUNDS]: 'Failed to withdraw funds',
   [TX_KEY.CREATE_ACCOUNT]: 'Failed to create account',
+  [TX_KEY.CREATE_TEMPLATE]: 'Failed to create template',
+  [TX_KEY.EDIT_TEMPLATE]: 'Failed to edit template',
+  [TX_KEY.DELETE_TEMPLATE]: 'Failed to delete template',
 };
 
 export const useTransactionSnackbars = () => {

@@ -14,15 +14,21 @@ export type JobMessagePanelProps = {
 
 export const JobMessagePanel = (props: JobMessagePanelProps) => {
   const { job, className } = props;
-  const copy = useCopy('message', JSON.stringify(job.info.msgs, null, 2));
+  const copy = useCopy('message', JSON.stringify(job.info.msgs.map(decodeMsg), null, 2));
+  const copyRaw = useCopy('message', JSON.stringify(job.info.msgs, null, 2));
 
   return (
     <Panel className={classNames(styles.root, className)}>
       <Container className={styles.top} direction="row">
         <Text variant="label">Message</Text>
-        <Button variant="secondary" onClick={copy}>
-          Copy
-        </Button>
+        <Container className={styles.btns}>
+          <Button variant="secondary" onClick={copyRaw}>
+            Raw
+          </Button>
+          <Button variant="secondary" onClick={copy}>
+            Copy
+          </Button>
+        </Container>
       </Container>
       <pre className={styles.message}>{JSON.stringify(job.info.msgs.map(decodeMsg), null, 4)}</pre>
     </Panel>

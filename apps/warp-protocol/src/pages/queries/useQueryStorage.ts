@@ -1,10 +1,15 @@
 import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
+import { TemplateWithVarValues } from 'forms/QueryExprForm';
 import { useCallback, useMemo } from 'react';
 import { warp_controller } from 'types';
 import { useLocalStorage } from 'usehooks-ts';
 
+export type Query = warp_controller.QueryExpr & {
+  template?: TemplateWithVarValues;
+};
+
 type QueriesStorage = {
-  [key: string]: warp_controller.QueryExpr[];
+  [key: string]: Query[];
 };
 
 const storageKey = (connectedWallet: ConnectedWallet) =>
@@ -16,7 +21,7 @@ export const useQueryStorage = () => {
   const [storedQueries, setStoredQueries] = useLocalStorage<QueriesStorage>('__warp_stored_queries', {});
 
   const setQueries = useCallback(
-    (queries: warp_controller.QueryExpr[]) => {
+    (queries: Query[]) => {
       if (!connectedWallet) {
         return;
       }
@@ -40,14 +45,14 @@ export const useQueryStorage = () => {
   }, [storedQueries, connectedWallet]);
 
   const saveAll = useCallback(
-    (queries: warp_controller.QueryExpr[]) => {
+    (queries: Query[]) => {
       setQueries(queries);
     },
     [setQueries]
   );
 
   const saveQuery = useCallback(
-    (query: warp_controller.QueryExpr) => {
+    (query: Query) => {
       const queryExists = Boolean(queries.find((q) => q.name === query.name));
 
       if (!queryExists) {
@@ -62,7 +67,7 @@ export const useQueryStorage = () => {
   );
 
   const removeQuery = useCallback(
-    (query: warp_controller.QueryExpr) => {
+    (query: Query) => {
       return setQueries(queries.filter((q) => q.name !== query.name));
     },
     [setQueries, queries]

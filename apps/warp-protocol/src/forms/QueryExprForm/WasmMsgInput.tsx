@@ -1,21 +1,26 @@
 import classNames from 'classnames';
 import styles from './WasmMsgInput.module.sass';
-import { ReactNode, useCallback, useId, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Text, Button } from 'components/primitives';
-import { ClickAwayListener } from '@mui/material';
+import { ClickAwayListener, Portal } from '@mui/material';
 
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/mode-text';
 import 'ace-builds/src-noconflict/theme-merbivore';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { Container } from '@terra-money/apps/components';
+import CustomTextSyntaxMode from './CustomTextSyntaxMode';
 
 interface WasmMsgInputProps {
   className?: string;
-  label: string;
+  rootClassName?: string;
+  label?: string;
   error?: string;
   valid?: boolean;
-  example?: object;
+  theme?: string;
+  example?: any;
+  mode?: string;
   placeholder?: string;
   value?: string;
   onChange?: (value?: string) => void;
@@ -42,10 +47,13 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
   const {
     endLabel,
     className,
+    rootClassName,
     label,
     error,
     placeholder,
     value,
+    theme = 'merbivore',
+    mode = 'json',
     onChange,
     readOnly,
     example = defaultExample(contractAddr),
@@ -59,18 +67,29 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
     onChange?.(formattedExample);
   }, [onChange, formattedExample]);
 
+  const editorRef = useRef<AceEditor>(null);
+
+  useEffect(() => {
+    if (editorRef.current && mode === 'text') {
+      const customMode = new CustomTextSyntaxMode();
+      editorRef.current.editor.getSession().setMode(customMode as any);
+    }
+  }, [mode]);
+
   return (
     <ClickAwayListener onClickAway={() => setFocused(false)}>
-      <div className={styles.root}>
+      <div className={classNames(styles.root, rootClassName)}>
         <Container
           direction={'row'}
           style={{
             justifyContent: 'space-between',
           }}
         >
-          <Text variant="text" className={styles.label}>
-            {label ?? 'Message'}
-          </Text>
+          {label && (
+            <Text variant="text" className={styles.label}>
+              {label ?? 'Message'}
+            </Text>
+          )}
 
           {endLabel}
         </Container>
@@ -91,12 +110,13 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
             </Text>
           )}
           <AceEditor
+            ref={editorRef}
             fontSize={14}
             onFocus={() => setFocused(true)}
             className={styles.editor}
-            mode="json"
+            mode={mode}
             readOnly={readOnly}
-            theme="merbivore"
+            theme={theme}
             onChange={onChange}
             name={editorId}
             wrapEnabled
@@ -113,15 +133,28 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
           {error}
         </Text>
 
-        {focused && !value && !readOnly && (
-          <div className={styles.example_container}>
-            <Text variant={'text'}>Example</Text>
-            <pre className={styles.example_message}>{formattedExample}</pre>
-            <div className={styles.shadow_mask} tabIndex={-1} />
-            <Button className={styles.copy_button} onClick={handleCopyExampleClick}>
-              {'Copy'}
-            </Button>
-          </div>
+        {focused && !value && !readOnly && example && (
+          <Portal>
+            <div
+              className={styles.example_container}
+              style={{
+                top:
+                  (inputContainerRef.current?.getBoundingClientRect().top ?? 0) +
+                  (inputContainerRef.current?.getBoundingClientRect().height ?? 0) -
+                  20,
+                bottom: inputContainerRef.current?.getBoundingClientRect().bottom ?? 0,
+                left: inputContainerRef.current?.getBoundingClientRect().left ?? 0,
+                width: inputContainerRef.current?.getBoundingClientRect().width ?? 0,
+              }}
+            >
+              <Text variant={'text'}>Example</Text>
+              <pre className={styles.example_message}>{formattedExample}</pre>
+              <div className={styles.shadow_mask} tabIndex={-1} />
+              <Button className={styles.copy_button} onClick={handleCopyExampleClick}>
+                {'Copy'}
+              </Button>
+            </div>
+          </Portal>
         )}
       </div>
     </ClickAwayListener>

@@ -4,16 +4,16 @@ import { Panel } from 'components/panel';
 import { isMatch } from 'lodash';
 import { Button, Text } from 'components/primitives';
 import { useEffect, useMemo } from 'react';
-import { warp_controller } from 'types';
 import styles from './QueryDetails.module.sass';
 import { queryExprToInput, useQueryExprForm } from 'forms/QueryExprForm/useQueryExprForm';
 import { QueryExprForm } from 'forms/QueryExprForm';
 import { encodeQuery } from '../../../utils';
+import { Query } from '../useQueryStorage';
 
 type QueryDetailsProps = UIElementProps & {
-  selectedQuery: warp_controller.QueryExpr | undefined;
-  saveQuery: (query: warp_controller.QueryExpr) => void;
-  deleteQuery: (query: warp_controller.QueryExpr) => void;
+  selectedQuery: Query | undefined;
+  saveQuery: (query: Query) => void;
+  deleteQuery: (query: Query) => void;
 };
 
 export const QueryDetails = (props: QueryDetailsProps) => {
@@ -21,7 +21,7 @@ export const QueryDetails = (props: QueryDetailsProps) => {
 
   const [input, formState] = useQueryExprForm(selectedQuery);
 
-  const { name, queryJson, submitDisabled, querySelector } = formState;
+  const { name, queryJson, submitDisabled, querySelector, template } = formState;
 
   useEffect(() => {
     if (selectedQuery && selectedQuery.name !== name) {
@@ -53,6 +53,7 @@ export const QueryDetails = (props: QueryDetailsProps) => {
                   const query = encodeQuery(queryJson);
 
                   saveQuery({
+                    template,
                     query,
                     selector: querySelector,
                     name,

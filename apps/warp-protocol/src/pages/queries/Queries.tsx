@@ -1,9 +1,8 @@
 import styles from './Queries.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Text } from 'components/primitives';
-import { useQueryStorage } from './useQueryStorage';
+import { Query, useQueryStorage } from './useQueryStorage';
 import { useState } from 'react';
-import { warp_controller } from 'types';
 import { QueryDetails } from './details/QueryDetails';
 import { IfConnected } from 'components/if-connected';
 import { NotConnected } from 'components/not-connected';
@@ -14,7 +13,7 @@ type QueriesContentProps = {};
 
 const QueriesContent = (props: QueriesContentProps) => {
   const { queries, saveQuery, removeQuery } = useQueryStorage();
-  const [selectedQuery, setSelectedQuery] = useState<warp_controller.QueryExpr | undefined>(undefined);
+  const [selectedQuery, setSelectedQuery] = useState<Query | undefined>(undefined);
 
   const openQueryExprDialog = useQueryExprDialog();
 

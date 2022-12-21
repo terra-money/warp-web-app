@@ -40,6 +40,15 @@ export module warp_controller {
       }
     | {
         update_config: UpdateConfigMsg;
+      }
+    | {
+        submit_template: SubmitTemplateMsg;
+      }
+    | {
+        edit_template: EditTemplateMsg;
+      }
+    | {
+        delete_template: DeleteTemplateMsg;
       };
   export type Condition =
     | {
@@ -94,6 +103,21 @@ export module warp_controller {
         staking: StakingQuery;
       }
     | {
+        stargate: {
+          /**
+           * this is the expected protobuf message type (not any), binary encoded
+           */
+          data: Binary;
+          /**
+           * this is the fully qualified service path used for routing, eg. custom/cosmos_sdk.x.bank.v1.Query/QueryBalance
+           */
+          path: string;
+        };
+      }
+    | {
+        ibc: IbcQuery;
+      }
+    | {
         wasm: WasmQuery;
       };
   export type BankQuery =
@@ -134,6 +158,22 @@ export module warp_controller {
           address: string;
         };
       };
+  export type Binary = string;
+  export type IbcQuery =
+    | {
+        port_id: {};
+      }
+    | {
+        list_channels: {
+          port_id?: string | null;
+        };
+      }
+    | {
+        channel: {
+          channel_id: string;
+          port_id?: string | null;
+        };
+      };
   export type WasmQuery =
     | {
         smart: {
@@ -158,7 +198,6 @@ export module warp_controller {
           contract_addr: string;
         };
       };
-  export type Binary = string;
   export type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
   export type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp =
     | {
@@ -206,6 +245,8 @@ export module warp_controller {
   export type Decimal256 = string;
   export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
   export type TimeOp = 'lt' | 'gt';
+  export type TemplateKind = 'query' | 'msg';
+  export type TemplateVarKind = 'string' | 'uint' | 'int' | 'decimal' | 'bool' | 'amount' | 'asset' | 'timestamp';
   export interface CreateJobMsg {
     condition: Condition;
     msgs: string[];
@@ -289,8 +330,29 @@ export module warp_controller {
     cancellation_fee_percentage?: Uint128 | null;
     creation_fee_percentage?: Uint128 | null;
     minimum_reward?: Uint128 | null;
-    owner?: Addr | null;
-    warp_token_address?: string | null;
+    owner?: string | null;
+  }
+  export interface SubmitTemplateMsg {
+    formatted_str: string;
+    kind: TemplateKind;
+    msg: string;
+    name: string;
+    vars: TemplateVar[];
+  }
+  export interface TemplateVar {
+    kind: TemplateVarKind;
+    name: string;
+    path: string;
+  }
+  export interface EditTemplateMsg {
+    formatted_str?: string | null;
+    id: Uint64;
+    msg?: string | null;
+    name?: string | null;
+    vars?: TemplateVar[] | null;
+  }
+  export interface DeleteTemplateMsg {
+    id: Uint64;
   }
   export interface InstantiateMsg {
     cancellation_fee: Uint128;
@@ -313,7 +375,19 @@ export module warp_controller {
         distribution: DistributionMsg;
       }
     | {
+        stargate: {
+          type_url: string;
+          value: Binary;
+        };
+      }
+    | {
+        ibc: IbcMsg;
+      }
+    | {
         wasm: WasmMsg;
+      }
+    | {
+        gov: GovMsg;
       };
   export type BankMsg =
     | {
@@ -364,6 +438,43 @@ export module warp_controller {
           validator: string;
         };
       };
+  export type IbcMsg =
+    | {
+        transfer: {
+          /**
+           * packet data only supports one coin https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/ibc/applications/transfer/v1/transfer.proto#L11-L20
+           */
+          amount: Coin;
+          /**
+           * exisiting channel to send the tokens over
+           */
+          channel_id: string;
+          /**
+           * when packet times out, measured on remote chain
+           */
+          timeout: IbcTimeout;
+          /**
+           * address on the remote chain to receive these tokens
+           */
+          to_address: string;
+        };
+      }
+    | {
+        send_packet: {
+          channel_id: string;
+          data: Binary;
+          /**
+           * when packet times out, measured on remote chain
+           */
+          timeout: IbcTimeout;
+        };
+      }
+    | {
+        close_channel: {
+          channel_id: string;
+        };
+      };
+  export type Timestamp = Uint64;
   export type WasmMsg =
     | {
         execute: {
@@ -414,6 +525,13 @@ export module warp_controller {
           contract_addr: string;
         };
       };
+  export type GovMsg = {
+    vote: {
+      proposal_id: number;
+      vote: VoteOption;
+    };
+  };
+  export type VoteOption = 'yes' | 'no' | 'abstain' | 'no_with_veto';
   export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled';
   export interface JobResponse {
     job: Job;
@@ -433,6 +551,20 @@ export module warp_controller {
     denom: string;
   }
   export interface Empty {}
+  export interface IbcTimeout {
+    block?: IbcTimeoutBlock | null;
+    timestamp?: Timestamp | null;
+  }
+  export interface IbcTimeoutBlock {
+    /**
+     * block height after which the packet times out. the height within the given revision
+     */
+    height: number;
+    /**
+     * the version that the client is currently on (eg. after reseting the chain this could increment 1 as height drops to 0)
+     */
+    revision: number;
+  }
   export interface JobsResponse {
     jobs: Job[];
     total_count: number;
@@ -461,6 +593,12 @@ export module warp_controller {
       }
     | {
         query_config: QueryConfigMsg;
+      }
+    | {
+        query_template: QueryTemplateMsg;
+      }
+    | {
+        query_templates: QueryTemplatesMsg;
       };
   export interface QueryJobMsg {
     id: Uint64;
@@ -496,7 +634,33 @@ export module warp_controller {
     start_after?: string | null;
   }
   export interface QueryConfigMsg {}
+  export interface QueryTemplateMsg {
+    id: Uint64;
+  }
+  export interface QueryTemplatesMsg {
+    ids?: Uint64[] | null;
+    kind?: TemplateKind | null;
+    limit?: number | null;
+    name?: string | null;
+    owner?: Addr | null;
+    start_after?: Uint64 | null;
+  }
   export interface SimulateResponse {
     response: string;
+  }
+  export interface Template {
+    formatted_str: string;
+    id: Uint64;
+    kind: TemplateKind;
+    msg: string;
+    name: string;
+    owner: Addr;
+    vars: TemplateVar[];
+  }
+  export interface TemplateResponse {
+    template: Template;
+  }
+  export interface TemplatesResponse {
+    templates: Template[];
   }
 }

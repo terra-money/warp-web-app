@@ -6,31 +6,29 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialo
 
 import styles from './QueryExprDialog.module.sass';
 
-import { warp_controller } from 'types';
-
 import { QueryExprForm } from 'forms/QueryExprForm/QueryExprForm';
 import { Button } from 'components/primitives';
-import { useQueryStorage } from 'pages/queries/useQueryStorage';
+import { Query, useQueryStorage } from 'pages/queries/useQueryStorage';
 import { QueriesNav } from 'pages/queries/nav/QueriesNav';
 import { encodeQuery } from '../../../../../utils';
 
 export type QueryExprDialogProps = {
-  queryExpr?: warp_controller.QueryExpr;
+  query?: Query;
   includeNav?: boolean;
 };
 
-export const QueryExprDialog = (props: DialogProps<QueryExprDialogProps, warp_controller.QueryExpr>) => {
-  const { closeDialog, queryExpr, includeNav } = props;
+export const QueryExprDialog = (props: DialogProps<QueryExprDialogProps, Query>) => {
+  const { closeDialog, query, includeNav } = props;
 
-  const [input, formState] = useQueryExprForm(queryExpr);
-  const { queryJson, submitDisabled, querySelector, name } = formState;
+  const [input, formState] = useQueryExprForm(query);
+  const { queryJson, submitDisabled, querySelector, name, template } = formState;
   const { queries } = useQueryStorage();
 
   return (
     <Dialog className={styles.dialog}>
       {includeNav && queries.length > 0 && (
         <QueriesNav
-          selectedQuery={queryExpr}
+          selectedQuery={query}
           className={styles.left}
           queries={queries}
           setSelectedQuery={(q) => input(queryExprToInput(q))}
@@ -50,6 +48,7 @@ export const QueryExprDialog = (props: DialogProps<QueryExprDialogProps, warp_co
                 const query = encodeQuery(queryJson);
 
                 closeDialog({
+                  template,
                   query,
                   selector: querySelector,
                   name,
@@ -69,5 +68,5 @@ export const QueryExprDialog = (props: DialogProps<QueryExprDialogProps, warp_co
 };
 
 export const useQueryExprDialog = () => {
-  return useDialog<QueryExprDialogProps, warp_controller.QueryExpr>(QueryExprDialog);
+  return useDialog<QueryExprDialogProps, Query>(QueryExprDialog);
 };

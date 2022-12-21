@@ -8,14 +8,26 @@ import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { useNavigate } from 'react-router';
-import { LUNA } from 'types';
+import { LUNA, warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
+import { useTemplatesQuery } from 'queries/useTemplatesQuery';
+import { TemplateForm } from './template-form/TemplateForm';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
   detailsInput?: DetailsFormInput;
+};
+
+type TemplateVar = warp_controller.TemplateVar & { value: string };
+
+type TabType = 'template' | 'message';
+
+const tabTypes = ['template', 'message'] as TabType[];
+
+export type TemplateVars = {
+  [k: string]: TemplateVar;
 };
 
 export const DetailsForm = (props: DetailsFormProps) => {
@@ -30,6 +42,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
       rewardError,
       rewardValid,
       message,
+      selectedTabType,
+      template,
       messageError,
       submitDisabled,
       tokenBalance,
@@ -38,6 +52,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
   ] = useDetailsForm(detailsInput);
 
   const navigate = useNavigate();
+
+  const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -55,7 +71,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
         </Text>
       </Container>
       <Form className={styles.form}>
-        <FormControl label="Name">
+        <FormControl label="Name" className={styles.name_input}>
           <TextInput
             placeholder="Type name here"
             margin="none"
@@ -75,6 +91,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
           />
         </FormControl>
         <AmountInput
+          className={styles.amount_input}
           label="Reward"
           value={reward}
           onChange={(value) =>
@@ -88,15 +105,44 @@ export const DetailsForm = (props: DetailsFormProps) => {
           token={LUNA}
           valid={rewardValid}
         />
-        <WasmMsgInput
-          className={styles.wasm_msg}
-          label="Message"
-          error={messageError}
-          valid
-          placeholder="Type your message here"
-          value={message}
-          onChange={(value) => input({ message: value })}
-        />
+        <Container className={styles.tabs} direction="row">
+          {tabTypes.map((tabType) => (
+            <Button
+              key={tabType}
+              className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
+              onClick={() => input({ selectedTabType: tabType })}
+              variant="secondary"
+            >
+              {tabType}
+            </Button>
+          ))}
+        </Container>
+        {selectedTabType === 'template' && (
+          <>
+            <TemplateForm
+              options={options}
+              template={template}
+              setTemplate={(template) => input({ template })}
+              setTemplateVars={(vars) => input({ template: { ...(template as warp_controller.Template), vars } })}
+              templateVars={template?.vars ?? []}
+              onMessageComposed={(message) => input({ message })}
+            />
+          </>
+        )}
+        {selectedTabType === 'message' && (
+          <>
+            <WasmMsgInput
+              rootClassName={styles.msg_input}
+              label="Message"
+              className={styles.msg_input_inner}
+              error={messageError}
+              valid
+              placeholder="Type your message here"
+              value={message}
+              onChange={(value) => input({ message: value })}
+            />
+          </>
+        )}
       </Form>
       <Footer>
         <Button
@@ -104,7 +150,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
           disabled={submitDisabled}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message });
+              onNext({ name, reward, message, template, selectedTabType });
             }
           }}
         >
