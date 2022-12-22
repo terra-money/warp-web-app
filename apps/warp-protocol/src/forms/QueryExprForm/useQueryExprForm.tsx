@@ -3,6 +3,7 @@ import { Query } from 'pages/queries/useQueryStorage';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
+import { generatePaths } from 'utils';
 
 export type TemplateWithVarValues = Omit<warp_controller.Template, 'vars'> & {
   vars: (warp_controller.TemplateVar & { value: string })[];
@@ -12,6 +13,7 @@ interface QueryExprInput {
   name: string;
   querySelector: string;
   queryJson: string;
+  paths: string[];
   template?: TemplateWithVarValues;
   selectedTabType?: 'template' | 'message';
 }
@@ -23,12 +25,15 @@ export interface QueryExprState extends FormState<QueryExprInput> {
 export type QueryExprFormInput = FormInput<QueryExprInput>;
 
 export const queryExprToInput = (query?: Query): QueryExprInput => {
+  const queryJson = query ? JSON.stringify(decodeQuery(query.query), null, 2) : '';
+
   return {
     name: query?.name ?? '',
     querySelector: query?.selector ?? '',
-    queryJson: query ? JSON.stringify(decodeQuery(query.query), null, 2) : '',
+    queryJson,
     selectedTabType: !Boolean(query?.template) && Boolean(query?.query) ? 'message' : 'template',
     template: query?.template ?? undefined,
+    paths: query ? generatePaths(queryJson) : [],
   };
 };
 
@@ -46,6 +51,8 @@ export const useQueryExprForm = (query?: Query) => {
       ...getState(),
       ...input,
     };
+
+    const paths = input.queryJson ? generatePaths(input.queryJson) : state.paths;
 
     let queryJsonError = undefined;
 
@@ -83,6 +90,7 @@ export const useQueryExprForm = (query?: Query) => {
 
     dispatch({
       ...state,
+      paths,
       nameError,
       queryJsonError,
       querySelectorValid,

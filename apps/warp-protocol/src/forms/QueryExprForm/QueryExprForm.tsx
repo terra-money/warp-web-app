@@ -12,7 +12,6 @@ import classNames from 'classnames';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
-import { generateAllPaths } from '../../utils';
 import { usePreviewQueryDialog } from '../../components/dialog/preview-query/PreviewQueryDialog';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from 'pages/job-new/details-form/template-form/TemplateForm';
@@ -46,13 +45,12 @@ const tabTypes = ['template', 'message'] as TabType[];
 
 export const QueryExprForm = (props: QueryExprFormProps) => {
   const { input, state, className, querySelectorOptions } = props;
-  const { name, nameError, queryJson, queryJsonError, querySelector, querySelectorError } = state;
+  const { name, nameError, queryJson, queryJsonError, querySelector, querySelectorError, paths } = state;
   const queryExample = useQueryExample();
 
   const queryJsonToValidate = useValueWithDelay(queryJson);
   const { isLoading, data, isFetching, error } = useSimulateQuery(queryJsonToValidate);
 
-  const paths = useMemo(() => (data ? generateAllPaths('$', data) : []), [data]);
   const openPreview = usePreviewQueryDialog();
 
   const endLabel = useMemo(() => {

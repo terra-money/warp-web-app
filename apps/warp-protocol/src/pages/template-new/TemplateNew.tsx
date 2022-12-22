@@ -19,16 +19,6 @@ import { useTemplateNewForm } from './useTemplateNewForm';
 
 type TemplateNewProps = UIElementProps & {};
 
-export const parseJsonValue = (str?: string) => {
-  let value = undefined;
-
-  try {
-    value = str ? JSON.parse(str) : undefined;
-  } catch (e) {}
-
-  return value;
-};
-
 const templateKinds: warp_controller.TemplateKind[] = ['query', 'msg'];
 const templateVarKinds: warp_controller.TemplateVarKind[] = [
   'string',
