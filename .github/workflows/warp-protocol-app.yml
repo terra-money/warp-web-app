@@ -33,6 +33,7 @@ jobs:
         run: |
           cd apps/warp-protocol/public
           unzip -qoP ${{ secrets.PWFONTS }} fonts.zip
+          cd ../../..
 
       - name: Get yarn cache dir
         id: yarn-cache-dir-path
