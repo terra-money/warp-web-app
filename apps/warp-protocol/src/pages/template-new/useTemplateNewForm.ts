@@ -2,8 +2,7 @@ import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/h
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
-import { parseJsonValue } from './TemplateNew';
-import { generateAllPaths } from 'utils';
+import { generatePaths } from 'utils';
 
 interface TemplateNewInput {
   name: string;
@@ -19,17 +18,6 @@ export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNe
 }
 
 export type TemplateNewFormInput = FormInput<TemplateNewInput>;
-
-const generatePaths = (msg: string) => {
-  const messageJson = parseJsonValue(msg);
-  const paths = messageJson ? generateAllPaths('$', messageJson) : [];
-
-  return paths;
-};
-
-const excludeArraySelectors = (str: string) => {
-  return str.replace(/\[[^\]]*\]/g, '');
-};
 
 export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
   return {
@@ -75,9 +63,7 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
     const varsError = Boolean(
-      state.vars.find(
-        (v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path) || !paths.includes(excludeArraySelectors(v.path))
-      )
+      state.vars.find((v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path) || !paths.includes(v.path))
     )
       ? 'All variables must be filled'
       : undefined;
