@@ -9,8 +9,6 @@ import { TextInput } from 'components/primitives/text-input';
 import { useNavigate } from 'react-router';
 import { Footer } from '../job-new/footer/Footer';
 import styles from './TemplateNew.module.sass';
-import { useMemo } from 'react';
-import { generateAllPaths } from 'utils';
 import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputField';
 import { TemplateMessageInput } from './template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
@@ -50,7 +48,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const [input, formState] = useTemplateNewForm();
 
-  const { name, msg, submitDisabled, formattedStr, vars, kind } = formState;
+  const { name, msg, submitDisabled, formattedStr, vars, kind, paths } = formState;
 
   const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
     const updatedVars = [...vars];
@@ -58,9 +56,6 @@ export const TemplateNew = (props: TemplateNewProps) => {
     updatedVars[idx] = { ...prev, ...updates };
     return updatedVars;
   };
-
-  const messageJson = parseJsonValue(msg);
-  const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
 
   const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
 

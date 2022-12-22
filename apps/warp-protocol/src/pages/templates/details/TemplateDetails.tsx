@@ -10,8 +10,6 @@ import { ReactComponent as PlusIcon } from 'components/assets/Plus.svg';
 import { templateToInput, useTemplateNewForm } from 'pages/template-new/useTemplateNewForm';
 import { FormControl } from 'components/form-control/FormControl';
 import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputField';
-import { parseJsonValue } from 'pages/template-new/TemplateNew';
-import { generateAllPaths } from 'utils';
 import { TemplateMessageInput } from 'pages/template-new/template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
 import { useDeleteTemplateTx, useEditTemplateTx } from 'tx';
@@ -40,7 +38,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
 
   const [input, formState] = useTemplateNewForm(selectedTemplate);
 
-  const { name, msg, submitDisabled, formattedStr, vars } = formState;
+  const { name, msg, submitDisabled, formattedStr, vars, paths } = formState;
 
   useEffect(() => {
     if (selectedTemplate && selectedTemplate.name !== name) {
@@ -58,9 +56,6 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
 
   const [editTemplateTxResult, editTemplateTx] = useEditTemplateTx();
   const [deleteTemplateTxResult, deleteTemplateTx] = useDeleteTemplateTx();
-
-  const messageJson = parseJsonValue(msg);
-  const paths = useMemo(() => (messageJson ? generateAllPaths('$', messageJson) : []), [messageJson]);
 
   const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
     const updatedVars = [...vars];

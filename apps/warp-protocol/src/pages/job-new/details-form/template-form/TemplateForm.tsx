@@ -14,7 +14,11 @@ const composeMsgFromTemplate = (template: warp_controller.Template, vars: Templa
   let json = JSON.parse(template.msg);
 
   vars.forEach((v) => {
-    jsonpath.value(json, v.path, v.value);
+    try {
+      jsonpath.value(json, v.path, v.value);
+    } catch (err) {
+      // consume the error
+    }
   });
 
   return JSON.stringify(json, null, 2);

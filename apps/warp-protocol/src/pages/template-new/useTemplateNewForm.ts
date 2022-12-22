@@ -2,6 +2,8 @@ import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/h
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
+import { parseJsonValue } from './TemplateNew';
+import { generateAllPaths } from 'utils';
 
 interface TemplateNewInput {
   name: string;
@@ -9,6 +11,7 @@ interface TemplateNewInput {
   vars: warp_controller.TemplateVar[];
   formattedStr: string;
   msg: string;
+  paths: string[];
 }
 
 export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNewInput> {
@@ -17,6 +20,17 @@ export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNe
 
 export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 
+const generatePaths = (msg: string) => {
+  const messageJson = parseJsonValue(msg);
+  const paths = messageJson ? generateAllPaths('$', messageJson) : [];
+
+  return paths;
+};
+
+const excludeArraySelectors = (str: string) => {
+  return str.replace(/\[[^\]]*\]/g, '');
+};
+
 export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
@@ -24,6 +38,7 @@ export const templateToInput = (template?: warp_controller.Template): TemplateNe
     vars: template?.vars ?? [],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
+    paths: template?.msg ? generatePaths(template.msg) : [],
   };
 };
 
@@ -43,6 +58,8 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       ...input,
     };
 
+    const paths = input.msg ? generatePaths(input.msg) : state.paths;
+
     let msgError = undefined;
 
     if (state.msg) {
@@ -57,7 +74,11 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
-    const varsError = Boolean(state.vars.find((v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path)))
+    const varsError = Boolean(
+      state.vars.find(
+        (v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path) || !paths.includes(excludeArraySelectors(v.path))
+      )
+    )
       ? 'All variables must be filled'
       : undefined;
 
@@ -79,6 +100,7 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
 
     dispatch({
       ...state,
+      paths,
       nameError,
       msgError,
       submitDisabled,
