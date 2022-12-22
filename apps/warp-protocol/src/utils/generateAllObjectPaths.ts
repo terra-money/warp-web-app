@@ -1,24 +1,31 @@
-export function isObject(value: any): value is Object {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-export function generateAllPaths(prefix: string, object: any): string[] {
-  const paths: string[] = [];
-
-  if (!isObject(object)) {
-    return [prefix];
+export function generateAllObjectPaths(jsonObj: any, path = ''): string[] {
+  if (typeof jsonObj === 'object' && jsonObj !== null) {
+    if (Array.isArray(jsonObj)) {
+      return jsonObj.flatMap((item, i) => {
+        return generateAllObjectPaths(item, path + '[' + i + ']');
+      });
+    }
+    return Object.keys(jsonObj).flatMap((key) => {
+      return generateAllObjectPaths(jsonObj[key], path + '.' + key);
+    });
   }
 
-  Object.keys(object).forEach((key) => {
-    const val = object[key];
-    const path = `${prefix}.${key}`;
+  return [path];
+}
 
-    if (isObject(val)) {
-      paths.push(...generateAllPaths(path, val as {}));
-    } else {
-      paths.push(path);
-    }
-  });
+export const parseJsonValue = (str?: string) => {
+  let value = undefined;
+
+  try {
+    value = str ? JSON.parse(str) : undefined;
+  } catch (e) {}
+
+  return value;
+};
+
+export const generatePaths = (msg: string) => {
+  const messageJson = parseJsonValue(msg);
+  const paths = messageJson ? generateAllObjectPaths(messageJson, '$') : [];
 
   return paths;
-}
+};
