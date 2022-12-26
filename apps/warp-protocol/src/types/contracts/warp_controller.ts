@@ -83,14 +83,74 @@ export module warp_controller {
         block_height: BlockExpr;
       }
     | {
-        bool: QueryExpr;
+        bool: BoolExpr;
       };
   export type ValueFor_String =
     | {
         simple: string;
       }
     | {
+        ref: string;
+      };
+  export type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
+  export type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp =
+    | {
+        simple: Uint256;
+      }
+    | {
+        expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      };
+  export type Uint256 = string;
+  export type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
+  export type IntFnOp = 'abs' | 'neg';
+  export type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
+  export type NumValueForInt128And_NumExprOpAnd_IntFnOp =
+    | {
+        simple: number;
+      }
+    | {
+        expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+      };
+  export type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp =
+    | {
+        simple: Decimal256;
+      }
+    | {
+        expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      };
+  export type Decimal256 = string;
+  export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+  export type TimeOp = 'lt' | 'gt';
+  export type BoolExpr = {
+    ref: string;
+  };
+  export type VariableValue =
+    | {
+        static: string;
+      }
+    | {
         query: QueryExpr;
+      }
+    | {
+        external: ExternalExpr;
       };
   export type QueryRequestFor_String =
     | {
@@ -198,70 +258,41 @@ export module warp_controller {
           contract_addr: string;
         };
       };
-  export type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
-  export type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp =
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type UpdateFnValue =
     | {
-        simple: Uint256;
+        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
       }
     | {
-        expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-      }
-    | {
-        query: QueryExpr;
-      }
-    | {
-        fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
       };
-  export type Uint256 = string;
-  export type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
-  export type IntFnOp = 'abs' | 'neg';
-  export type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
-  export type NumValueForInt128And_NumExprOpAnd_IntFnOp =
+  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
     | {
-        simple: number;
+        simple: string;
       }
     | {
-        expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
+        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
       }
     | {
-        query: QueryExpr;
+        ref: string;
       }
     | {
-        fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
       };
-  export type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp =
-    | {
-        simple: Decimal256;
-      }
-    | {
-        expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-      }
-    | {
-        query: QueryExpr;
-      }
-    | {
-        fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-      };
-  export type Decimal256 = string;
-  export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type TimeOp = 'lt' | 'gt';
+  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
   export type TemplateKind = 'query' | 'msg';
-  export type TemplateVarKind = 'string' | 'uint' | 'int' | 'decimal' | 'bool' | 'amount' | 'asset' | 'timestamp';
   export interface CreateJobMsg {
     condition: Condition;
     msgs: string[];
     name: string;
     reward: Uint128;
+    vars: Variable[];
   }
   export interface GenExprFor_ValueFor_StringAnd_StringOp {
     left: ValueFor_String;
     op: StringOp;
     right: ValueFor_String;
-  }
-  export interface QueryExpr {
-    name: string;
-    query: QueryRequestFor_String;
-    selector: string;
   }
   export interface GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp {
     left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
@@ -313,12 +344,39 @@ export module warp_controller {
     comparator: Uint64;
     op: NumOp;
   }
+  export interface Variable {
+    default_value: VariableValue;
+    kind: VariableKind;
+    name: string;
+    update_fn?: UpdateFn | null;
+    value?: string | null;
+  }
+  export interface QueryExpr {
+    query: QueryRequestFor_String;
+    selector: string;
+  }
+  export interface ExternalExpr {
+    selector: string;
+    url: string;
+  }
+  export interface UpdateFn {
+    on_error?: UpdateFnValue | null;
+    on_success: UpdateFnValue;
+  }
+  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
+    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+    op: ExprOp;
+    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+  }
+  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
+    op: FnOp;
+    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+  }
   export interface DeleteJobMsg {
     id: Uint64;
   }
   export interface UpdateJobMsg {
     added_reward?: Uint128 | null;
-    condition?: Condition | null;
     id: Uint64;
     name?: string | null;
   }
@@ -337,19 +395,14 @@ export module warp_controller {
     kind: TemplateKind;
     msg: string;
     name: string;
-    vars: TemplateVar[];
-  }
-  export interface TemplateVar {
-    kind: TemplateVarKind;
-    name: string;
-    path: string;
+    vars: Variable[];
   }
   export interface EditTemplateMsg {
     formatted_str?: string | null;
     id: Uint64;
     msg?: string | null;
     name?: string | null;
-    vars?: TemplateVar[] | null;
+    vars?: Variable[] | null;
   }
   export interface DeleteTemplateMsg {
     id: Uint64;
@@ -545,6 +598,7 @@ export module warp_controller {
     owner: Addr;
     reward: Uint128;
     status: JobStatus;
+    vars: Variable[];
   }
   export interface Coin {
     amount: Uint128;
@@ -639,7 +693,6 @@ export module warp_controller {
   }
   export interface QueryTemplatesMsg {
     ids?: Uint64[] | null;
-    kind?: TemplateKind | null;
     limit?: number | null;
     name?: string | null;
     owner?: Addr | null;
@@ -655,7 +708,7 @@ export module warp_controller {
     msg: string;
     name: string;
     owner: Addr;
-    vars: TemplateVar[];
+    vars: Variable[];
   }
   export interface TemplateResponse {
     template: Template;
