@@ -12,12 +12,10 @@ import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { warp_controller } from 'types';
 
-type TemplateVar = warp_controller.TemplateVar & { value: string };
-
 type TemplateVarInputProps = UIElementProps & {
-  templateVar: TemplateVar;
-  templateVars: TemplateVar[];
-  setTemplateVars: (vars: TemplateVar[]) => void;
+  templateVar: warp_controller.StaticVariable;
+  templateVars: warp_controller.StaticVariable[];
+  setTemplateVars: (vars: warp_controller.StaticVariable[]) => void;
 };
 
 export const TemplateVarInput = (props: TemplateVarInputProps) => {
@@ -25,7 +23,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
   const { tokens } = useTokens();
 
-  const updateTemplateVar = (name: string, updates: Partial<TemplateVar>) => {
+  const updateTemplateVar = (name: string, updates: Partial<warp_controller.StaticVariable>) => {
     const updatedVars = [...templateVars];
     const idx = templateVars.findIndex((tv) => tv.name === name);
     const prev = updatedVars[idx];
@@ -39,7 +37,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         <NumericInput
           placeholder={`Type ${templateVar.name} here`}
           margin="none"
-          value={templateVar.value}
+          value={templateVar.default_value}
           onChange={(value) => {
             setTemplateVars(
               updateTemplateVar(templateVar.name, {
@@ -56,7 +54,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
     return (
       <AmountInput
         label={capitalize(templateVar.name)}
-        value={templateVar.value && demicrofy(Big(templateVar.value) as u<Big>, 6)}
+        value={templateVar.default_value && demicrofy(Big(templateVar.default_value) as u<Big>, 6)}
         onChange={(value) =>
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
@@ -69,7 +67,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   }
 
   if (templateVar.kind === 'timestamp') {
-    const date = templateVar.value ? new Date(Number(templateVar.value) * 1000) : undefined;
+    const date = templateVar.default_value ? new Date(Number(templateVar.default_value) * 1000) : undefined;
 
     return (
       <DateInput
@@ -91,7 +89,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
     return (
       <TokenInput
         label={capitalize(templateVar.name)}
-        value={tokens[templateVar.value]}
+        value={tokens[templateVar.default_value]}
         onChange={(token) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
@@ -108,7 +106,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
       <TextInput
         placeholder={`Type ${templateVar.name} here`}
         margin="none"
-        value={templateVar.value}
+        value={templateVar.default_value}
         onChange={(value) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {

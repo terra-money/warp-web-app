@@ -14,13 +14,14 @@ import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
+import { TemplateVar as TVar } from 'pages/template-new/useTemplateNewForm';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
   detailsInput?: DetailsFormInput;
 };
 
-type TemplateVar = warp_controller.TemplateVar & { value: string };
+type TemplateVar = TVar & { value: string };
 
 type TabType = 'template' | 'message';
 
