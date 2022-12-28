@@ -21,7 +21,7 @@ const routes: (clearJobStorage: () => void) => RouteProps[] = (clearJobStorage) 
     { to: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
     { to: '/jobs', label: 'Jobs', icon: <JobsIcon /> },
     { to: '/balances', label: 'Balances', icon: <DotsCircleIcon /> },
-    { to: '/queries', label: 'Queries', icon: <LightningStrokeIcon /> },
+    { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
     { to: '/templates', label: 'Templates', icon: <AddressbookIcon /> },
     {
       to: '/job-new',
