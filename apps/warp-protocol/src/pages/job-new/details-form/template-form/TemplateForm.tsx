@@ -2,20 +2,18 @@ import { Container } from '@terra-money/apps/components';
 import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { warp_controller } from 'types';
 import styles from '../DetailsForm.module.sass';
-import jsonpath from 'jsonpath';
+// import jsonpath from 'jsonpath';
 import { useEffect } from 'react';
 import { TemplatesInput } from '../templates-input/TemplatesInput';
 import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
-import { TemplateWithVarValues } from 'forms/QueryExprForm';
 
-type TemplateVar = warp_controller.TemplateVar & { value: string };
-
-const composeMsgFromTemplate = (template: warp_controller.Template, vars: TemplateVar[]): string => {
+const composeMsgFromTemplate = (template: warp_controller.Template, vars: warp_controller.StaticVariable[]): string => {
   let json = JSON.parse(template.msg);
 
   vars.forEach((v) => {
     try {
-      jsonpath.value(json, v.path, v.value);
+      // TODO: add paths
+      // jsonpath.value(json, v.path, v.value);
     } catch (err) {
       // consume the error
     }
@@ -27,9 +25,9 @@ const composeMsgFromTemplate = (template: warp_controller.Template, vars: Templa
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
   template?: warp_controller.Template;
-  setTemplate: (template: TemplateWithVarValues | undefined) => void;
-  templateVars: TemplateVar[];
-  setTemplateVars: (vars: TemplateVar[]) => void;
+  setTemplate: (template: warp_controller.Template | undefined) => void;
+  templateVars: warp_controller.StaticVariable[];
+  setTemplateVars: (vars: warp_controller.StaticVariable[]) => void;
   options: warp_controller.Template[];
 };
 

@@ -120,8 +120,8 @@ const filterEmptyCond = (input: warp_controller.Condition) => {
 const filterExpr = (expr: warp_controller.Expr) => {
   if ('string' in expr) {
     if (
-      (validSimple(expr.string.left) || validQuery(expr.string.left)) &&
-      (validSimple(expr.string.right) || validQuery(expr.string.right))
+      (validSimple(expr.string.left) || validRef(expr.string.left)) &&
+      (validSimple(expr.string.right) || validRef(expr.string.right))
     ) {
       return expr;
     }
@@ -129,8 +129,8 @@ const filterExpr = (expr: warp_controller.Expr) => {
 
   if ('uint' in expr) {
     if (
-      (validSimple(expr.uint.left) || validQuery(expr.uint.left)) &&
-      (validSimple(expr.uint.right) || validQuery(expr.uint.right))
+      (validSimple(expr.uint.left) || validRef(expr.uint.left)) &&
+      (validSimple(expr.uint.right) || validRef(expr.uint.right))
     ) {
       return expr;
     }
@@ -138,8 +138,8 @@ const filterExpr = (expr: warp_controller.Expr) => {
 
   if ('decimal' in expr) {
     if (
-      (validSimple(expr.decimal.left) || validQuery(expr.decimal.left)) &&
-      (validSimple(expr.decimal.right) || validQuery(expr.decimal.right))
+      (validSimple(expr.decimal.left) || validRef(expr.decimal.left)) &&
+      (validSimple(expr.decimal.right) || validRef(expr.decimal.right))
     ) {
       return expr;
     }
@@ -158,7 +158,7 @@ const filterExpr = (expr: warp_controller.Expr) => {
   }
 
   if ('bool' in expr) {
-    if (validQuery({ query: expr.bool })) {
+    if (validRef(expr.bool)) {
       return expr;
     }
   }
@@ -188,14 +188,14 @@ const validTime = (value: warp_controller.TimeExpr | warp_controller.BlockExpr) 
   return false;
 };
 
-const validQuery = (
+const validRef = (
   value:
     | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
     | warp_controller.ValueFor_String
 ) => {
-  if ('query' in value) {
-    return !isEmpty(value.query.name) && !isEmpty(value.query.query) && !isEmpty(value.query.selector);
+  if ('ref' in value) {
+    return !isEmpty(value.ref);
   }
 
   return false;

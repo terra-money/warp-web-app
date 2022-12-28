@@ -59,6 +59,7 @@ export const JobNew = (props: JobNewProps) => {
 
                           const resp = await createJobTx({
                             name,
+                            vars: [],
                             reward: microfy(reward, LUNA.decimals),
                             msgs,
                             condition: props.cond,
