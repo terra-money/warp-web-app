@@ -5,18 +5,21 @@ import { Expression } from './Expression';
 import classNames from 'classnames';
 import styles from './Condition.module.sass';
 import { Text } from 'components/primitives';
+import { Job } from 'types/job';
 
 export type ConditionProps = {
   condition: warp_controller.Condition;
   isRoot?: boolean;
+  job: Job;
 } & UIElementProps;
 
 export const Condition = (props: ConditionProps) => {
-  const { condition, className, isRoot } = props;
+  const { condition, className, isRoot, job } = props;
 
   if ('or' in condition) {
     return (
       <ConditionTree
+        job={job}
         isRoot={isRoot}
         className={className}
         items={condition.or}
@@ -32,6 +35,7 @@ export const Condition = (props: ConditionProps) => {
   if ('and' in condition) {
     return (
       <ConditionTree
+        job={job}
         isRoot={isRoot}
         className={className}
         items={condition.and}
@@ -47,6 +51,7 @@ export const Condition = (props: ConditionProps) => {
   if ('not' in condition) {
     return (
       <ConditionTree
+        job={job}
         isRoot={isRoot}
         className={className}
         title={
@@ -62,7 +67,7 @@ export const Condition = (props: ConditionProps) => {
   if ('expr' in condition) {
     return (
       <li className={classNames(className, styles.expression_item)}>
-        <Expression expression={condition.expr} />
+        <Expression expression={condition.expr} job={job} />
       </li>
     );
   }
