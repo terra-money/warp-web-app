@@ -22,398 +22,6 @@ export module warp_controller {
   export interface ConfigResponse {
     config: Config;
   }
-  export type ExecuteMsg =
-    | {
-        create_job: CreateJobMsg;
-      }
-    | {
-        delete_job: DeleteJobMsg;
-      }
-    | {
-        update_job: UpdateJobMsg;
-      }
-    | {
-        execute_job: ExecuteJobMsg;
-      }
-    | {
-        create_account: CreateAccountMsg;
-      }
-    | {
-        update_config: UpdateConfigMsg;
-      }
-    | {
-        submit_template: SubmitTemplateMsg;
-      }
-    | {
-        edit_template: EditTemplateMsg;
-      }
-    | {
-        delete_template: DeleteTemplateMsg;
-      };
-  export type Condition =
-    | {
-        and: Condition[];
-      }
-    | {
-        or: Condition[];
-      }
-    | {
-        not: Condition;
-      }
-    | {
-        expr: Expr;
-      };
-  export type Expr =
-    | {
-        string: GenExprFor_ValueFor_StringAnd_StringOp;
-      }
-    | {
-        uint: GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp;
-      }
-    | {
-        int: GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp;
-      }
-    | {
-        decimal: GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
-      }
-    | {
-        timestamp: TimeExpr;
-      }
-    | {
-        block_height: BlockExpr;
-      }
-    | {
-        bool: BoolExpr;
-      };
-  export type ValueFor_String =
-    | {
-        simple: string;
-      }
-    | {
-        ref: string;
-      };
-  export type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
-  export type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp =
-    | {
-        simple: Uint256;
-      }
-    | {
-        expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-      };
-  export type Uint256 = string;
-  export type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
-  export type IntFnOp = 'abs' | 'neg';
-  export type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
-  export type NumValueForInt128And_NumExprOpAnd_IntFnOp =
-    | {
-        simple: number;
-      }
-    | {
-        expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
-      };
-  export type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp =
-    | {
-        simple: Decimal256;
-      }
-    | {
-        expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-      };
-  export type Decimal256 = string;
-  export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type TimeOp = 'lt' | 'gt';
-  export type BoolExpr = {
-    ref: string;
-  };
-  export type VariableValue =
-    | {
-        static: string;
-      }
-    | {
-        query: QueryExpr;
-      }
-    | {
-        external: ExternalExpr;
-      };
-  export type QueryRequestFor_String =
-    | {
-        bank: BankQuery;
-      }
-    | {
-        custom: string;
-      }
-    | {
-        staking: StakingQuery;
-      }
-    | {
-        stargate: {
-          /**
-           * this is the expected protobuf message type (not any), binary encoded
-           */
-          data: Binary;
-          /**
-           * this is the fully qualified service path used for routing, eg. custom/cosmos_sdk.x.bank.v1.Query/QueryBalance
-           */
-          path: string;
-        };
-      }
-    | {
-        ibc: IbcQuery;
-      }
-    | {
-        wasm: WasmQuery;
-      };
-  export type BankQuery =
-    | {
-        balance: {
-          address: string;
-          denom: string;
-        };
-      }
-    | {
-        all_balances: {
-          address: string;
-        };
-      };
-  export type StakingQuery =
-    | {
-        bonded_denom: {};
-      }
-    | {
-        all_delegations: {
-          delegator: string;
-        };
-      }
-    | {
-        delegation: {
-          delegator: string;
-          validator: string;
-        };
-      }
-    | {
-        all_validators: {};
-      }
-    | {
-        validator: {
-          /**
-           * The validator's address (e.g. (e.g. cosmosvaloper1...))
-           */
-          address: string;
-        };
-      };
-  export type Binary = string;
-  export type IbcQuery =
-    | {
-        port_id: {};
-      }
-    | {
-        list_channels: {
-          port_id?: string | null;
-        };
-      }
-    | {
-        channel: {
-          channel_id: string;
-          port_id?: string | null;
-        };
-      };
-  export type WasmQuery =
-    | {
-        smart: {
-          contract_addr: string;
-          /**
-           * msg is the json-encoded QueryMsg struct
-           */
-          msg: Binary;
-        };
-      }
-    | {
-        raw: {
-          contract_addr: string;
-          /**
-           * Key is the raw key used in the contracts Storage
-           */
-          key: Binary;
-        };
-      }
-    | {
-        contract_info: {
-          contract_addr: string;
-        };
-      };
-  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
-  export type UpdateFnValue =
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
-    | {
-        simple: string;
-      }
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
-  export type TemplateKind = 'query' | 'msg';
-  export interface CreateJobMsg {
-    condition: Condition;
-    msgs: string[];
-    name: string;
-    reward: Uint128;
-    vars: Variable[];
-  }
-  export interface GenExprFor_ValueFor_StringAnd_StringOp {
-    left: ValueFor_String;
-    op: StringOp;
-    right: ValueFor_String;
-  }
-  export interface GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp {
-    left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-    op: NumOp;
-    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-  }
-  export interface NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp {
-    left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-    op: NumExprOp;
-    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-  }
-  export interface NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp {
-    op: IntFnOp;
-    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-  }
-  export interface GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp {
-    left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
-    op: NumOp;
-    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
-  }
-  export interface NumExprValueForInt128And_NumExprOpAnd_IntFnOp {
-    left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
-    op: NumExprOp;
-    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
-  }
-  export interface NumFnValueForInt128And_NumExprOpAnd_IntFnOp {
-    op: IntFnOp;
-    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
-  }
-  export interface GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp {
-    left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-    op: NumOp;
-    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-  }
-  export interface NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
-    left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-    op: NumExprOp;
-    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-  }
-  export interface NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
-    op: DecimalFnOp;
-    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
-  }
-  export interface TimeExpr {
-    comparator: Uint64;
-    op: TimeOp;
-  }
-  export interface BlockExpr {
-    comparator: Uint64;
-    op: NumOp;
-  }
-  export interface Variable {
-    default_value: VariableValue;
-    kind: VariableKind;
-    name: string;
-    update_fn?: UpdateFn | null;
-    value?: string | null;
-  }
-  export interface QueryExpr {
-    query: QueryRequestFor_String;
-    selector: string;
-  }
-  export interface ExternalExpr {
-    selector: string;
-    url: string;
-  }
-  export interface UpdateFn {
-    on_error?: UpdateFnValue | null;
-    on_success: UpdateFnValue;
-  }
-  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
-    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-    op: ExprOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-  }
-  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
-    op: FnOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-  }
-  export interface DeleteJobMsg {
-    id: Uint64;
-  }
-  export interface UpdateJobMsg {
-    added_reward?: Uint128 | null;
-    id: Uint64;
-    name?: string | null;
-  }
-  export interface ExecuteJobMsg {
-    id: Uint64;
-  }
-  export interface CreateAccountMsg {}
-  export interface UpdateConfigMsg {
-    cancellation_fee_percentage?: Uint128 | null;
-    creation_fee_percentage?: Uint128 | null;
-    minimum_reward?: Uint128 | null;
-    owner?: string | null;
-  }
-  export interface SubmitTemplateMsg {
-    formatted_str: string;
-    kind: TemplateKind;
-    msg: string;
-    name: string;
-    vars: Variable[];
-  }
-  export interface EditTemplateMsg {
-    formatted_str?: string | null;
-    id: Uint64;
-    msg?: string | null;
-    name?: string | null;
-    vars?: Variable[] | null;
-  }
-  export interface DeleteTemplateMsg {
-    id: Uint64;
-  }
-  export interface InstantiateMsg {
-    cancellation_fee: Uint128;
-    creation_fee: Uint128;
-    minimum_reward: Uint128;
-    owner?: string | null;
-    warp_account_code_id: Uint64;
-  }
   export type CosmosMsgFor_Empty =
     | {
         bank: BankMsg;
@@ -491,6 +99,7 @@ export module warp_controller {
           validator: string;
         };
       };
+  export type Binary = string;
   export type IbcMsg =
     | {
         transfer: {
@@ -585,21 +194,6 @@ export module warp_controller {
     };
   };
   export type VoteOption = 'yes' | 'no' | 'abstain' | 'no_with_veto';
-  export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled';
-  export interface JobResponse {
-    job: Job;
-  }
-  export interface Job {
-    condition: Condition;
-    id: Uint64;
-    last_update_time: Uint64;
-    msgs: CosmosMsgFor_Empty[];
-    name: string;
-    owner: Addr;
-    reward: Uint128;
-    status: JobStatus;
-    vars: Variable[];
-  }
   export interface Coin {
     amount: Uint128;
     denom: string;
@@ -618,6 +212,427 @@ export module warp_controller {
      * the version that the client is currently on (eg. after reseting the chain this could increment 1 as height drops to 0)
      */
     revision: number;
+  }
+  export type ExecuteMsg =
+    | {
+        create_job: CreateJobMsg;
+      }
+    | {
+        delete_job: DeleteJobMsg;
+      }
+    | {
+        update_job: UpdateJobMsg;
+      }
+    | {
+        execute_job: ExecuteJobMsg;
+      }
+    | {
+        create_account: CreateAccountMsg;
+      }
+    | {
+        update_config: UpdateConfigMsg;
+      }
+    | {
+        submit_template: SubmitTemplateMsg;
+      }
+    | {
+        edit_template: EditTemplateMsg;
+      }
+    | {
+        delete_template: DeleteTemplateMsg;
+      };
+  export type Condition =
+    | {
+        and: Condition[];
+      }
+    | {
+        or: Condition[];
+      }
+    | {
+        not: Condition;
+      }
+    | {
+        expr: Expr;
+      };
+  export type Expr =
+    | {
+        string: GenExprFor_ValueFor_StringAnd_StringOp;
+      }
+    | {
+        uint: GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp;
+      }
+    | {
+        int: GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp;
+      }
+    | {
+        decimal: GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
+      }
+    | {
+        timestamp: TimeExpr;
+      }
+    | {
+        block_height: BlockExpr;
+      }
+    | {
+        bool: string;
+      };
+  export type ValueFor_String =
+    | {
+        simple: string;
+      }
+    | {
+        ref: string;
+      };
+  export type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
+  export type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp =
+    | {
+        simple: Uint256;
+      }
+    | {
+        expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      };
+  export type Uint256 = string;
+  export type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
+  export type IntFnOp = 'abs' | 'neg';
+  export type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
+  export type NumValueForInt128And_NumExprOpAnd_IntFnOp =
+    | {
+        simple: number;
+      }
+    | {
+        expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+      };
+  export type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp =
+    | {
+        simple: Decimal256;
+      }
+    | {
+        expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      };
+  export type Decimal256 = string;
+  export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+  export type TimeOp = 'lt' | 'gt';
+  export type Variable =
+    | {
+        static: StaticVariable;
+      }
+    | {
+        external: ExternalVariable;
+      }
+    | {
+        query: QueryVariable;
+      };
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type UpdateFnValue =
+    | {
+        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
+      }
+    | {
+        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
+      };
+  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
+    | {
+        simple: string;
+      }
+    | {
+        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
+      }
+    | {
+        ref: string;
+      }
+    | {
+        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
+      };
+  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
+  export type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
+  export type QueryRequestFor_String =
+    | {
+        bank: BankQuery;
+      }
+    | {
+        custom: string;
+      }
+    | {
+        staking: StakingQuery;
+      }
+    | {
+        stargate: {
+          /**
+           * this is the expected protobuf message type (not any), binary encoded
+           */
+          data: Binary;
+          /**
+           * this is the fully qualified service path used for routing, eg. custom/cosmos_sdk.x.bank.v1.Query/QueryBalance
+           */
+          path: string;
+        };
+      }
+    | {
+        ibc: IbcQuery;
+      }
+    | {
+        wasm: WasmQuery;
+      };
+  export type BankQuery =
+    | {
+        balance: {
+          address: string;
+          denom: string;
+        };
+      }
+    | {
+        all_balances: {
+          address: string;
+        };
+      };
+  export type StakingQuery =
+    | {
+        bonded_denom: {};
+      }
+    | {
+        all_delegations: {
+          delegator: string;
+        };
+      }
+    | {
+        delegation: {
+          delegator: string;
+          validator: string;
+        };
+      }
+    | {
+        all_validators: {};
+      }
+    | {
+        validator: {
+          /**
+           * The validator's address (e.g. (e.g. cosmosvaloper1...))
+           */
+          address: string;
+        };
+      };
+  export type IbcQuery =
+    | {
+        port_id: {};
+      }
+    | {
+        list_channels: {
+          port_id?: string | null;
+        };
+      }
+    | {
+        channel: {
+          channel_id: string;
+          port_id?: string | null;
+        };
+      };
+  export type WasmQuery =
+    | {
+        smart: {
+          contract_addr: string;
+          /**
+           * msg is the json-encoded QueryMsg struct
+           */
+          msg: Binary;
+        };
+      }
+    | {
+        raw: {
+          contract_addr: string;
+          /**
+           * Key is the raw key used in the contracts Storage
+           */
+          key: Binary;
+        };
+      }
+    | {
+        contract_info: {
+          contract_addr: string;
+        };
+      };
+  export type TemplateKind = 'query' | 'msg';
+  export interface CreateJobMsg {
+    condition: Condition;
+    msgs: string[];
+    name: string;
+    reward: Uint128;
+    vars: Variable[];
+  }
+  export interface GenExprFor_ValueFor_StringAnd_StringOp {
+    left: ValueFor_String;
+    op: StringOp;
+    right: ValueFor_String;
+  }
+  export interface GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp {
+    left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+    op: NumOp;
+    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+  }
+  export interface NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+    left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+    op: NumExprOp;
+    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+  }
+  export interface NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+    op: IntFnOp;
+    right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+  }
+  export interface GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp {
+    left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+    op: NumOp;
+    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+  }
+  export interface NumExprValueForInt128And_NumExprOpAnd_IntFnOp {
+    left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+    op: NumExprOp;
+    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+  }
+  export interface NumFnValueForInt128And_NumExprOpAnd_IntFnOp {
+    op: IntFnOp;
+    right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+  }
+  export interface GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp {
+    left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+    op: NumOp;
+    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+  }
+  export interface NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+    left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+    op: NumExprOp;
+    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+  }
+  export interface NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+    op: DecimalFnOp;
+    right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+  }
+  export interface TimeExpr {
+    comparator: Uint64;
+    op: TimeOp;
+  }
+  export interface BlockExpr {
+    comparator: Uint64;
+    op: NumOp;
+  }
+  export interface StaticVariable {
+    default_value: string;
+    kind: VariableKind;
+    name: string;
+    update_fn?: UpdateFn | null;
+    value?: string | null;
+  }
+  export interface UpdateFn {
+    on_error?: UpdateFnValue | null;
+    on_success: UpdateFnValue;
+  }
+  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
+    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+    op: ExprOp;
+    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+  }
+  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
+    op: FnOp;
+    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+  }
+  export interface ExternalVariable {
+    default_value: ExternalExpr;
+    kind: VariableKind;
+    name: string;
+    update_fn?: UpdateFn | null;
+    value?: string | null;
+  }
+  export interface ExternalExpr {
+    body?: string | null;
+    headers?: string[] | null;
+    method?: Method | null;
+    selector: string;
+    url: string;
+  }
+  export interface QueryVariable {
+    default_value: QueryExpr;
+    kind: VariableKind;
+    name: string;
+    update_fn?: UpdateFn | null;
+    value?: string | null;
+  }
+  export interface QueryExpr {
+    query: QueryRequestFor_String;
+    selector: string;
+  }
+  export interface DeleteJobMsg {
+    id: Uint64;
+  }
+  export interface UpdateJobMsg {
+    added_reward?: Uint128 | null;
+    id: Uint64;
+    name?: string | null;
+  }
+  export interface ExecuteJobMsg {
+    id: Uint64;
+  }
+  export interface CreateAccountMsg {}
+  export interface UpdateConfigMsg {
+    cancellation_fee_percentage?: Uint128 | null;
+    creation_fee_percentage?: Uint128 | null;
+    minimum_reward?: Uint128 | null;
+    owner?: string | null;
+  }
+  export interface SubmitTemplateMsg {
+    formatted_str: string;
+    kind: TemplateKind;
+    msg: string;
+    name: string;
+    vars: Variable[];
+  }
+  export interface EditTemplateMsg {
+    formatted_str?: string | null;
+    id: Uint64;
+    msg?: string | null;
+    name?: string | null;
+    vars?: Variable[] | null;
+  }
+  export interface DeleteTemplateMsg {
+    id: Uint64;
+  }
+  export interface InstantiateMsg {
+    cancellation_fee: Uint128;
+    creation_fee: Uint128;
+    minimum_reward: Uint128;
+    owner?: string | null;
+    warp_account_code_id: Uint64;
+  }
+  export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled';
+  export interface JobResponse {
+    job: Job;
+  }
+  export interface Job {
+    condition: Condition;
+    id: Uint64;
+    last_update_time: Uint64;
+    msgs: string[];
+    name: string;
+    owner: Addr;
+    reward: Uint128;
+    status: JobStatus;
+    vars: Variable[];
   }
   export interface JobsResponse {
     jobs: Job[];
@@ -676,6 +691,7 @@ export module warp_controller {
   }
   export interface QueryResolveConditionMsg {
     condition: Condition;
+    vars: Variable[];
   }
   export interface SimulateQueryMsg {
     query: QueryRequestFor_String;
@@ -693,6 +709,7 @@ export module warp_controller {
   }
   export interface QueryTemplatesMsg {
     ids?: Uint64[] | null;
+    kind?: TemplateKind | null;
     limit?: number | null;
     name?: string | null;
     owner?: Addr | null;
