@@ -7,13 +7,13 @@ import { useEffect, useMemo } from 'react';
 import styles from './TemplateDetails.module.sass';
 import { ReactComponent as TrashIcon } from 'components/assets/Trash.svg';
 import { ReactComponent as PlusIcon } from 'components/assets/Plus.svg';
-import { templateToInput, useTemplateNewForm } from 'pages/template-new/useTemplateNewForm';
+import { templateToInput, TemplateVar, useTemplateNewForm } from 'pages/template-new/useTemplateNewForm';
 import { FormControl } from 'components/form-control/FormControl';
 import { QuerySelectorInputField } from 'forms/QueryExprForm/QuerySelectorInputField';
 import { TemplateMessageInput } from 'pages/template-new/template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
 import { useDeleteTemplateTx, useEditTemplateTx } from 'tx';
-import { TemplateVarKindInput } from 'pages/template-new/template-var-kind-input/TemplateVarKindInput';
+import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 
 type TemplateDetailsProps = UIElementProps & {
   selectedTemplate: warp_controller.Template | undefined;
@@ -22,7 +22,7 @@ type TemplateDetailsProps = UIElementProps & {
   isLoading: boolean;
 };
 
-const templateVarKinds: warp_controller.TemplateVarKind[] = [
+const templateVarKinds: warp_controller.VariableKind[] = [
   'string',
   'uint',
   'int',
@@ -57,7 +57,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
   const [editTemplateTxResult, editTemplateTx] = useEditTemplateTx();
   const [deleteTemplateTxResult, deleteTemplateTx] = useDeleteTemplateTx();
 
-  const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
+  const updateTemplateVar = (idx: number, updates: Partial<TemplateVar>) => {
     const updatedVars = [...vars];
     const prev = updatedVars[idx];
     updatedVars[idx] = { ...prev, ...updates };
@@ -98,7 +98,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                             }}
                           />
                         </FormControl>
-                        <TemplateVarKindInput
+                        <VariableKindInput
                           label=""
                           className={styles.variable_kind_input}
                           value={templateVar.kind}
@@ -144,6 +144,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                     vars: [
                       ...vars,
                       {
+                        default_value: '',
                         path: '',
                         name: '',
                         kind: 'string',
@@ -174,7 +175,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                   id: selectedTemplate.id,
                   formatted_str: formattedStr,
                   msg,
-                  vars,
+                  vars: vars.map((v) => ({ static: v })),
                   name,
                 });
 

@@ -14,13 +14,13 @@ import { TemplateMessageInput } from './template-message/TemplateMessageInput';
 import { warp_controller } from 'types';
 import { useCreateTemplateTx } from 'tx';
 import { TemplateKindInput } from './template-kind-input/TemplateKindInput';
-import { TemplateVarKindInput } from './template-var-kind-input/TemplateVarKindInput';
-import { useTemplateNewForm } from './useTemplateNewForm';
+import { VariableKindInput } from '../variables/variable-kind-input/VariableKindInput';
+import { TemplateVar, useTemplateNewForm } from './useTemplateNewForm';
 
 type TemplateNewProps = UIElementProps & {};
 
 const templateKinds: warp_controller.TemplateKind[] = ['query', 'msg'];
-const templateVarKinds: warp_controller.TemplateVarKind[] = [
+const templateVarKinds: warp_controller.VariableKind[] = [
   'string',
   'uint',
   'int',
@@ -40,7 +40,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const { name, msg, submitDisabled, formattedStr, vars, kind, paths } = formState;
 
-  const updateTemplateVar = (idx: number, updates: Partial<warp_controller.TemplateVar>) => {
+  const updateTemplateVar = (idx: number, updates: Partial<TemplateVar>) => {
     const updatedVars = [...vars];
     const prev = updatedVars[idx];
     updatedVars[idx] = { ...prev, ...updates };
@@ -100,7 +100,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                         }}
                       />
                     </FormControl>
-                    <TemplateVarKindInput
+                    <VariableKindInput
                       label=""
                       className={styles.variable_kind_input}
                       value={templateVar.kind}
@@ -146,6 +146,9 @@ export const TemplateNew = (props: TemplateNewProps) => {
                 vars: [
                   ...vars,
                   {
+                    default_value: {
+                      static: '',
+                    },
                     path: '',
                     name: '',
                     kind: 'string',
@@ -174,7 +177,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
               formatted_str: formattedStr,
               msg,
               kind,
-              vars,
+              vars: vars.map((v) => ({ static: v })),
               name,
             });
 
