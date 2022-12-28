@@ -7,11 +7,15 @@ import { generatePaths } from 'utils';
 interface TemplateNewInput {
   name: string;
   kind: warp_controller.TemplateKind;
-  vars: warp_controller.TemplateVar[];
+  vars: TemplateVar[];
   formattedStr: string;
   msg: string;
   paths: string[];
 }
+
+export type TemplateVar = warp_controller.StaticVariable & {
+  path: string;
+};
 
 export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNewInput> {
   submitDisabled: boolean;
@@ -23,7 +27,8 @@ export const templateToInput = (template?: warp_controller.Template): TemplateNe
   return {
     name: template?.name ?? '',
     kind: template?.kind ?? ('' as any),
-    vars: template?.vars ?? [],
+    vars: (template?.vars.filter((v) => 'static' in v).map((v: any) => ({ ...v.static, path: '' })) ??
+      []) as TemplateVar[],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
     paths: template?.msg ? generatePaths(template.msg) : [],
