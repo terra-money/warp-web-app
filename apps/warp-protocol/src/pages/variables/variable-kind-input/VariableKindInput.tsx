@@ -1,23 +1,23 @@
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import styles from './TemplateVarKindInput.module.sass';
+import styles from './VariableKindInput.module.sass';
 import classNames from 'classnames';
 import { MenuAction } from 'components/menu-button/MenuAction';
 import { FormControl } from 'components/form-control/FormControl';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { warp_controller } from 'types';
+import { warp_controller } from 'types/contracts/warp_controller';
 
-type TemplateVarKindInputProps = UIElementProps & {
-  value?: warp_controller.TemplateVarKind | null;
+type VariableKindInputProps = UIElementProps & {
+  value?: warp_controller.VariableKind | null;
   label: string;
-  options: warp_controller.TemplateVarKind[];
+  options: warp_controller.VariableKind[];
   placeholder: string;
-  onChange: (value: warp_controller.TemplateVarKind | undefined) => void;
+  onChange: (value: warp_controller.VariableKind | undefined) => void;
 };
 
-export function TemplateVarKindInput(props: TemplateVarKindInputProps) {
+export function VariableKindInput(props: VariableKindInputProps) {
   const { value, onChange, placeholder, className, options, label } = props;
 
   const component = !value ? (
