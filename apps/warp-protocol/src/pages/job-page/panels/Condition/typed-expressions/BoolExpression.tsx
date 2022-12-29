@@ -1,19 +1,19 @@
-import { warp_controller } from '../../../../../types';
+// import { warp_controller } from '../../../../../types';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
 import { VariableValue } from './VariableValue';
 
 export type BoolExpressionProps = {
-  expression: warp_controller.BoolExpr;
+  variableRef: string;
   job: Job;
 } & UIElementProps;
 
 export const BoolExpression = (props: BoolExpressionProps) => {
-  const { expression, className, job } = props;
+  const { variableRef, className, job } = props;
 
   return (
     <span className={className}>
-      <VariableValue job={job} variableRef={expression.ref} />
+      <VariableValue job={job} variableRef={variableRef} />
     </span>
   );
 };

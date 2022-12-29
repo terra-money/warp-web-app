@@ -1,6 +1,6 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
-import { resolveVariableRef } from 'utils/variable';
+import { resolveVariableRef, variableName } from 'utils/variable';
 
 export type VariableValueProps = {
   variableRef: string;
@@ -12,5 +12,5 @@ export const VariableValue = (props: VariableValueProps) => {
 
   const variable = resolveVariableRef(variableRef, job.vars);
 
-  return <span>{variable.name}</span>;
+  return <span>{variableName(variable)}</span>;
 };

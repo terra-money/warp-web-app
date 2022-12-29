@@ -46,3 +46,12 @@ const extractName = (str: string) => {
   const parts = str.split('.');
   return parts[parts.length - 1];
 };
+
+export const templateVariables = (template: warp_controller.Template) => {
+  const staticVariables = template.vars.filter((v) => 'static' in v) as Extract<
+    warp_controller.Variable,
+    { static: {} }
+  >[];
+
+  return staticVariables.map((v) => v.static);
+};

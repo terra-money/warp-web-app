@@ -15,6 +15,7 @@ import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
 import { TemplateVar as TVar } from 'pages/template-new/useTemplateNewForm';
+import { templateVariables } from 'utils/variable';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
@@ -124,8 +125,12 @@ export const DetailsForm = (props: DetailsFormProps) => {
               options={options}
               template={template}
               setTemplate={(template) => input({ template })}
-              setTemplateVars={(vars) => input({ template: { ...(template as warp_controller.Template), vars } })}
-              templateVars={template?.vars ?? []}
+              setTemplateVars={(vars) =>
+                input({
+                  template: { ...(template as warp_controller.Template), vars: vars.map((v) => ({ static: v })) },
+                })
+              }
+              templateVars={template ? templateVariables(template) : []}
               onMessageComposed={(message) => input({ message })}
             />
           </>

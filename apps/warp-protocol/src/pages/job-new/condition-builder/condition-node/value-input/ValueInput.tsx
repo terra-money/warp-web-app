@@ -4,11 +4,11 @@ import { TextInput } from 'components/primitives/text-input';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ReactComponent as LightningIcon } from 'components/assets/Lightning.svg';
 import { ReactComponent as PuzzleIcon } from 'components/assets/Puzzle.svg';
-import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
+// import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
 import { warp_controller } from 'types';
 
 import styles from './ValueInput.module.sass';
-import { useQueryExprDialog } from '../query-expr-dialog';
+// import { useQueryExprDialog } from '../query-expr-dialog';
 import { NumericInput } from 'components/primitives/numeric-input';
 import classNames from 'classnames';
 import { MenuAction } from 'components/menu-button/MenuAction';
@@ -28,21 +28,21 @@ type ValueInputProps<T extends Value> = UIElementProps & {
 export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
   const { value, onChange, variant } = props;
 
-  const openQueryExprDialog = useQueryExprDialog();
+  // const openQueryExprDialog = useQueryExprDialog();
 
-  const onQueryDialogClick = async (value: T, setValue: (queryExpr?: warp_controller.QueryExpr) => void) => {
-    const queryExpr = await openQueryExprDialog({
-      query: 'query' in value ? value.query : undefined,
-      includeNav: true,
-    });
+  // const onQueryDialogClick = async (value: T, setValue: (queryExpr?: warp_controller.QueryExpr) => void) => {
+  // const queryExpr = await openQueryExprDialog({
+  //   query: 'query' in value ? value.query : undefined,
+  //   includeNav: true,
+  // });
 
-    setValue(queryExpr);
-  };
+  // setValue(queryExpr);
+  // };
 
   const getText = (v: T) => {
-    if ('query' in v) {
-      return v.query.name;
-    }
+    // if ('query' in v) {
+    //   return v.query.name;
+    // }
 
     if ('simple' in v) {
       return v.simple;
@@ -74,25 +74,25 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
             <span>Simple</span>
             <PuzzleIcon className={styles.puzzle_icon} />
           </MenuAction>
-          <MenuAction
+          {/* <MenuAction
             className={classNames(styles.dropdown_item, 'query' in value && styles.dropdown_item_selected)}
             onClick={() => onQueryDialogClick(value, (q) => q && onChange({ query: q } as T))}
           >
             <span>Query</span>
             <LightningIcon className={styles.lightning_icon} />
-          </MenuAction>
+          </MenuAction> */}
         </DropdownMenu>
       </>
     ),
     endAdornment: (
       <>
         <InputAdornment position="end">
-          {'query' in value ? (
+          {/* {'query' in value ? (
             <PencilIcon
               className={styles.pencil_icon}
               onClick={() => onQueryDialogClick(value, (q) => q && onChange({ query: q } as T))}
             />
-          ) : null}
+          ) : null} */}
         </InputAdornment>
       </>
     ),
@@ -107,9 +107,9 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
         value={getText(value)}
         disabled={'query' in value}
         onChange={(event) => {
-          if ('query' in value && event.target.value === value.query.name) {
-            return;
-          }
+          // if ('query' in value && event.target.value === value.query.name) {
+          //   return;
+          // }
 
           onChange({ simple: event.target.value } as T);
         }}
@@ -126,9 +126,9 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
       value={getText(value)}
       disabled={'query' in value}
       onChange={(event) => {
-        if ('query' in value && event.target.value === value.query.name) {
-          return;
-        }
+        // if ('query' in value && event.target.value === value.query.name) {
+        //   return;
+        // }
 
         onChange({ simple: event.target.value } as T);
       }}

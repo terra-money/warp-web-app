@@ -30,7 +30,7 @@ export const Expression = (props: ExpressionProps) => {
   }
 
   if ('bool' in expression) {
-    return <BoolExpression className={className} expression={expression.bool} job={job} />;
+    return <BoolExpression className={className} variableRef={expression.bool} job={job} />;
   }
 
   if ('decimal' in expression) {

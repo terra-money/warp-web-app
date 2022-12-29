@@ -6,7 +6,7 @@ import { useCopy } from '../../../hooks';
 import classNames from 'classnames';
 
 import styles from './JobMessagePanel.module.sass';
-import { decodeMsg } from 'pages/job-new/useJobStorage';
+import { decodedMsgs } from 'pages/job-new/useJobStorage';
 
 export type JobMessagePanelProps = {
   job: Job;
@@ -14,7 +14,8 @@ export type JobMessagePanelProps = {
 
 export const JobMessagePanel = (props: JobMessagePanelProps) => {
   const { job, className } = props;
-  const copy = useCopy('message', JSON.stringify(job.info.msgs.map(decodeMsg), null, 2));
+  const copy = useCopy('message', JSON.stringify(decodedMsgs(job), null, 2));
+  // TODO: maybe JSON.parse before copying in case commas appear
   const copyRaw = useCopy('message', JSON.stringify(job.info.msgs, null, 2));
 
   return (
@@ -30,7 +31,7 @@ export const JobMessagePanel = (props: JobMessagePanelProps) => {
           </Button>
         </Container>
       </Container>
-      <pre className={styles.message}>{JSON.stringify(job.info.msgs.map(decodeMsg), null, 4)}</pre>
+      <pre className={styles.message}>{JSON.stringify(decodedMsgs(job), null, 4)}</pre>
     </Panel>
   );
 };

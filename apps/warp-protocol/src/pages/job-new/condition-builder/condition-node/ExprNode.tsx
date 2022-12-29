@@ -4,7 +4,7 @@ import { Button, Text } from 'components/primitives';
 import { forwardRef } from 'react';
 import { warp_controller } from 'types';
 import { BlockheightExprNode } from './BlockheightExprNode';
-import { BoolExprNode } from './BoolExprNode';
+// import { BoolExprNode } from './BoolExprNode';
 
 import styles from './ConditionNode.module.sass';
 import { DecimalExprNode } from './DecimalExprNode';
@@ -117,7 +117,7 @@ export const ExprNode = forwardRef((props: ExprNodeProps, ref: React.Ref<HTMLDiv
           Boolean expression
         </Text>
         <div className={styles.exprs}>
-          <BoolExprNode expr={expr.bool} setExpr={(expr) => setCond({ expr: { bool: expr } })} />
+          {/* <BoolExprNode expr={expr.bool} setExpr={(expr) => setCond({ expr: { bool: expr } })} /> */}
           <Button
             className={styles.delete_btn}
             icon={<TrashIcon onClick={() => setCond({} as any)} />}
