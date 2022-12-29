@@ -174,7 +174,11 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
               options={options}
               template={template}
               setTemplate={(template) => input({ template })}
-              setTemplateVars={(vars) => input({ template: { ...(template as warp_controller.Template), vars } })}
+              setTemplateVars={(vars) =>
+                input({
+                  template: { ...(template as warp_controller.Template), vars: vars.map((v) => ({ static: v })) },
+                })
+              }
               // TODO: append paths to vars
               // templateVars={template?.vars ?? []}
               templateVars={[]}

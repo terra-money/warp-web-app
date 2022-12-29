@@ -158,7 +158,7 @@ const filterExpr = (expr: warp_controller.Expr) => {
   }
 
   if ('bool' in expr) {
-    if (validRef(expr.bool)) {
+    if (!isEmpty(expr.bool)) {
       return expr;
     }
   }

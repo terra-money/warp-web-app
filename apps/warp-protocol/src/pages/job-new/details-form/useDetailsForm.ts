@@ -4,15 +4,16 @@ import { fetchTokenBalance } from '@terra-money/apps/queries';
 import { LUNA, Token, u } from '@terra-money/apps/types';
 import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
 import Big from 'big.js';
-import { TemplateWithVarValues } from 'forms/QueryExprForm';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
+import { warp_controller } from 'types';
+import { variableValue } from 'utils/variable';
 
 export interface DetailsFormInput {
   name: string;
   reward: string;
   message: string;
-  template?: TemplateWithVarValues;
+  template?: warp_controller.Template;
   selectedTabType?: 'template' | 'message';
 }
 
@@ -106,7 +107,10 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
 
     const messageValid = Boolean(state.message) && messageError === undefined;
 
-    const templateError = Boolean(state.template?.vars.find((v) => isEmpty(v.value)))
+    // TODO: check this
+    const templateError = Boolean(
+      state.template?.vars.filter((v) => 'static' in v).find((v) => isEmpty(variableValue(v)))
+    )
       ? 'All variables must be filled.'
       : undefined;
 

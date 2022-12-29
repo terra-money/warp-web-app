@@ -146,9 +146,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                 vars: [
                   ...vars,
                   {
-                    default_value: {
-                      static: '',
-                    },
+                    default_value: '',
                     path: '',
                     name: '',
                     kind: 'string',
