@@ -55,3 +55,27 @@ export const templateVariables = (template: warp_controller.Template) => {
 
   return staticVariables.map((v) => v.static);
 };
+
+export const findVariablePath = (json: any, name: string): string | undefined => {
+  const path: string[] = [];
+
+  const search = (obj: any, currentPath: string): boolean => {
+    if (obj instanceof Object) {
+      for (const [key, value] of Object.entries(obj)) {
+        if (search(value, `${currentPath}.${key}`)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (obj === `$warp.variable.${name}`) {
+      path.push(currentPath);
+      return true;
+    }
+    return false;
+  };
+
+  search(json, '$');
+
+  return path.length > 0 ? path[0] : undefined;
+};
