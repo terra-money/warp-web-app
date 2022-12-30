@@ -2,18 +2,23 @@ import { Container } from '@terra-money/apps/components';
 import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { warp_controller } from 'types';
 import styles from '../DetailsForm.module.sass';
-// import jsonpath from 'jsonpath';
-import { useEffect } from 'react';
+import jsonpath from 'jsonpath';
+import { useEffect, useMemo } from 'react';
 import { TemplatesInput } from '../templates-input/TemplatesInput';
 import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
+import { findVariablePath, templateVariables } from 'utils/variable';
 
-const composeMsgFromTemplate = (template: warp_controller.Template, vars: warp_controller.StaticVariable[]): string => {
+const composeMsgFromTemplate = (template: warp_controller.Template): string => {
+  const vars = templateVariables(template);
   let json = JSON.parse(template.msg);
 
   vars.forEach((v) => {
     try {
-      // TODO: add paths
-      // jsonpath.value(json, v.path, v.value);
+      const path = findVariablePath(json, v.name);
+
+      if (path) {
+        jsonpath.value(json, path, v.default_value);
+      }
     } catch (err) {
       // consume the error
     }
@@ -26,22 +31,23 @@ type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
   template?: warp_controller.Template;
   setTemplate: (template: warp_controller.Template | undefined) => void;
-  templateVars: warp_controller.StaticVariable[];
   setTemplateVars: (vars: warp_controller.StaticVariable[]) => void;
   options: warp_controller.Template[];
 };
 
 export const TemplateForm = (props: TemplateFormProps) => {
-  const { onMessageComposed, template, setTemplate, templateVars, setTemplateVars, options } = props;
+  const { onMessageComposed, template, setTemplate, setTemplateVars, options } = props;
 
   useEffect(() => {
-    if (template && templateVars) {
-      const msg = composeMsgFromTemplate(template, Object.values(templateVars));
+    if (template) {
+      const msg = composeMsgFromTemplate(template);
       onMessageComposed(msg);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [template, templateVars]);
+  }, [template]);
+
+  const templateVars = useMemo(() => (template ? templateVariables(template) : []), [template]);
 
   return (
     <>
@@ -51,7 +57,7 @@ export const TemplateForm = (props: TemplateFormProps) => {
         options={options}
         placeholder="Select a template"
         value={template}
-        onChange={(tmpl) => setTemplate(tmpl && { ...tmpl, vars: tmpl.vars.map((v) => ({ ...v, value: '' })) })}
+        onChange={(tmpl) => setTemplate(tmpl)}
       />
       {template && (
         <>

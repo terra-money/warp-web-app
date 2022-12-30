@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
 import { generatePaths } from 'utils';
-import { variableValue } from 'utils/variable';
+import { templateVariables } from 'utils/variable';
 
 interface QueryVariableInput {
   name: string;
@@ -72,9 +72,12 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
       state.querySelector === null || state.querySelector.length < 1 || querySelectorError
     );
 
-    const templateError = Boolean(state.template?.vars.find((v) => isEmpty(variableValue(v))))
+    const templateError = Boolean(
+      state.template && templateVariables(state.template).find((v) => isEmpty(v.default_value))
+    )
       ? 'All variables must be filled.'
       : undefined;
+
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
