@@ -68,7 +68,7 @@ export const Details = (props: DetailsProps) => {
           const { submitDisabled, name, value, kind } = state;
 
           return (
-            <Container className={styles.button_container} direction="row">
+            <Container className={styles.footer} direction="row">
               <Button
                 className={styles.save}
                 disabled={submitDisabled}
@@ -103,7 +103,7 @@ export const Details = (props: DetailsProps) => {
           const { submitDisabled, name, url, selector, kind } = state;
 
           return (
-            <Container className={styles.button_container} direction="row">
+            <Container className={styles.footer} direction="row">
               <Button
                 className={styles.save}
                 disabled={submitDisabled}

@@ -25,7 +25,7 @@ export const Nav = (props: NavProps) => {
           key={variableName(v)}
           className={classNames(
             styles.variable,
-            variableName(v) === (selectedVariable && variableName(selectedVariable)) && styles.selected_variable
+            selectedVariable && variableName(v) === variableName(selectedVariable) && styles.selected_variable
           )}
           onClick={() => setSelectedVariable(v)}
         >
