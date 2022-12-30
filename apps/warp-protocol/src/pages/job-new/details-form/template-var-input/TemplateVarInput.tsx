@@ -1,6 +1,5 @@
 import { demicrofy, microfy } from '@terra-money/apps/libs/formatting';
 import { u } from '@terra-money/apps/types';
-import { capitalize } from '@mui/material';
 import Big from 'big.js';
 import { TokenInput } from 'pages/balances/token-input/TokenInput';
 import { DateInput } from 'pages/dashboard/jobs-widget/inputs/DateInput';
@@ -33,7 +32,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
   if (['int', 'uint', 'decimal'].includes(templateVar.kind)) {
     return (
-      <FormControl label={capitalize(templateVar.name)}>
+      <FormControl label={templateVar.name}>
         <NumericInput
           placeholder={`Type ${templateVar.name} here`}
           margin="none"
@@ -41,7 +40,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
           onChange={(value) => {
             setTemplateVars(
               updateTemplateVar(templateVar.name, {
-                value: value.target.value,
+                default_value: value.target.value,
               })
             );
           }}
@@ -53,12 +52,12 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   if (templateVar.kind === 'amount') {
     return (
       <AmountInput
-        label={capitalize(templateVar.name)}
+        label={templateVar.name}
         value={templateVar.default_value && demicrofy(Big(templateVar.default_value) as u<Big>, 6)}
         onChange={(value) =>
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
+              default_value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
             })
           )
         }
@@ -71,13 +70,13 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
     return (
       <DateInput
-        label={capitalize(templateVar.name)}
+        label={templateVar.name}
         placeholder={`Example: "tomorrow at 15:30"`}
         value={date}
         onChange={(v) =>
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
+              default_value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
             })
           )
         }
@@ -88,12 +87,12 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   if (templateVar.kind === 'asset') {
     return (
       <TokenInput
-        label={capitalize(templateVar.name)}
+        label={templateVar.name}
         value={tokens[templateVar.default_value]}
         onChange={(token) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              value: token.key,
+              default_value: token.key,
             })
           );
         }}
@@ -102,7 +101,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   }
 
   return (
-    <FormControl label={capitalize(templateVar.name)}>
+    <FormControl label={templateVar.name}>
       <TextInput
         placeholder={`Type ${templateVar.name} here`}
         margin="none"
@@ -110,7 +109,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         onChange={(value) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              value: value.target.value,
+              default_value: value.target.value,
             })
           );
         }}

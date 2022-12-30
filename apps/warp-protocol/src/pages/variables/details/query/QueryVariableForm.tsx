@@ -179,9 +179,6 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
                   template: { ...(template as warp_controller.Template), vars: vars.map((v) => ({ static: v })) },
                 })
               }
-              // TODO: append paths to vars
-              // templateVars={template?.vars ?? []}
-              templateVars={[]}
               onMessageComposed={(message) => input({ queryJson: message })}
             />
           </>
