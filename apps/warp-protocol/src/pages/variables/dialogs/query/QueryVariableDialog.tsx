@@ -7,6 +7,7 @@ import styles from './QueryVariableDialog.module.sass';
 import { Button } from 'components/primitives';
 import { QueryVariableForm } from 'pages/variables/details/query/QueryVariableForm';
 import { QueryVariable } from 'pages/variables/useVariableStorage';
+import { encodeQuery } from 'utils';
 
 export type QueryVariableDialogProps = {
   variable?: QueryVariable;
@@ -23,11 +24,23 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled } = state;
+            const { submitDisabled, name, queryJson, querySelector, kind } = state;
 
             return (
               <DialogFooter className={styles.footer}>
-                <Button variant="primary" disabled={submitDisabled} onClick={async () => {}}>
+                <Button
+                  variant="primary"
+                  disabled={submitDisabled}
+                  onClick={async () => {
+                    if (!submitDisabled) {
+                      closeDialog({
+                        name,
+                        default_value: { query: encodeQuery(queryJson), selector: querySelector },
+                        kind,
+                      });
+                    }
+                  }}
+                >
                   Save
                 </Button>
                 <Button variant="secondary" onClick={() => closeDialog(undefined)}>

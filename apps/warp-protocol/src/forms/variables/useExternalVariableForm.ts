@@ -2,7 +2,7 @@ import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/h
 import { useMemo } from 'react';
 import { warp_controller } from 'types';
 
-interface ExternalVariableInput {
+export interface ExternalVariableInput {
   name: string;
   kind: warp_controller.VariableKind;
   body?: string | null;
@@ -46,6 +46,7 @@ export const useExternalVariableForm = (externalVariable?: warp_controller.Exter
     };
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
+    const kindError = !state.kind ? 'Variable type is required' : undefined;
     const urlError = !state.url ? 'URL is required' : undefined;
     const selectorError = !state.selector ? 'Selector is required' : undefined;
 
@@ -56,6 +57,7 @@ export const useExternalVariableForm = (externalVariable?: warp_controller.Exter
         nameError ||
         state.url === undefined ||
         urlError ||
+        kindError ||
         state.selector === undefined ||
         selectorError
     );
@@ -63,8 +65,6 @@ export const useExternalVariableForm = (externalVariable?: warp_controller.Exter
     dispatch({
       ...state,
       nameError,
-      urlError,
-      selectorError,
       submitDisabled,
     });
   };

@@ -1,5 +1,10 @@
 import { Form, UIElementProps } from '@terra-money/apps/components';
-import { StaticVariableState, staticVariableToInput, useStaticVariableForm } from 'forms/variables';
+import {
+  StaticVariableInput,
+  StaticVariableState,
+  staticVariableToInput,
+  useStaticVariableForm,
+} from 'forms/variables';
 import { useEffect, useMemo } from 'react';
 import { isMatch } from 'lodash';
 import classNames from 'classnames';
@@ -10,6 +15,7 @@ import { InputAdornment } from '@mui/material';
 import styles from './StaticVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
+import { VariableValueInput } from './variable-value-input/VariableValueInput';
 
 export type StaticVariableFormProps = UIElementProps & {
   selectedVariable?: warp_controller.StaticVariable;
@@ -30,7 +36,7 @@ const staticVariableKinds: warp_controller.VariableKind[] = [
 export const StaticVariableForm = (props: StaticVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useStaticVariableForm();
-  const { name, nameError, value, kind, submitDisabled, valueError } = formState;
+  const { name, nameError, value, kind, submitDisabled } = formState;
 
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
@@ -43,9 +49,9 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
     () =>
       !isMatch(staticVariableToInput(selectedVariable), {
         name,
-        default_value: value,
+        value,
         kind,
-      }),
+      } as StaticVariableInput),
     [selectedVariable, name, value, kind]
   );
 
@@ -79,22 +85,18 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
           options={staticVariableKinds}
           placeholder="Select variable type"
           onChange={(value) => {
-            input({ kind: value });
+            input({ kind: value, value: '' });
           }}
         />
-        <FormControl label="Value" fullWidth className={styles.value_input}>
-          <TextInput
-            placeholder="Type value here"
-            margin="none"
-            value={value}
-            onChange={(v) => {
-              input({ value: v.target.value });
-            }}
-            fullWidth
-            helperText={valueError}
-            error={valueError !== undefined}
-          />
-        </FormControl>
+        <VariableValueInput
+          label="Value"
+          placeholder="Type value here"
+          value={value}
+          kind={kind}
+          onChange={(v) => {
+            input({ value: v });
+          }}
+        />
       </Form>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>
