@@ -18,18 +18,33 @@ export const ExternalVariableDialog = (
   const { closeDialog, variable } = props;
 
   return (
-    <Dialog>
+    <Dialog className={styles.dialog}>
       <DialogHeader title="New external variable" onClose={() => closeDialog(undefined)} />
       <DialogBody>
         <ExternalVariableForm
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled } = state;
+            const { submitDisabled, name, url, selector, kind } = state;
 
             return (
-              <DialogFooter>
-                <Button variant="primary" disabled={submitDisabled} onClick={async () => {}}>
+              <DialogFooter className={styles.footer}>
+                <Button
+                  variant="primary"
+                  disabled={submitDisabled}
+                  onClick={async () => {
+                    if (!submitDisabled) {
+                      closeDialog({
+                        name,
+                        default_value: {
+                          url,
+                          selector,
+                        },
+                        kind,
+                      });
+                    }
+                  }}
+                >
                   Save
                 </Button>
                 <Button variant="secondary" onClick={() => closeDialog(undefined)}>

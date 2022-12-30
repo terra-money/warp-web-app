@@ -5,7 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
-import { QueryVariableState, queryVariableToInput, useQueryVariableForm } from 'forms/variables';
+import { QueryVariableInput, QueryVariableState, queryVariableToInput, useQueryVariableForm } from 'forms/variables';
 import { usePreviewQueryDialog } from 'components/dialog/preview-query/PreviewQueryDialog';
 import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
@@ -117,9 +117,10 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
     () =>
       !isMatch(queryVariableToInput(selectedVariable), {
         name,
-        default_value: { query: queryJson, selector: querySelector },
+        queryJson,
+        querySelector,
         kind,
-      }),
+      } as QueryVariableInput),
     [selectedVariable, name, kind, querySelector, queryJson]
   );
 

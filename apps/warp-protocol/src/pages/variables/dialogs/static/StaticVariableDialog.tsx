@@ -16,18 +16,30 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
   const { closeDialog, variable } = props;
 
   return (
-    <Dialog>
+    <Dialog className={styles.dialog}>
       <DialogHeader title="New static variable" onClose={() => closeDialog(undefined)} />
       <DialogBody>
         <StaticVariableForm
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled } = state;
+            const { submitDisabled, name, value, kind } = state;
 
             return (
-              <DialogFooter>
-                <Button variant="primary" disabled={submitDisabled} onClick={async () => {}}>
+              <DialogFooter className={styles.footer}>
+                <Button
+                  variant="primary"
+                  disabled={submitDisabled}
+                  onClick={async () => {
+                    if (!submitDisabled) {
+                      closeDialog({
+                        name,
+                        default_value: value,
+                        kind,
+                      });
+                    }
+                  }}
+                >
                   Save
                 </Button>
                 <Button variant="secondary" onClick={() => closeDialog(undefined)}>

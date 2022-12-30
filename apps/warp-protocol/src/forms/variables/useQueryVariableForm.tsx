@@ -6,7 +6,7 @@ import { warp_controller } from 'types';
 import { generatePaths } from 'utils';
 import { templateVariables } from 'utils/variable';
 
-interface QueryVariableInput {
+export interface QueryVariableInput {
   name: string;
   queryJson: string;
   kind: warp_controller.VariableKind;

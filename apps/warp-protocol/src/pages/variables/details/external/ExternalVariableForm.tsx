@@ -1,5 +1,10 @@
 import { Form, UIElementProps } from '@terra-money/apps/components';
-import { ExternalVariableState, externalVariableToInput, useExternalVariableForm } from 'forms/variables';
+import {
+  ExternalVariableInput,
+  ExternalVariableState,
+  externalVariableToInput,
+  useExternalVariableForm,
+} from 'forms/variables';
 import { useEffect, useMemo } from 'react';
 import { isMatch } from 'lodash';
 import classNames from 'classnames';
@@ -43,12 +48,10 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
     () =>
       !isMatch(externalVariableToInput(selectedVariable), {
         name,
-        default_value: {
-          url,
-          selector,
-        },
+        url,
+        selector,
         kind,
-      }),
+      } as ExternalVariableInput),
     [selectedVariable, name, kind, url, selector]
   );
 
@@ -75,43 +78,43 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
             }}
           />
         </FormControl>
+        <VariableKindInput
+          label="Variable type"
+          className={styles.kind_input}
+          value={kind}
+          options={externalVarKinds}
+          placeholder="Select variable type"
+          onChange={(value) => {
+            input({ kind: value });
+          }}
+        />
+        <FormControl label="Url" fullWidth className={styles.url_input}>
+          <TextInput
+            placeholder="Type url here"
+            margin="none"
+            value={url}
+            onChange={(value) => {
+              input({ url: value.target.value });
+            }}
+            fullWidth
+            helperText={urlError}
+            error={urlError !== undefined}
+          />
+        </FormControl>
+        <FormControl label="Response selector" fullWidth className={styles.selector_input}>
+          <TextInput
+            placeholder="Type selector here"
+            margin="none"
+            value={selector}
+            onChange={(value) => {
+              input({ selector: value.target.value });
+            }}
+            fullWidth
+            helperText={selectorError}
+            error={selectorError !== undefined}
+          />
+        </FormControl>
       </Form>
-      <VariableKindInput
-        label="Variable type"
-        className={styles.kind_input}
-        value={kind}
-        options={externalVarKinds}
-        placeholder="Select variable type"
-        onChange={(value) => {
-          input({ kind: value });
-        }}
-      />
-      <FormControl label="Url" fullWidth className={styles.url_input}>
-        <TextInput
-          placeholder="Type url here"
-          margin="none"
-          value={url}
-          onChange={(value) => {
-            input({ url: value.target.value });
-          }}
-          fullWidth
-          helperText={urlError}
-          error={urlError !== undefined}
-        />
-      </FormControl>
-      <FormControl label="Response selector" fullWidth className={styles.selector_input}>
-        <TextInput
-          placeholder="Type selector here"
-          margin="none"
-          value={selector}
-          onChange={(value) => {
-            input({ selector: value.target.value });
-          }}
-          fullWidth
-          helperText={selectorError}
-          error={selectorError !== undefined}
-        />
-      </FormControl>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>
   );
