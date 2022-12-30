@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react';
 import styles from './Pill.module.sass';
 
 type PillProps = PropsWithChildren & {
-  color: 'green' | 'blue';
+  color: 'green' | 'blue' | 'purple' | 'yellow';
   className?: string;
 };
 
