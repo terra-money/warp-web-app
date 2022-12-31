@@ -9,11 +9,44 @@ import { StaticVariableForm } from './static/StaticVariableForm';
 import { ExternalVariableForm } from './external/ExternalVariableForm';
 import { variableName } from 'utils/variable';
 import { encodeQuery } from 'utils';
+import { Pill } from 'components/primitives/pill/Pill';
 
 type DetailsProps = UIElementProps & {
   selectedVariable: Variable | undefined;
   saveVariable: (variable: Variable) => void;
   deleteVariable: (name: string) => void;
+};
+
+const pillColor = (variable: Variable) => {
+  if ('static' in variable) {
+    return 'purple';
+  }
+
+  if ('external' in variable) {
+    return 'yellow';
+  }
+
+  if ('query' in variable) {
+    return 'blue';
+  }
+
+  return 'green';
+};
+
+const pillContent = (variable: Variable) => {
+  if ('static' in variable) {
+    return 'Static';
+  }
+
+  if ('external' in variable) {
+    return 'External';
+  }
+
+  if ('query' in variable) {
+    return 'Query';
+  }
+
+  return undefined;
 };
 
 export const Details = (props: DetailsProps) => {
@@ -33,6 +66,7 @@ export const Details = (props: DetailsProps) => {
             <Container direction="row" className={styles.footer}>
               <Button
                 variant="primary"
+                className={styles.save}
                 disabled={submitDisabled}
                 onClick={async () => {
                   saveVariable({
@@ -70,6 +104,7 @@ export const Details = (props: DetailsProps) => {
           return (
             <Container className={styles.footer} direction="row">
               <Button
+                variant="primary"
                 className={styles.save}
                 disabled={submitDisabled}
                 onClick={() =>
@@ -105,6 +140,7 @@ export const Details = (props: DetailsProps) => {
           return (
             <Container className={styles.footer} direction="row">
               <Button
+                variant="primary"
                 className={styles.save}
                 disabled={submitDisabled}
                 onClick={() =>
@@ -138,7 +174,17 @@ export const Details = (props: DetailsProps) => {
         Variable preview
       </Text>
       {selectedVariable ? (
-        <>{ExprForm}</>
+        <>
+          <Container className={styles.title_container}>
+            <Text variant="heading1" className={styles.title}>
+              {variableName(selectedVariable)}
+            </Text>
+            <Pill color={pillColor(selectedVariable)} className={styles.pill}>
+              {pillContent(selectedVariable)}
+            </Pill>
+          </Container>
+          {ExprForm}
+        </>
       ) : (
         <Container className={styles.empty}>Select variable for preview.</Container>
       )}
