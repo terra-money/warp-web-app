@@ -107,15 +107,15 @@ export const Details = (props: DetailsProps) => {
                 variant="primary"
                 className={styles.save}
                 disabled={submitDisabled}
-                onClick={() =>
+                onClick={() => {
                   saveVariable({
                     static: {
                       name,
                       default_value: value,
                       kind,
                     },
-                  })
-                }
+                  });
+                }}
               >
                 Save
               </Button>
@@ -143,7 +143,7 @@ export const Details = (props: DetailsProps) => {
                 variant="primary"
                 className={styles.save}
                 disabled={submitDisabled}
-                onClick={() =>
+                onClick={() => {
                   saveVariable({
                     external: {
                       name,
@@ -153,8 +153,8 @@ export const Details = (props: DetailsProps) => {
                       },
                       kind,
                     },
-                  })
-                }
+                  });
+                }}
               >
                 Save
               </Button>
