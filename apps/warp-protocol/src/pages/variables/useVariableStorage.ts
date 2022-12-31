@@ -59,16 +59,23 @@ export const useVariableStorage = () => {
   );
 
   const saveVariable = useCallback(
-    (variable: Variable) => {
-      const VariableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
+    (variable: Variable, prev?: Variable) => {
+      const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
+      let updatedVariables = [];
 
-      if (!VariableExists) {
-        return setVariables([...variables, variable]);
+      if (!variableExists) {
+        updatedVariables = [...variables, variable];
       } else {
         const newVariables = [...variables];
         newVariables[variables.findIndex((v) => variableName(v) === variableName(variable))] = variable;
-        return setVariables(newVariables);
+        updatedVariables = newVariables;
       }
+
+      if (prev && variableName(variable) !== variableName(prev)) {
+        updatedVariables = updatedVariables.filter((v) => variableName(v) !== variableName(prev));
+      }
+
+      setVariables(updatedVariables);
     },
     [setVariables, variables]
   );

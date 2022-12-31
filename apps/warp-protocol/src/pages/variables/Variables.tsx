@@ -29,7 +29,7 @@ const VariablesContent = (props: VariablesContentProps) => {
             const variable = await openVariableDialog({});
 
             if (variable) {
-              saveVariable(variable);
+              saveVariable(variable, selectedVariable);
             }
           }}
         >
@@ -46,12 +46,12 @@ const VariablesContent = (props: VariablesContentProps) => {
         <Details
           className={styles.details}
           selectedVariable={selectedVariable}
-          saveVariable={(q) => {
-            saveVariable(q);
-            setSelectedVariable(q);
+          saveVariable={(variable) => {
+            saveVariable(variable, selectedVariable);
+            setSelectedVariable(variable);
           }}
-          deleteVariable={(q) => {
-            removeVariable(q);
+          deleteVariable={(variable) => {
+            removeVariable(variable);
             setSelectedVariable(undefined);
           }}
         />
