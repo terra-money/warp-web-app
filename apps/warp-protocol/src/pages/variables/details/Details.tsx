@@ -9,44 +9,12 @@ import { StaticVariableForm } from './static/StaticVariableForm';
 import { ExternalVariableForm } from './external/ExternalVariableForm';
 import { variableName } from 'utils/variable';
 import { encodeQuery } from 'utils';
-import { Pill } from 'components/primitives/pill/Pill';
+import { VariablePill } from '../variable-pill/VariablePill';
 
 type DetailsProps = UIElementProps & {
   selectedVariable: Variable | undefined;
   saveVariable: (variable: Variable) => void;
   deleteVariable: (name: string) => void;
-};
-
-const pillColor = (variable: Variable) => {
-  if ('static' in variable) {
-    return 'purple';
-  }
-
-  if ('external' in variable) {
-    return 'yellow';
-  }
-
-  if ('query' in variable) {
-    return 'blue';
-  }
-
-  return 'green';
-};
-
-const pillContent = (variable: Variable) => {
-  if ('static' in variable) {
-    return 'Static';
-  }
-
-  if ('external' in variable) {
-    return 'External';
-  }
-
-  if ('query' in variable) {
-    return 'Query';
-  }
-
-  return undefined;
 };
 
 export const Details = (props: DetailsProps) => {
@@ -60,7 +28,7 @@ export const Details = (props: DetailsProps) => {
         className={styles.form}
         selectedVariable={selectedVariable.query}
         renderActions={(state) => {
-          const { submitDisabled, querySelector, queryJson, kind, name } = state;
+          const { submitDisabled, querySelector, queryJson, kind, name, template } = state;
 
           return (
             <Container direction="row" className={styles.footer}>
@@ -71,6 +39,7 @@ export const Details = (props: DetailsProps) => {
                 onClick={async () => {
                   saveVariable({
                     query: {
+                      template,
                       default_value: {
                         selector: querySelector,
                         query: encodeQuery(queryJson),
@@ -179,9 +148,7 @@ export const Details = (props: DetailsProps) => {
             <Text variant="heading1" className={styles.title}>
               {variableName(selectedVariable)}
             </Text>
-            <Pill color={pillColor(selectedVariable)} className={styles.pill}>
-              {pillContent(selectedVariable)}
-            </Pill>
+            <VariablePill className={styles.pill} variable={selectedVariable} />
           </Container>
           {ExprForm}
         </>

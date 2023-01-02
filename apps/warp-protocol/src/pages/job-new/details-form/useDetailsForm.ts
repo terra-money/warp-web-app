@@ -7,7 +7,7 @@ import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
-import { variableValue } from 'utils/variable';
+import { templateVariables } from 'utils/variable';
 
 export interface DetailsFormInput {
   name: string;
@@ -107,9 +107,8 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
 
     const messageValid = Boolean(state.message) && messageError === undefined;
 
-    // TODO: check this
     const templateError = Boolean(
-      state.template?.vars.filter((v) => 'static' in v).find((v) => isEmpty(variableValue(v)))
+      state.template && templateVariables(state.template).find((v) => isEmpty(v.default_value))
     )
       ? 'All variables must be filled.'
       : undefined;

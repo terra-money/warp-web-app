@@ -116,12 +116,13 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
   const variableModified = useMemo(
     () =>
       !isMatch(queryVariableToInput(selectedVariable), {
+        template,
         name,
         queryJson,
         querySelector,
         kind,
       } as QueryVariableInput),
-    [selectedVariable, name, kind, querySelector, queryJson]
+    [selectedVariable, name, kind, querySelector, queryJson, template]
   );
 
   return (
