@@ -13,7 +13,7 @@ import { variableName } from 'utils/variable';
 type VariablesContentProps = {};
 
 const VariablesContent = (props: VariablesContentProps) => {
-  const { variables, saveVariable, removeVariable } = useVariableStorage();
+  const { variables, saveVariable, removeVariable, updateVariable } = useVariableStorage();
   const [selectedVariable, setSelectedVariable] = useState<Variable | undefined>(undefined);
 
   const openNewVariableDialog = useNewVariableDialog();
@@ -30,7 +30,7 @@ const VariablesContent = (props: VariablesContentProps) => {
             const variable = await openNewVariableDialog({});
 
             if (variable) {
-              saveVariable(variable, selectedVariable);
+              saveVariable(variable);
             }
           }}
         >
@@ -44,7 +44,7 @@ const VariablesContent = (props: VariablesContentProps) => {
           variables={variables}
           deleteVariable={(v) => removeVariable(variableName(v))}
           saveVariable={(variable) => {
-            saveVariable(variable, selectedVariable);
+            saveVariable(variable);
             setSelectedVariable(variable);
           }}
           onVariableClick={(v) => setSelectedVariable(v)}
@@ -52,9 +52,11 @@ const VariablesContent = (props: VariablesContentProps) => {
         <Details
           className={styles.details}
           selectedVariable={selectedVariable}
-          saveVariable={(variable) => {
-            saveVariable(variable, selectedVariable);
-            setSelectedVariable(variable);
+          updateVariable={(variable) => {
+            if (selectedVariable) {
+              updateVariable(variable, selectedVariable);
+              setSelectedVariable(variable);
+            }
           }}
           deleteVariable={(variable) => {
             removeVariable(variable);
