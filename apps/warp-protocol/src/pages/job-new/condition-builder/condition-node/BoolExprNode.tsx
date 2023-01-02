@@ -1,18 +1,14 @@
-/* eslint-disable */
-
 import { UIElementProps } from '@terra-money/apps/components';
 import { forwardRef } from 'react';
-import { warp_controller } from 'types';
-// import { QueryInput } from './query-input/QueryInput';
+import { VariableInput } from './variable-input/VariableInput';
 
 type BoolExprNodeProps = UIElementProps & {
-  expr: warp_controller.QueryExpr;
-  setExpr: (expr: warp_controller.QueryExpr) => void;
+  expr: string;
+  setExpr: (expr: string) => void;
 };
 
 export const BoolExprNode = forwardRef((props: BoolExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
   const { expr, setExpr } = props;
 
-  return null;
-  // return <QueryInput value={expr} onChange={setExpr} />;
+  return <VariableInput value={expr} onChange={setExpr} />;
 });
