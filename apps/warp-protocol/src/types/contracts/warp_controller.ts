@@ -343,26 +343,23 @@ export module warp_controller {
   export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
   export type UpdateFnValue =
     | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
+        uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
       }
     | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
+        int: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        decimal: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        timestamp: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        block_height: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        bool: string;
       };
-  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
-    | {
-        simple: string;
-      }
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
   export type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
   export type QueryRequestFor_String =
     | {
@@ -533,7 +530,6 @@ export module warp_controller {
     op: NumOp;
   }
   export interface StaticVariable {
-    default_value: string;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
@@ -541,19 +537,10 @@ export module warp_controller {
   }
   export interface UpdateFn {
     on_error?: UpdateFnValue | null;
-    on_success: UpdateFnValue;
-  }
-  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
-    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-    op: ExprOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-  }
-  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
-    op: FnOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+    on_success?: UpdateFnValue | null;
   }
   export interface ExternalVariable {
-    default_value: ExternalExpr;
+    call_fn: ExternalExpr;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
@@ -567,7 +554,7 @@ export module warp_controller {
     url: string;
   }
   export interface QueryVariable {
-    default_value: QueryExpr;
+    call_fn: QueryExpr;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
@@ -586,7 +573,12 @@ export module warp_controller {
     name?: string | null;
   }
   export interface ExecuteJobMsg {
+    external_inputs?: ExternalInput[] | null;
     id: Uint64;
+  }
+  export interface ExternalInput {
+    input: string;
+    name: string;
   }
   export interface CreateAccountMsg {}
   export interface UpdateConfigMsg {
@@ -596,6 +588,7 @@ export module warp_controller {
     owner?: string | null;
   }
   export interface SubmitTemplateMsg {
+    condition?: Condition | null;
     formatted_str: string;
     kind: TemplateKind;
     msg: string;
@@ -603,6 +596,7 @@ export module warp_controller {
     vars: Variable[];
   }
   export interface EditTemplateMsg {
+    condition?: Condition | null;
     formatted_str?: string | null;
     id: Uint64;
     msg?: string | null;
@@ -630,6 +624,7 @@ export module warp_controller {
     msgs: string[];
     name: string;
     owner: Addr;
+    recurring: boolean;
     reward: Uint128;
     status: JobStatus;
     vars: Variable[];
@@ -719,6 +714,7 @@ export module warp_controller {
     response: string;
   }
   export interface Template {
+    condition?: Condition | null;
     formatted_str: string;
     id: Uint64;
     kind: TemplateKind;

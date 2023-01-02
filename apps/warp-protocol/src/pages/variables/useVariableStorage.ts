@@ -12,7 +12,7 @@ export type Variable =
 
 export type QueryVariable = warp_controller.QueryVariable & {
   template?: warp_controller.Template;
-  default_value: warp_controller.QueryExpr;
+  call_fn: warp_controller.QueryExpr;
 };
 
 type VariablesStorage = {

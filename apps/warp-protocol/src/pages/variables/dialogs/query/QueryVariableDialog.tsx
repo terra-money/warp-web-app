@@ -36,7 +36,7 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
                       closeDialog({
                         template,
                         name,
-                        default_value: { query: encodeQuery(queryJson), selector: querySelector },
+                        call_fn: { query: encodeQuery(queryJson), selector: querySelector },
                         kind,
                       });
                     }

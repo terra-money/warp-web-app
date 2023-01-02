@@ -17,7 +17,7 @@ const composeMsgFromTemplate = (template: warp_controller.Template): string => {
       const path = findVariablePath(json, v.name);
 
       if (path) {
-        jsonpath.value(json, path, v.default_value);
+        jsonpath.value(json, path, v.value);
       }
     } catch (err) {
       // consume the error

@@ -6,6 +6,7 @@ import { DateInput } from 'pages/dashboard/jobs-widget/inputs/DateInput';
 import { useTokens } from '@terra-money/apps/hooks';
 import { NumericInput } from 'components/primitives/numeric-input';
 import { UIElementProps } from '@terra-money/apps/components';
+import { isEmpty } from 'lodash';
 import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
@@ -36,11 +37,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         <NumericInput
           placeholder={`Type ${templateVar.name} here`}
           margin="none"
-          value={templateVar.default_value}
+          value={templateVar.value}
           onChange={(value) => {
             setTemplateVars(
               updateTemplateVar(templateVar.name, {
-                default_value: value.target.value,
+                value: value.target.value,
               })
             );
           }}
@@ -53,11 +54,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
     return (
       <AmountInput
         label={templateVar.name}
-        value={templateVar.default_value && demicrofy(Big(templateVar.default_value) as u<Big>, 6)}
+        value={templateVar.value && demicrofy(Big(templateVar.value) as u<Big>, 6)}
         onChange={(value) =>
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              default_value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
+              value: value.target.value ? microfy(value.target.value, 6).toString() : (undefined as any),
             })
           )
         }
@@ -66,7 +67,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   }
 
   if (templateVar.kind === 'timestamp') {
-    const date = templateVar.default_value ? new Date(Number(templateVar.default_value) * 1000) : undefined;
+    const date = templateVar.value ? new Date(Number(templateVar.value) * 1000) : undefined;
 
     return (
       <DateInput
@@ -76,7 +77,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
         onChange={(v) =>
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              default_value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
+              value: Math.floor((v?.getTime() ?? 0) / 1000).toString(),
             })
           )
         }
@@ -88,11 +89,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
     return (
       <TokenInput
         label={templateVar.name}
-        value={tokens[templateVar.default_value]}
+        value={!isEmpty(templateVar.value) ? tokens[templateVar.value!] : undefined}
         onChange={(token) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              default_value: token.key,
+              value: token.key,
             })
           );
         }}
@@ -105,11 +106,11 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
       <TextInput
         placeholder={`Type ${templateVar.name} here`}
         margin="none"
-        value={templateVar.default_value}
+        value={templateVar.value}
         onChange={(value) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
-              default_value: value.target.value,
+              value: value.target.value,
             })
           );
         }}

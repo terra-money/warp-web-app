@@ -36,7 +36,7 @@ export const ExternalVariableDialog = (
                     if (!submitDisabled) {
                       closeDialog({
                         name,
-                        default_value: {
+                        call_fn: {
                           url,
                           selector,
                         },

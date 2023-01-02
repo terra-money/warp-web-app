@@ -34,7 +34,7 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
                     if (!submitDisabled) {
                       closeDialog({
                         name,
-                        default_value: value,
+                        value,
                         kind,
                       });
                     }

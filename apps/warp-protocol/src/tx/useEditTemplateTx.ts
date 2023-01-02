@@ -12,13 +12,14 @@ export const useEditTemplateTx = () => {
 
   return useTx<EditTemplateTxProps>(
     (options) => {
-      const { wallet, formatted_str, vars, name, msg, id } = options;
+      const { wallet, formatted_str, vars, name, msg, id, condition } = options;
 
       return TxBuilder.new()
         .execute<EditTemplateMsg>(wallet.walletAddress, contractAddress, {
           edit_template: {
             id,
             formatted_str,
+            condition,
             vars,
             name,
             msg,

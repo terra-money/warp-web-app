@@ -107,9 +107,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
 
     const messageValid = Boolean(state.message) && messageError === undefined;
 
-    const templateError = Boolean(
-      state.template && templateVariables(state.template).find((v) => isEmpty(v.default_value))
-    )
+    const templateError = Boolean(state.template && templateVariables(state.template).find((v) => isEmpty(v.value)))
       ? 'All variables must be filled.'
       : undefined;
 
