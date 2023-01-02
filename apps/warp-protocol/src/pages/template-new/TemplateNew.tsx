@@ -16,6 +16,11 @@ import { useCreateTemplateTx } from 'tx';
 import { TemplateKindInput } from './template-kind-input/TemplateKindInput';
 import { VariableKindInput } from '../variables/variable-kind-input/VariableKindInput';
 import { TemplateVar, useTemplateNewForm } from './useTemplateNewForm';
+import { useState } from 'react';
+import { useCachedVariables } from 'pages/job-new/useCachedVariables';
+import { useEditVariableDialog } from 'pages/variables/dialogs/VariableDialog';
+import { Drawer } from '@mui/material';
+import { Nav } from 'pages/variables/nav/Nav';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -49,8 +54,41 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
 
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
+  const onToggleDrawer = () => {
+    setDrawerOpen((open) => !open);
+  };
+
+  const { variables, saveVariable } = useCachedVariables();
+
+  const openEditVariableDialog = useEditVariableDialog();
+
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
+      <Drawer
+        variant="persistent"
+        anchor="right"
+        open={drawerOpen}
+        classes={{
+          paper: styles.drawer,
+        }}
+      >
+        <Text onClick={onToggleDrawer} variant="label" className={styles.drawer_toggle}>
+          {drawerOpen ? 'Collapse' : 'Variables'}
+        </Text>
+        <Nav
+          className={styles.variables}
+          variables={variables}
+          saveVariable={(v) => saveVariable(v)}
+          onVariableClick={async (v) => {
+            const resp = await openEditVariableDialog(v);
+
+            if (resp) {
+              saveVariable(resp);
+            }
+          }}
+        />
+      </Drawer>
       <Container className={styles.title_container}>
         <Text variant="heading1" className={styles.title}>
           New template
