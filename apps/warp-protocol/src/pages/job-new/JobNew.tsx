@@ -16,6 +16,7 @@ import { Header } from './header/Header';
 import styles from './JobNew.module.sass';
 import { useJobStorage } from './useJobStorage';
 import { useCachedVariables } from './useCachedVariables';
+import { variableName } from 'utils/variable';
 
 type JobNewProps = UIElementProps & {};
 
@@ -32,7 +33,7 @@ export const JobNew = (props: JobNewProps) => {
     setDrawerOpen((open) => !open);
   };
 
-  const { variables, saveVariable } = useCachedVariables();
+  const { variables, saveVariable, removeVariable } = useCachedVariables();
 
   const openEditVariableDialog = useEditVariableDialog();
 
@@ -60,6 +61,7 @@ export const JobNew = (props: JobNewProps) => {
                   className={styles.variables}
                   variables={variables}
                   saveVariable={(v) => saveVariable(v)}
+                  deleteVariable={(v) => removeVariable(variableName(v))}
                   onVariableClick={async (v) => {
                     const resp = await openEditVariableDialog(v);
 

@@ -1,5 +1,8 @@
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
+import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
+import { MenuAction } from 'components/menu-button/MenuAction';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Panel } from 'components/panel';
 import { Button, Text } from 'components/primitives';
 import { variableName } from 'utils/variable';
@@ -12,11 +15,12 @@ type NavProps = UIElementProps & {
   variables: Variable[];
   selectedVariable?: Variable;
   saveVariable: (v: Variable) => void;
+  deleteVariable: (v: Variable) => void;
   onVariableClick: (variable: Variable) => void;
 };
 
 export const Nav = (props: NavProps) => {
-  const { className, variables, selectedVariable, onVariableClick, saveVariable } = props;
+  const { className, variables, selectedVariable, onVariableClick, saveVariable, deleteVariable } = props;
 
   const openNewVariableDialog = useNewVariableDialog();
 
@@ -34,12 +38,15 @@ export const Nav = (props: NavProps) => {
                 styles.variable,
                 selectedVariable && variableName(v) === variableName(selectedVariable) && styles.selected_variable
               )}
-              onClick={() => onVariableClick(v)}
             >
-              <Text variant="text" className={styles.name}>
+              <Text variant="text" className={styles.name} onClick={() => onVariableClick(v)}>
                 {variableName(v)}
               </Text>
               <VariablePill className={styles.pill} variable={v} />
+              <DropdownMenu menuClass={styles.menu} action={<MoreVertIcon className={styles.menu_btn} />}>
+                <MenuAction onClick={() => onVariableClick(v)}>Edit</MenuAction>
+                <MenuAction onClick={() => deleteVariable(v)}>Delete</MenuAction>
+              </DropdownMenu>
             </div>
           ))}
         </Container>
