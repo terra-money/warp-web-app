@@ -8,6 +8,7 @@ import { NotConnected } from 'components/not-connected';
 import { Nav } from './nav/Nav';
 import { Details } from './details';
 import { useNewVariableDialog } from './dialogs/VariableDialog';
+import { variableName } from 'utils/variable';
 
 type VariablesContentProps = {};
 
@@ -41,6 +42,7 @@ const VariablesContent = (props: VariablesContentProps) => {
           className={styles.nav}
           selectedVariable={selectedVariable}
           variables={variables}
+          deleteVariable={(v) => removeVariable(variableName(v))}
           saveVariable={(variable) => {
             saveVariable(variable, selectedVariable);
             setSelectedVariable(variable);

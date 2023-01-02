@@ -21,6 +21,7 @@ import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 import { useEditVariableDialog } from 'pages/variables/dialogs/VariableDialog';
 import { Drawer } from '@mui/material';
 import { Nav } from 'pages/variables/nav/Nav';
+import { variableName } from 'utils/variable';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -59,7 +60,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
     setDrawerOpen((open) => !open);
   };
 
-  const { variables, saveVariable } = useCachedVariables();
+  const { variables, saveVariable, removeVariable } = useCachedVariables();
 
   const openEditVariableDialog = useEditVariableDialog();
 
@@ -79,6 +80,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
         <Nav
           className={styles.variables}
           variables={variables}
+          deleteVariable={(v) => removeVariable(variableName(v))}
           saveVariable={(v) => saveVariable(v)}
           onVariableClick={async (v) => {
             const resp = await openEditVariableDialog(v);
