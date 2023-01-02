@@ -24,7 +24,7 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled, name, queryJson, querySelector, kind } = state;
+            const { submitDisabled, name, queryJson, querySelector, kind, template } = state;
 
             return (
               <DialogFooter className={styles.footer}>
@@ -34,6 +34,7 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
                   onClick={async () => {
                     if (!submitDisabled) {
                       closeDialog({
+                        template,
                         name,
                         default_value: { query: encodeQuery(queryJson), selector: querySelector },
                         kind,

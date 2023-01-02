@@ -7,7 +7,7 @@ import { IfConnected } from 'components/if-connected';
 import { NotConnected } from 'components/not-connected';
 import { Nav } from './nav/Nav';
 import { Details } from './details';
-import { useVariableDialog } from './dialogs/VariableDialog';
+import { useNewVariableDialog } from './dialogs/VariableDialog';
 
 type VariablesContentProps = {};
 
@@ -15,7 +15,7 @@ const VariablesContent = (props: VariablesContentProps) => {
   const { variables, saveVariable, removeVariable } = useVariableStorage();
   const [selectedVariable, setSelectedVariable] = useState<Variable | undefined>(undefined);
 
-  const openVariableDialog = useVariableDialog();
+  const openNewVariableDialog = useNewVariableDialog();
 
   return (
     <Container direction="column" className={styles.content}>
@@ -26,7 +26,7 @@ const VariablesContent = (props: VariablesContentProps) => {
         <Button
           variant="primary"
           onClick={async () => {
-            const variable = await openVariableDialog({});
+            const variable = await openNewVariableDialog({});
 
             if (variable) {
               saveVariable(variable, selectedVariable);
@@ -41,7 +41,11 @@ const VariablesContent = (props: VariablesContentProps) => {
           className={styles.nav}
           selectedVariable={selectedVariable}
           variables={variables}
-          setSelectedVariable={setSelectedVariable}
+          saveVariable={(variable) => {
+            saveVariable(variable, selectedVariable);
+            setSelectedVariable(variable);
+          }}
+          onVariableClick={(v) => setSelectedVariable(v)}
         />
         <Details
           className={styles.details}
