@@ -13,12 +13,12 @@ import { VariablePill } from '../variable-pill/VariablePill';
 
 type DetailsProps = UIElementProps & {
   selectedVariable: Variable | undefined;
-  saveVariable: (variable: Variable) => void;
+  updateVariable: (variable: Variable) => void;
   deleteVariable: (name: string) => void;
 };
 
 export const Details = (props: DetailsProps) => {
-  const { className, selectedVariable, saveVariable, deleteVariable } = props;
+  const { className, selectedVariable, updateVariable, deleteVariable } = props;
 
   let ExprForm = <></>;
 
@@ -37,7 +37,7 @@ export const Details = (props: DetailsProps) => {
                 className={styles.save}
                 disabled={submitDisabled}
                 onClick={async () => {
-                  saveVariable({
+                  updateVariable({
                     query: {
                       template,
                       call_fn: {
@@ -77,7 +77,7 @@ export const Details = (props: DetailsProps) => {
                 className={styles.save}
                 disabled={submitDisabled}
                 onClick={() => {
-                  saveVariable({
+                  updateVariable({
                     static: {
                       name,
                       value,
@@ -113,7 +113,7 @@ export const Details = (props: DetailsProps) => {
                 className={styles.save}
                 disabled={submitDisabled}
                 onClick={() => {
-                  saveVariable({
+                  updateVariable({
                     external: {
                       name,
                       call_fn: {
