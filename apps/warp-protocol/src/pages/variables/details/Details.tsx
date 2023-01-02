@@ -40,7 +40,7 @@ export const Details = (props: DetailsProps) => {
                   saveVariable({
                     query: {
                       template,
-                      default_value: {
+                      call_fn: {
                         selector: querySelector,
                         query: encodeQuery(queryJson),
                       },
@@ -80,7 +80,7 @@ export const Details = (props: DetailsProps) => {
                   saveVariable({
                     static: {
                       name,
-                      default_value: value,
+                      value,
                       kind,
                     },
                   });
@@ -116,7 +116,7 @@ export const Details = (props: DetailsProps) => {
                   saveVariable({
                     external: {
                       name,
-                      default_value: {
+                      call_fn: {
                         url,
                         selector,
                       },

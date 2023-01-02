@@ -316,26 +316,23 @@ export module warp_account {
   export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
   export type UpdateFnValue =
     | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
+        uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
       }
     | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
+        int: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        decimal: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        timestamp: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        block_height: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        bool: string;
       };
-  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
-    | {
-        simple: string;
-      }
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
   export type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
   export type QueryRequestFor_String =
     | {
@@ -452,6 +449,7 @@ export module warp_account {
     msgs: string[];
     name: string;
     owner: Addr;
+    recurring: boolean;
     reward: Uint128;
     status: JobStatus;
     vars: Variable[];
@@ -512,7 +510,6 @@ export module warp_account {
     op: NumOp;
   }
   export interface StaticVariable {
-    default_value: string;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
@@ -520,19 +517,10 @@ export module warp_account {
   }
   export interface UpdateFn {
     on_error?: UpdateFnValue | null;
-    on_success: UpdateFnValue;
-  }
-  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
-    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-    op: ExprOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-  }
-  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
-    op: FnOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
+    on_success?: UpdateFnValue | null;
   }
   export interface ExternalVariable {
-    default_value: ExternalExpr;
+    call_fn: ExternalExpr;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
@@ -546,7 +534,7 @@ export module warp_account {
     url: string;
   }
   export interface QueryVariable {
-    default_value: QueryExpr;
+    call_fn: QueryExpr;
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;

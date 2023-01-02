@@ -144,7 +144,7 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                     vars: [
                       ...vars,
                       {
-                        default_value: '',
+                        value: '',
                         path: '',
                         name: '',
                         kind: 'string',

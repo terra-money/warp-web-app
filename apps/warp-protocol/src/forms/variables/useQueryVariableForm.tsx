@@ -23,16 +23,16 @@ export interface QueryVariableState extends FormState<QueryVariableInput> {
 export type QueryVariableFormInput = FormInput<QueryVariableInput>;
 
 export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariableInput => {
-  const queryJson = queryVariable ? JSON.stringify(decodeQuery(queryVariable.default_value.query), null, 2) : '';
+  const queryJson = queryVariable ? JSON.stringify(decodeQuery(queryVariable.call_fn.query), null, 2) : '';
 
   return {
     kind: queryVariable?.kind ?? ('' as any),
     name: queryVariable?.name ?? '',
     queryJson,
-    querySelector: queryVariable?.default_value.selector ?? '',
+    querySelector: queryVariable?.call_fn.selector ?? '',
     template: queryVariable?.template ?? undefined,
     selectedTabType:
-      !Boolean(queryVariable?.template) && Boolean(queryVariable?.default_value.query) ? 'message' : 'template',
+      !Boolean(queryVariable?.template) && Boolean(queryVariable?.call_fn.query) ? 'message' : 'template',
     paths: queryVariable ? generatePaths(queryJson) : [],
   };
 };
@@ -72,9 +72,7 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
       state.querySelector === null || state.querySelector.length < 1 || querySelectorError
     );
 
-    const templateError = Boolean(
-      state.template && templateVariables(state.template).find((v) => isEmpty(v.default_value))
-    )
+    const templateError = Boolean(state.template && templateVariables(state.template).find((v) => isEmpty(v.value)))
       ? 'All variables must be filled.'
       : undefined;
 

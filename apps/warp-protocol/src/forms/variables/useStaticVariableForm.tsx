@@ -18,7 +18,7 @@ export const staticVariableToInput = (variable?: warp_controller.StaticVariable)
   return {
     name: variable?.name ?? '',
     kind: variable?.kind ?? ('' as warp_controller.VariableKind),
-    value: variable?.default_value ?? '',
+    value: variable?.value ?? '',
   };
 };
 
