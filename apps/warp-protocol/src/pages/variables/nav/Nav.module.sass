@@ -1,5 +1,4 @@
 .root
-  overflow: auto
 
 .title
   margin-bottom: 32px
@@ -8,6 +7,11 @@
   justify-content: space-between
   align-items: flex-start
   margin-bottom: 16px
+
+.variables
+  height: 100%
+  overflow-y: auto
+  margin: 0 -24px
 
 .empty
   color: var(--text-color-primary)
@@ -20,7 +24,25 @@
   color: var(--text-color-primary)
   cursor: pointer
   padding: 16px 24px
-  margin: 0 -24px
+  display: flex
+  width: auto
+  align-items: center
+  justify-content: space-between
 
 .selected_variable
   background-color: rgba(209, 227, 251, 0.1)
+
+.pill
+  font-size: 10px
+  margin-left: 8px
+
+.new
+  width: 100%
+  margin-top: auto
+  margin-top: 8px
+
+.name
+  display: inline-block
+  text-overflow: ellipsis
+  overflow: hidden
+  white-space: nowrap
