@@ -4,6 +4,7 @@ import { LUNA, warp_controller } from 'types';
 import { Job } from 'types/job';
 import { useLocalStorage } from 'usehooks-ts';
 import { DetailsFormInput } from './details-form/useDetailsForm';
+import { useCachedVariables } from './useCachedVariables';
 
 export const decodedMsgs = (job: Job) => job.info.msgs.map((msg) => JSON.parse(msg)).map(decodeMsg);
 
@@ -15,10 +16,13 @@ export const useJobStorage = () => {
 
   const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', undefined);
 
+  const { clearAll: clearAllCachedVariables } = useCachedVariables();
+
   const clearJobStorage = useCallback(() => {
     setDetailsInput(undefined);
     setCond(undefined);
-  }, [setDetailsInput, setCond]);
+    clearAllCachedVariables();
+  }, [setDetailsInput, setCond, clearAllCachedVariables]);
 
   const saveJob = useCallback(
     (job: Job) => {
