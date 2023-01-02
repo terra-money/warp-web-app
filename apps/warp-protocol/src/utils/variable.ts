@@ -6,6 +6,10 @@ export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]
   return v as warp_controller.Variable;
 };
 
+export const variableRef = (variable: warp_controller.Variable) => {
+  return `$warp.variable.${variableName(variable)}`;
+};
+
 export const variableName = (v: warp_controller.Variable): string => {
   if ('static' in v) {
     return v.static.name;
