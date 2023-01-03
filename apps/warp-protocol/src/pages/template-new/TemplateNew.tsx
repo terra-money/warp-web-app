@@ -21,7 +21,7 @@ import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 import { useEditVariableDialog } from 'pages/variables/dialogs/VariableDialog';
 import { Drawer } from '@mui/material';
 import { Nav } from 'pages/variables/nav/Nav';
-import { variableName } from 'utils/variable';
+import { filterUnreferencedVariables, variableName } from 'utils/variable';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -215,7 +215,8 @@ export const TemplateNew = (props: TemplateNewProps) => {
               formatted_str: formattedStr,
               msg,
               kind,
-              vars: vars.map((v) => ({ static: v })),
+              // TODO: add condition
+              vars: filterUnreferencedVariables(variables, msg),
               name,
             });
 
