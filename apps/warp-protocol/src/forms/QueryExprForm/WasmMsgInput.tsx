@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import styles from './WasmMsgInput.module.sass';
-import { ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Text, Button } from 'components/primitives';
+import { isEmpty } from 'lodash';
 import { ClickAwayListener, Portal } from '@mui/material';
 
 import AceEditor from 'react-ace';
@@ -11,6 +12,10 @@ import 'ace-builds/src-noconflict/theme-merbivore';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { Container } from '@terra-money/apps/components';
 import CustomTextSyntaxMode from './CustomTextSyntaxMode';
+import { useCachedVariables } from 'pages/job-new/useCachedVariables';
+import { SuggestVariablesMenu } from './SuggestVariablesMenu';
+import { variableName } from 'utils/variable';
+import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 
 interface WasmMsgInputProps {
   className?: string;
@@ -74,7 +79,18 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
       const customMode = new CustomTextSyntaxMode();
       editorRef.current.editor.getSession().setMode(customMode as any);
     }
+
+    if (editorRef.current && mode === 'json') {
+      const customMode = new CustomJsonSyntaxMode();
+      editorRef.current.editor.getSession().setMode(customMode as any);
+    }
   }, [mode]);
+
+  const { variables } = useCachedVariables();
+
+  const [suggestVariablesStyles, setSuggestVariablesStyles] = useState<React.CSSProperties>({});
+  const [currentLineVariableName, setCurrentLineVariableName] = useState<string>();
+  const [showSuggestVariables, setShowSuggestVariables] = useState<boolean>(false);
 
   return (
     <ClickAwayListener onClickAway={() => setFocused(false)}>
@@ -109,6 +125,46 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
               {placeholder ?? 'Type a message'}
             </Text>
           )}
+          <SuggestVariablesMenu
+            style={suggestVariablesStyles}
+            options={variables.map((v) => variableName(v))}
+            onChange={(name) => {
+              const editor = editorRef.current!.editor;
+
+              try {
+                const traverse = (obj: any): object => {
+                  if (typeof obj !== 'object') {
+                    return obj;
+                  }
+
+                  for (const key of Object.keys(obj)) {
+                    const val = obj[key];
+                    if (typeof val === 'string' && val.startsWith('$warp.variable.')) {
+                      obj[key] = `$warp.variable.${name}`;
+                      break;
+                    }
+
+                    obj[key] = traverse(val);
+                  }
+
+                  if (Array.isArray(obj)) {
+                    return obj.map((v) => traverse(v));
+                  }
+
+                  return obj;
+                };
+
+                let json = JSON.parse(editor.getValue());
+                json = traverse(json);
+                editor.setValue(JSON.stringify(json, null, 2));
+                editor.selection.clearSelection();
+              } catch (e) {
+                // Do nothing
+              }
+            }}
+            value={currentLineVariableName ?? ''}
+            open={showSuggestVariables}
+          />
           <AceEditor
             ref={editorRef}
             fontSize={14}
@@ -119,6 +175,40 @@ const WasmMsgInput = (props: WasmMsgInputProps) => {
             theme={theme}
             onChange={onChange}
             name={editorId}
+            onCursorChange={() => {
+              const editor = editorRef.current!.editor;
+              const cursor = editor.selection.getCursor();
+              const line = editor.session.getLine(cursor.row);
+
+              if (line.includes('$warp.variable.')) {
+                const cursorPosition = editor.getCursorPosition();
+                const left = cursorPosition.column * editor.renderer.characterWidth;
+                const top = cursorPosition.row * editor.renderer.lineHeight;
+
+                const regex = /\$warp\.variable\.([^"]*)/;
+                const match = line.match(regex);
+
+                if (!match) {
+                  return;
+                }
+
+                const [, variableName] = match;
+
+                setSuggestVariablesStyles((styles) => {
+                  if (!isEmpty(styles)) {
+                    return styles;
+                  }
+
+                  return { left, top };
+                });
+                setCurrentLineVariableName(variableName);
+                setShowSuggestVariables(true);
+              } else {
+                setSuggestVariablesStyles({});
+                setCurrentLineVariableName(undefined);
+                setShowSuggestVariables(false);
+              }
+            }}
             wrapEnabled
             tabSize={2}
             showGutter={false}
