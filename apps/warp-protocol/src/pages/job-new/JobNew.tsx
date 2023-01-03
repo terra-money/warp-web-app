@@ -16,7 +16,7 @@ import { Header } from './header/Header';
 import styles from './JobNew.module.sass';
 import { useJobStorage } from './useJobStorage';
 import { useCachedVariables } from './useCachedVariables';
-import { variableName } from 'utils/variable';
+import { filterUnreferencedVariables, variableName } from 'utils/variable';
 
 type JobNewProps = UIElementProps & {};
 
@@ -99,7 +99,7 @@ export const JobNew = (props: JobNewProps) => {
 
                           const resp = await createJobTx({
                             name,
-                            vars: variables,
+                            vars: filterUnreferencedVariables(variables, message, props.cond),
                             reward: microfy(reward, LUNA.decimals),
                             msgs,
                             condition: props.cond,

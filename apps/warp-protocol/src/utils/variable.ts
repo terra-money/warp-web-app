@@ -1,3 +1,4 @@
+import { Variable } from 'pages/variables/useVariableStorage';
 import { warp_controller } from 'types';
 
 export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]) => {
@@ -83,3 +84,87 @@ export const findVariablePath = (json: any, name: string): string | undefined =>
 
   return path.length > 0 ? path[0] : undefined;
 };
+
+type NumExpr =
+  | warp_controller.NumValueForInt128And_NumExprOpAnd_IntFnOp
+  | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+  | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+
+export function filterUnreferencedVariables(
+  vars: warp_controller.Variable[],
+  msgsInput: string,
+  condition?: warp_controller.Condition
+): Variable[] {
+  const referencedVars: Set<string> = new Set();
+  const unreferencedVars: Set<string> = new Set(vars.map((v) => variableName(v)));
+
+  const parsed = JSON.parse(msgsInput);
+  const msgs: object[] = Array.isArray(parsed) ? parsed : [parsed];
+
+  // Recursively scan the `msgs` array for variable references
+  const scanForReferences = (obj: any): void => {
+    if (obj && typeof obj === 'object') {
+      Object.entries(obj).forEach(([k, v]) => {
+        if (typeof v === 'string' && v.startsWith('$warp.variable.')) {
+          const varName = v.substring('$warp.variable.'.length);
+          referencedVars.add(varName);
+        } else {
+          scanForReferences(v);
+        }
+      });
+    }
+  };
+
+  msgs.forEach(scanForReferences);
+
+  // Add all variables that are referenced in the `condition` param to the `referencedVars` set
+  function addReferencedVarsFromCondition(cond: warp_controller.Condition, referencedVars: Set<string>): void {
+    if ('and' in cond) {
+      cond.and.forEach((c) => addReferencedVarsFromCondition(c, referencedVars));
+    } else if ('or' in cond) {
+      cond.or.forEach((c) => addReferencedVarsFromCondition(c, referencedVars));
+    } else if ('not' in cond) {
+      addReferencedVarsFromCondition(cond.not, referencedVars);
+    } else if ('expr' in cond) {
+      if (['uint', 'int', 'decimal'].some((t) => t in cond.expr)) {
+        const addReferencedVarsFromNumExpr = (expr: NumExpr): void => {
+          if ('ref' in expr) {
+            referencedVars.add(expr.ref);
+          } else if ('expr' in expr) {
+            addReferencedVarsFromNumExpr(expr.expr.left);
+            addReferencedVarsFromNumExpr(expr.expr.right);
+          } else if ('fn' in expr) {
+            addReferencedVarsFromNumExpr(expr.fn.right);
+          }
+        };
+
+        Object.values(cond.expr).forEach(addReferencedVarsFromNumExpr);
+      }
+
+      if ('string' in cond.expr) {
+        if ('ref' in cond.expr.string.left) {
+          referencedVars.add(cond.expr.string.left.ref);
+        }
+
+        if ('ref' in cond.expr.string.right) {
+          referencedVars.add(cond.expr.string.right.ref);
+        }
+      }
+
+      if ('bool' in cond.expr) {
+        referencedVars.add(cond.expr.bool);
+      }
+    }
+  }
+
+  if (condition) {
+    addReferencedVarsFromCondition(condition, referencedVars);
+  }
+
+  // Remove all referenced variables from the `unreferencedVars` set
+  referencedVars.forEach((referencedVar) => unreferencedVars.delete(referencedVar));
+
+  return Array.from(referencedVars)
+    .map((name) => vars.find((v) => variableName(v) === name))
+    .filter(Boolean) as Variable[];
+}

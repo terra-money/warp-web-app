@@ -14,6 +14,7 @@ import { TemplateMessageInput } from 'pages/template-new/template-message/Templa
 import { warp_controller } from 'types';
 import { useDeleteTemplateTx, useEditTemplateTx } from 'tx';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
+import { filterUnreferencedVariables } from 'utils/variable';
 
 type TemplateDetailsProps = UIElementProps & {
   selectedTemplate: warp_controller.Template | undefined;
@@ -175,7 +176,11 @@ export const TemplateDetails = (props: TemplateDetailsProps) => {
                   id: selectedTemplate.id,
                   formatted_str: formattedStr,
                   msg,
-                  vars: vars.map((v) => ({ static: v })),
+                  // TODO: add condition
+                  vars: filterUnreferencedVariables(
+                    vars.map((v) => ({ static: v })),
+                    msg
+                  ),
                   name,
                 });
 
