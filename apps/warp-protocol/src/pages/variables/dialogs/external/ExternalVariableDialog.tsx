@@ -36,7 +36,8 @@ export const ExternalVariableDialog = (
                     if (!submitDisabled) {
                       closeDialog({
                         name,
-                        call_fn: {
+                        reinitialize: false,
+                        init_fn: {
                           url,
                           selector,
                         },
