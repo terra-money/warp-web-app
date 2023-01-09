@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { Text } from 'components/primitives';
+import { Button, Text } from 'components/primitives';
 import { FixedSizeList } from 'react-window';
 import { DialogProps, useDialog } from '@terra-money/apps/hooks';
 import classNames from 'classnames';
-import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
+import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
 import { ListData } from './ListData';
 import { ListItem } from './ListItem';
 import styles from './SelectVariableDialog.module.sass';
@@ -11,6 +11,7 @@ import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { Variable } from 'pages/variables/useVariableStorage';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
+import { useNewVariableDialog } from 'pages/variables/dialogs/VariableDialog';
 
 type SelectVariableProps = {
   selectedVariable?: Variable;
@@ -28,10 +29,12 @@ const SelectVariableDialog = (props: DialogProps<SelectVariableProps, Variable>)
 
     return {
       selectedVariable,
-      variables,
+      variables: [...variables, ...variables],
       onSelectionChanged,
     };
   }, [variables, closeDialog, selectedVariable]);
+
+  const openNewVariableDialog = useNewVariableDialog();
 
   return (
     <Dialog>
@@ -55,6 +58,21 @@ const SelectVariableDialog = (props: DialogProps<SelectVariableProps, Variable>)
           {ListItem}
         </FixedSizeList>
       </DialogBody>
+      <DialogFooter>
+        <Button
+          variant="secondary"
+          className={styles.new}
+          onClick={async () => {
+            const resp = await openNewVariableDialog({});
+
+            if (resp) {
+              closeDialog(resp);
+            }
+          }}
+        >
+          New variable
+        </Button>
+      </DialogFooter>
     </Dialog>
   );
 };
