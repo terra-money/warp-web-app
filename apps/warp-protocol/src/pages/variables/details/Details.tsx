@@ -39,8 +39,9 @@ export const Details = (props: DetailsProps) => {
                 onClick={async () => {
                   updateVariable({
                     query: {
+                      reinitialize: false,
                       template,
-                      call_fn: {
+                      init_fn: {
                         selector: querySelector,
                         query: encodeQuery(queryJson),
                       },
@@ -116,7 +117,8 @@ export const Details = (props: DetailsProps) => {
                   updateVariable({
                     external: {
                       name,
-                      call_fn: {
+                      reinitialize: false,
+                      init_fn: {
                         url,
                         selector,
                       },
