@@ -22,11 +22,11 @@ export const externalVariableToInput = (externalVariable?: warp_controller.Exter
   return {
     kind: externalVariable?.kind ?? ('' as any),
     name: externalVariable?.name ?? '',
-    body: externalVariable?.call_fn.body ?? null,
-    headers: externalVariable?.call_fn.headers ?? null,
-    method: externalVariable?.call_fn.method ?? null,
-    selector: externalVariable?.call_fn.selector ?? '',
-    url: externalVariable?.call_fn.url ?? '',
+    body: externalVariable?.init_fn.body ?? null,
+    headers: externalVariable?.init_fn.headers ?? null,
+    method: externalVariable?.init_fn.method ?? null,
+    selector: externalVariable?.init_fn.selector ?? '',
+    url: externalVariable?.init_fn.url ?? '',
   };
 };
 

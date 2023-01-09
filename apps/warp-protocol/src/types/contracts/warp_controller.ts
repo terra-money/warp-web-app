@@ -471,6 +471,7 @@ export module warp_controller {
     condition: Condition;
     msgs: string[];
     name: string;
+    recurring: boolean;
     reward: Uint128;
     vars: Variable[];
   }
@@ -533,16 +534,17 @@ export module warp_controller {
     kind: VariableKind;
     name: string;
     update_fn?: UpdateFn | null;
-    value?: string | null;
+    value: string;
   }
   export interface UpdateFn {
     on_error?: UpdateFnValue | null;
     on_success?: UpdateFnValue | null;
   }
   export interface ExternalVariable {
-    call_fn: ExternalExpr;
+    init_fn: ExternalExpr;
     kind: VariableKind;
     name: string;
+    reinitialize: boolean;
     update_fn?: UpdateFn | null;
     value?: string | null;
   }
@@ -554,9 +556,10 @@ export module warp_controller {
     url: string;
   }
   export interface QueryVariable {
-    call_fn: QueryExpr;
+    init_fn: QueryExpr;
     kind: VariableKind;
     name: string;
+    reinitialize: boolean;
     update_fn?: UpdateFn | null;
     value?: string | null;
   }
