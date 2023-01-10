@@ -1,22 +1,19 @@
-import { Drawer } from '@mui/material';
 import { UIElementProps } from '@terra-money/apps/components';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { IfConnected } from 'components/if-connected';
-import { Text, Throbber } from 'components/primitives';
-import { useEditVariableDialog } from 'pages/variables/dialogs/VariableDialog';
-import { Nav } from 'pages/variables/nav/Nav';
-import { useState } from 'react';
+import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
 import { LUNA, warp_controller } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
-import { Header } from './header/Header';
 import styles from './JobNew.module.sass';
 import { useJobStorage } from './useJobStorage';
 import { useCachedVariables } from './useCachedVariables';
-import { filterUnreferencedVariables, variableName } from 'utils/variable';
+import { filterUnreferencedVariables } from 'utils/variable';
+import { VariableDrawer } from './variable-drawer/VariableDrawer';
+import { useSearchParams } from 'react-router-dom';
 
 type JobNewProps = UIElementProps & {};
 
@@ -28,14 +25,11 @@ export const JobNew = (props: JobNewProps) => {
   const connectedWallet = useConnectedWallet();
   const navigate = useNavigate();
 
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
-  const onToggleDrawer = () => {
-    setDrawerOpen((open) => !open);
-  };
+  const { variables } = useCachedVariables();
 
-  const { variables, saveVariable, removeVariable } = useCachedVariables();
+  const [searchParams] = useSearchParams();
 
-  const openEditVariableDialog = useEditVariableDialog();
+  const mode = searchParams.get('mode') ?? 'advanced';
 
   return (
     <div className={styles.root}>
@@ -45,48 +39,24 @@ export const JobNew = (props: JobNewProps) => {
             <Throbber className={styles.loading} />
           ) : (
             <>
-              <Header />
-              <Drawer
-                variant="persistent"
-                anchor="right"
-                open={drawerOpen}
-                classes={{
-                  paper: styles.drawer,
-                }}
-              >
-                <Text onClick={onToggleDrawer} variant="label" className={styles.drawer_toggle}>
-                  {drawerOpen ? 'Collapse' : 'Variables'}
-                </Text>
-                <Nav
-                  className={styles.variables}
-                  variables={variables}
-                  saveVariable={(v) => saveVariable(v)}
-                  deleteVariable={(v) => removeVariable(variableName(v))}
-                  onVariableClick={async (v) => {
-                    const resp = await openEditVariableDialog(v);
-
-                    if (resp) {
-                      saveVariable(resp);
-                    }
-                  }}
-                />
-              </Drawer>
+              <VariableDrawer />
               <Routes>
                 <Route
-                  path="/job-details"
+                  path="/details"
                   element={
                     <DetailsForm
+                      mode={mode}
                       className={styles.details}
                       detailsInput={detailsInput}
                       onNext={(props) => {
                         setDetailsInput(props);
-                        navigate('/job-new/create-condition');
+                        navigate('/job-new/condition');
                       }}
                     />
                   }
                 />
                 <Route
-                  path="/create-condition"
+                  path="/condition"
                   element={
                     <ConditionForm
                       className={styles.condition}
@@ -113,7 +83,7 @@ export const JobNew = (props: JobNewProps) => {
                     />
                   }
                 />
-                <Route path="*" element={<Navigate to="/job-new/job-details" replace />} />
+                <Route path="*" element={<Navigate to="/job-new/details?mode=basic" replace />} />
               </Routes>
             </>
           )
