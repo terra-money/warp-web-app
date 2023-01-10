@@ -10,11 +10,11 @@ export module warp_controller {
   export interface AccountsResponse {
     accounts: Account[];
   }
-  export type Uint128 = string;
   export type Uint64 = string;
+  export type Uint128 = string;
   export interface Config {
-    cancellation_fee_percentage: Uint128;
-    creation_fee_percentage: Uint128;
+    cancellation_fee_percentage: Uint64;
+    creation_fee_percentage: Uint64;
     minimum_reward: Uint128;
     owner: Addr;
     warp_account_code_id: Uint64;
@@ -585,8 +585,8 @@ export module warp_controller {
   }
   export interface CreateAccountMsg {}
   export interface UpdateConfigMsg {
-    cancellation_fee_percentage?: Uint128 | null;
-    creation_fee_percentage?: Uint128 | null;
+    cancellation_fee_percentage?: Uint64 | null;
+    creation_fee_percentage?: Uint64 | null;
     minimum_reward?: Uint128 | null;
     owner?: string | null;
   }
@@ -599,19 +599,15 @@ export module warp_controller {
     vars: Variable[];
   }
   export interface EditTemplateMsg {
-    condition?: Condition | null;
-    formatted_str?: string | null;
     id: Uint64;
-    msg?: string | null;
     name?: string | null;
-    vars?: Variable[] | null;
   }
   export interface DeleteTemplateMsg {
     id: Uint64;
   }
   export interface InstantiateMsg {
-    cancellation_fee: Uint128;
-    creation_fee: Uint128;
+    cancellation_fee: Uint64;
+    creation_fee: Uint64;
     minimum_reward: Uint128;
     owner?: string | null;
     warp_account_code_id: Uint64;
