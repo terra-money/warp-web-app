@@ -38,6 +38,20 @@ export const useJobStorage = () => {
     [setDetailsInput, setCond]
   );
 
+  const setJobTemplate = useCallback(
+    (template: warp_controller.Template) => {
+      const details: DetailsFormInput = {
+        reward: '',
+        name: '',
+        message: JSON.stringify(template.msg, null, 2),
+        template,
+      };
+
+      setDetailsInput(details);
+      setCond(template.condition ?? undefined);
+    },
+    [setDetailsInput, setCond]
+  );
   return useMemo(
     () => ({
       detailsInput,
@@ -45,9 +59,10 @@ export const useJobStorage = () => {
       cond,
       setCond,
       clearJobStorage,
+      setJobTemplate,
       saveJob,
     }),
-    [detailsInput, setDetailsInput, cond, setCond, clearJobStorage, saveJob]
+    [detailsInput, setDetailsInput, cond, setCond, clearJobStorage, saveJob, setJobTemplate]
   );
 };
 
