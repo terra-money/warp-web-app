@@ -5,10 +5,10 @@ import { ReactComponent as NewIcon } from 'components/assets/New.svg';
 import { ReactComponent as DashboardIcon } from 'components/assets/Dashboard.svg';
 import { ReactComponent as LightningStrokeIcon } from 'components/assets/LightningStroke.svg';
 import { ReactComponent as DotsCircleIcon } from 'components/assets/DotsCircle.svg';
-import { ReactComponent as AddressbookIcon } from 'components/assets/Addressbook.svg';
+import { ReactComponent as TerminalIcon } from 'components/assets/Terminal.svg';
 import { NavLink } from 'react-router-dom';
 import styles from './NavigationMenu.module.sass';
-import { useJobStorage } from 'pages/job-new/useJobStorage';
+import { useNewActionDialog } from './dialogs/NewActionDialog';
 
 interface RouteProps {
   to: string;
@@ -16,20 +16,13 @@ interface RouteProps {
   icon: ReactNode;
 }
 
-const routes: (clearJobStorage: () => void) => RouteProps[] = (clearJobStorage) => {
-  return [
-    { to: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
-    { to: '/jobs', label: 'Jobs', icon: <JobsIcon /> },
-    { to: '/balances', label: 'Balances', icon: <DotsCircleIcon /> },
-    { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
-    { to: '/templates', label: 'Templates', icon: <AddressbookIcon /> },
-    {
-      to: '/job-new',
-      label: 'New',
-      icon: <NewIcon onClick={clearJobStorage} />,
-    },
-  ];
-};
+const routes: RouteProps[] = [
+  { to: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
+  { to: '/jobs', label: 'Jobs', icon: <JobsIcon /> },
+  { to: '/balances', label: 'Balances', icon: <DotsCircleIcon /> },
+  { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
+  { to: '/templates', label: 'Templates', icon: <TerminalIcon /> },
+];
 
 const Route = (props: RouteProps) => {
   const { icon, to } = props;
@@ -47,13 +40,15 @@ interface NavigationMenuProps {
 
 export const NavigationMenu = (props: NavigationMenuProps) => {
   const { className } = props;
-  const { clearJobStorage } = useJobStorage();
+
+  const openNewActionDialog = useNewActionDialog();
 
   return (
     <div className={classNames(className, styles.root)}>
-      {routes(clearJobStorage).map((route) => (
+      {routes.map((route) => (
         <Route {...route} key={route.label} />
       ))}
+      <NewIcon className={styles.route} onClick={() => openNewActionDialog({})} />
     </div>
   );
 };
