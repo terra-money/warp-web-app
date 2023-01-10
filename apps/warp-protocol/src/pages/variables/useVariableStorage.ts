@@ -25,7 +25,14 @@ const storageKey = (connectedWallet: ConnectedWallet) =>
 export const useVariableStorage = () => {
   const connectedWallet = useConnectedWallet();
 
-  const [storedVariables, setStoredVariables] = useLocalStorage<VariablesStorage>('__warp_stored_variables', {});
+  const initialValue = useMemo(() => {
+    return {};
+  }, []);
+
+  const [storedVariables, setStoredVariables] = useLocalStorage<VariablesStorage>(
+    '__warp_stored_variables',
+    initialValue
+  );
 
   const setVariables = useCallback(
     (variables: Variable[]) => {

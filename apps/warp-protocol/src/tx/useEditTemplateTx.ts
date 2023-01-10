@@ -3,7 +3,10 @@ import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
 import { warp_controller } from '../types/contracts';
 import { TX_KEY } from './txKey';
 
-export type EditTemplateTxProps = warp_controller.EditTemplateMsg;
+export type EditTemplateTxProps = {
+  name: string;
+  id: string;
+};
 
 type EditTemplateMsg = Extract<warp_controller.ExecuteMsg, { edit_template: {} }>;
 
@@ -12,17 +15,13 @@ export const useEditTemplateTx = () => {
 
   return useTx<EditTemplateTxProps>(
     (options) => {
-      const { wallet, formatted_str, vars, name, msg, id, condition } = options;
+      const { wallet, name, id } = options;
 
       return TxBuilder.new()
         .execute<EditTemplateMsg>(wallet.walletAddress, contractAddress, {
           edit_template: {
             id,
-            formatted_str,
-            condition,
-            vars,
             name,
-            msg,
           },
         })
         .build();
