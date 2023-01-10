@@ -8,14 +8,16 @@ import { useCreateTemplateTx } from 'tx';
 import { useTemplateNewForm } from './useTemplateNewForm';
 import { useEffect } from 'react';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
-import { filterUnreferencedVariables } from 'utils/variable';
+import { filterUnreferencedVariables, formattedStringVariables, variableName } from 'utils/variable';
 import { DetailsForm } from './DetailsForm';
+import { uniqBy } from 'lodash';
 import { ConditionBuilder } from 'pages/job-new/condition-builder/ConditionBuilder';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
 import { useSearchParams } from 'react-router-dom';
+import { Variable } from 'pages/variables/useVariableStorage';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -80,7 +82,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
               msg,
               kind,
               condition: filterEmptyCond(cond ?? ({} as warp_controller.Condition)),
-              vars: filterUnreferencedVariables(vars, msg),
+              vars: extractUsedVariables(formattedStr, msg, vars),
               name,
             });
 
@@ -103,3 +105,8 @@ export const TemplateNew = (props: TemplateNewProps) => {
     </Container>
   );
 };
+
+const extractUsedVariables = (formattedStr: string, msg: string, vars: Variable[]) =>
+  uniqBy([...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msg)], (v) =>
+    variableName(v)
+  );

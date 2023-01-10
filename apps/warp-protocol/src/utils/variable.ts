@@ -173,9 +173,19 @@ export function filterUnreferencedVariables(
     .filter(Boolean) as Variable[];
 }
 
+export const formattedStringVarNames = (formattedString: string) => {
+  return formattedString.match(/\{[^}]+\}/g)?.map((s) => s.slice(1, -1)) || [];
+};
+
+export const formattedStringVariables = (formattedString: string, variables: Variable[]) => {
+  const variableNames = formattedStringVarNames(formattedString);
+
+  return variableNames.map((name) => variables.find((v) => variableName(v) === name)) as Variable[];
+};
+
 export function hasOnlyStaticVariables(formattedString: string, variables: Variable[]): boolean {
   // Extract all the variable names from the formatted string
-  const variableNames = formattedString.match(/\{[^}]+\}/g)?.map((s) => s.slice(1, -1)) || [];
+  const variableNames = formattedStringVarNames(formattedString);
 
   // Check if all the variable names are defined in the list of variables
   return variableNames.every((name) => variables.some((v) => 'static' in v && v.static.name === name));
