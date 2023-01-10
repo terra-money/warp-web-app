@@ -19,14 +19,16 @@ interface SuggestVariablesMenuProps extends BaseProps {
 const SuggestVariablesMenu = (props: SuggestVariablesMenuProps) => {
   const { options, style, onChange, value, open } = props;
 
-  return (
+  const filtered = options.filter((v) => v.startsWith(value));
+
+  return filtered.length > 0 ? (
     <DropdownMenu style={style} menuClass={styles.menu} open={open}>
-      {options
-        .filter((v) => v.startsWith(value))
-        .map((v) => (
-          <MenuAction onClick={() => onChange(v)}>{v}</MenuAction>
-        ))}
+      {filtered.map((v) => (
+        <MenuAction onClick={() => onChange(v)}>{v}</MenuAction>
+      ))}
     </DropdownMenu>
+  ) : (
+    <></>
   );
 };
 

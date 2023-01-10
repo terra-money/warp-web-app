@@ -18,7 +18,7 @@ import { BalancesPage } from 'pages/balances';
 import { Variables } from 'pages/variables/Variables';
 import { useFaucetWarning } from 'components/dialog/faucet-dialog/FaucetDialog';
 import { TemplateNew } from 'pages/template-new/TemplateNew';
-import { Templates } from 'pages/templates/Templates';
+import { TemplatesPage } from 'pages/templates';
 
 const queryClient = new QueryClient();
 
@@ -33,8 +33,8 @@ const Main = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/balances" element={<BalancesPage />} />
         <Route path="/variables" element={<Variables />} />
-        <Route path="/templates" element={<Templates />} />
-        <Route path="/template-new" element={<TemplateNew />} />
+        <Route path="/templates" element={<TemplatesPage />} />
+        <Route path="/template-new/*" element={<TemplateNew />} />
         <Route path="/job-new/*" element={<JobNew />} />
         <Route path="/jobs/*" element={<Jobs />} />
         <Route path="/jobs/:jobId" element={<JobPage />} />
