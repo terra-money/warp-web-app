@@ -43,11 +43,6 @@ export const ConditionForm = (props: ConditionFormProps) => {
           Decimal, Boolean, Timestamp or Blockheight along with accompaying operators, under which the job will be
           executed.
         </Text>
-        {!isEmpty(cond) && (
-          <Link className={styles.back} onClick={() => setCond(undefined)}>
-            Clear all
-          </Link>
-        )}
       </Container>
       <ConditionBuilder cond={cond} setCond={setCond} />
       <Footer>
@@ -71,7 +66,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
   );
 };
 
-const filterEmptyCond = (input: warp_controller.Condition) => {
+export const filterEmptyCond = (input: warp_controller.Condition) => {
   let cond = { ...input };
 
   if ('and' in cond) {
