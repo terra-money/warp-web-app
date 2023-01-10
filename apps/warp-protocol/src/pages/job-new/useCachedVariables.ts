@@ -1,21 +1,21 @@
-import { useEffectOnceWhen } from '@terra-money/apps/hooks';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useVariableStorage, Variable } from 'pages/variables/useVariableStorage';
-import { useCallback, useMemo } from 'react';
-import { isEmpty } from 'lodash';
+import { useCallback, useEffect, useMemo } from 'react';
+import { uniqBy } from 'lodash';
 import { variableName } from 'utils/variable';
 import { useLocalStorage } from 'usehooks-ts';
 
-export const useCachedVariables = () => {
+export const useCachedVariables = (input?: Variable[]) => {
   const connectedWallet = useConnectedWallet();
 
   const { variables: storageVars } = useVariableStorage();
-  const [cachedVariables, setCachedVariables] = useLocalStorage<Variable[]>('__warp_cached_variables', []);
+  const initialValue = useMemo(() => [], []);
+  const [cachedVariables, setCachedVariables] = useLocalStorage<Variable[]>(`__warp_cached_variables`, initialValue);
 
-  useEffectOnceWhen(
-    () => setCachedVariables(storageVars),
-    () => !isEmpty(storageVars) && isEmpty(cachedVariables)
-  );
+  useEffect(() => {
+    setCachedVariables(uniqBy([...cachedVariables, ...(input ?? []), ...storageVars], (v) => variableName(v)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input]);
 
   const setVariables = useCallback(
     (variables: Variable[]) => {
