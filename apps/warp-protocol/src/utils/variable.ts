@@ -90,6 +90,24 @@ type NumExpr =
   | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
   | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
 
+// Recursively scan the `msgs` array for variable references
+export const scanForReferences = (obj: any): string[] => {
+  let res: string[] = [];
+
+  if (obj && typeof obj === 'object') {
+    Object.entries(obj).forEach(([k, v]) => {
+      if (typeof v === 'string' && v.startsWith('$warp.variable.')) {
+        const varName = v.substring('$warp.variable.'.length);
+        res = [...res, varName];
+      } else {
+        res = [...res, ...scanForReferences(v)];
+      }
+    });
+  }
+
+  return res;
+};
+
 export function filterUnreferencedVariables(
   vars: warp_controller.Variable[],
   msgsInput: string,
@@ -101,21 +119,7 @@ export function filterUnreferencedVariables(
   const parsed = JSON.parse(msgsInput);
   const msgs: object[] = Array.isArray(parsed) ? parsed : [parsed];
 
-  // Recursively scan the `msgs` array for variable references
-  const scanForReferences = (obj: any): void => {
-    if (obj && typeof obj === 'object') {
-      Object.entries(obj).forEach(([k, v]) => {
-        if (typeof v === 'string' && v.startsWith('$warp.variable.')) {
-          const varName = v.substring('$warp.variable.'.length);
-          referencedVars.add(varName);
-        } else {
-          scanForReferences(v);
-        }
-      });
-    }
-  };
-
-  msgs.forEach(scanForReferences);
+  msgs.forEach((msg) => scanForReferences(msg).forEach((varName) => referencedVars.add(varName)));
 
   // Add all variables that are referenced in the `condition` param to the `referencedVars` set
   function addReferencedVarsFromCondition(cond: warp_controller.Condition, referencedVars: Set<string>): void {
@@ -167,4 +171,12 @@ export function filterUnreferencedVariables(
   return Array.from(referencedVars)
     .map((name) => vars.find((v) => variableName(v) === name))
     .filter(Boolean) as Variable[];
+}
+
+export function hasOnlyStaticVariables(formattedString: string, variables: Variable[]): boolean {
+  // Extract all the variable names from the formatted string
+  const variableNames = formattedString.match(/\{[^}]+\}/g)?.map((s) => s.slice(1, -1)) || [];
+
+  // Check if all the variable names are defined in the list of variables
+  return variableNames.every((name) => variables.some((v) => 'static' in v && v.static.name === name));
 }
