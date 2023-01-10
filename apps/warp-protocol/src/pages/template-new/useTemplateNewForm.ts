@@ -3,19 +3,17 @@ import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
 import { generatePaths } from 'utils';
+import { hasOnlyStaticVariables, scanForReferences, variableName } from 'utils/variable';
+import { Variable } from 'pages/variables/useVariableStorage';
 
 interface TemplateNewInput {
   name: string;
   kind: warp_controller.TemplateKind;
-  vars: TemplateVar[];
+  vars: Variable[];
   formattedStr: string;
   msg: string;
   paths: string[];
 }
-
-export type TemplateVar = warp_controller.StaticVariable & {
-  path: string;
-};
 
 export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNewInput> {
   submitDisabled: boolean;
@@ -27,8 +25,7 @@ export const templateToInput = (template?: warp_controller.Template): TemplateNe
   return {
     name: template?.name ?? '',
     kind: template?.kind ?? ('' as any),
-    vars: (template?.vars.filter((v) => 'static' in v).map((v: any) => ({ ...v.static, path: '' })) ??
-      []) as TemplateVar[],
+    vars: template?.vars ?? [],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
     paths: template?.msg ? generatePaths(template.msg) : [],
@@ -63,28 +60,40 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       }
     }
 
-    msgError = isEmpty(state.msg) ? 'Message must be set' : msgError;
+    const unknownReferencesMsgError =
+      !msgError &&
+      !isEmpty(state.msg) &&
+      Boolean(
+        scanForReferences(JSON.parse(state.msg)).find((name) => state.vars.every((v) => variableName(v) !== name))
+      )
+        ? "Message can't contain unknown variable references."
+        : undefined;
+
+    msgError = msgError || unknownReferencesMsgError;
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
-    const varsError = Boolean(
-      state.vars.find((v) => isEmpty(v.kind) || isEmpty(v.name) || isEmpty(v.path) || !paths.includes(v.path))
-    )
-      ? 'All variables must be filled'
-      : undefined;
-
     const kindError = isEmpty(state.kind) ? 'Template type must be assigned' : undefined;
 
-    const formattedStrError = isEmpty(state.formattedStr) ? 'Template must be set' : undefined;
+    const formattedStrLengthError =
+      state.formattedStr.length > 280 ? 'Template string must be shorter than 280 characters.' : undefined;
+
+    const onlyStaticVarsFormatterStrError = !hasOnlyStaticVariables(state.formattedStr, state.vars)
+      ? 'Only defined static variables can be referenced'
+      : undefined;
+
+    const formattedStrError = onlyStaticVarsFormatterStrError || formattedStrLengthError;
 
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
         state.name.length < 1 ||
         nameError ||
-        state.msg === undefined ||
+        !state.formattedStr ||
+        state.formattedStr.length < 1 ||
+        !state.msg ||
+        state.msg.length < 1 ||
         msgError ||
-        varsError ||
         kindError ||
         formattedStrError
     );
@@ -95,7 +104,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       nameError,
       msgError,
       submitDisabled,
-      varsError,
       kindError,
       formattedStrError,
     });
