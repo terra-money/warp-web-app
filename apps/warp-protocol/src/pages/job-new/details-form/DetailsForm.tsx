@@ -14,25 +14,19 @@ import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
-import { TemplateVar as TVar } from 'pages/template-new/useTemplateNewForm';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
   detailsInput?: DetailsFormInput;
+  mode: string;
 };
-
-type TemplateVar = TVar & { value: string };
 
 type TabType = 'template' | 'message';
 
 const tabTypes = ['template', 'message'] as TabType[];
 
-export type TemplateVars = {
-  [k: string]: TemplateVar;
-};
-
 export const DetailsForm = (props: DetailsFormProps) => {
-  const { onNext, className, detailsInput } = props;
+  const { onNext, className, detailsInput, mode } = props;
 
   const [
     input,
@@ -60,7 +54,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
     <Container direction="column" className={classNames(styles.root, className)}>
       <Container className={styles.title_container}>
         <Text variant="heading1" className={styles.title}>
-          Job details
+          New job
         </Text>
         <Link className={styles.back} to={-1}>
           Back
@@ -158,7 +152,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
             }
           }}
         >
-          Next
+          {mode === 'basic' ? 'Save' : 'Next'}
         </Button>
         <Button variant="secondary" onClick={() => navigate(-1)}>
           Cancel

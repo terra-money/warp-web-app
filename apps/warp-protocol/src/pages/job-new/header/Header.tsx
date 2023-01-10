@@ -13,10 +13,10 @@ export const Header = (props: HeaderProps) => {
       <Step
         label="Job details"
         step={1}
-        selected={location.pathname.endsWith('/job-details')}
-        valid={location.pathname.endsWith('/create-condition')}
+        selected={location.pathname.endsWith('/details')}
+        valid={location.pathname.endsWith('/condition')}
       />
-      <Step label="Create condition" step={2} selected={location.pathname.endsWith('/create-condition')} />
+      <Step label="Create condition" step={2} selected={location.pathname.endsWith('/condition')} />
     </Container>
   );
 };
