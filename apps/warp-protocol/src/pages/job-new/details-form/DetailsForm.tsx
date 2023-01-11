@@ -7,16 +7,19 @@ import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { useNavigate } from 'react-router';
-import { LUNA, warp_controller } from 'types';
+import { LUNA } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
 import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+import { variableName } from 'utils/variable';
+import { Variable } from 'pages/variables/useVariableStorage';
+import { useCachedVariables } from '../useCachedVariables';
 
 type DetailsFormProps = UIElementProps & {
-  onNext: (props: DetailsFormInput) => void;
+  onNext: (props: DetailsFormInput & { variables: Variable[] }) => void;
   detailsInput?: DetailsFormInput;
   mode: string;
 };
@@ -49,6 +52,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const navigate = useNavigate();
 
   const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
+
+  const { variables } = useCachedVariables();
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -120,7 +125,18 @@ export const DetailsForm = (props: DetailsFormProps) => {
               setTemplate={(template) => input({ template })}
               setTemplateVars={(vars) =>
                 input({
-                  template: { ...(template as warp_controller.Template), vars: vars.map((v) => ({ static: v })) },
+                  template: {
+                    ...template!,
+                    vars: template!.vars.map((v) => {
+                      const find = vars.find((t) => t.name === variableName(v));
+
+                      if (find) {
+                        return { static: find };
+                      }
+
+                      return v;
+                    }),
+                  },
                 })
               }
               onMessageComposed={(message) => input({ message })}
@@ -148,11 +164,11 @@ export const DetailsForm = (props: DetailsFormProps) => {
           disabled={submitDisabled}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message, template, selectedTabType });
+              onNext({ name, reward, message, template, selectedTabType, variables });
             }
           }}
         >
-          {mode === 'basic' ? 'Save' : 'Next'}
+          {mode === 'basic' && template?.condition ? 'Save' : 'Next'}
         </Button>
         <Button variant="secondary" onClick={() => navigate(-1)}>
           Cancel

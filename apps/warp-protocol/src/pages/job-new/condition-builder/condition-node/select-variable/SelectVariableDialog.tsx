@@ -10,8 +10,8 @@ import styles from './SelectVariableDialog.module.sass';
 import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { Variable } from 'pages/variables/useVariableStorage';
-import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 import { useNewVariableDialog } from 'pages/variables/dialogs/VariableDialog';
+import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 
 type SelectVariableProps = {
   selectedVariable?: Variable;
