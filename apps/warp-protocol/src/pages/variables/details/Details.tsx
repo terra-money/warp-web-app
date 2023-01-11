@@ -105,7 +105,7 @@ export const Details = (props: DetailsProps) => {
         className={styles.form}
         selectedVariable={selectedVariable.external}
         renderActions={(state) => {
-          const { submitDisabled, name, url, selector, kind } = state;
+          const { submitDisabled, name, url, selector, kind, body, method } = state;
 
           return (
             <Container className={styles.footer} direction="row">
@@ -121,6 +121,8 @@ export const Details = (props: DetailsProps) => {
                       init_fn: {
                         url,
                         selector,
+                        body,
+                        method,
                       },
                       kind,
                     },

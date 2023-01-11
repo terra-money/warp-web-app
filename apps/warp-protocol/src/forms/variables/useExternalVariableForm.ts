@@ -45,10 +45,21 @@ export const useExternalVariableForm = (externalVariable?: warp_controller.Exter
       ...input,
     };
 
+    let bodyError = undefined;
+
+    if (state.body) {
+      try {
+        JSON.parse(state.body);
+      } catch (err) {
+        bodyError = 'body format invalid.';
+      }
+    }
+
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
     const kindError = !state.kind ? 'Variable type is required' : undefined;
     const urlError = !state.url ? 'URL is required' : undefined;
     const selectorError = !state.selector ? 'Selector is required' : undefined;
+    const methodError = !state.selector ? 'Method is required' : undefined;
 
     const submitDisabled = Boolean(
       state.name === undefined ||
@@ -59,13 +70,16 @@ export const useExternalVariableForm = (externalVariable?: warp_controller.Exter
         urlError ||
         kindError ||
         state.selector === undefined ||
-        selectorError
+        selectorError ||
+        bodyError ||
+        methodError
     );
 
     dispatch({
       ...state,
       nameError,
       submitDisabled,
+      bodyError,
     });
   };
 
