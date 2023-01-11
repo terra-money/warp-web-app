@@ -63,16 +63,18 @@ export const JobNew = (props: JobNewProps) => {
                       loading={txResult.loading}
                       onNext={async (props) => {
                         if (detailsInput) {
+                          const { cond } = props;
                           const { name, reward, message } = detailsInput;
 
                           const msgs = encodeMsgs(message);
+                          const vars = filterUnreferencedVariables(variables, message, cond);
 
                           const resp = await createJobTx({
                             name,
-                            vars: filterUnreferencedVariables(variables, message, props.cond),
+                            vars,
                             reward: microfy(reward, LUNA.decimals),
                             msgs,
-                            condition: props.cond,
+                            condition: cond,
                           });
 
                           if (resp.success) {

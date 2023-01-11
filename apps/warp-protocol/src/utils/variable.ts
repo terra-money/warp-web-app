@@ -1,5 +1,6 @@
 import { Variable } from 'pages/variables/useVariableStorage';
 import { warp_controller } from 'types';
+import { isObject } from 'lodash';
 
 export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]) => {
   const name = extractName(ref);
@@ -132,8 +133,12 @@ export function filterUnreferencedVariables(
     } else if ('expr' in cond) {
       if (['uint', 'int', 'decimal'].some((t) => t in cond.expr)) {
         const addReferencedVarsFromNumExpr = (expr: NumExpr): void => {
+          if (!isObject(expr)) {
+            return;
+          }
+
           if ('ref' in expr) {
-            referencedVars.add(expr.ref);
+            referencedVars.add(extractName(expr.ref));
           } else if ('expr' in expr) {
             addReferencedVarsFromNumExpr(expr.expr.left);
             addReferencedVarsFromNumExpr(expr.expr.right);
@@ -142,21 +147,22 @@ export function filterUnreferencedVariables(
           }
         };
 
-        Object.values(cond.expr).forEach(addReferencedVarsFromNumExpr);
+        const numexpr = Object.values(cond.expr)[0] as warp_controller.NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        Object.values(numexpr).forEach(addReferencedVarsFromNumExpr);
       }
 
       if ('string' in cond.expr) {
         if ('ref' in cond.expr.string.left) {
-          referencedVars.add(cond.expr.string.left.ref);
+          referencedVars.add(extractName(cond.expr.string.left.ref));
         }
 
         if ('ref' in cond.expr.string.right) {
-          referencedVars.add(cond.expr.string.right.ref);
+          referencedVars.add(extractName(cond.expr.string.right.ref));
         }
       }
 
       if ('bool' in cond.expr) {
-        referencedVars.add(cond.expr.bool);
+        referencedVars.add(extractName(cond.expr.bool));
       }
     }
   }

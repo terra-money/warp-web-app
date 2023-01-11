@@ -29,7 +29,7 @@ const SelectVariableDialog = (props: DialogProps<SelectVariableProps, Variable>)
 
     return {
       selectedVariable,
-      variables: [...variables, ...variables],
+      variables,
       onSelectionChanged,
     };
   }, [variables, closeDialog, selectedVariable]);
