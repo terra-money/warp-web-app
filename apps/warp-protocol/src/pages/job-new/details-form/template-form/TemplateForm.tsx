@@ -1,5 +1,4 @@
 import { Container } from '@terra-money/apps/components';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { warp_controller } from 'types';
 import styles from '../DetailsForm.module.sass';
 import jsonpath from 'jsonpath';
@@ -7,6 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { TemplatesInput } from '../templates-input/TemplatesInput';
 import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
 import { findVariablePath, templateVariables } from 'utils/variable';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 
 const composeMsgFromTemplate = (template: warp_controller.Template): string => {
   const vars = templateVariables(template);
@@ -72,7 +72,7 @@ export const TemplateForm = (props: TemplateFormProps) => {
               );
             })}
           </Container>
-          <WasmMsgInput
+          <EditorInput
             rootClassName={styles.template_msg_input}
             example={null}
             mode="text"

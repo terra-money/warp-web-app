@@ -26,6 +26,7 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
           variant="secondary"
           className={styles.btn}
           onClick={async () => {
+            clearJobStorage();
             navigate('/job-new/details?mode=basic');
             closeDialog(undefined, { closeAll: true });
           }}
