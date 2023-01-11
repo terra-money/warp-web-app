@@ -77,12 +77,13 @@ export const TemplateNew = (props: TemplateNewProps) => {
           loading={createTemplateTxResult.loading}
           disabled={submitDisabled}
           onClick={async () => {
+            const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
             const res = await createTemplateTx({
               formatted_str: formattedStr,
               msg,
               kind,
-              condition: filterEmptyCond(cond ?? ({} as warp_controller.Condition)),
-              vars: extractUsedVariables(formattedStr, msg, vars),
+              condition,
+              vars: extractUsedVariables(formattedStr, msg, vars, condition),
               name,
             });
 
@@ -106,7 +107,12 @@ export const TemplateNew = (props: TemplateNewProps) => {
   );
 };
 
-const extractUsedVariables = (formattedStr: string, msg: string, vars: Variable[]) =>
-  uniqBy([...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msg)], (v) =>
+const extractUsedVariables = (
+  formattedStr: string,
+  msg: string,
+  vars: Variable[],
+  condition?: warp_controller.Condition
+) =>
+  uniqBy([...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msg, condition)], (v) =>
     variableName(v)
   );
