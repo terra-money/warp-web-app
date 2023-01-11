@@ -15,6 +15,10 @@ import { InputAdornment } from '@mui/material';
 import styles from './ExternalVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
+import { MethodInput } from './method-input/MethodInput';
+
+const httpMethods: warp_controller.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
 
 export type ExternalVariableFormProps = UIElementProps & {
   selectedVariable?: warp_controller.ExternalVariable;
@@ -35,7 +39,8 @@ const externalVarKinds: warp_controller.VariableKind[] = [
 export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useExternalVariableForm();
-  const { name, nameError, selector, kind, url, submitDisabled, urlError, selectorError } = formState;
+  const { name, nameError, selector, kind, url, submitDisabled, urlError, selectorError, body, bodyError, method } =
+    formState;
 
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
@@ -50,9 +55,11 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
         name,
         url,
         selector,
+        body,
+        method,
         kind,
       } as ExternalVariableInput),
-    [selectedVariable, name, kind, url, selector]
+    [selectedVariable, name, kind, url, selector, body, method]
   );
 
   return (
@@ -101,6 +108,23 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
             error={urlError !== undefined}
           />
         </FormControl>
+        <MethodInput<warp_controller.Method>
+          methods={httpMethods}
+          value={method ?? undefined}
+          label="Method"
+          className={styles.method_input}
+          onChange={(value) => input({ method: value })}
+        />
+        <EditorInput
+          rootClassName={styles.body_input}
+          label="Body"
+          error={bodyError}
+          valid={Boolean(bodyError)}
+          placeholder="Type your JSON payload here"
+          example={{ empty: {} }}
+          value={body ?? undefined}
+          onChange={(value) => input({ body: value })}
+        />
         <FormControl label="Response selector" fullWidth className={styles.selector_input}>
           <TextInput
             placeholder="Type selector here"
