@@ -18,6 +18,7 @@ import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
 import { useSearchParams } from 'react-router-dom';
 import { Variable } from 'pages/variables/useVariableStorage';
+import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -50,60 +51,62 @@ export const TemplateNew = (props: TemplateNewProps) => {
   const { cond, setCond } = useJobStorage();
 
   return (
-    <Container direction="column" className={classNames(styles.root, className)}>
-      <VariableDrawer />
-      <Container className={styles.title_container}>
-        <Text variant="heading1" className={styles.title}>
-          New template
-        </Text>
-        <Link className={styles.back} to={-1}>
-          Back
-        </Link>
-        <Text className={styles.description} variant="label">
-          Below you may enter a job template, composed of a string in a human readable text format with arbitrary
-          variable definitions, and the accompaying JSON message. Job templates can include condition defintions.
-        </Text>
-      </Container>
-      <>
-        <Routes>
-          <Route path="/details" element={<DetailsForm formState={formState} input={input} />} />
-          <Route path="/condition" element={<ConditionBuilder cond={cond} setCond={setCond} />} />
-          <Route path="*" element={<Navigate to="/template-new/details?mode=basic" replace />} />
-        </Routes>
-      </>
-      <Footer>
-        <Button
-          variant="primary"
-          loading={createTemplateTxResult.loading}
-          disabled={submitDisabled}
-          onClick={async () => {
-            const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
-            const res = await createTemplateTx({
-              formatted_str: formattedStr,
-              msg,
-              kind,
-              condition,
-              vars: extractUsedVariables(formattedStr, msg, vars, condition),
-              name,
-            });
+    <CachedVariablesSession>
+      <Container direction="column" className={classNames(styles.root, className)}>
+        <VariableDrawer />
+        <Container className={styles.title_container}>
+          <Text variant="heading1" className={styles.title}>
+            New template
+          </Text>
+          <Link className={styles.back} to={-1}>
+            Back
+          </Link>
+          <Text className={styles.description} variant="label">
+            Below you may enter a job template, composed of a string in a human readable text format with arbitrary
+            variable definitions, and the accompaying JSON message. Job templates can include condition defintions.
+          </Text>
+        </Container>
+        <>
+          <Routes>
+            <Route path="/details" element={<DetailsForm formState={formState} input={input} />} />
+            <Route path="/condition" element={<ConditionBuilder cond={cond} setCond={setCond} />} />
+            <Route path="*" element={<Navigate to="/template-new/details?mode=basic" replace />} />
+          </Routes>
+        </>
+        <Footer>
+          <Button
+            variant="primary"
+            loading={createTemplateTxResult.loading}
+            disabled={submitDisabled}
+            onClick={async () => {
+              const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
+              const res = await createTemplateTx({
+                formatted_str: formattedStr,
+                msg,
+                kind,
+                condition,
+                vars: extractUsedVariables(formattedStr, msg, vars, condition),
+                name,
+              });
 
-            if (res.success) {
-              navigate(-1);
-            }
-          }}
-        >
-          Save
-        </Button>
-        {!inConditionTab && kind === 'msg' && mode === 'advanced' && (
-          <Button gutters="large" variant="secondary" onClick={() => navigate('/template-new/condition')}>
-            Add condition
+              if (res.success) {
+                navigate(-1);
+              }
+            }}
+          >
+            Save
           </Button>
-        )}
-        <Button variant="secondary" onClick={() => navigate(-1)}>
-          Cancel
-        </Button>
-      </Footer>
-    </Container>
+          {!inConditionTab && kind === 'msg' && mode === 'advanced' && (
+            <Button gutters="large" variant="secondary" onClick={() => navigate('/template-new/condition')}>
+              Add condition
+            </Button>
+          )}
+          <Button variant="secondary" onClick={() => navigate(-1)}>
+            Cancel
+          </Button>
+        </Footer>
+      </Container>
+    </CachedVariablesSession>
   );
 };
 

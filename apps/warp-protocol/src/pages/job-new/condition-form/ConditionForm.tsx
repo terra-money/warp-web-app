@@ -10,10 +10,12 @@ import { Button, Link, Text } from 'components/primitives';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 import { useJobStorage } from '../useJobStorage';
+import { Variable } from 'pages/variables/useVariableStorage';
+import { useCachedVariables } from '../useCachedVariables';
 
 type ConditionFormProps = UIElementProps & {
   loading: boolean;
-  onNext: (props: { cond: warp_controller.Condition }) => Promise<void>;
+  onNext: (props: { cond: warp_controller.Condition; variables: Variable[] }) => Promise<void>;
 };
 
 export const ConditionForm = (props: ConditionFormProps) => {
@@ -23,6 +25,8 @@ export const ConditionForm = (props: ConditionFormProps) => {
   const [valid, setValid] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  const { variables } = useCachedVariables();
 
   useEffect(() => {
     const filtered = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
@@ -52,7 +56,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
           loading={loading}
           onClick={async () => {
             if (valid && cond) {
-              return onNext({ cond: filterEmptyCond(cond)! });
+              return onNext({ cond: filterEmptyCond(cond)!, variables });
             }
           }}
         >
