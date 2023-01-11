@@ -6,7 +6,7 @@ export class CustomHighlightRules extends window.ace.acequire('ace/mode/text_hig
     this.$rules = {
       start: [
         // highlight text between curly braces with the 'highlighted_text' class
-        { regex: /{(\w|\s)+}/, token: 'highlighted_text' },
+        { regex: /{[^{}]+}/, token: 'highlighted_text' },
       ],
     };
   }

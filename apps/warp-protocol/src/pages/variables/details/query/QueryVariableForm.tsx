@@ -11,7 +11,7 @@ import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
 import { TemplateForm } from 'pages/job-new/details-form/template-form/TemplateForm';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { useTemplatesQuery } from 'queries';
 import { isMatch } from 'lodash';
 import { QueryVariable } from 'pages/variables/useVariableStorage';
@@ -187,7 +187,7 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
         )}
         {selectedTabType === 'message' && (
           <>
-            <WasmMsgInput
+            <EditorInput
               rootClassName={styles.msg_input}
               label="Message"
               className={styles.msg_input_inner}

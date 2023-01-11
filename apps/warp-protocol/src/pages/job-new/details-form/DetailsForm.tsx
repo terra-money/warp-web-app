@@ -6,7 +6,6 @@ import { Form } from 'components/form/Form';
 import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { useNavigate } from 'react-router';
 import { LUNA, warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
@@ -14,6 +13,7 @@ import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput) => void;
@@ -129,7 +129,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
         )}
         {selectedTabType === 'message' && (
           <>
-            <WasmMsgInput
+            <MsgInput
               rootClassName={styles.msg_input}
               label="Message"
               className={styles.msg_input_inner}

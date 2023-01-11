@@ -14,6 +14,7 @@ import { useCachedVariables } from './useCachedVariables';
 import { filterUnreferencedVariables } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
+import { useMemo } from 'react';
 
 type JobNewProps = UIElementProps & {};
 
@@ -25,7 +26,9 @@ export const JobNew = (props: JobNewProps) => {
   const connectedWallet = useConnectedWallet();
   const navigate = useNavigate();
 
-  const { variables } = useCachedVariables();
+  const varsInput = useMemo(() => detailsInput?.template?.vars, [detailsInput]);
+
+  const { variables } = useCachedVariables(varsInput);
 
   const [searchParams] = useSearchParams();
 

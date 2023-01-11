@@ -26,6 +26,7 @@ export const NewTemplateDialog = (props: DialogProps<NewTemplateDialogProps>) =>
           variant="secondary"
           className={styles.btn}
           onClick={async () => {
+            clearJobStorage();
             navigate('/template-new/details?mode=basic');
             closeDialog(undefined, { closeAll: true });
           }}

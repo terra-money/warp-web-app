@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from 'components/primitives';
 import { Container } from '@terra-money/apps/components';
 import classNames from 'classnames';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+import { TemplateStrInput } from 'forms/QueryExprForm/TemplateStrInput';
 
 interface TemplateMessageInputProps {
   className?: string;
@@ -41,7 +42,7 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
       </Container>
       <Container className={styles.bottom} direction="column">
         {selectedTabType === 'message' && (
-          <WasmMsgInput
+          <MsgInput
             error={msgError}
             rootClassName={styles.wasm_msg}
             mode="json"
@@ -51,7 +52,7 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
           />
         )}
         {selectedTabType === 'template' && (
-          <WasmMsgInput
+          <TemplateStrInput
             rootClassName={styles.wasm_msg}
             example={null}
             mode="text"

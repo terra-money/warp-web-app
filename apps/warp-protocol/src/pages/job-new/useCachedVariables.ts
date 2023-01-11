@@ -13,7 +13,8 @@ export const useCachedVariables = (input?: Variable[]) => {
   const [cachedVariables, setCachedVariables] = useLocalStorage<Variable[]>(`__warp_cached_variables`, initialValue);
 
   useEffect(() => {
-    setCachedVariables(uniqBy([...cachedVariables, ...(input ?? []), ...storageVars], (v) => variableName(v)));
+    const newVars = uniqBy([...cachedVariables, ...(input ?? []), ...storageVars], (v) => variableName(v));
+    setCachedVariables(newVars);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
 
