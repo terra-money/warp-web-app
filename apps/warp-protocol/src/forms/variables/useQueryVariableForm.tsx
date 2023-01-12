@@ -3,14 +3,12 @@ import { QueryVariable } from 'pages/variables/useVariableStorage';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
-import { generatePaths } from 'utils';
 import { templateVariables } from 'utils/variable';
 
 export interface QueryVariableInput {
   name: string;
   queryJson: string;
   kind: warp_controller.VariableKind;
-  paths: string[];
   querySelector: string;
   template?: warp_controller.Template;
   selectedTabType: 'template' | 'message';
@@ -33,7 +31,6 @@ export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariab
     template: queryVariable?.template ?? undefined,
     selectedTabType:
       !Boolean(queryVariable?.template) && Boolean(queryVariable?.init_fn.query) ? 'message' : 'template',
-    paths: queryVariable ? generatePaths(queryJson) : [],
   };
 };
 
@@ -51,8 +48,6 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
       ...getState(),
       ...input,
     };
-
-    const paths = input.queryJson ? generatePaths(input.queryJson) : state.paths;
 
     let queryJsonError = undefined;
 
@@ -90,7 +85,6 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
 
     dispatch({
       ...state,
-      paths,
       nameError,
       queryJsonError,
       submitDisabled,

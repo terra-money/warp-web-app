@@ -19,6 +19,7 @@ import { QueryVariable } from 'pages/variables/useVariableStorage';
 import styles from './QueryVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
+import { generatePaths } from 'utils';
 
 export type QueryVariableFormProps = UIElementProps & {
   selectedVariable?: QueryVariable;
@@ -66,7 +67,6 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
     queryJsonError,
     querySelector,
     querySelectorError,
-    paths,
     template,
     submitDisabled,
     kind,
@@ -77,6 +77,10 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
 
   const queryExample = useQueryExample();
   const openPreview = usePreviewQueryDialog();
+
+  const paths = useMemo(() => {
+    return data ? generatePaths(JSON.stringify(data)) : [];
+  }, [data]);
 
   const endLabel = useMemo(() => {
     const queryIsValid = Boolean(queryJson) && !queryJsonError;
