@@ -29,13 +29,12 @@ export function VariableInput(props: VariableInputProps) {
 
   const { variables } = useCachedVariables();
 
-  //
-
-  const component = isEmpty(value) ? (
-    <span className={styles.placeholder}>Select variable</span>
-  ) : (
-    <span className={styles.text}>{variableName(resolveVariableRef(value, variables))}</span>
-  );
+  const component =
+    isEmpty(value) || variables.length === 0 ? (
+      <span className={styles.placeholder}>Select variable</span>
+    ) : (
+      <span className={styles.text}>{variableName(resolveVariableRef(value, variables))}</span>
+    );
 
   return (
     <Container className={styles.variable_input} direction="row" onClick={() => onVariableDialogClick()}>

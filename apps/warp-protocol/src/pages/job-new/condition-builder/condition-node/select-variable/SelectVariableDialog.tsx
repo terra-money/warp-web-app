@@ -20,7 +20,7 @@ type SelectVariableProps = {
 const SelectVariableDialog = (props: DialogProps<SelectVariableProps, Variable>) => {
   const { closeDialog, selectedVariable } = props;
 
-  const { variables } = useCachedVariables();
+  const { variables, saveVariable } = useCachedVariables();
 
   const listData = useMemo<ListData>(() => {
     const onSelectionChanged = (variable: Variable) => {
@@ -66,6 +66,7 @@ const SelectVariableDialog = (props: DialogProps<SelectVariableProps, Variable>)
             const resp = await openNewVariableDialog({});
 
             if (resp) {
+              saveVariable(resp);
               closeDialog(resp);
             }
           }}
