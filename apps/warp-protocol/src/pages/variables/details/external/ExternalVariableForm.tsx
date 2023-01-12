@@ -8,7 +8,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import { isMatch } from 'lodash';
 import classNames from 'classnames';
-import { Text, TextInput } from 'components/primitives';
+import { Text, TextInput, Throbber } from 'components/primitives';
 import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
 
@@ -17,6 +17,10 @@ import { warp_controller } from 'types/contracts/warp_controller';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { MethodInput } from './method-input/MethodInput';
+import { useExternalQuery } from 'queries/useExternalQuery';
+import { usePreviewExternalDialog } from './preview-dialog/PreviewExternalDialog';
+import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
+import { generatePaths } from 'utils';
 
 const httpMethods: warp_controller.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -61,6 +65,44 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
       } as ExternalVariableInput),
     [selectedVariable, name, kind, url, selector, body, method]
   );
+
+  const { isLoading, data, isFetching, error } = useExternalQuery(url, method!, body!);
+
+  const paths = useMemo(() => {
+    return data ? generatePaths(JSON.stringify(data)) : [];
+  }, [data]);
+
+  const openPreview = usePreviewExternalDialog();
+
+  const endLabel = useMemo(() => {
+    const queryIsValid = url && !urlError && method;
+
+    if (!queryIsValid) {
+      return undefined;
+    }
+
+    if (isLoading || isFetching) {
+      return <Throbber />;
+    }
+
+    if (data) {
+      return (
+        <Text
+          variant="label"
+          onClick={() => openPreview({ body: body ?? undefined, url, method })}
+          className={styles.preview}
+        >
+          Preview Query Result
+        </Text>
+      );
+    }
+
+    if (error) {
+      return <Text variant="text">Could not fetch query result</Text>;
+    }
+
+    return undefined;
+  }, [data, isLoading, isFetching, openPreview, body, url, method, error, urlError]);
 
   return (
     <>
@@ -125,19 +167,19 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
           value={body ?? undefined}
           onChange={(value) => input({ body: value })}
         />
-        <FormControl label="Response selector" fullWidth className={styles.selector_input}>
-          <TextInput
-            placeholder="Type selector here"
-            margin="none"
-            value={selector}
-            onChange={(value) => {
-              input({ selector: value.target.value });
-            }}
-            fullWidth
-            helperText={selectorError}
-            error={selectorError !== undefined}
-          />
-        </FormControl>
+        <QuerySelectorInput
+          endLabel={endLabel}
+          className={styles.selector_input}
+          label="Response Selector"
+          onChange={(val) =>
+            input({
+              selector: val,
+            })
+          }
+          value={selector}
+          error={selectorError}
+          options={paths}
+        />
       </Form>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>
