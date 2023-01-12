@@ -3,7 +3,7 @@ import { useDialog, DialogProps } from '@terra-money/apps/hooks';
 import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import { useSimulateQuery } from '../../../queries/useSimulateQuery';
 import styles from './PreviewQueryDialog.module.sass';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 
 type PreviewQueryDialogProps = {
   query: string;
@@ -20,9 +20,16 @@ export const PreviewQueryDialog = (props: DialogProps<PreviewQueryDialogProps, P
     <Dialog className={styles.root}>
       <DialogHeader title="Query Preview" onClose={() => closeDialog(undefined)} />
       <DialogBody className={styles.body}>
-        <WasmMsgInput className={styles.msg} value={query} readOnly={true} label="Query" />
-        <WasmMsgInput
-          className={styles.msg}
+        <EditorInput
+          rootClassName={styles.msg}
+          className={styles.msg_editor}
+          value={query}
+          readOnly={true}
+          label="Query"
+        />
+        <EditorInput
+          rootClassName={styles.msg}
+          className={styles.msg_editor}
           error={error ? 'There was an error making the query.' : undefined}
           value={JSON.stringify(data, null, 2)}
           placeholder="Query response will be displayed here."

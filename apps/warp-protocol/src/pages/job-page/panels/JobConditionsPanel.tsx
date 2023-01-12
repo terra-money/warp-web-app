@@ -18,7 +18,7 @@ export const JobConditionsPanel = (props: JobConditionsPanelProps) => {
       <Container className={styles.top} direction="row">
         <Text variant="label">Condition</Text>
       </Container>
-      <Condition condition={job.info.condition} isRoot />
+      <Condition isRoot job={job} condition={job.condition} />
     </Panel>
   );
 };

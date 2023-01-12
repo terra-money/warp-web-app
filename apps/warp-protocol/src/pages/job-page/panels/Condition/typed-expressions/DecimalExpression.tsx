@@ -1,29 +1,20 @@
 import { warp_controller } from 'types';
 import { useOperatorLabel } from '../useOperatorLabel';
-import { QueryExpression } from './QueryExpression';
 import { UIElementProps } from '@terra-money/apps/components';
+import { Job } from 'types/job';
+import { ExpressionValue } from './ExpressionValue';
 
 export type DecimalExpressionProps = {
   expression: warp_controller.GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
+  job: Job;
 } & UIElementProps;
 
 export const DecimalExpression = (props: DecimalExpressionProps) => {
-  const { expression, className } = props;
+  const { expression, className, job } = props;
   const operator = useOperatorLabel(expression.op);
 
-  const left =
-    'simple' in expression.left ? (
-      expression.left.simple
-    ) : 'query' in expression.left ? (
-      <QueryExpression query={expression.left.query} />
-    ) : undefined;
-
-  const right =
-    'simple' in expression.right ? (
-      expression.right.simple
-    ) : 'query' in expression.right ? (
-      <QueryExpression query={expression.right.query} />
-    ) : undefined;
+  const left = <ExpressionValue job={job} value={expression.left} />;
+  const right = <ExpressionValue job={job} value={expression.right} />;
 
   return (
     <span className={className}>

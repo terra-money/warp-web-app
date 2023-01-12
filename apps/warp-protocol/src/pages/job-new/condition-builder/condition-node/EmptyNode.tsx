@@ -55,11 +55,7 @@ export const EmptyNode = forwardRef((props: EmptyNodeProps, ref: React.Ref<HTMLB
           onClick={() =>
             setCond({
               expr: {
-                bool: {
-                  query: undefined as unknown as warp_controller.QueryRequestFor_String,
-                  name: '',
-                  selector: '',
-                },
+                bool: '',
               },
             })
           }

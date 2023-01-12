@@ -14,13 +14,17 @@ export const Menu = forwardRef((props: UIElementProps, ref: Ref<HTMLDivElement>)
   );
 });
 
-type MenuItemProps = UIElementProps & { onClick?: () => void; subMenu?: boolean };
+type MenuItemProps = UIElementProps & { onClick?: () => void; subMenu?: boolean; onMouseEnter?: () => void };
 
 export const MenuItem = (props: MenuItemProps) => {
-  const { children, subMenu, ...remainingProps } = props;
+  const { children, subMenu, onMouseEnter, ...remainingProps } = props;
 
   return (
-    <div {...remainingProps} className={classNames(styles.menu_item, subMenu && styles.submenu, props.className)}>
+    <div
+      {...remainingProps}
+      className={classNames(styles.menu_item, subMenu && styles.submenu, props.className)}
+      onMouseEnter={onMouseEnter}
+    >
       {children}
       {subMenu && <KeyboardArrowRightIcon className={styles.chevron} />}
     </div>

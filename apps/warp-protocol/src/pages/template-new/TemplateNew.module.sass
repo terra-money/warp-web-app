@@ -1,5 +1,6 @@
 .root
   height: 100%
+  position: relative
   display: block
   width: 100%
 
@@ -14,8 +15,8 @@
 .left
   height: max(340px, calc(100vh - 380px))
   overflow: auto
-  width: 600px
-  margin-right: 80px
+  width: 800px
+  margin-right: 40px
 
   > *
     margin-bottom: 20px !important
@@ -38,7 +39,7 @@
 
 .title
   font-weight: 600
-  font-size: 32px
+  font-size: 40px
 
 .jobs
   height: 100%
@@ -96,7 +97,6 @@
     path
       fill: #F86363 !important
 
-
 .name_input
   width: 100%
 
@@ -104,10 +104,34 @@
   margin-left: 20px !important
   width: 400px
 
-
 .variable_name_input
   width: 100%
 
 .variable_kind_input
   margin-left: 20px !important
   margin-top: 14px !important
+
+.drawer
+  overflow-y: unset !important
+  visibility: visible !important
+  background: transparent !important
+
+.drawer_toggle
+  border-radius: 16px
+  position: absolute
+  padding: 16px 24px
+  font-size: 14px
+  left: -68px
+  cursor: pointer
+  border-bottom-right-radius: 0
+  border-bottom-left-radius: 0
+  background: var(--section-background-color)
+  transform: rotate(270deg)
+  top: 240px
+
+.variables
+  width: 280px
+  margin-top: 140px
+  height: calc(100vh - 200px)
+  border-top-right-radius: 0
+  border-bottom-right-radius: 0

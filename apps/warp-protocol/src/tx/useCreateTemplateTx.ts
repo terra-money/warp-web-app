@@ -12,13 +12,14 @@ export const useCreateTemplateTx = () => {
 
   return useTx<CreateTemplateTxProps>(
     (options) => {
-      const { wallet, formatted_str, kind, vars, name, msg } = options;
+      const { wallet, formatted_str, kind, vars, name, msg, condition } = options;
 
       return TxBuilder.new()
         .execute<SubmitTemplateMsg>(wallet.walletAddress, contractAddress, {
           submit_template: {
             formatted_str,
             kind,
+            condition,
             vars,
             name,
             msg,

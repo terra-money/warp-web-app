@@ -1,17 +1,19 @@
-import { warp_controller } from '../../../../../types';
-import { QueryExpression } from './QueryExpression';
+// import { warp_controller } from '../../../../../types';
 import { UIElementProps } from '@terra-money/apps/components';
+import { Job } from 'types/job';
+import { VariableValue } from './VariableValue';
 
 export type BoolExpressionProps = {
-  expression: warp_controller.QueryExpr;
+  variableRef: string;
+  job: Job;
 } & UIElementProps;
 
 export const BoolExpression = (props: BoolExpressionProps) => {
-  const { expression, className } = props;
+  const { variableRef, className, job } = props;
 
   return (
     <span className={className}>
-      <QueryExpression query={expression} /> is true
+      <VariableValue job={job} variableRef={variableRef} />
     </span>
   );
 };

@@ -2,9 +2,11 @@ import { warp_controller } from '../../../../../types';
 import { useOperatorLabel } from '../useOperatorLabel';
 import { format } from 'date-fns';
 import { UIElementProps } from '@terra-money/apps/components';
+import { Job } from 'types/job';
 
 export type BlockHeightExpressionProps = {
   expression: warp_controller.TimeExpr;
+  job: Job;
 } & UIElementProps;
 
 const toDate = (timestamp: string) => new Date(Number(timestamp) * 1000);

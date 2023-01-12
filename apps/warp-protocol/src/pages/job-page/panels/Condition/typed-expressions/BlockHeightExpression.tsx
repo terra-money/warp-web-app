@@ -2,9 +2,11 @@ import { warp_controller } from 'types';
 import { useOperatorLabel } from '../useOperatorLabel';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { useBlockHeightQuery } from '../../../../../queries/useBlockHeightQuery';
+import { Job } from 'types/job';
 
 export type BlockHeightExpressionProps = {
   expression: warp_controller.BlockExpr;
+  job: Job;
 } & UIElementProps;
 
 export const BlockHeightExpression = (props: BlockHeightExpressionProps) => {

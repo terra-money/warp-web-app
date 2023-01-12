@@ -5,7 +5,6 @@ import { forwardRef } from 'react';
 import { warp_controller } from 'types';
 import { BlockheightExprNode } from './BlockheightExprNode';
 import { BoolExprNode } from './BoolExprNode';
-
 import styles from './ConditionNode.module.sass';
 import { DecimalExprNode } from './DecimalExprNode';
 import { IntExprNode } from './IntExprNode';

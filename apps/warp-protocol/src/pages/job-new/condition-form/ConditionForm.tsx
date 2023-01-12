@@ -10,10 +10,12 @@ import { Button, Link, Text } from 'components/primitives';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 import { useJobStorage } from '../useJobStorage';
+import { Variable } from 'pages/variables/useVariableStorage';
+import { useCachedVariables } from '../useCachedVariables';
 
 type ConditionFormProps = UIElementProps & {
   loading: boolean;
-  onNext: (props: { cond: warp_controller.Condition }) => Promise<void>;
+  onNext: (props: { cond: warp_controller.Condition; variables: Variable[] }) => Promise<void>;
 };
 
 export const ConditionForm = (props: ConditionFormProps) => {
@@ -23,6 +25,8 @@ export const ConditionForm = (props: ConditionFormProps) => {
   const [valid, setValid] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  const { variables } = useCachedVariables();
 
   useEffect(() => {
     const filtered = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
@@ -43,11 +47,6 @@ export const ConditionForm = (props: ConditionFormProps) => {
           Decimal, Boolean, Timestamp or Blockheight along with accompaying operators, under which the job will be
           executed.
         </Text>
-        {!isEmpty(cond) && (
-          <Link className={styles.back} onClick={() => setCond(undefined)}>
-            Clear all
-          </Link>
-        )}
       </Container>
       <ConditionBuilder cond={cond} setCond={setCond} />
       <Footer>
@@ -57,7 +56,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
           loading={loading}
           onClick={async () => {
             if (valid && cond) {
-              return onNext({ cond: filterEmptyCond(cond)! });
+              return onNext({ cond: filterEmptyCond(cond)!, variables });
             }
           }}
         >
@@ -71,7 +70,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
   );
 };
 
-const filterEmptyCond = (input: warp_controller.Condition) => {
+export const filterEmptyCond = (input: warp_controller.Condition) => {
   let cond = { ...input };
 
   if ('and' in cond) {
@@ -120,8 +119,8 @@ const filterEmptyCond = (input: warp_controller.Condition) => {
 const filterExpr = (expr: warp_controller.Expr) => {
   if ('string' in expr) {
     if (
-      (validSimple(expr.string.left) || validQuery(expr.string.left)) &&
-      (validSimple(expr.string.right) || validQuery(expr.string.right))
+      (validSimple(expr.string.left) || validRef(expr.string.left)) &&
+      (validSimple(expr.string.right) || validRef(expr.string.right))
     ) {
       return expr;
     }
@@ -129,8 +128,8 @@ const filterExpr = (expr: warp_controller.Expr) => {
 
   if ('uint' in expr) {
     if (
-      (validSimple(expr.uint.left) || validQuery(expr.uint.left)) &&
-      (validSimple(expr.uint.right) || validQuery(expr.uint.right))
+      (validSimple(expr.uint.left) || validRef(expr.uint.left)) &&
+      (validSimple(expr.uint.right) || validRef(expr.uint.right))
     ) {
       return expr;
     }
@@ -138,8 +137,8 @@ const filterExpr = (expr: warp_controller.Expr) => {
 
   if ('decimal' in expr) {
     if (
-      (validSimple(expr.decimal.left) || validQuery(expr.decimal.left)) &&
-      (validSimple(expr.decimal.right) || validQuery(expr.decimal.right))
+      (validSimple(expr.decimal.left) || validRef(expr.decimal.left)) &&
+      (validSimple(expr.decimal.right) || validRef(expr.decimal.right))
     ) {
       return expr;
     }
@@ -158,7 +157,7 @@ const filterExpr = (expr: warp_controller.Expr) => {
   }
 
   if ('bool' in expr) {
-    if (validQuery({ query: expr.bool })) {
+    if (!isEmpty(expr.bool)) {
       return expr;
     }
   }
@@ -188,14 +187,14 @@ const validTime = (value: warp_controller.TimeExpr | warp_controller.BlockExpr) 
   return false;
 };
 
-const validQuery = (
+const validRef = (
   value:
     | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
     | warp_controller.ValueFor_String
 ) => {
-  if ('query' in value) {
-    return !isEmpty(value.query.name) && !isEmpty(value.query.query) && !isEmpty(value.query.selector);
+  if ('ref' in value) {
+    return !isEmpty(value.ref);
   }
 
   return false;
