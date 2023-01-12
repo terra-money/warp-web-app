@@ -20,9 +20,16 @@ export const PreviewQueryDialog = (props: DialogProps<PreviewQueryDialogProps, P
     <Dialog className={styles.root}>
       <DialogHeader title="Query Preview" onClose={() => closeDialog(undefined)} />
       <DialogBody className={styles.body}>
-        <EditorInput className={styles.msg} value={query} readOnly={true} label="Query" />
         <EditorInput
-          className={styles.msg}
+          rootClassName={styles.msg}
+          className={styles.msg_editor}
+          value={query}
+          readOnly={true}
+          label="Query"
+        />
+        <EditorInput
+          rootClassName={styles.msg}
+          className={styles.msg_editor}
           error={error ? 'There was an error making the query.' : undefined}
           value={JSON.stringify(data, null, 2)}
           placeholder="Query response will be displayed here."
