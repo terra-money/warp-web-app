@@ -90,7 +90,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
               });
 
               if (res.success) {
-                navigate(-1);
+                navigate('/templates');
               }
             }}
           >

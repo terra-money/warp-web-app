@@ -69,7 +69,6 @@ export const JobNew = (props: JobNewProps) => {
                             const msgs = encodeMsgs(message);
                             const vars = filterUnreferencedVariables(variables, message, condition!);
 
-                            // TODO: add condition hydration
                             const resp = await createJobTx({
                               name,
                               vars,
