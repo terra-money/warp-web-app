@@ -30,7 +30,7 @@ export const RewardStatistics = (props: UIElementProps) => {
             >
               {total}
             </AnimateNumber>
-            <sub>&nbsp;WARP</sub>
+            <sub>&nbsp;LUNA</sub>
           </>
         }
       />
@@ -48,7 +48,7 @@ export const RewardStatistics = (props: UIElementProps) => {
             >
               {average}
             </AnimateNumber>
-            <sub>&nbsp;WARP</sub>
+            <sub>&nbsp;LUNA</sub>
           </>
         }
       />
