@@ -27,7 +27,7 @@ export const DailyRewardsChart = (props: UIElementProps) => {
           >
             {total}
           </AnimateNumber>
-          <sub>&nbsp;WARP</sub>
+          <sub>&nbsp;LUNA</sub>
         </>
       }
     >

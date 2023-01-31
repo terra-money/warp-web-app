@@ -12,6 +12,7 @@ export interface CreateJobTxProps {
   name: string;
   reward: u<Big>;
   msgs: warp_controller.CosmosMsgFor_Empty[];
+  vars: warp_controller.Variable[];
   condition: warp_controller.Condition;
 }
 
@@ -32,7 +33,7 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     (options) => {
-      const { wallet, reward, name, msgs, condition } = options;
+      const { wallet, reward, name, msgs, condition, vars } = options;
 
       let txBuilder = TxBuilder.new();
 
@@ -46,8 +47,10 @@ export const useCreateJobTx = () => {
         })
         .execute<CreateJobMsg>(wallet.walletAddress, contractAddress, {
           create_job: {
+            recurring: false,
             name,
             condition: condition,
+            vars,
             reward: reward.toString(),
             msgs: msgs.map((msg) => JSON.stringify(msg)),
           },

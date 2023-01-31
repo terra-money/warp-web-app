@@ -12,9 +12,8 @@ import { useJobsQuery } from 'queries/useJobsQuery';
 import { Job } from 'types/job';
 import { useJobFiltersDialog } from './dialogs/job-filters/JobFiltersDialog';
 import { warp_controller } from 'types';
-import { useNavigate } from 'react-router';
-import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useNewJobDialog } from 'components/layout/dialogs/NewJobDialog';
 
 type JobsWidgetProps = {
   limit?: number;
@@ -67,14 +66,14 @@ export const JobsWidget = (props: JobsWidgetProps) => {
   }, [isLoading, data, lastItemIndexes, page]);
 
   const openJobFiltersDialog = useJobFiltersDialog();
-  const navigate = useNavigate();
 
   const columns = useMemo(() => {
     return jobWidgetColumns({ sort, setSort });
   }, [sort, setSort]);
 
   const statusFilter = queryOpts.job_status;
-  const { clearJobStorage } = useJobStorage();
+
+  const openNewJobDialog = useNewJobDialog();
 
   return (
     <TableWidget<Job>
@@ -120,10 +119,7 @@ export const JobsWidget = (props: JobsWidgetProps) => {
               icon={<PlusIcon className={styles.new_icon} />}
               iconGap="none"
               variant="primary"
-              onClick={() => {
-                clearJobStorage();
-                navigate('/job-new/job-details');
-              }}
+              onClick={() => openNewJobDialog({})}
             >
               New
             </ActionButton>

@@ -1,88 +1,79 @@
+import { Text, Button, Throbber } from 'components/primitives';
+import { Container } from '@terra-money/apps/components';
+import { ReactComponent as PlusIcon } from 'components/assets/Plus.svg';
 import styles from './Templates.module.sass';
-import { Container, UIElementProps } from '@terra-money/apps/components';
-import { Button, Text } from 'components/primitives';
-import { useEffect, useState } from 'react';
-import { TemplateDetails } from './details/TemplateDetails';
-import { IfConnected } from 'components/if-connected';
-import { NotConnected } from 'components/not-connected';
-import { useNavigate } from 'react-router';
-import { TemplatesNav } from './nav/TemplatesNav';
+import { ActionButton } from 'components/action-button/ActionButton';
+import { useTemplatesQuery } from 'queries';
+import { useState } from 'react';
 import classNames from 'classnames';
-import { warp_controller } from 'types';
-import { useTemplatesQuery } from 'queries/useTemplatesQuery';
+import { TemplateCard } from './TemplateCard';
+import { EmptyView } from './EmptyView';
+import { useNewTemplateDialog } from 'components/layout/dialogs/NewTemplateDialog';
 
-type TemplatesContentProps = {};
+interface TemplatesProps {}
 
-type TabType = 'job' | 'query';
+type TabType = 'job' | 'query' | 'all';
 
-const tabTypes = ['job', 'query'] as TabType[];
+const tabTypes = ['all', 'job', 'query'] as TabType[];
 
-const TemplatesContent = (props: TemplatesContentProps) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<warp_controller.Template | undefined>(undefined);
+const kindFromTab = (tabType: TabType) => {
+  if (tabType === 'all') {
+    return undefined;
+  }
 
-  const [selectedTabType, setSelectedTabType] = useState<TabType>('job');
+  if (tabType === 'job') {
+    return 'msg';
+  }
 
-  const { data: templates = [], isLoading } = useTemplatesQuery({ kind: selectedTabType === 'job' ? 'msg' : 'query' });
+  return 'query';
+};
 
-  const navigate = useNavigate();
+export const Templates = (props: TemplatesProps) => {
+  const [selectedTabType, setSelectedTabType] = useState<TabType>('all');
 
-  useEffect(() => {
-    setSelectedTemplate(undefined);
-  }, [selectedTabType]);
+  const { data: templates = [], isLoading } = useTemplatesQuery({ kind: kindFromTab(selectedTabType) });
+
+  const openNewTemplateDialog = useNewTemplateDialog();
 
   return (
-    <Container direction="column" className={styles.content}>
-      <Container className={styles.header}>
+    <Container className={styles.root} direction="column">
+      <Container className={styles.header} direction="column">
         <Text variant="heading1" className={styles.title}>
           Templates
         </Text>
-        <Button variant="primary" onClick={() => navigate('/template-new')}>
-          New template
-        </Button>
-      </Container>
-      <Container className={styles.tabs} direction="row">
-        {tabTypes.map((tabType) => (
-          <Button
-            className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
-            onClick={() => setSelectedTabType(tabType)}
-            variant="secondary"
+        <Container className={styles.top}>
+          <Container className={styles.tabs} direction="row">
+            {tabTypes.map((tabType) => (
+              <Button
+                className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
+                key={tabType}
+                onClick={() => setSelectedTabType(tabType)}
+                variant="secondary"
+              >
+                {tabType}
+              </Button>
+            ))}
+          </Container>
+          <ActionButton
+            className={styles.new}
+            icon={<PlusIcon className={styles.new_icon} />}
+            iconGap="none"
+            variant="primary"
+            onClick={() => {
+              openNewTemplateDialog({});
+            }}
           >
-            {tabType}
-          </Button>
-        ))}
-      </Container>
-      <Container className={styles.bottom} direction="row">
-        <TemplatesNav
-          className={styles.nav}
-          selectedTemplate={selectedTemplate}
-          templates={templates}
-          setSelectedTemplate={setSelectedTemplate}
-        />
-        <TemplateDetails
-          isLoading={isLoading}
-          className={styles.details}
-          selectedTemplate={selectedTemplate}
-          onSaveTemplate={(q) => {
-            setSelectedTemplate(q);
-          }}
-          onDeleteTemplate={(q) => {
-            setSelectedTemplate(undefined);
-          }}
-        />
-      </Container>
-    </Container>
-  );
-};
-
-export const Templates = (props: UIElementProps) => {
-  return (
-    <IfConnected
-      then={
-        <Container direction="column" className={styles.root}>
-          <TemplatesContent />
+            New
+          </ActionButton>
         </Container>
-      }
-      else={<NotConnected />}
-    />
+      </Container>
+      {isLoading && templates.length === 0 && <Throbber className={styles.throbber} />}
+      <Container className={styles.templates}>
+        {templates.map((template) => {
+          return <TemplateCard key={template.id} template={template} />;
+        })}
+      </Container>
+      {!isLoading && templates.length === 0 && <EmptyView />}
+    </Container>
   );
 };

@@ -11,12 +11,12 @@ const fetchTemplates = async (
   contractAddress: CW20Addr,
   opts: warp_controller.QueryTemplatesMsg
 ): Promise<warp_controller.Template[]> => {
-  const response = await contractQuery<
+  const resp = await contractQuery<
     Extract<warp_controller.QueryMsg, { query_templates: {} }>,
     warp_controller.TemplatesResponse
   >(network, contractAddress, { query_templates: opts }, { templates: [] });
 
-  return response.templates;
+  return resp.templates;
 };
 
 type TemplatesQueryOpts = warp_controller.QueryTemplatesMsg & {

@@ -1,23 +1,21 @@
 import { demicrofy, microfy } from '@terra-money/apps/libs/formatting';
 import { u } from '@terra-money/apps/types';
-import { capitalize } from '@mui/material';
 import Big from 'big.js';
 import { TokenInput } from 'pages/balances/token-input/TokenInput';
 import { DateInput } from 'pages/dashboard/jobs-widget/inputs/DateInput';
 import { useTokens } from '@terra-money/apps/hooks';
 import { NumericInput } from 'components/primitives/numeric-input';
 import { UIElementProps } from '@terra-money/apps/components';
+import { isEmpty } from 'lodash';
 import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { warp_controller } from 'types';
 
-type TemplateVar = warp_controller.TemplateVar & { value: string };
-
 type TemplateVarInputProps = UIElementProps & {
-  templateVar: TemplateVar;
-  templateVars: TemplateVar[];
-  setTemplateVars: (vars: TemplateVar[]) => void;
+  templateVar: warp_controller.StaticVariable;
+  templateVars: warp_controller.StaticVariable[];
+  setTemplateVars: (vars: warp_controller.StaticVariable[]) => void;
 };
 
 export const TemplateVarInput = (props: TemplateVarInputProps) => {
@@ -25,7 +23,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
   const { tokens } = useTokens();
 
-  const updateTemplateVar = (name: string, updates: Partial<TemplateVar>) => {
+  const updateTemplateVar = (name: string, updates: Partial<warp_controller.StaticVariable>) => {
     const updatedVars = [...templateVars];
     const idx = templateVars.findIndex((tv) => tv.name === name);
     const prev = updatedVars[idx];
@@ -35,7 +33,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
   if (['int', 'uint', 'decimal'].includes(templateVar.kind)) {
     return (
-      <FormControl label={capitalize(templateVar.name)}>
+      <FormControl label={templateVar.name}>
         <NumericInput
           placeholder={`Type ${templateVar.name} here`}
           margin="none"
@@ -55,7 +53,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   if (templateVar.kind === 'amount') {
     return (
       <AmountInput
-        label={capitalize(templateVar.name)}
+        label={templateVar.name}
         value={templateVar.value && demicrofy(Big(templateVar.value) as u<Big>, 6)}
         onChange={(value) =>
           setTemplateVars(
@@ -73,7 +71,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
     return (
       <DateInput
-        label={capitalize(templateVar.name)}
+        label={templateVar.name}
         placeholder={`Example: "tomorrow at 15:30"`}
         value={date}
         onChange={(v) =>
@@ -90,8 +88,8 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   if (templateVar.kind === 'asset') {
     return (
       <TokenInput
-        label={capitalize(templateVar.name)}
-        value={tokens[templateVar.value]}
+        label={templateVar.name}
+        value={!isEmpty(templateVar.value) ? tokens[templateVar.value!] : undefined}
         onChange={(token) => {
           setTemplateVars(
             updateTemplateVar(templateVar.name, {
@@ -104,7 +102,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
   }
 
   return (
-    <FormControl label={capitalize(templateVar.name)}>
+    <FormControl label={templateVar.name}>
       <TextInput
         placeholder={`Type ${templateVar.name} here`}
         margin="none"

@@ -8,9 +8,13 @@ import { useCreateJobTx } from 'tx/useCreateJobTx';
 import { LUNA, warp_controller } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
-import { Header } from './header/Header';
 import styles from './JobNew.module.sass';
 import { useJobStorage } from './useJobStorage';
+import { filterUnreferencedVariables } from 'utils/variable';
+import { VariableDrawer } from './variable-drawer/VariableDrawer';
+import { useSearchParams } from 'react-router-dom';
+import { useMemo } from 'react';
+import { CachedVariablesSession } from './CachedVariablesSession';
 
 type JobNewProps = UIElementProps & {};
 
@@ -22,63 +26,103 @@ export const JobNew = (props: JobNewProps) => {
   const connectedWallet = useConnectedWallet();
   const navigate = useNavigate();
 
+  const varsInput = useMemo(() => detailsInput?.template?.vars, [detailsInput]);
+
+  const [searchParams] = useSearchParams();
+
+  const mode = searchParams.get('mode') ?? 'advanced';
+
   return (
-    <div className={styles.root}>
-      <IfConnected
-        then={
-          !connectedWallet ? (
-            <Throbber className={styles.loading} />
-          ) : (
-            <>
-              <Header />
-              <Routes>
-                <Route
-                  path="/job-details"
-                  element={
-                    <DetailsForm
-                      className={styles.details}
-                      detailsInput={detailsInput}
-                      onNext={(props) => {
-                        setDetailsInput(props);
-                        navigate('/job-new/create-condition');
-                      }}
-                    />
-                  }
-                />
-                <Route
-                  path="/create-condition"
-                  element={
-                    <ConditionForm
-                      className={styles.condition}
-                      loading={txResult.loading}
-                      onNext={async (props) => {
-                        if (detailsInput) {
-                          const { name, reward, message } = detailsInput;
+    <CachedVariablesSession input={varsInput}>
+      <div className={styles.root}>
+        <IfConnected
+          then={
+            !connectedWallet ? (
+              <Throbber className={styles.loading} />
+            ) : (
+              <>
+                <VariableDrawer />
+                <Routes>
+                  <Route
+                    path="/details"
+                    element={
+                      <DetailsForm
+                        mode={mode}
+                        className={styles.details}
+                        detailsInput={detailsInput}
+                        onNext={async (props) => {
+                          const { template } = props;
 
-                          const msgs = encodeMsgs(message);
+                          if (mode === 'advanced' || !template?.condition) {
+                            setDetailsInput(props);
+                            navigate('/job-new/condition');
+                          } else {
+                            const {
+                              template = {} as warp_controller.Template,
+                              name,
+                              reward,
+                              message,
+                              variables,
+                            } = props;
+                            const { condition } = template;
 
-                          const resp = await createJobTx({
-                            name,
-                            reward: microfy(reward, LUNA.decimals),
-                            msgs,
-                            condition: props.cond,
-                          });
+                            const msgs = encodeMsgs(message);
+                            const vars = filterUnreferencedVariables(variables, message, condition!);
 
-                          if (resp.success) {
-                            navigate('/jobs');
+                            const resp = await createJobTx({
+                              name,
+                              vars,
+                              reward: microfy(reward, LUNA.decimals),
+                              msgs,
+                              condition: condition!,
+                            });
+
+                            if (resp.success) {
+                              navigate('/jobs');
+                            }
                           }
-                        }
-                      }}
-                    />
-                  }
-                />
-                <Route path="*" element={<Navigate to="/job-new/job-details" replace />} />
-              </Routes>
-            </>
-          )
-        }
-      />
-    </div>
+                        }}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/condition"
+                    element={
+                      <ConditionForm
+                        className={styles.condition}
+                        loading={txResult.loading}
+                        onNext={async (props) => {
+                          if (detailsInput) {
+                            const { cond, variables } = props;
+                            const { name, reward, message } = detailsInput;
+
+                            const msgs = encodeMsgs(message);
+                            const vars = filterUnreferencedVariables(variables, message, cond);
+
+                            const resp = await createJobTx({
+                              name,
+                              vars,
+                              reward: microfy(reward, LUNA.decimals),
+                              msgs,
+                              condition: cond,
+                            });
+
+                            if (resp.success) {
+                              navigate('/jobs');
+                            }
+                          }
+                        }}
+                      />
+                    }
+                  />
+                  <Route path="*" element={<Navigate to="/job-new/details?mode=basic" replace />} />
+                </Routes>
+              </>
+            )
+          }
+        />
+      </div>
+    </CachedVariablesSession>
   );
 };
 
