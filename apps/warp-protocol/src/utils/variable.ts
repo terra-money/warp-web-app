@@ -1,8 +1,8 @@
 import { Variable } from 'pages/variables/useVariableStorage';
 import { warp_controller } from 'types';
 import { isObject } from 'lodash';
-import { fromBase64 } from 'pages/job-new/useJobStorage';
-import { base64encode } from './base64encode';
+import { decodeQuery } from 'forms/variables';
+import { encodeQuery } from './encodeQuery';
 
 export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]) => {
   const name = extractName(ref);
@@ -126,6 +126,13 @@ export function filterUnreferencedVariables(
 
   msgs.forEach((msg) => scanForReferences(msg).forEach((varName) => referencedVars.add(varName)));
 
+  vars.forEach((v) => {
+    if ('query' in v) {
+      const q = decodeQuery(v.query.init_fn.query);
+      scanForReferences(q).forEach((varName) => referencedVars.add(varName));
+    }
+  });
+
   // Add all variables that are referenced in the `condition` param to the `referencedVars` set
   function addReferencedVarsFromCondition(cond: warp_controller.Condition, referencedVars: Set<string>): void {
     if ('and' in cond) {
@@ -208,22 +215,18 @@ export function hydrateQueryVariablesWithStatics(variables: Variable[]): Variabl
 
   return variables.map((variable) => {
     if ('query' in variable) {
-      let queryExpr = variable.query.init_fn;
-      if ('wasm' in queryExpr.query && 'smart' in queryExpr.query.wasm) {
-        let msgString = JSON.stringify(fromBase64(queryExpr.query.wasm.smart.msg));
-        staticVariables.forEach((staticVariable) => {
-          const search = `"$warp.variable.${staticVariable.name}"`;
-          const replace = `"${staticVariable.value}"`;
-          msgString.replace(search, replace);
-        });
-        queryExpr.query.wasm.smart.msg = base64encode(msgString);
-      }
-      return {
-        query: {
-          ...variable.query,
-          init_fn: queryExpr,
-        },
-      };
+      const newVariable = { ...variable };
+      let queryStr = JSON.stringify(decodeQuery(newVariable.query.init_fn.query));
+
+      staticVariables.forEach((staticVariable) => {
+        const search = `"$warp.variable.${staticVariable.name}"`;
+        const replace = `"${staticVariable.value}"`;
+        queryStr = queryStr.replace(search, replace);
+      });
+
+      newVariable.query.init_fn.query = encodeQuery(queryStr);
+
+      return newVariable;
     } else {
       return variable;
     }

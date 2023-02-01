@@ -67,9 +67,8 @@ export const JobNew = (props: JobNewProps) => {
                             const { condition } = template;
 
                             const msgs = encodeMsgs(message);
-                            const vars = hydrateQueryVariablesWithStatics(
-                              filterUnreferencedVariables(variables, message, condition!)
-                            );
+                            const referenced = filterUnreferencedVariables(variables, message, condition!);
+                            const vars = hydrateQueryVariablesWithStatics(referenced);
 
                             const resp = await createJobTx({
                               name,
