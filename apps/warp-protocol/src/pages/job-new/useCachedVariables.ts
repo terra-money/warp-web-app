@@ -59,7 +59,7 @@ export const useCachedVariables = () => {
   const saveVariable = useCallback(
     (variable: Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
-      let updatedVariables: Variable[] = [];
+      let updatedVariables: Variable[] = [...variables];
 
       if (!variableExists) {
         updatedVariables = [...variables, variable];
