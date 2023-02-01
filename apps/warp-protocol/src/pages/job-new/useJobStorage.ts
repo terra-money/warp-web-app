@@ -106,6 +106,6 @@ export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
   return msg;
 };
 
-const fromBase64 = (value: string) => {
+export const fromBase64 = (value: string) => {
   return JSON.parse(Buffer.from(value, 'base64').toString());
 };
