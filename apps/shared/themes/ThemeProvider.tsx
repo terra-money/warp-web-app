@@ -24,12 +24,12 @@ const useTheme = (): ThemeContextType => {
   return context;
 };
 
-interface ThemeProvider {
+interface ThemeProviderProps {
   defaultTheme: Theme;
   children: ReactNode;
 }
 
-const ThemeProvider = (props: ThemeProvider) => {
+const ThemeProvider = (props: ThemeProviderProps) => {
   const { defaultTheme, children } = props;
 
   const state = useState(defaultTheme);

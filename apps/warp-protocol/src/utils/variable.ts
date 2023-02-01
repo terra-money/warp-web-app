@@ -8,6 +8,8 @@ export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]
   return v as warp_controller.Variable;
 };
 
+export const isVariableRef = (value: string) => value.startsWith('$warp.variable.');
+
 export const variableRef = (variable: warp_controller.Variable) => {
   return `$warp.variable.${variableName(variable)}`;
 };

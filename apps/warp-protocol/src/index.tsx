@@ -1,7 +1,6 @@
 import './index.css';
 
 import { Theme, ThemeProvider } from '@terra-money/apps/themes';
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import App from './App';
@@ -61,13 +60,11 @@ Chart.register(
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-  <React.StrictMode>
-    <ThemeProvider defaultTheme={Theme.Dark}>
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </ThemeProvider>
-  </React.StrictMode>
+  <ThemeProvider defaultTheme={Theme.Dark}>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </ThemeProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
