@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useEditTemplateDialog } from './edit-template';
+import { useCopy } from 'hooks';
 
 interface TemplateCardProps extends UIElementProps {
   template: warp_controller.Template;
@@ -61,6 +62,8 @@ export const TemplateCard = (props: TemplateCardProps) => {
 
   const openEditTemplateDialog = useEditTemplateDialog();
 
+  const copy = useCopy('message', JSON.stringify(JSON.parse(template.msg), null, 2));
+
   return (
     <Panel className={classNames(className, styles.root)}>
       <Container className={styles.top}>
@@ -99,6 +102,8 @@ export const TemplateCard = (props: TemplateCardProps) => {
                 Delete
               </MenuAction>
             )}
+
+            <MenuAction onClick={copy}>Copy message</MenuAction>
           </DropdownMenu>
         </Container>
       </Container>
