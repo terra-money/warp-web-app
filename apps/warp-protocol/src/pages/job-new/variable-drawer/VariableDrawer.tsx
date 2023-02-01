@@ -16,7 +16,7 @@ export const VariableDrawer = (props: VariableDrawerProps) => {
     setDrawerOpen((open) => !open);
   };
 
-  const { variables, saveVariable, removeVariable } = useCachedVariables();
+  const { variables, saveVariable, removeVariable, updateVariable } = useCachedVariables();
 
   const openEditVariableDialog = useEditVariableDialog();
 
@@ -41,7 +41,7 @@ export const VariableDrawer = (props: VariableDrawerProps) => {
           const resp = await openEditVariableDialog(v);
 
           if (resp) {
-            saveVariable(resp);
+            updateVariable(resp, v);
           }
         }}
       />
