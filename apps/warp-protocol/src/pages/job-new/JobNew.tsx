@@ -10,7 +10,7 @@ import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
 import { useJobStorage } from './useJobStorage';
-import { filterUnreferencedVariables } from 'utils/variable';
+import { filterUnreferencedVariables, hydrateQueryVariablesWithStatics } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
@@ -67,7 +67,9 @@ export const JobNew = (props: JobNewProps) => {
                             const { condition } = template;
 
                             const msgs = encodeMsgs(message);
-                            const vars = filterUnreferencedVariables(variables, message, condition!);
+                            const vars = hydrateQueryVariablesWithStatics(
+                              filterUnreferencedVariables(variables, message, condition!)
+                            );
 
                             const resp = await createJobTx({
                               name,
