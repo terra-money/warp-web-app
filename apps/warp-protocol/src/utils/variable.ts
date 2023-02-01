@@ -1,6 +1,8 @@
 import { Variable } from 'pages/variables/useVariableStorage';
 import { warp_controller } from 'types';
 import { isObject } from 'lodash';
+import { fromBase64 } from 'pages/job-new/useJobStorage';
+import { base64encode } from './base64encode';
 
 export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]) => {
   const name = extractName(ref);
@@ -197,4 +199,33 @@ export function hasOnlyStaticVariables(formattedString: string, variables: Varia
 
   // Check if all the variable names are defined in the list of variables
   return variableNames.every((name) => variables.some((v) => 'static' in v && v.static.name === name));
+}
+
+export function hydrateQueryVariablesWithStatics(variables: Variable[]): Variable[] {
+  const staticVariables = variables
+    .filter((variable) => 'static' in variable)
+    .map((variable) => 'static' in variable && variable.static) as warp_controller.StaticVariable[];
+
+  return variables.map((variable) => {
+    if ('query' in variable) {
+      let queryExpr = variable.query.init_fn;
+      if ('wasm' in queryExpr.query && 'smart' in queryExpr.query.wasm) {
+        let msgString = JSON.stringify(fromBase64(queryExpr.query.wasm.smart.msg));
+        staticVariables.forEach((staticVariable) => {
+          const search = `"$warp.variable.${staticVariable.name}"`;
+          const replace = `"${staticVariable.value}"`;
+          msgString.replace(search, replace);
+        });
+        queryExpr.query.wasm.smart.msg = base64encode(msgString);
+      }
+      return {
+        query: {
+          ...variable.query,
+          init_fn: queryExpr,
+        },
+      };
+    } else {
+      return variable;
+    }
+  });
 }
