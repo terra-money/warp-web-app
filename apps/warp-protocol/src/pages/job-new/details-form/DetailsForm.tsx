@@ -21,6 +21,7 @@ import { useCachedVariables } from '../useCachedVariables';
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: Variable[] }) => void;
   detailsInput?: DetailsFormInput;
+  loading?: boolean;
   mode: string;
 };
 
@@ -29,7 +30,7 @@ type TabType = 'template' | 'message';
 const tabTypes = ['template', 'message'] as TabType[];
 
 export const DetailsForm = (props: DetailsFormProps) => {
-  const { onNext, className, detailsInput, mode } = props;
+  const { onNext, className, detailsInput, mode, loading } = props;
 
   const [
     input,
@@ -53,7 +54,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
-  const { variables } = useCachedVariables();
+  const { variables, updateVariable } = useCachedVariables();
+
+  console.log({ variables });
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -123,15 +126,17 @@ export const DetailsForm = (props: DetailsFormProps) => {
               options={options}
               template={template}
               setTemplate={(template) => input({ template })}
-              setTemplateVars={(vars) =>
+              setTemplateVars={(updatedVars) =>
                 input({
                   template: {
                     ...template!,
                     vars: template!.vars.map((v) => {
-                      const find = vars.find((t) => t.name === variableName(v));
+                      const updated = updatedVars.find((t) => t.name === variableName(v));
 
-                      if (find) {
-                        return { static: find };
+                      if (updated) {
+                        const res = { static: updated };
+                        updateVariable(res, v);
+                        return res;
                       }
 
                       return v;
@@ -162,6 +167,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
         <Button
           variant="primary"
           disabled={submitDisabled}
+          loading={loading}
           onClick={async () => {
             if (name && reward && message) {
               onNext({ name, reward, message, template, selectedTabType, variables });

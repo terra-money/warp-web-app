@@ -49,6 +49,7 @@ export const JobNew = (props: JobNewProps) => {
                       <DetailsForm
                         mode={mode}
                         className={styles.details}
+                        loading={txResult.loading}
                         detailsInput={detailsInput}
                         onNext={async (props) => {
                           const { template } = props;
