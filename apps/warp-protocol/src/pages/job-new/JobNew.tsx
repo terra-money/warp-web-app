@@ -9,7 +9,7 @@ import { LUNA, warp_controller } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
-import { useJobStorage } from './useJobStorage';
+import { decodeMsg, useJobStorage } from './useJobStorage';
 import { filterUnreferencedVariables, hydrateQueryVariablesWithStatics } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
@@ -99,7 +99,8 @@ export const JobNew = (props: JobNewProps) => {
                             const { name, reward, message } = detailsInput;
 
                             const msgs = encodeMsgs(message);
-                            const vars = filterUnreferencedVariables(variables, message, cond);
+                            const referenced = filterUnreferencedVariables(variables, message, cond);
+                            const vars = hydrateQueryVariablesWithStatics(referenced);
 
                             const resp = await createJobTx({
                               name,
@@ -128,7 +129,11 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+export const decodeMsgs = (msgs: warp_controller.CosmosMsgFor_Empty[]): string => {
+  return JSON.stringify(msgs.map(decodeMsg));
+};
+
+export const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
   const parsed = JSON.parse(value);
   const msgs: warp_controller.CosmosMsgFor_Empty[] = Array.isArray(parsed)
     ? (parsed as warp_controller.CosmosMsgFor_Empty[])

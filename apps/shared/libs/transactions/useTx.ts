@@ -36,9 +36,21 @@ const useTx = <Options>(
         throw new Error('The wallet is not connected or is unable to post a message.');
       }
 
-      const tx = typeof txOrFactory === 'function' ? txOrFactory({ ...options, wallet }) : txOrFactory;
-
       const payload = typeof payloadOrFactory === 'function' ? payloadOrFactory(options) : payloadOrFactory;
+
+      let tx;
+
+      try {
+        tx = typeof txOrFactory === 'function' ? txOrFactory({ ...options, wallet }) : txOrFactory;
+      } catch (error: any) {
+        failedSubject.next({
+          txHash: '',
+          status: TransactionStatus.Failed,
+          payload,
+          error,
+        });
+        throw error;
+      }
 
       let txResult: TxResult;
       try {

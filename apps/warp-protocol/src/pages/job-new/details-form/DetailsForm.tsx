@@ -56,8 +56,6 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const { variables, updateVariable } = useCachedVariables();
 
-  console.log({ variables });
-
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
       <Container className={styles.title_container}>
