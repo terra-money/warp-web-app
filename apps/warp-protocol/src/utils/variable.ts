@@ -17,6 +17,10 @@ export const variableRef = (variable: warp_controller.Variable) => {
 };
 
 export const variableName = (v: warp_controller.Variable): string => {
+  if (!v) {
+    return 'unknown';
+  }
+
   if ('static' in v) {
     return v.static.name;
   }
