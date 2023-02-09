@@ -7,6 +7,8 @@ import { TX_KEY } from './txKey';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useEffect, useRef } from 'react';
 import { useWarpConfig } from 'queries/useConfigQuery';
+import { containsAllReferencedVars } from 'utils/variable';
+import { decodeMsgs } from 'pages/job-new/JobNew';
 
 export interface CreateJobTxProps {
   name: string;
@@ -39,6 +41,12 @@ export const useCreateJobTx = () => {
 
       if (!accountRef.current || !configRef.current) {
         return { msgs: [] };
+      }
+
+      if (!containsAllReferencedVars(vars, decodeMsgs(msgs), condition)) {
+        throw Error(
+          'Unexpected error occurred - unknown variable found in create job transaction payload. Refreshing the page and recreating the job should mitigate the issue.'
+        );
       }
 
       return txBuilder

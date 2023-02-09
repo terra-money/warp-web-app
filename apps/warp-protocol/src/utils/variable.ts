@@ -17,6 +17,10 @@ export const variableRef = (variable: warp_controller.Variable) => {
 };
 
 export const variableName = (v: warp_controller.Variable): string => {
+  if (!v) {
+    return 'unknown';
+  }
+
   if ('static' in v) {
     return v.static.name;
   }
@@ -113,11 +117,21 @@ export const scanForReferences = (obj: any): string[] => {
   return res;
 };
 
-export function filterUnreferencedVariables(
+export function containsAllReferencedVars(
   vars: warp_controller.Variable[],
   msgsInput: string,
   condition?: warp_controller.Condition
-): Variable[] {
+): boolean {
+  const referencedVars = extractReferencedVarNames(vars, msgsInput, condition);
+
+  return !Boolean(referencedVars.some((name) => !vars.some((v) => variableName(v) === name)));
+}
+
+export function extractReferencedVarNames(
+  vars: warp_controller.Variable[],
+  msgsInput: string,
+  condition?: warp_controller.Condition
+): string[] {
   const referencedVars: Set<string> = new Set();
   const unreferencedVars: Set<string> = new Set(vars.map((v) => variableName(v)));
 
@@ -185,9 +199,17 @@ export function filterUnreferencedVariables(
   // Remove all referenced variables from the `unreferencedVars` set
   referencedVars.forEach((referencedVar) => unreferencedVars.delete(referencedVar));
 
-  return Array.from(referencedVars)
-    .map((name) => vars.find((v) => variableName(v) === name))
-    .filter(Boolean) as Variable[];
+  return Array.from(referencedVars);
+}
+
+export function filterUnreferencedVariables(
+  vars: warp_controller.Variable[],
+  msgsInput: string,
+  condition?: warp_controller.Condition
+): Variable[] {
+  const referencedVars = extractReferencedVarNames(vars, msgsInput, condition);
+
+  return referencedVars.map((name) => vars.find((v) => variableName(v) === name)).filter(Boolean) as Variable[];
 }
 
 export const formattedStringVarNames = (formattedString: string) => {
