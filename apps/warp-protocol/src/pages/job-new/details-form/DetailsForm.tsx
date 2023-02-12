@@ -17,6 +17,8 @@ import { MsgInput } from 'forms/QueryExprForm/MsgInput';
 import { variableName } from 'utils/variable';
 import { Variable } from 'pages/variables/useVariableStorage';
 import { useCachedVariables } from '../useCachedVariables';
+import { useEffect } from 'react';
+import { useJobStorage } from '../useJobStorage';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: Variable[] }) => void;
@@ -55,6 +57,13 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
   const { variables, updateVariable } = useCachedVariables();
+
+  const { setCond } = useJobStorage();
+
+  useEffect(() => {
+    setCond(template?.condition ?? ({} as any));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template]);
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
