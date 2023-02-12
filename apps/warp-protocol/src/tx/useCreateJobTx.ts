@@ -56,7 +56,7 @@ export const useCreateJobTx = () => {
         .execute<CreateJobMsg>(wallet.walletAddress, contractAddress, {
           create_job: {
             recurring: false,
-            requeue_on_evict: false,
+            requeue_on_evict: true,
             name,
             condition: condition,
             vars,
