@@ -17,7 +17,7 @@ export const ConditionBuilder = (props: ConditionBuilderProps) => {
   return (
     <Container className={styles.root} direction="column">
       {!isEmpty(cond) && (
-        <Link className={styles.back} onClick={() => setCond(undefined)}>
+        <Link className={styles.back} onClick={() => setCond({} as any)}>
           Clear all
         </Link>
       )}

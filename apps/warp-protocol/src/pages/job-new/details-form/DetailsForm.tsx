@@ -17,6 +17,8 @@ import { MsgInput } from 'forms/QueryExprForm/MsgInput';
 import { variableName } from 'utils/variable';
 import { Variable } from 'pages/variables/useVariableStorage';
 import { useCachedVariables } from '../useCachedVariables';
+import { useCallback, useEffect } from 'react';
+import { useJobStorage } from '../useJobStorage';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: Variable[] }) => void;
@@ -55,6 +57,17 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
   const { variables, updateVariable } = useCachedVariables();
+
+  const { setCond } = useJobStorage();
+
+  useEffect(() => {
+    setCond(template?.condition ?? ({} as any));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template]);
+
+  const onDocsClick = useCallback(() => {
+    window.open('https://docs.warp.money');
+  }, []);
 
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
@@ -177,6 +190,13 @@ export const DetailsForm = (props: DetailsFormProps) => {
         <Button variant="secondary" onClick={() => navigate(-1)}>
           Cancel
         </Button>
+        <Text className={styles.eviction_warning} variant="label">
+          Jobs not executed within the eviction period will have a minimal fee deducted from it's reward and returned to
+          queue.
+          <Link className={styles.link} onClick={onDocsClick}>
+            Docs
+          </Link>
+        </Text>
       </Footer>
     </Container>
   );
