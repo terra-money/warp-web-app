@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - warp/main
+      - test
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
@@ -15,7 +15,7 @@ on:
   pull_request:
     branches:
       - main
-      - warp/main
+      - test
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
