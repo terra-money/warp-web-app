@@ -6,32 +6,33 @@ import { Form } from 'components/form/Form';
 import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
 import { useNavigate } from 'react-router';
-import { LUNA, warp_controller } from 'types';
+import { LUNA } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
 import { useTemplatesQuery } from 'queries/useTemplatesQuery';
 import { TemplateForm } from './template-form/TemplateForm';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+import { variableName } from 'utils/variable';
+import { Variable } from 'pages/variables/useVariableStorage';
+import { useCachedVariables } from '../useCachedVariables';
+import { useCallback, useEffect } from 'react';
+import { useJobStorage } from '../useJobStorage';
 
 type DetailsFormProps = UIElementProps & {
-  onNext: (props: DetailsFormInput) => void;
+  onNext: (props: DetailsFormInput & { variables: Variable[] }) => void;
   detailsInput?: DetailsFormInput;
+  loading?: boolean;
+  mode: string;
 };
-
-type TemplateVar = warp_controller.TemplateVar & { value: string };
 
 type TabType = 'template' | 'message';
 
 const tabTypes = ['template', 'message'] as TabType[];
 
-export type TemplateVars = {
-  [k: string]: TemplateVar;
-};
-
 export const DetailsForm = (props: DetailsFormProps) => {
-  const { onNext, className, detailsInput } = props;
+  const { onNext, className, detailsInput, mode, loading } = props;
 
   const [
     input,
@@ -55,11 +56,24 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
 
+  const { variables, updateVariable } = useCachedVariables();
+
+  const { setCond } = useJobStorage();
+
+  useEffect(() => {
+    setCond(template?.condition ?? ({} as any));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template]);
+
+  const onDocsClick = useCallback(() => {
+    window.open('https://docs.warp.money');
+  }, []);
+
   return (
     <Container direction="column" className={classNames(styles.root, className)}>
       <Container className={styles.title_container}>
         <Text variant="heading1" className={styles.title}>
-          Job details
+          New job
         </Text>
         <Link className={styles.back} to={-1}>
           Back
@@ -123,15 +137,31 @@ export const DetailsForm = (props: DetailsFormProps) => {
               options={options}
               template={template}
               setTemplate={(template) => input({ template })}
-              setTemplateVars={(vars) => input({ template: { ...(template as warp_controller.Template), vars } })}
-              templateVars={template?.vars ?? []}
+              setTemplateVars={(updatedVars) =>
+                input({
+                  template: {
+                    ...template!,
+                    vars: template!.vars.map((v) => {
+                      const updated = updatedVars.find((t) => t.name === variableName(v));
+
+                      if (updated) {
+                        const res = { static: updated };
+                        updateVariable(res, v);
+                        return res;
+                      }
+
+                      return v;
+                    }),
+                  },
+                })
+              }
               onMessageComposed={(message) => input({ message })}
             />
           </>
         )}
         {selectedTabType === 'message' && (
           <>
-            <WasmMsgInput
+            <MsgInput
               rootClassName={styles.msg_input}
               label="Message"
               className={styles.msg_input_inner}
@@ -148,17 +178,25 @@ export const DetailsForm = (props: DetailsFormProps) => {
         <Button
           variant="primary"
           disabled={submitDisabled}
+          loading={loading}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message, template, selectedTabType });
+              onNext({ name, reward, message, template, selectedTabType, variables });
             }
           }}
         >
-          Next
+          {mode === 'basic' && template?.condition ? 'Save' : 'Next'}
         </Button>
         <Button variant="secondary" onClick={() => navigate(-1)}>
           Cancel
         </Button>
+        <Text className={styles.eviction_warning} variant="label">
+          Jobs not executed within the eviction period will have a minimal fee deducted from it's reward and returned to
+          queue.
+          <Link className={styles.link} onClick={onDocsClick}>
+            Docs
+          </Link>
+        </Text>
       </Footer>
     </Container>
   );

@@ -7,11 +7,14 @@ import { TX_KEY } from './txKey';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useEffect, useRef } from 'react';
 import { useWarpConfig } from 'queries/useConfigQuery';
+import { containsAllReferencedVars } from 'utils/variable';
+import { decodeMsgs } from 'pages/job-new/JobNew';
 
 export interface CreateJobTxProps {
   name: string;
   reward: u<Big>;
   msgs: warp_controller.CosmosMsgFor_Empty[];
+  vars: warp_controller.Variable[];
   condition: warp_controller.Condition;
 }
 
@@ -32,12 +35,18 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     (options) => {
-      const { wallet, reward, name, msgs, condition } = options;
+      const { wallet, reward, name, msgs, condition, vars } = options;
 
       let txBuilder = TxBuilder.new();
 
       if (!accountRef.current || !configRef.current) {
         return { msgs: [] };
+      }
+
+      if (!containsAllReferencedVars(vars, decodeMsgs(msgs), condition)) {
+        throw Error(
+          'Unexpected error occurred - unknown variable found in create job transaction payload. Refreshing the page and recreating the job should mitigate the issue.'
+        );
       }
 
       return txBuilder
@@ -46,8 +55,11 @@ export const useCreateJobTx = () => {
         })
         .execute<CreateJobMsg>(wallet.walletAddress, contractAddress, {
           create_job: {
+            recurring: false,
+            requeue_on_evict: true,
             name,
             condition: condition,
+            vars,
             reward: reward.toString(),
             msgs: msgs.map((msg) => JSON.stringify(msg)),
           },

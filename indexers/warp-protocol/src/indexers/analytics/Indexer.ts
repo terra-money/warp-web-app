@@ -2,7 +2,7 @@ import { EventIndexer, IndexFnOptions } from 'indexers/EventIndexer';
 import { TableNames, ANALYTICS_PK_NAME, ANALYTICS_SK_NAME } from 'initializers';
 import { Entity } from './types';
 import { KeySelector } from '@apps-shared/indexers/services/persistence';
-import { WarpPK, WarpControllerActions } from 'types/events';
+import { WarpPK, WarpControllerActions, ExecuteJobEvent } from 'types/events';
 import { eventAggregator, eventCounter } from '@apps-shared/indexers/indexers/utils';
 import Big from 'big.js';
 import { createDynamoDBClient, fetchAll } from '@apps-shared/indexers/utils';
@@ -135,19 +135,17 @@ export class Indexer extends EventIndexer<Entity> {
   };
 
   private updateRewardAmount = async (minHeight: number, maxHeight: number) => {
-    const aggregates = await eventAggregator(
+    const aggregates = await eventAggregator<ExecuteJobEvent, string>(
       this.events,
       WarpPK.controller('execute_job'),
       minHeight,
       maxHeight,
       (events) =>
-        events.reduce(
-          (previous, current) =>
-            Big(previous)
-              .add(current.payload.reward_amount ?? '0')
-              .toString(),
-          '0'
-        )
+        events.reduce((previous, current) => {
+          return Big(previous)
+            .add(current.payload.job_reward ?? '0')
+            .toString();
+        }, '0')
     );
 
     const key = 'reward_amount';

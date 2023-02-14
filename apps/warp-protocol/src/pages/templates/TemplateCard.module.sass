@@ -1,0 +1,61 @@
+.root
+  padding: 20px
+  display: flex
+  flex-direction: column
+  min-height: 160px
+
+.buttons
+  display: grid
+  grid-template-columns: 1fr 1fr
+  column-gap: 16px !important
+
+.pill
+  font-size: 12px
+  border-radius: 20px
+  padding: 4px 12px
+  margin-left: auto
+
+.menu_btn
+  width: 20px
+  margin: 0
+  margin-top: 2px !important
+  margin-left: 12px !important
+  cursor: pointer
+
+  path
+    fill: rgba(223, 226, 225, 0.4) !important
+
+.name
+  margin-bottom: 8px
+
+.menu
+  width: 140px
+  margin-top: -20px
+
+.top
+  width: 100%
+
+  .left
+    margin-right: auto
+
+  .right
+    margin-bottom: auto
+
+.bottom
+  margin-top: auto
+
+.highlighted
+  position: relative
+  color: #a9fc50
+
+.highlighted:after
+  content: ''
+  position: absolute
+  border-radius: 20px
+  background: rgba(47, 51, 57, 0.6)
+  z-index: -1
+  top: -2px
+  left: -4px
+  bottom: -2px
+  right: -4px
+  height: calc(100% + 4px)

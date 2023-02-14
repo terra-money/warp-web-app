@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from 'components/primitives';
 import { Container } from '@terra-money/apps/components';
 import classNames from 'classnames';
-import { WasmMsgInput } from 'forms/QueryExprForm/WasmMsgInput';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+import { TemplateStrInput } from 'forms/QueryExprForm/TemplateStrInput';
 
 interface TemplateMessageInputProps {
   className?: string;
@@ -12,6 +13,8 @@ interface TemplateMessageInputProps {
   setMessage: (msg?: string) => void;
   setTemplateStr: (templateStr?: string) => void;
   templateStr?: string;
+  templateStrError?: string;
+  msgError?: string;
   tabType?: TabType;
 }
 
@@ -20,7 +23,7 @@ type TabType = 'template' | 'message';
 const tabTypes = ['template', 'message'] as TabType[];
 
 const TemplateMessageInput = (props: TemplateMessageInputProps) => {
-  const { className, message, setMessage, templateStr, setTemplateStr } = props;
+  const { className, message, setMessage, templateStr, setTemplateStr, templateStrError, msgError } = props;
 
   const [selectedTabType, setSelectedTabType] = useState<TabType>('template');
 
@@ -29,10 +32,9 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
       <Container className={styles.top} direction="row">
         {tabTypes.map((tabType) => (
           <Button
-            className={styles.btn}
             onClick={() => setSelectedTabType(tabType)}
             variant="secondary"
-            fill={tabType === selectedTabType ? undefined : 'none'}
+            className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
           >
             {tabType}
           </Button>
@@ -40,7 +42,8 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
       </Container>
       <Container className={styles.bottom} direction="column">
         {selectedTabType === 'message' && (
-          <WasmMsgInput
+          <MsgInput
+            error={msgError}
             rootClassName={styles.wasm_msg}
             mode="json"
             placeholder="Type message here"
@@ -49,10 +52,11 @@ const TemplateMessageInput = (props: TemplateMessageInputProps) => {
           />
         )}
         {selectedTabType === 'template' && (
-          <WasmMsgInput
+          <TemplateStrInput
             rootClassName={styles.wasm_msg}
             example={null}
             mode="text"
+            error={templateStrError}
             placeholder="Type template here"
             value={templateStr}
             onChange={(value) => setTemplateStr(value)}

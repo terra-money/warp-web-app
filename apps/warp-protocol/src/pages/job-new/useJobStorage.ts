@@ -1,29 +1,36 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
+import { useLocalStorage } from 'react-use';
 import { LUNA, warp_controller } from 'types';
+import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
-import { useLocalStorage } from 'usehooks-ts';
 import { DetailsFormInput } from './details-form/useDetailsForm';
+import { useCachedVariables } from './useCachedVariables';
+
+export const decodedMsgs = (job: Job) => job.info.msgs.map((msg) => JSON.parse(msg)).map(decodeMsg);
 
 export const useJobStorage = () => {
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
     '__warp_details_input',
-    undefined
+    {} as any
   );
 
-  const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', undefined);
+  const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', {} as any);
+
+  const { clearAll: clearAllCachedVariables } = useCachedVariables();
 
   const clearJobStorage = useCallback(() => {
-    setDetailsInput(undefined);
-    setCond(undefined);
-  }, [setDetailsInput, setCond]);
+    setDetailsInput({} as any);
+    setCond({} as any);
+    clearAllCachedVariables();
+  }, [setDetailsInput, setCond, clearAllCachedVariables]);
 
   const saveJob = useCallback(
     (job: Job) => {
       const details: DetailsFormInput = {
         reward: demicrofy(job.reward, LUNA.decimals).toString(),
         name: job.info.name,
-        message: JSON.stringify(job.info.msgs.map(decodeMsg), null, 2),
+        message: JSON.stringify(decodedMsgs(job), null, 2),
       };
 
       setDetailsInput(details);
@@ -32,16 +39,31 @@ export const useJobStorage = () => {
     [setDetailsInput, setCond]
   );
 
+  const setJobTemplate = useCallback(
+    (template: warp_controller.Template) => {
+      const details: DetailsFormInput = {
+        reward: '',
+        name: '',
+        message: JSON.stringify(template.msg, null, 2),
+        template,
+      };
+
+      setDetailsInput(details);
+      setCond(template.condition ?? ({} as any));
+    },
+    [setDetailsInput, setCond]
+  );
   return useMemo(
     () => ({
-      detailsInput,
+      detailsInput: isEmpty(detailsInput) ? undefined : detailsInput,
       setDetailsInput,
-      cond,
+      cond: isEmpty(cond) ? undefined : cond,
       setCond,
       clearJobStorage,
+      setJobTemplate,
       saveJob,
     }),
-    [detailsInput, setDetailsInput, cond, setCond, clearJobStorage, saveJob]
+    [detailsInput, setDetailsInput, cond, setCond, clearJobStorage, saveJob, setJobTemplate]
   );
 };
 
@@ -84,6 +106,6 @@ export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
   return msg;
 };
 
-const fromBase64 = (value: string) => {
+export const fromBase64 = (value: string) => {
   return JSON.parse(Buffer.from(value, 'base64').toString());
 };

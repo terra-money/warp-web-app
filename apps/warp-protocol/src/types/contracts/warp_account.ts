@@ -246,7 +246,7 @@ export module warp_account {
         block_height: BlockExpr;
       }
     | {
-        bool: BoolExpr;
+        bool: string;
       };
   export type ValueFor_String =
     | {
@@ -268,10 +268,14 @@ export module warp_account {
       }
     | {
         fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        env: NumEnvValue;
       };
   export type Uint256 = string;
   export type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
   export type IntFnOp = 'abs' | 'neg';
+  export type NumEnvValue = 'time' | 'block_height';
   export type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
   export type NumValueForInt128And_NumExprOpAnd_IntFnOp =
     | {
@@ -285,6 +289,9 @@ export module warp_account {
       }
     | {
         fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        env: NumEnvValue;
       };
   export type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp =
     | {
@@ -298,24 +305,45 @@ export module warp_account {
       }
     | {
         fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        env: NumEnvValue;
       };
   export type Decimal256 = string;
   export type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
   export type TimeOp = 'lt' | 'gt';
-  export type BoolExpr = {
-    ref: string;
-  };
-  export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled';
-  export type VariableValue =
+  export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled' | 'Evicted';
+  export type Variable =
     | {
-        static: string;
+        static: StaticVariable;
       }
     | {
-        query: QueryExpr;
+        external: ExternalVariable;
       }
     | {
-        external: ExternalExpr;
+        query: QueryVariable;
       };
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type UpdateFnValue =
+    | {
+        uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        int: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        decimal: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+      }
+    | {
+        timestamp: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        block_height: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+      }
+    | {
+        bool: string;
+      };
+  export type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
   export type QueryRequestFor_String =
     | {
         bank: BankQuery;
@@ -421,29 +449,6 @@ export module warp_account {
           contract_addr: string;
         };
       };
-  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
-  export type UpdateFnValue =
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type NumValueFor_StringAnd_ExprOpAnd_FnOp =
-    | {
-        simple: string;
-      }
-    | {
-        expr: NumExprValueFor_StringAnd_ExprOpAnd_FnOp;
-      }
-    | {
-        ref: string;
-      }
-    | {
-        fn: NumFnValueFor_StringAnd_ExprOpAnd_FnOp;
-      };
-  export type FnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
-  export type ExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
   export interface JobResponse {
     job: Job;
   }
@@ -451,9 +456,11 @@ export module warp_account {
     condition: Condition;
     id: Uint64;
     last_update_time: Uint64;
-    msgs: CosmosMsgFor_Empty[];
+    msgs: string[];
     name: string;
     owner: Addr;
+    recurring: boolean;
+    requeue_on_evict: boolean;
     reward: Uint128;
     status: JobStatus;
     vars: Variable[];
@@ -513,33 +520,42 @@ export module warp_account {
     comparator: Uint64;
     op: NumOp;
   }
-  export interface Variable {
-    default_value: VariableValue;
+  export interface StaticVariable {
     kind: VariableKind;
     name: string;
+    update_fn?: UpdateFn | null;
+    value: string;
+  }
+  export interface UpdateFn {
+    on_error?: UpdateFnValue | null;
+    on_success?: UpdateFnValue | null;
+  }
+  export interface ExternalVariable {
+    init_fn: ExternalExpr;
+    kind: VariableKind;
+    name: string;
+    reinitialize: boolean;
+    update_fn?: UpdateFn | null;
+    value?: string | null;
+  }
+  export interface ExternalExpr {
+    body?: string | null;
+    headers?: string[] | null;
+    method?: Method | null;
+    selector: string;
+    url: string;
+  }
+  export interface QueryVariable {
+    init_fn: QueryExpr;
+    kind: VariableKind;
+    name: string;
+    reinitialize: boolean;
     update_fn?: UpdateFn | null;
     value?: string | null;
   }
   export interface QueryExpr {
     query: QueryRequestFor_String;
     selector: string;
-  }
-  export interface ExternalExpr {
-    selector: string;
-    url: string;
-  }
-  export interface UpdateFn {
-    on_error?: UpdateFnValue | null;
-    on_success: UpdateFnValue;
-  }
-  export interface NumExprValueFor_StringAnd_ExprOpAnd_FnOp {
-    left: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-    op: ExprOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
-  }
-  export interface NumFnValueFor_StringAnd_ExprOpAnd_FnOp {
-    op: FnOp;
-    right: NumValueFor_StringAnd_ExprOpAnd_FnOp;
   }
   export interface JobsResponse {
     jobs: Job[];
