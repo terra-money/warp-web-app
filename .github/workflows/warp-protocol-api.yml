@@ -185,10 +185,19 @@ jobs:
     needs: [idx-delivery, api-delivery]
 
     steps:
+
+      - name: Set Remote ref
+        run: |
+          if [ ${GITHUB_REF} == "refs/heads/main" ]; then
+            echo "TF_GITHUB_REF=phoenix-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/test" ]; then
+            echo "TF_GITHUB_REF=pisco-1" >> $GITHUB_ENV
+          fi
+
       - name: Invoke Terraform Workflow
         uses: aurelien-baudet/workflow-dispatch@v2
         with:
           repo: ${{ env.TERRAFORM_REPO }}
-          ref: pisco-1
+          ref: ${{ env.TF_GITHUB_REF }}
           workflow: Terraform
           token: ${{ secrets.TFL_GITHUB_TOKEN }}
