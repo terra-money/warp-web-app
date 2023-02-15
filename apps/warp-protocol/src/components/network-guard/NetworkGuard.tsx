@@ -15,16 +15,16 @@ export const NetworkGuard = (props: UIElementProps) => {
 
   const refresh = useCallback(() => window.location.reload(), []);
 
-  if (connectedWallet && (network.name === 'classic' || network.name === 'mainnet')) {
+  if (connectedWallet && network.name === 'classic') {
     return (
       <Dialog className={styles.root}>
         <DialogHeader title="Wrong Network" onClose={refresh} />
         <DialogBody className={styles.body}>
           <Text variant="label" className={styles.description}>
-            Warp Protocol is currently operating only on Terra testnet network.
+            Warp Protocol is currently operating only on Terra network.
           </Text>
           <Text variant="label" className={styles.transaction}>
-            <span>Change your network to</span>&nbsp;<span className={styles.testnet}>testnet</span>&nbsp;
+            <span>Change your network to</span>&nbsp;<span className={styles.testnet}>mainnet</span>&nbsp;
             <span>to proceed</span>.
           </Text>
         </DialogBody>
