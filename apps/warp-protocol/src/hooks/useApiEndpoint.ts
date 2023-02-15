@@ -2,7 +2,7 @@ import { useWallet } from '@terra-money/wallet-provider';
 import { Frequency } from 'utils';
 
 const API_ENDPOINTS: Record<string, string> = {
-  mainnet: 'https://jdrv0zpoc4.execute-api.us-east-1.amazonaws.com/v1',
+  mainnet: 'https://6lk4momaf2.execute-api.us-east-1.amazonaws.com/v1',
   // testnet: 'https://jdrv0zpoc4.execute-api.us-east-1.amazonaws.com/v1',
   testnet: 'https://qje5bzt6tl.execute-api.us-east-1.amazonaws.com/v1',
   localterra: 'http://localhost:3000',
