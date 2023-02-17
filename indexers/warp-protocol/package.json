@@ -9,7 +9,7 @@
     "indexer:analytics": "esbuild src/indexers/analytics/index.ts --bundle --platform=node --outdir=dist --outbase=src && node ./dist/indexers/analytics/index.js",
     "indexer:jobs": "esbuild src/indexers/jobs/index.ts --bundle --platform=node --outdir=dist --outbase=src && node ./dist/indexers/jobs/index.js",
     "indexer:jobs-tx-history": "esbuild src/indexers/jobs-tx-history/index.ts --bundle --platform=node --outdir=dist --outbase=src && node ./dist/indexers/jobs-tx-history/index.js",
-    "generate-types": "node --experimental-specifier-resolution=node --loader ts-node/esm ../../scripts/generate-types.ts warp-keeper"
+    "generate-types": "node --experimental-specifier-resolution=node --loader ts-node/esm ../../scripts/generate-types.ts warp-protocol"
   },
   "dependencies": {
     "@apps-shared/indexers": "workspace:^",
