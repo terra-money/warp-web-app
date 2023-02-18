@@ -1,10 +1,12 @@
-import { formatAmount } from '@terra-money/apps/libs/formatting';
+import { demicrofy, formatAmount } from '@terra-money/apps/libs/formatting';
 import { ChartContainer } from 'components/chart-container';
 import { AnimateNumber } from 'components/animate-number';
 import { UIElementProps } from '@terra-money/apps/components';
 import { BarChart } from 'components/bar-chat';
 import { useAnalyticsData } from './useAnalyticsData';
 import styles from './DailyRewardsChart.module.sass';
+import { u } from '@terra-money/apps/types';
+import Big from 'big.js';
 
 export const DailyRewardsChart = (props: UIElementProps) => {
   const { className } = props;
@@ -20,8 +22,8 @@ export const DailyRewardsChart = (props: UIElementProps) => {
         <>
           <AnimateNumber
             format={(v) =>
-              formatAmount(v, {
-                decimals: 2,
+              formatAmount(demicrofy(v as u<Big>, 6), {
+                decimals: 1,
               })
             }
           >
