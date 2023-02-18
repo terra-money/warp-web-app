@@ -1,4 +1,4 @@
-import { formatAmount } from '@terra-money/apps/libs/formatting';
+import { demicrofy, formatAmount } from '@terra-money/apps/libs/formatting';
 import { AnimateNumber } from 'components/animate-number';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { useAnalyticsData } from './useAnalyticsData';
@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Big from 'big.js';
 import { ChartContainer } from 'components/chart-container';
 import styles from './RewardStatistics.module.sass';
+import { u } from '@terra-money/apps/types';
 
 export const RewardStatistics = (props: UIElementProps) => {
   const { className } = props;
@@ -23,8 +24,8 @@ export const RewardStatistics = (props: UIElementProps) => {
           <>
             <AnimateNumber
               format={(v) =>
-                formatAmount(v, {
-                  decimals: 2,
+                formatAmount(demicrofy(v as u<Big>, 6), {
+                  decimals: 1,
                 })
               }
             >
@@ -41,8 +42,8 @@ export const RewardStatistics = (props: UIElementProps) => {
           <>
             <AnimateNumber
               format={(v) =>
-                formatAmount(v, {
-                  decimals: 2,
+                formatAmount(demicrofy(v as u<Big>, 6), {
+                  decimals: 1,
                 })
               }
             >
