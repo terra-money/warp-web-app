@@ -15,6 +15,7 @@ import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useEditTemplateDialog } from './edit-template';
 import { useCopy } from 'hooks';
+import { ActionButton } from 'components/action-button/ActionButton';
 
 interface TemplateCardProps extends UIElementProps {
   template: warp_controller.Template;
@@ -79,7 +80,18 @@ export const TemplateCard = (props: TemplateCardProps) => {
           <Pill color="blue" className={styles.pill}>
             {template.kind === 'msg' ? 'Job' : 'Query'}
           </Pill>
-          <DropdownMenu menuClass={styles.menu} action={<MoreVertIcon className={styles.menu_btn} />}>
+          <DropdownMenu
+            menuClass={styles.menu}
+            action={
+              <ActionButton
+                className={styles.menu_btn}
+                variant="primary"
+                fill="none"
+                icon={<MoreVertIcon />}
+                iconGap="none"
+              />
+            }
+          >
             {template.kind === 'msg' && (
               <MenuAction
                 onClick={() => {
