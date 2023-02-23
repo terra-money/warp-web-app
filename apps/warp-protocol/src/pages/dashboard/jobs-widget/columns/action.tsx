@@ -3,7 +3,6 @@ import { TableCellProps } from 'react-virtualized';
 
 import styles from './columns.module.sass';
 import { useCallback } from 'react';
-import { MenuButton } from 'components/menu-button';
 import { MenuAction } from 'components/menu-button/MenuAction';
 import { useEditJobDialog } from '../dialogs/edit-job';
 import { useExecuteJobDialog } from '../dialogs/execute-job/ExecuteJobDialog';
@@ -11,7 +10,10 @@ import { useCancelJobDialog } from '../dialogs/cancel-job/CancelJobDialog';
 import { Job } from 'types/job';
 import { useNavigate } from 'react-router';
 import { useConnectedWallet } from '@terra-money/wallet-provider';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
+import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
+import { useWarpAccount } from 'queries/useWarpAccount';
 
 export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const job = cellProps.rowData as Job;
@@ -20,6 +22,8 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const openExecuteJobDialog = useExecuteJobDialog();
   const openCancelJobDialog = useCancelJobDialog();
   const navigate = useNavigate();
+
+  const { data: warpAccount } = useWarpAccount();
 
   const connectedWallet = useConnectedWallet();
   const { saveJob } = useJobStorage();
@@ -36,12 +40,16 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
   }, [navigate, job, saveJob]);
 
   return (
-    <MenuButton className={classNames(styles.col, styles.col_action)} key={cellProps.dataKey}>
+    <DropdownMenu
+      menuClass={styles.menu}
+      className={classNames(styles.col, styles.col_action)}
+      action={<MoreVertIcon key={cellProps.dataKey} className={styles.menu_btn} />}
+    >
       <MenuAction onClick={onViewJob}>View details</MenuAction>
       {isCreator && job.info.status === 'Pending' && <MenuAction onClick={onEditJob}>Edit job</MenuAction>}
-      {job.info.status === 'Pending' && <MenuAction onClick={onExecuteJob}>Execute job</MenuAction>}
+      {job.info.status === 'Pending' && connectedWallet && <MenuAction onClick={onExecuteJob}>Execute job</MenuAction>}
       {isCreator && job.info.status === 'Pending' && <MenuAction onClick={onCancelJob}>Cancel job</MenuAction>}
-      <MenuAction onClick={onCloneJob}>Clone job</MenuAction>
-    </MenuButton>
+      {connectedWallet && warpAccount && <MenuAction onClick={onCloneJob}>Clone job</MenuAction>}
+    </DropdownMenu>
   );
 };
