@@ -12,7 +12,6 @@ import { useJobsQuery } from 'queries/useJobsQuery';
 import { Job } from 'types/job';
 import { useJobFiltersDialog } from './dialogs/job-filters/JobFiltersDialog';
 import { warp_controller } from 'types';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import { useNewJobDialog } from 'components/layout/dialogs/NewJobDialog';
 
 type JobsWidgetProps = {
@@ -31,7 +30,6 @@ export const JobsWidget = (props: JobsWidgetProps) => {
   const [sort, setSort] = useState<Sort<SortBy>>();
   const [queryOpts, setQueryOpts] = useState<warp_controller.QueryJobsMsg>({ job_status: 'Pending' });
   const [page, setPage] = useState(1);
-  const connectedWallet = useConnectedWallet();
 
   const [lastItemIndexes, setLastItemIndexes] = useState<PageIndexMap>({});
   const start_after = useMemo(() => lastItemIndexes[page - 1], [page, lastItemIndexes]);
@@ -80,7 +78,7 @@ export const JobsWidget = (props: JobsWidgetProps) => {
       className={className}
       columns={columns}
       data={data}
-      paginated={Boolean(connectedWallet)}
+      paginated={true}
       page={page}
       setPage={setPage}
       hasNextPage={hasNextPage}
