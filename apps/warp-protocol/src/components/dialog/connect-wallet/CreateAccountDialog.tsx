@@ -13,7 +13,7 @@ export const CreateAccountDialog = (props: DialogProps<CreateAccountDialogProps,
 
   return (
     <Dialog className={styles.root}>
-      <DialogHeader title="Create account" onClose={() => closeDialog(undefined)} />
+      <DialogHeader title="Create account" onClose={() => closeDialog(undefined, { closeAll: true })} />
       <DialogBody className={styles.body}>
         <Text variant="label" className={styles.description}>
           Account represents your own virtual wallet used for interacting with Warp. Managed as a typical wallet, you

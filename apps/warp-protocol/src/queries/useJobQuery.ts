@@ -1,6 +1,6 @@
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { CW20Addr } from '@terra-money/apps/types';
-import { NetworkInfo, useConnectedWallet } from '@terra-money/wallet-provider';
+import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
 import { QueryClient, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { warp_controller } from 'types';
 import { QUERY_KEY } from './queryKey';
@@ -36,14 +36,14 @@ export const readJobFromCache = (jobId: string | undefined, queryClient: QueryCl
 };
 
 export const useJobQuery = (jobId?: string): UseQueryResult<Job | undefined> => {
-  const connectedWallet = useConnectedWallet();
+  const wallet = useWallet();
   const contractAddress = useContractAddress('warp-controller');
   const queryClient = useQueryClient();
 
   const query = useQuery(
-    [QUERY_KEY.JOB, connectedWallet?.network, contractAddress, jobId],
+    [QUERY_KEY.JOB, wallet.network, contractAddress, jobId],
     async ({ queryKey }) => {
-      if (!connectedWallet || !jobId) {
+      if (!jobId) {
         return undefined;
       }
 

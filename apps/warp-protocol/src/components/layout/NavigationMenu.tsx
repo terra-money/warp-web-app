@@ -9,6 +9,7 @@ import { ReactComponent as TerminalIcon } from 'components/assets/Terminal.svg';
 import { NavLink } from 'react-router-dom';
 import styles from './NavigationMenu.module.sass';
 import { useNewActionDialog } from './dialogs/NewActionDialog';
+import { ActionElement } from 'components/action-element/ActionElement';
 
 interface RouteProps {
   to: string;
@@ -48,7 +49,7 @@ export const NavigationMenu = (props: NavigationMenuProps) => {
       {routes.map((route) => (
         <Route {...route} key={route.label} />
       ))}
-      <NewIcon className={styles.route} onClick={() => openNewActionDialog({})} />
+      <ActionElement action={<NewIcon className={styles.route} onClick={() => openNewActionDialog({})} />} />
     </div>
   );
 };

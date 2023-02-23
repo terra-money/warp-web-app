@@ -78,7 +78,7 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
 
   return (
     <Dialog className={styles.root}>
-      <DialogHeader title={title ?? 'Connect your wallet'} onClose={() => closeDialog(undefined)} />
+      <DialogHeader title={title ?? 'Connect your wallet'} onClose={() => closeDialog(undefined, { closeAll: true })} />
       <DialogBody className={styles.body}>
         {subtitle && (
           <Text variant={'label'} className={styles.subtitle}>

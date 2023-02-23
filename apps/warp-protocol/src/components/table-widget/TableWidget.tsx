@@ -5,11 +5,8 @@ import { ColumnProps } from 'react-virtualized';
 import classNames from 'classnames';
 import { Footer, FooterDisplay } from './footer/Footer';
 import { Table } from './table/Table';
-import { IfConnected } from 'components/if-connected';
 import { ReactComponent as ArrowsIcon } from 'components/assets/Arrows.svg';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
 import styles from './TableWidget.module.sass';
-import { NotConnected } from 'components/not-connected';
 
 export type TableFilterProps<T extends string> = {
   filters: T[];
@@ -58,13 +55,12 @@ export function TableWidget<T>(props: TableWidgetProps<T>) {
   const { className } = props;
 
   const [footerDisplay, setFooterDisplay] = useState<FooterDisplay>();
-  const connectedWallet = useConnectedWallet();
 
   useEffect(() => {
-    if (isLoading || !connectedWallet) {
+    if (isLoading) {
       setFooterDisplay(undefined);
     }
-  }, [isLoading, connectedWallet]);
+  }, [isLoading]);
 
   const onNextClick = () => (hasNextPage ? setPage(page + 1) : undefined);
   const onPrevClick = () => setPage(Math.max(page - 1, 1));
@@ -78,21 +74,16 @@ export function TableWidget<T>(props: TableWidgetProps<T>) {
       )}
       {topBar}
       <div className={styles.divider_header} />
-      <IfConnected
-        then={
-          <Table
-            data={data}
-            virtualized={virtualized}
-            isLoading={isLoading}
-            columns={columns}
-            showNoResults={showNoResults}
-            rowHeight={rowHeight ?? 60}
-            noSearchResultsView={noSearchResultsView}
-            emptyView={emptyView}
-            setFooterDisplay={setFooterDisplay}
-          />
-        }
-        else={<NotConnected />}
+      <Table
+        data={data}
+        virtualized={virtualized}
+        isLoading={isLoading}
+        columns={columns}
+        showNoResults={showNoResults}
+        rowHeight={rowHeight ?? 60}
+        noSearchResultsView={noSearchResultsView}
+        emptyView={emptyView}
+        setFooterDisplay={setFooterDisplay}
       />
       {virtualized === true && paginated === false && (
         <>
@@ -105,7 +96,7 @@ export function TableWidget<T>(props: TableWidgetProps<T>) {
         <>
           <div className={styles.divider_footer} />
           <Footer className={styles.pagination_footer}>
-            {connectedWallet && !isLoading && (
+            {!isLoading && (
               <Container direction="row">
                 <Button
                   icon={

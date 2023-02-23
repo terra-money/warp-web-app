@@ -1,15 +1,16 @@
-import { Button, ButtonProps } from 'components/primitives';
-import { forwardRef, MouseEventHandler, useCallback } from 'react';
 import { ConnectType, useConnectedWallet } from '@terra-money/wallet-provider';
+import { cloneElement, MouseEventHandler, useCallback } from 'react';
 import { useConnectWalletDialog } from '../dialog/connect-wallet';
 import { sleep } from 'utils';
-import { useCreateAccountDialog } from 'components/dialog/connect-wallet/CreateAccountDialog';
 import { useWarpAccount } from 'queries/useWarpAccount';
+import { useCreateAccountDialog } from 'components/dialog/connect-wallet/CreateAccountDialog';
 
-export type ConnectedButtonProps = ButtonProps;
+export type ActionElementProps = {
+  action: JSX.Element;
+};
 
-export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProps>((props, ref) => {
-  const { onClick, ...rest } = props;
+export const ActionElement = (props: ActionElementProps) => {
+  const { action } = props;
   const connectedWallet = useConnectedWallet();
   const openConnectDialog = useConnectWalletDialog();
 
@@ -41,11 +42,13 @@ export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProp
       // If another connection type was selected, disregard the original action
       // The user will have to press the button again after connecting
       if ((connectedWallet || connectionType === ConnectType.EXTENSION) && accountReady) {
-        onClick?.(event);
+        action.props.onClick?.(event);
       }
     },
-    [onClick, connectedWallet, openConnectDialog, warpAccount, accountFetching, openCreateAccountDialog]
+    [action, connectedWallet, openConnectDialog, warpAccount, accountFetching, openCreateAccountDialog]
   );
 
-  return <Button {...rest} onClick={handleClick} />;
-});
+  return cloneElement(action, {
+    onClick: handleClick,
+  });
+};
