@@ -1,6 +1,6 @@
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { CW20Addr } from '@terra-money/apps/types';
-import { NetworkInfo, useConnectedWallet } from '@terra-money/wallet-provider';
+import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
 import { QueryClient, useQuery, useQueryClient, UseQueryResult } from 'react-query';
 import { warp_controller } from 'types';
 import { QUERY_KEY } from './queryKey';
@@ -35,14 +35,14 @@ export const readTemplateFromCache = (templateId: string | undefined, queryClien
 };
 
 export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_controller.Template | undefined> => {
-  const connectedWallet = useConnectedWallet();
+  const wallet = useWallet();
   const contractAddress = useContractAddress('warp-controller');
   const queryClient = useQueryClient();
 
   const query = useQuery(
-    [QUERY_KEY.TEMPLATE, connectedWallet?.network, contractAddress, templateId],
+    [QUERY_KEY.TEMPLATE, wallet.network, contractAddress, templateId],
     async ({ queryKey }) => {
-      if (!connectedWallet || !templateId) {
+      if (!templateId) {
         return undefined;
       }
 
