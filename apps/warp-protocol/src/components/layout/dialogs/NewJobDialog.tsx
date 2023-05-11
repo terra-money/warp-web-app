@@ -54,7 +54,25 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
               Advanced mode
             </Text>
             <Text className={styles.label} variant="label">
-              Create a job manually. Intended for developers.
+              Configure a job manually step by step.
+            </Text>
+          </Container>
+        </Button>
+        <Button
+          variant="secondary"
+          className={styles.btn}
+          onClick={async () => {
+            clearJobStorage();
+            navigate('/job-new/developer');
+            closeDialog(undefined, { closeAll: true });
+          }}
+        >
+          <Container direction="column" className={styles.txt_container}>
+            <Text className={styles.text} variant="text">
+              Developer mode
+            </Text>
+            <Text className={styles.label} variant="label">
+              Submit a create job payload. Intended for developers.
             </Text>
           </Container>
         </Button>
