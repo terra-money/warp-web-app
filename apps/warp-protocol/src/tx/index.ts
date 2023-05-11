@@ -9,3 +9,4 @@ export * from './useCreateAccountTx';
 export * from './useCreateTemplateTx';
 export * from './useDeleteTemplateTx';
 export * from './useEditTemplateTx';
+export * from './useCreateDevJobTx';
