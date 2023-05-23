@@ -7,6 +7,7 @@ import { useQueryVariableDialog } from './query/QueryVariableDialog';
 import { useExternalVariableDialog } from './external/ExternalVariableDialog';
 import { Variable } from '../useVariableStorage';
 import { useCallback } from 'react';
+import { Container } from '@terra-money/apps/components';
 
 type VariableDialogProps = {};
 
@@ -34,7 +35,14 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, Variable>
             }
           }}
         >
-          <Text variant="text">Query</Text>
+          <Container direction="column" className={styles.txt_container}>
+            <Text className={styles.text} variant="text">
+              Query
+            </Text>
+            <Text className={styles.label} variant="label">
+              Query smart contract data. Executed on-chain, via smart contracts.
+            </Text>
+          </Container>
         </Button>
         <Button
           variant="secondary"
@@ -46,7 +54,14 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, Variable>
             }
           }}
         >
-          <Text variant="text">External</Text>
+          <Container direction="column" className={styles.txt_container}>
+            <Text className={styles.text} variant="text">
+              External
+            </Text>
+            <Text className={styles.label} variant="label">
+              Fetch data from a HTTP endpoint. Executed off-chain, via keepers.
+            </Text>
+          </Container>
         </Button>
         <Button
           variant="secondary"
@@ -58,7 +73,14 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, Variable>
             }
           }}
         >
-          <Text variant="text">Static</Text>
+          <Container direction="column" className={styles.txt_container}>
+            <Text className={styles.text} variant="text">
+              Static
+            </Text>
+            <Text className={styles.label} variant="label">
+              Hardcoded information provided by user.
+            </Text>
+          </Container>
         </Button>
       </DialogBody>
     </Dialog>

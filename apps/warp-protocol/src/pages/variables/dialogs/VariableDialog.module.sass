@@ -1,4 +1,5 @@
 .root
+  width: 600px !important
 
 .body
   row-gap: 16px !important
@@ -7,14 +8,31 @@
   margin-bottom: 32px
 
 .btn
+  height: auto
   width: 100%
-  padding: 24px
+  padding: 16px 24px
   justify-content: space-between
 
   > *
-    color: var(--text-color-title)
     font-family: PolySans-Normal
 
 .description
   line-height: 22px
   margin-bottom: 20px
+
+.icon
+
+  path
+    fill: transparent !important
+    stroke: var(--text-color-title)
+
+.txt_container
+  .label
+    margin-top: 4px
+    font-family: PolySans
+    font-weight: 400 !important
+
+  .text
+    font-family: PolySans-Normal
+    color: var(--text-color-title)
+    font-weight: 600 !important
