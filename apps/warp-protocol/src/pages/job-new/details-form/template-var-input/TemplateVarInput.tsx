@@ -11,6 +11,9 @@ import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { warp_controller } from 'types';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+
+import styles from './TemplateVarInput.module.sass';
 
 type TemplateVarInputProps = UIElementProps & {
   templateVar: warp_controller.StaticVariable;
@@ -98,6 +101,26 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
           );
         }}
       />
+    );
+  }
+
+  if (templateVar.kind === 'json') {
+    return (
+      <FormControl label={templateVar.name}>
+        <MsgInput
+          placeholder="Type JSON payload here"
+          value={templateVar.value}
+          rootClassName={styles.wasm_msg}
+          mode="json"
+          onChange={(value) => {
+            setTemplateVars(
+              updateTemplateVar(templateVar.name, {
+                value,
+              })
+            );
+          }}
+        />
+      </FormControl>
     );
   }
 
