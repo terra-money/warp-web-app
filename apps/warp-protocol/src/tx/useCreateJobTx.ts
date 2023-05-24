@@ -58,6 +58,8 @@ export const useCreateJobTx = () => {
             recurring: false,
             requeue_on_evict: true,
             name,
+            labels: [],
+            description: '',
             condition: condition,
             vars,
             reward: reward.toString(),

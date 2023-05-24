@@ -454,7 +454,9 @@ export module warp_account {
   }
   export interface Job {
     condition: Condition;
+    description: string;
     id: Uint64;
+    labels: string[];
     last_update_time: Uint64;
     msgs: string[];
     name: string;

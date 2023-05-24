@@ -6,7 +6,7 @@ export interface ExternalVariableInput {
   name: string;
   kind: warp_controller.VariableKind;
   body?: string | null;
-  headers?: string[] | null;
+  headers?: object | null;
   method?: warp_controller.Method | null;
   selector: string;
   url: string;

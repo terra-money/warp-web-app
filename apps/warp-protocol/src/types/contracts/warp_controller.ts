@@ -489,6 +489,8 @@ export module warp_controller {
   export type TemplateKind = 'query' | 'msg';
   export interface CreateJobMsg {
     condition: Condition;
+    description: string;
+    labels: string[];
     msgs: string[];
     name: string;
     recurring: boolean;
@@ -595,7 +597,9 @@ export module warp_controller {
   }
   export interface UpdateJobMsg {
     added_reward?: Uint128 | null;
+    description?: string | null;
     id: Uint64;
+    labels?: string[] | null;
     name?: string | null;
   }
   export interface ExecuteJobMsg {
@@ -658,7 +662,9 @@ export module warp_controller {
   }
   export interface Job {
     condition: Condition;
+    description: string;
     id: Uint64;
+    labels: string[];
     last_update_time: Uint64;
     msgs: string[];
     name: string;
