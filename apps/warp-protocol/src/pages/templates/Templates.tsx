@@ -8,7 +8,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import { TemplateCard } from './TemplateCard';
 import { EmptyView } from './EmptyView';
-import { useNewTemplateDialog } from 'components/layout/dialogs/NewTemplateDialog';
+import { useNavigate } from 'react-router';
 
 interface TemplatesProps {}
 
@@ -33,7 +33,7 @@ export const Templates = (props: TemplatesProps) => {
 
   const { data: templates = [], isLoading } = useTemplatesQuery({ kind: kindFromTab(selectedTabType) });
 
-  const openNewTemplateDialog = useNewTemplateDialog();
+  const navigate = useNavigate();
 
   return (
     <Container className={styles.root} direction="column">
@@ -60,7 +60,7 @@ export const Templates = (props: TemplatesProps) => {
             iconGap="none"
             variant="primary"
             onClick={() => {
-              openNewTemplateDialog({});
+              navigate('/template-new/details');
             }}
           >
             New

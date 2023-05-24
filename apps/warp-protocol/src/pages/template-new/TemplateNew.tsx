@@ -16,7 +16,6 @@ import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
-import { useSearchParams } from 'react-router-dom';
 import { Variable } from 'pages/variables/useVariableStorage';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
 
@@ -28,10 +27,6 @@ export const TemplateNew = (props: TemplateNewProps) => {
   const navigate = useNavigate();
 
   const [input, formState] = useTemplateNewForm();
-
-  const [searchParams] = useSearchParams();
-
-  const mode = searchParams.get('mode') ?? 'advanced';
 
   const { name, msg, submitDisabled, formattedStr, vars, kind } = formState;
 
@@ -70,7 +65,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
           <Routes>
             <Route path="/details" element={<DetailsForm formState={formState} input={input} />} />
             <Route path="/condition" element={<ConditionBuilder cond={cond} setCond={setCond} />} />
-            <Route path="*" element={<Navigate to="/template-new/details?mode=basic" replace />} />
+            <Route path="*" element={<Navigate to="/template-new/details" replace />} />
           </Routes>
         </>
         <Footer>
@@ -96,7 +91,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
           >
             Save
           </Button>
-          {!inConditionTab && kind === 'msg' && mode === 'advanced' && (
+          {!inConditionTab && kind === 'msg' && (
             <Button gutters="large" variant="secondary" onClick={() => navigate('/template-new/condition')}>
               Add condition
             </Button>
