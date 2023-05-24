@@ -38,6 +38,7 @@ const externalVarKinds: warp_controller.VariableKind[] = [
   'amount',
   'asset',
   'timestamp',
+  'json',
 ];
 
 export const ExternalVariableForm = (props: ExternalVariableFormProps) => {

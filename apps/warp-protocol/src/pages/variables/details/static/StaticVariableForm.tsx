@@ -31,6 +31,7 @@ const staticVariableKinds: warp_controller.VariableKind[] = [
   'amount',
   'asset',
   'timestamp',
+  'json',
 ];
 
 export const StaticVariableForm = (props: StaticVariableFormProps) => {

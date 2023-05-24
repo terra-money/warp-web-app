@@ -39,6 +39,7 @@ const queryVarKinds: warp_controller.VariableKind[] = [
   'amount',
   'asset',
   'timestamp',
+  'json',
 ];
 
 export const useQueryExample = () => {
