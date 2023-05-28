@@ -323,7 +323,7 @@ export module warp_account {
     | {
         query: QueryVariable;
       };
-  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset' | 'json';
   export type UpdateFnValue =
     | {
         uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
@@ -454,7 +454,9 @@ export module warp_account {
   }
   export interface Job {
     condition: Condition;
+    description: string;
     id: Uint64;
+    labels: string[];
     last_update_time: Uint64;
     msgs: string[];
     name: string;
@@ -540,7 +542,9 @@ export module warp_account {
   }
   export interface ExternalExpr {
     body?: string | null;
-    headers?: string[] | null;
+    headers?: {
+      [k: string]: string;
+    } | null;
     method?: Method | null;
     selector: string;
     url: string;

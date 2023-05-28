@@ -10,6 +10,9 @@ import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { warp_controller } from 'types';
+import { MsgInput } from 'forms/QueryExprForm/MsgInput';
+
+import styles from './VariableValueInput.module.sass';
 
 type VariableValueInputProps = UIElementProps & {
   value: string;
@@ -73,6 +76,22 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
           onChange(token.key);
         }}
       />
+    );
+  }
+
+  if (kind === 'json') {
+    return (
+      <FormControl label={label}>
+        <MsgInput
+          placeholder={placeholder}
+          value={value}
+          rootClassName={styles.wasm_msg}
+          mode="json"
+          onChange={(value) => {
+            onChange(value ?? '');
+          }}
+        />
+      </FormControl>
     );
   }
 

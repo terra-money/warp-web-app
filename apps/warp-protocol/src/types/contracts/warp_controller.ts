@@ -17,6 +17,7 @@ export module warp_controller {
     a_min: Uint128;
     cancellation_fee_percentage: Uint64;
     creation_fee_percentage: Uint64;
+    fee_collector: Addr;
     minimum_reward: Uint128;
     owner: Addr;
     q_max: Uint64;
@@ -359,7 +360,7 @@ export module warp_controller {
     | {
         query: QueryVariable;
       };
-  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset' | 'json';
   export type UpdateFnValue =
     | {
         uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
@@ -488,6 +489,8 @@ export module warp_controller {
   export type TemplateKind = 'query' | 'msg';
   export interface CreateJobMsg {
     condition: Condition;
+    description: string;
+    labels: string[];
     msgs: string[];
     name: string;
     recurring: boolean;
@@ -570,7 +573,9 @@ export module warp_controller {
   }
   export interface ExternalExpr {
     body?: string | null;
-    headers?: string[] | null;
+    headers?: {
+      [k: string]: string;
+    } | null;
     method?: Method | null;
     selector: string;
     url: string;
@@ -592,7 +597,9 @@ export module warp_controller {
   }
   export interface UpdateJobMsg {
     added_reward?: Uint128 | null;
+    description?: string | null;
     id: Uint64;
+    labels?: string[] | null;
     name?: string | null;
   }
   export interface ExecuteJobMsg {
@@ -612,6 +619,7 @@ export module warp_controller {
     a_min?: Uint128 | null;
     cancellation_fee_percentage?: Uint64 | null;
     creation_fee_percentage?: Uint64 | null;
+    fee_collector?: string | null;
     minimum_reward?: Uint128 | null;
     owner?: string | null;
     q_max?: Uint64 | null;
@@ -639,6 +647,7 @@ export module warp_controller {
     a_min: Uint128;
     cancellation_fee: Uint64;
     creation_fee: Uint64;
+    fee_collector?: string | null;
     minimum_reward: Uint128;
     owner?: string | null;
     q_max: Uint64;
@@ -653,7 +662,9 @@ export module warp_controller {
   }
   export interface Job {
     condition: Condition;
+    description: string;
     id: Uint64;
+    labels: string[];
     last_update_time: Uint64;
     msgs: string[];
     name: string;
