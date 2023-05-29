@@ -54,7 +54,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
 
   const navigate = useNavigate();
 
-  const { data: options = [] } = useTemplatesQuery({ kind: 'msg' });
+  const { data: options = [] } = useTemplatesQuery();
 
   const { variables, updateVariable } = useCachedVariables();
 

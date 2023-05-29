@@ -8,7 +8,6 @@ import { Variable } from 'pages/variables/useVariableStorage';
 
 interface TemplateNewInput {
   name: string;
-  kind: warp_controller.TemplateKind;
   vars: Variable[];
   formattedStr: string;
   msg: string;
@@ -24,7 +23,6 @@ export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
-    kind: template?.kind ?? ('' as any),
     vars: template?.vars ?? [],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
@@ -73,8 +71,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
-    const kindError = isEmpty(state.kind) ? 'Template type must be assigned' : undefined;
-
     const formattedStrLengthError =
       state.formattedStr.length > 280 ? 'Template string must be shorter than 280 characters.' : undefined;
 
@@ -94,7 +90,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
         !state.msg ||
         state.msg.length < 1 ||
         msgError ||
-        kindError ||
         formattedStrError
     );
 
@@ -104,7 +99,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       nameError,
       msgError,
       submitDisabled,
-      kindError,
       formattedStrError,
     });
   };

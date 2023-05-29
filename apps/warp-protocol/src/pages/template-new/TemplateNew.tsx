@@ -28,7 +28,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const [input, formState] = useTemplateNewForm();
 
-  const { name, msg, submitDisabled, formattedStr, vars, kind } = formState;
+  const { name, msg, submitDisabled, formattedStr, vars } = formState;
 
   const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
 
@@ -78,7 +78,6 @@ export const TemplateNew = (props: TemplateNewProps) => {
               const res = await createTemplateTx({
                 formatted_str: formattedStr,
                 msg,
-                kind,
                 condition,
                 vars: extractUsedVariables(formattedStr, msg, vars, condition),
                 name,
@@ -91,7 +90,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
           >
             Save
           </Button>
-          {!inConditionTab && kind === 'msg' && (
+          {!inConditionTab && (
             <Button gutters="large" variant="secondary" onClick={() => navigate('/template-new/condition')}>
               Add condition
             </Button>

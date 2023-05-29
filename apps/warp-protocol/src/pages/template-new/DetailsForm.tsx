@@ -5,8 +5,6 @@ import { Form } from 'components/form/Form';
 import { TextInput } from 'components/primitives/text-input';
 import styles from './TemplateNew.module.sass';
 import { TemplateMessageInput } from './template-message/TemplateMessageInput';
-import { warp_controller } from 'types';
-import { TemplateKindInput } from './template-kind-input/TemplateKindInput';
 import { TemplateNewState } from './useTemplateNewForm';
 
 type DetailsFormProps = UIElementProps & {
@@ -14,12 +12,10 @@ type DetailsFormProps = UIElementProps & {
   input: (state: Partial<TemplateNewState>) => void;
 };
 
-const templateKinds: warp_controller.TemplateKind[] = ['query', 'msg'];
-
 export const DetailsForm = (props: DetailsFormProps) => {
   const { className, input, formState } = props;
 
-  const { name, msg, formattedStr, kind, formattedStrError, msgError } = formState;
+  const { name, msg, formattedStr, formattedStrError, msgError } = formState;
 
   return (
     <Form className={classNames(styles.form, className)}>
@@ -35,14 +31,6 @@ export const DetailsForm = (props: DetailsFormProps) => {
               }}
             />
           </FormControl>
-          <TemplateKindInput
-            value={kind}
-            placeholder="Select template type"
-            className={styles.template_kind_input}
-            onChange={(val) => input({ kind: val })}
-            label="Template type"
-            options={templateKinds}
-          />
         </Container>
         <TemplateMessageInput
           templateStrError={formattedStrError}

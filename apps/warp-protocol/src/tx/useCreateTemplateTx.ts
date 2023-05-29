@@ -23,7 +23,7 @@ export const useCreateTemplateTx = () => {
 
   return useTx<CreateTemplateTxProps>(
     (options) => {
-      const { wallet, formatted_str, kind, vars, name, msg, condition } = options;
+      const { wallet, formatted_str, vars, name, msg, condition } = options;
 
       if (!configRef.current) {
         return { msgs: [] };
@@ -36,7 +36,6 @@ export const useCreateTemplateTx = () => {
           {
             submit_template: {
               formatted_str,
-              kind,
               condition,
               vars,
               name,

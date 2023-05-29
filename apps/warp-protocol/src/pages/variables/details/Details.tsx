@@ -28,7 +28,7 @@ export const Details = (props: DetailsProps) => {
         className={styles.form}
         selectedVariable={selectedVariable.query}
         renderActions={(state) => {
-          const { submitDisabled, querySelector, queryJson, kind, name, template } = state;
+          const { submitDisabled, querySelector, queryJson, kind, name } = state;
 
           return (
             <Container direction="row" className={styles.footer}>
@@ -40,7 +40,6 @@ export const Details = (props: DetailsProps) => {
                   updateVariable({
                     query: {
                       reinitialize: false,
-                      template,
                       init_fn: {
                         selector: querySelector,
                         query: encodeQuery(queryJson),
