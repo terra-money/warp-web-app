@@ -25,12 +25,23 @@ const routes: RouteProps[] = [
   { to: '/templates', label: 'Templates', icon: <TerminalIcon /> },
 ];
 
+interface RouteTooltipProps {
+  label: string;
+}
+
+export const RouteTooltip: React.FC<RouteTooltipProps> = ({ label }) => {
+  return <div className={styles.tooltip}>{label}</div>;
+};
+
 const Route = (props: RouteProps) => {
-  const { icon, to } = props;
+  const { icon, to, label } = props;
 
   return (
-    <NavLink className={styles.route} to={to}>
-      <span className={styles.icon}>{icon}</span>
+    <NavLink className={classNames(styles.route, 'route')} to={to}>
+      <div className={styles.iconWrapper}>
+        <span className={styles.icon}>{icon}</span>
+        <RouteTooltip label={label} />
+      </div>
     </NavLink>
   );
 };
