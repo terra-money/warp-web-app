@@ -36,7 +36,7 @@ const queryVarKinds: warp_controller.VariableKind[] = [
   'json',
 ];
 
-export const useQueryExample = () => {
+export const useQueryExample = (): warp_controller.QueryRequestFor_String => {
   const contractAddress = useContractAddress('warp-controller');
 
   return useMemo(

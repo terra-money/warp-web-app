@@ -8,7 +8,7 @@ import { useCreateTemplateTx } from 'tx';
 import { useTemplateNewForm } from './useTemplateNewForm';
 import { useEffect } from 'react';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
-import { filterUnreferencedVariables, formattedStringVariables, variableName } from 'utils/variable';
+import { formattedStringVariables, variableName } from 'utils/variable';
 import { DetailsForm } from './DetailsForm';
 import { uniqBy } from 'lodash';
 import { ConditionBuilder } from 'pages/job-new/condition-builder/ConditionBuilder';
@@ -18,6 +18,8 @@ import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
 import { Variable } from 'pages/variables/useVariableStorage';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
+import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { parseMsgs } from 'pages/job-new/JobNew';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -75,11 +77,12 @@ export const TemplateNew = (props: TemplateNewProps) => {
             disabled={submitDisabled}
             onClick={async () => {
               const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
+              const msgs = parseMsgs(msg);
               const res = await createTemplateTx({
                 formatted_str: formattedStr,
                 msg,
                 condition,
-                vars: extractUsedVariables(formattedStr, msg, vars, condition),
+                vars: extractUsedVariables(formattedStr, msgs, vars, condition),
                 name,
               });
 
@@ -106,10 +109,12 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
 const extractUsedVariables = (
   formattedStr: string,
-  msg: string,
+  msgs: warp_controller.CosmosMsgFor_Empty[],
   vars: Variable[],
   condition?: warp_controller.Condition
-) =>
-  uniqBy([...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msg, condition)], (v) =>
-    variableName(v)
+) => {
+  return uniqBy(
+    [...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariablesInCosmosMsg(vars, msgs, condition)],
+    (v) => variableName(v)
   );
+};

@@ -10,12 +10,13 @@ import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
 import { decodeMsg, useJobStorage } from './useJobStorage';
-import { filterUnreferencedVariables, hydrateQueryVariablesWithStatics } from 'utils/variable';
+import { hydrateQueryVariablesWithStatics } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
+import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
 
 type JobNewProps = UIElementProps & {};
 
@@ -69,8 +70,8 @@ export const JobNew = (props: JobNewProps) => {
                               } = props;
                               const { condition } = template;
 
-                              const msgs = encodeMsgs(message);
-                              const referenced = filterUnreferencedVariables(variables, message, condition!);
+                              const msgs = parseMsgs(message);
+                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, condition!);
                               const vars = hydrateQueryVariablesWithStatics(referenced);
 
                               const resp = await createJobTx({
@@ -103,8 +104,8 @@ export const JobNew = (props: JobNewProps) => {
                               const { cond, variables } = props;
                               const { name, reward, message } = detailsInput;
 
-                              const msgs = encodeMsgs(message);
-                              const referenced = filterUnreferencedVariables(variables, message, cond);
+                              const msgs = parseMsgs(message);
+                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, cond);
                               const vars = hydrateQueryVariablesWithStatics(referenced);
 
                               const resp = await createJobTx({
@@ -140,37 +141,11 @@ export const decodeMsgs = (msgs: warp_controller.CosmosMsgFor_Empty[]): string =
   return JSON.stringify(msgs.map(decodeMsg));
 };
 
-export const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+export const parseMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
   const parsed = JSON.parse(value);
   const msgs: warp_controller.CosmosMsgFor_Empty[] = Array.isArray(parsed)
     ? (parsed as warp_controller.CosmosMsgFor_Empty[])
     : [parsed];
 
-  return msgs.map(encodeMsg);
-};
-
-const encodeMsg = (input: warp_controller.CosmosMsgFor_Empty): warp_controller.CosmosMsgFor_Empty => {
-  if (!('wasm' in input)) {
-    return input;
-  }
-
-  let msg = input.wasm;
-
-  if ('execute' in msg) {
-    msg.execute.msg = base64encode(msg.execute.msg);
-  }
-
-  if ('instantiate' in msg) {
-    msg.instantiate.msg = base64encode(msg.instantiate.msg);
-  }
-
-  if ('migrate' in msg) {
-    msg.migrate.msg = base64encode(msg.migrate.msg);
-  }
-
-  return { wasm: msg };
-};
-
-const base64encode = (input: string): string => {
-  return Buffer.from(JSON.stringify(JSON.parse(JSON.stringify(input)))).toString('base64');
+  return msgs;
 };

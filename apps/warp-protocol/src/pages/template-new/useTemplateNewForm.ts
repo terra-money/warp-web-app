@@ -3,8 +3,9 @@ import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
 import { generatePaths } from 'utils';
-import { hasOnlyStaticVariables, scanForReferences, variableName } from 'utils/variable';
+import { hasOnlyStaticVariables, variableName } from 'utils/variable';
 import { Variable } from 'pages/variables/useVariableStorage';
+import { scanForReferences } from 'utils/msgs';
 
 interface TemplateNewInput {
   name: string;
