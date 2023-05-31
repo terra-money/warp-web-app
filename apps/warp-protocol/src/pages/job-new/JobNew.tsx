@@ -137,8 +137,14 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-export const decodeMsgs = (msgs: warp_controller.CosmosMsgFor_Empty[]): string => {
-  return JSON.stringify(msgs.map(decodeMsg));
+export const decodeMsgs = (msgs: string[]) => {
+  return msgs.map((m) => JSON.parse(m)).map(decodeMsg);
+};
+
+export const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+  const msgs = parseMsgs(value);
+
+  return msgs.map(encodeMsg);
 };
 
 export const parseMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
@@ -148,4 +154,30 @@ export const parseMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] =
     : [parsed];
 
   return msgs;
+};
+
+const encodeMsg = (input: warp_controller.CosmosMsgFor_Empty): warp_controller.CosmosMsgFor_Empty => {
+  if (!('wasm' in input)) {
+    return input;
+  }
+
+  let msg = input.wasm;
+
+  if ('execute' in msg) {
+    msg.execute.msg = base64encode(msg.execute.msg);
+  }
+
+  if ('instantiate' in msg) {
+    msg.instantiate.msg = base64encode(msg.instantiate.msg);
+  }
+
+  if ('migrate' in msg) {
+    msg.migrate.msg = base64encode(msg.migrate.msg);
+  }
+
+  return { wasm: msg };
+};
+
+const base64encode = (input: string): string => {
+  return Buffer.from(JSON.stringify(JSON.parse(JSON.stringify(input)))).toString('base64');
 };

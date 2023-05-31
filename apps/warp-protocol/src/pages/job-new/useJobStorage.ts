@@ -7,8 +7,6 @@ import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
 
-export const decodedMsgs = (job: Job) => job.info.msgs.map((msg) => JSON.parse(msg)).map(decodeMsg);
-
 export const useJobStorage = () => {
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
     '__warp_details_input',
@@ -30,7 +28,7 @@ export const useJobStorage = () => {
       const details: DetailsFormInput = {
         reward: demicrofy(job.reward, LUNA.decimals).toString(),
         name: job.info.name,
-        message: JSON.stringify(decodedMsgs(job), null, 2),
+        message: JSON.stringify(job, null, 2),
       };
 
       setDetailsInput(details);
