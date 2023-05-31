@@ -1,8 +1,12 @@
 import { warp_controller } from 'types';
 import { base64encode } from './base64encode';
 
+export const parseQuery = (value: string): warp_controller.QueryRequestFor_String => {
+  return JSON.parse(value) as warp_controller.QueryRequestFor_String;
+};
+
 export const encodeQuery = (value: string): warp_controller.QueryRequestFor_String => {
-  const input = JSON.parse(value) as warp_controller.QueryRequestFor_String;
+  const input = parseQuery(value);
 
   if (!('wasm' in input)) {
     return input;

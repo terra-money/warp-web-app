@@ -17,7 +17,7 @@ export interface QueryVariableState extends FormState<QueryVariableInput> {
 export type QueryVariableFormInput = FormInput<QueryVariableInput>;
 
 export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariableInput => {
-  const queryJson = queryVariable ? JSON.stringify(decodeQuery(queryVariable.init_fn.query), null, 2) : '';
+  const queryJson = queryVariable ? JSON.stringify(queryVariable.init_fn.query, null, 2) : '';
 
   return {
     kind: queryVariable?.kind ?? ('' as any),

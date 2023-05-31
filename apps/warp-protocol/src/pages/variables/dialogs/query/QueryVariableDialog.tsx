@@ -7,7 +7,7 @@ import styles from './QueryVariableDialog.module.sass';
 import { Button } from 'components/primitives';
 import { QueryVariableForm } from 'pages/variables/details/query/QueryVariableForm';
 import { QueryVariable } from 'pages/variables/useVariableStorage';
-import { encodeQuery } from 'utils';
+import { parseQuery } from 'utils';
 
 export type QueryVariableDialogProps = {
   variable?: QueryVariable;
@@ -36,7 +36,7 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
                       closeDialog({
                         reinitialize: false,
                         name,
-                        init_fn: { query: encodeQuery(queryJson), selector: querySelector },
+                        init_fn: { query: parseQuery(queryJson), selector: querySelector },
                         kind,
                       });
                     }

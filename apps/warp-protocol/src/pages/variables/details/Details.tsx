@@ -8,7 +8,7 @@ import { QueryVariableForm } from './query/QueryVariableForm';
 import { StaticVariableForm } from './static/StaticVariableForm';
 import { ExternalVariableForm } from './external/ExternalVariableForm';
 import { variableName } from 'utils/variable';
-import { encodeQuery } from 'utils';
+import { parseQuery } from 'utils';
 import { VariablePill } from '../variable-pill/VariablePill';
 
 type DetailsProps = UIElementProps & {
@@ -42,7 +42,7 @@ export const Details = (props: DetailsProps) => {
                       reinitialize: false,
                       init_fn: {
                         selector: querySelector,
-                        query: encodeQuery(queryJson),
+                        query: parseQuery(queryJson),
                       },
                       kind,
                       name,
