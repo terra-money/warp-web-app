@@ -56,8 +56,8 @@ export const variableKind = (v: warp_controller.Variable): warp_controller.Varia
 };
 
 const extractName = (str: string) => {
-  const parts = str.split('.');
-  return parts[parts.length - 1];
+  const prefix = '$warp.variable.';
+  return str.substring(prefix.length);
 };
 
 export const templateVariables = (template: warp_controller.Template) => {
