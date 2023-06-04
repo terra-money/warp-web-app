@@ -1,0 +1,48 @@
+import { UIElementProps } from '@terra-money/apps/components';
+import { Job } from 'types/job';
+import { warp_controller } from 'types';
+import { VariableValue } from '../../VariableValue';
+import { operatorLabel } from '../../../operatorLabel';
+
+type ExprValue =
+  | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+  | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+  | warp_controller.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+
+export type ExpressionValueProps = {
+  value: ExprValue;
+  job: Job;
+} & UIElementProps;
+
+export const ExpressionValue = (props: ExpressionValueProps) => {
+  const { job, value } = props;
+
+  let left = <></>;
+
+  if ('simple' in value) {
+    left = <>{value.simple}</>;
+  }
+
+  if ('expr' in value) {
+    const operator = operatorLabel(value.expr.op);
+
+    const l = <ExpressionValue job={job} value={value.expr.left} />;
+    const r = <ExpressionValue job={job} value={value.expr.right} />;
+
+    left = (
+      <span>
+        {l} {operator} {r}
+      </span>
+    );
+  }
+
+  if ('env' in value) {
+    return <span>current {value.env}</span>;
+  }
+
+  if ('ref' in value) {
+    left = <VariableValue job={job} variableRef={value.ref} />;
+  }
+
+  return left;
+};

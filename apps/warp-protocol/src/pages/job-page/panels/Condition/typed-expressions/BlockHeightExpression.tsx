@@ -1,5 +1,5 @@
 import { warp_controller } from 'types';
-import { useOperatorLabel } from '../useOperatorLabel';
+import { operatorLabel } from '../operatorLabel';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { useBlockHeightQuery } from '../../../../../queries/useBlockHeightQuery';
 import { Job } from 'types/job';
@@ -11,7 +11,7 @@ export type BlockHeightExpressionProps = {
 
 export const BlockHeightExpression = (props: BlockHeightExpressionProps) => {
   const { expression, className } = props;
-  const operator = useOperatorLabel(expression.op);
+  const operator = operatorLabel(expression.op);
   const { data } = useBlockHeightQuery();
 
   const height = data?.toString();

@@ -1,8 +1,8 @@
 import { warp_controller } from 'types';
 
-type Operator = warp_controller.NumOp | warp_controller.StringOp;
+type Operator = warp_controller.NumOp | warp_controller.StringOp | warp_controller.NumExprOp;
 
-export const useOperatorLabel = (operator: Operator) => {
+export const operatorLabel = (operator: Operator) => {
   switch (operator) {
     case 'eq':
       return '==';
@@ -22,6 +22,16 @@ export const useOperatorLabel = (operator: Operator) => {
       return 'starts with';
     case 'ends_with':
       return 'ends with';
+    case 'add':
+      return '+';
+    case 'sub':
+      return '-';
+    case 'div':
+      return '/';
+    case 'mul':
+      return '*';
+    case 'mod':
+      return '%';
     default:
       return 'unknown operator';
   }
