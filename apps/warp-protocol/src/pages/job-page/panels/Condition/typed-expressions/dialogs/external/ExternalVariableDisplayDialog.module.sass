@@ -1,0 +1,68 @@
+.dialog
+  width: 840px
+  flex-direction: column
+
+.body
+  word-break: break-all
+  height: auto
+  overflow: auto
+  display: grid
+  width: 100%
+  grid-template-columns: 1fr 1fr
+  margin-top: 16px
+  row-gap: 20px !important
+  column-gap: 20px !important
+
+.name,
+.kind,
+.value,
+.reinitialize,
+.url,
+.selector,
+.onSuccess,
+.onError
+  width: 100%
+
+  :nth-child(2)
+    color: var(--text-color-title) !important
+
+.name
+  grid-row: 1
+  grid-column: 1
+
+.kind
+  grid-row: 1
+  grid-column: 2
+
+.value
+  grid-row: 2
+  grid-column: 1
+
+.reinitialize
+  grid-row: 2
+  grid-column: 2
+
+.onSuccess
+  grid-row: 3
+  grid-column: 1
+
+.onError
+  grid-row: 3
+  grid-column: 2
+
+.selector
+  grid-row: 4
+  grid-column: 1
+
+.url
+  grid-row: 4
+  grid-column: 2
+
+// .msg
+  // height: 100px !important
+
+.msg_editor
+  height: 140px !important
+
+.footer
+  padding: 0 !important
