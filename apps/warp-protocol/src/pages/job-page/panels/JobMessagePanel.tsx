@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import styles from './JobMessagePanel.module.sass';
 import { useEffect, useState } from 'react';
 import { decodeMsgs } from 'pages/job-new/JobNew';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 
 export type JobMessagePanelProps = {
   job: Job;
@@ -55,7 +56,12 @@ export const JobMessagePanel = (props: JobMessagePanelProps) => {
           </Button>
         </Container>
       </Container>
-      <pre className={styles.message}>{JSON.stringify(msgs, null, 4)}</pre>
+      <EditorInput
+        rootClassName={styles.msg}
+        className={styles.msg_editor}
+        value={JSON.stringify(msgs, null, 2)}
+        readOnly={true}
+      />
     </Panel>
   );
 };
