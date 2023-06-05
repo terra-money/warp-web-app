@@ -45,6 +45,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
       message,
       selectedTabType,
       template,
+      description,
+      descriptionError,
       messageError,
       submitDisabled,
       tokenBalance,
@@ -119,6 +121,29 @@ export const DetailsForm = (props: DetailsFormProps) => {
           token={LUNA}
           valid={rewardValid}
         />
+        <FormControl label="Description" className={styles.description_input}>
+          <TextInput
+            placeholder="Type a comprehensive description of the job. Your precise details will help us tailor AI assistance."
+            margin="none"
+            className={styles.description_inner}
+            multiline={true}
+            value={description}
+            onChange={(value) => {
+              input({ description: value.target.value });
+            }}
+            helperText={descriptionError}
+            error={descriptionError !== undefined}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {description && description.length > 0 && (
+                    <Text className={styles.textarea_label} variant="label">{`${description?.length ?? 0}/200`}</Text>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </FormControl>
         <Container className={styles.tabs} direction="row">
           {tabTypes.map((tabType) => (
             <Button
@@ -181,7 +206,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
           loading={loading}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message, template, selectedTabType, variables });
+              onNext({ name, reward, message, template, selectedTabType, variables, description });
             }
           }}
         >

@@ -28,6 +28,7 @@ export const useJobStorage = () => {
       const details: DetailsFormInput = {
         reward: demicrofy(job.reward, LUNA.decimals).toString(),
         name: job.info.name,
+        description: job.info.description,
         message: JSON.stringify(job, null, 2),
       };
 
@@ -41,6 +42,7 @@ export const useJobStorage = () => {
     (template: warp_controller.Template) => {
       const details: DetailsFormInput = {
         reward: '',
+        description: '',
         name: '',
         message: JSON.stringify(template.msg, null, 2),
         template,

@@ -66,6 +66,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 reward,
                                 message,
+                                description,
                                 variables,
                               } = props;
                               const { condition } = template;
@@ -77,6 +78,7 @@ export const JobNew = (props: JobNewProps) => {
                               const resp = await createJobTx({
                                 name,
                                 vars,
+                                description,
                                 reward: microfy(reward, LUNA.decimals),
                                 msgs,
                                 condition: condition!,
@@ -102,7 +104,7 @@ export const JobNew = (props: JobNewProps) => {
                           onNext={async (props) => {
                             if (detailsInput) {
                               const { cond, variables } = props;
-                              const { name, reward, message } = detailsInput;
+                              const { name, reward, message, description } = detailsInput;
 
                               const msgs = parseMsgs(message);
                               const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, cond);
@@ -111,6 +113,7 @@ export const JobNew = (props: JobNewProps) => {
                               const resp = await createJobTx({
                                 name,
                                 vars,
+                                description,
                                 reward: microfy(reward, LUNA.decimals),
                                 msgs,
                                 condition: cond,

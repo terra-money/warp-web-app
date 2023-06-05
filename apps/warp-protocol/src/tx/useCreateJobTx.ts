@@ -12,6 +12,7 @@ import { containsAllReferencedVarsInCosmosMsg } from 'utils/msgs';
 export interface CreateJobTxProps {
   name: string;
   reward: u<Big>;
+  description: string;
   msgs: warp_controller.CosmosMsgFor_Empty[];
   vars: warp_controller.Variable[];
   condition: warp_controller.Condition;
@@ -34,7 +35,7 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     (options) => {
-      const { wallet, reward, name, msgs, condition, vars } = options;
+      const { wallet, reward, name, msgs, condition, vars, description } = options;
 
       let txBuilder = TxBuilder.new();
 
@@ -58,7 +59,7 @@ export const useCreateJobTx = () => {
             requeue_on_evict: true,
             name,
             labels: [],
-            description: '',
+            description,
             condition: condition,
             vars,
             reward: reward.toString(),
