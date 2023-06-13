@@ -5,13 +5,13 @@ import styles from './VariableDialog.module.sass';
 import { useStaticVariableDialog } from './static/StaticVariableDialog';
 import { useQueryVariableDialog } from './query/QueryVariableDialog';
 import { useExternalVariableDialog } from './external/ExternalVariableDialog';
-import { Variable } from '../useVariableStorage';
 import { useCallback } from 'react';
 import { Container } from '@terra-money/apps/components';
+import { warp_controller } from 'types';
 
 type VariableDialogProps = {};
 
-export const VariableDialog = (props: DialogProps<VariableDialogProps, Variable>) => {
+export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_controller.Variable>) => {
   const { closeDialog } = props;
 
   const openStaticVariableDialog = useStaticVariableDialog();
@@ -88,7 +88,7 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, Variable>
 };
 
 export const useNewVariableDialog = () => {
-  return useDialog<VariableDialogProps, Variable>(VariableDialog);
+  return useDialog<VariableDialogProps, warp_controller.Variable>(VariableDialog);
 };
 
 export const useEditVariableDialog = () => {
@@ -97,7 +97,7 @@ export const useEditVariableDialog = () => {
   const openExternalVariableDialog = useExternalVariableDialog();
 
   return useCallback(
-    async (v: Variable): Promise<Variable | undefined> => {
+    async (v: warp_controller.Variable): Promise<warp_controller.Variable | undefined> => {
       if ('static' in v) {
         const resp = await openStaticVariableDialog({ variable: v.static });
 

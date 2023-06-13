@@ -2,30 +2,30 @@ import { useContractAddress } from '@terra-money/apps/hooks';
 import { CW20Addr } from '@terra-money/apps/types';
 import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
 import { useQuery, UseQueryResult } from 'react-query';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 import { QUERY_KEY } from './queryKey';
 import { contractQuery } from '@terra-money/apps/queries';
 
 const fetchTemplates = async (
   network: NetworkInfo,
   contractAddress: CW20Addr,
-  opts: warp_controller.QueryTemplatesMsg
-): Promise<warp_controller.Template[]> => {
+  opts: warp_resolver.QueryTemplatesMsg
+): Promise<warp_resolver.Template[]> => {
   const resp = await contractQuery<
-    Extract<warp_controller.QueryMsg, { query_templates: {} }>,
-    warp_controller.TemplatesResponse
+    Extract<warp_resolver.QueryMsg, { query_templates: {} }>,
+    warp_resolver.TemplatesResponse
   >(network, contractAddress, { query_templates: opts }, { templates: [] });
 
   return resp.templates;
 };
 
-type TemplatesQueryOpts = warp_controller.QueryTemplatesMsg & {
+type TemplatesQueryOpts = warp_resolver.QueryTemplatesMsg & {
   enabled?: boolean;
 };
 
 export const useTemplatesQuery = (
   opts: TemplatesQueryOpts = {}
-): UseQueryResult<warp_controller.Template[] | undefined> => {
+): UseQueryResult<warp_resolver.Template[] | undefined> => {
   const wallet = useWallet();
   const contractAddress = useContractAddress('warp-controller');
   const enabled = opts.enabled ?? true;
@@ -44,5 +44,5 @@ export const useTemplatesQuery = (
     }
   );
 
-  return query as UseQueryResult<warp_controller.Template[] | undefined>;
+  return query as UseQueryResult<warp_resolver.Template[] | undefined>;
 };

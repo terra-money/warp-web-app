@@ -1,13 +1,14 @@
-import { useVariableStorage, Variable } from 'pages/variables/useVariableStorage';
+import { useVariableStorage } from 'pages/variables/useVariableStorage';
 import { ReactNode, useEffect, useRef } from 'react';
 import { uniqBy } from 'lodash';
 import { useCachedVariables } from './useCachedVariables';
 import { variableName } from 'utils/variable';
 import { useEventListener } from 'usehooks-ts';
+import { warp_controller } from 'types';
 
 interface CachedVariablesSessionProps {
   children: ReactNode;
-  input?: Variable[];
+  input?: warp_controller.Variable[];
 }
 
 export const CachedVariablesSession = (props: CachedVariablesSessionProps) => {

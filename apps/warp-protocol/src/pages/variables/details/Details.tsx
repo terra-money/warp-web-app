@@ -3,17 +3,17 @@ import classNames from 'classnames';
 import { Panel } from 'components/panel';
 import { Button, Text } from 'components/primitives';
 import styles from './Details.module.sass';
-import { Variable } from '../useVariableStorage';
 import { QueryVariableForm } from './query/QueryVariableForm';
 import { StaticVariableForm } from './static/StaticVariableForm';
 import { ExternalVariableForm } from './external/ExternalVariableForm';
 import { variableName } from 'utils/variable';
 import { parseQuery } from 'utils';
 import { VariablePill } from '../variable-pill/VariablePill';
+import { warp_controller } from 'types';
 
 type DetailsProps = UIElementProps & {
-  selectedVariable: Variable | undefined;
-  updateVariable: (variable: Variable) => void;
+  selectedVariable: warp_controller.Variable | undefined;
+  updateVariable: (variable: warp_controller.Variable) => void;
   deleteVariable: (name: string) => void;
 };
 

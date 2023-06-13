@@ -1,5 +1,4 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
-import { QueryVariable } from 'pages/variables/useVariableStorage';
 import { useMemo } from 'react';
 import { warp_controller } from 'types';
 
@@ -16,7 +15,7 @@ export interface QueryVariableState extends FormState<QueryVariableInput> {
 
 export type QueryVariableFormInput = FormInput<QueryVariableInput>;
 
-export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariableInput => {
+export const queryVariableToInput = (queryVariable?: warp_controller.QueryVariable): QueryVariableInput => {
   const queryJson = queryVariable ? JSON.stringify(queryVariable.init_fn.query, null, 2) : '';
 
   return {
@@ -27,7 +26,7 @@ export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariab
   };
 };
 
-export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
+export const useQueryVariableForm = (queryVariable?: warp_controller.QueryVariable) => {
   const initialValue = useMemo<QueryVariableState>(
     () => ({
       ...queryVariableToInput(queryVariable),

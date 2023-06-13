@@ -15,7 +15,6 @@ import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 import { resolveVariableRef, variableName, variableRef } from 'utils/variable';
 import { useSelectVariableDialog } from '../select-variable/SelectVariableDialog';
-import { Variable } from 'pages/variables/useVariableStorage';
 
 type Value =
   | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
@@ -33,7 +32,7 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
 
   const openSelectVariableDialog = useSelectVariableDialog();
 
-  const onSelectVariable = async (value: T, setValue: (variable: Variable) => void) => {
+  const onSelectVariable = async (value: T, setValue: (variable: warp_controller.Variable) => void) => {
     const resp = await openSelectVariableDialog({
       selectedVariable: 'ref' in value ? resolveVariableRef(value.ref, variables) : undefined,
     });

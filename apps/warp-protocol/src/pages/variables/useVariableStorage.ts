@@ -4,19 +4,8 @@ import { warp_controller } from 'types/contracts/warp_controller';
 import { useLocalStorage } from 'usehooks-ts';
 import { variableName } from 'utils/variable';
 
-export type Variable =
-  | warp_controller.Variable
-  | {
-      query: QueryVariable;
-    };
-
-export type QueryVariable = warp_controller.QueryVariable & {
-  template?: warp_controller.Template;
-  init_fn: warp_controller.QueryExpr;
-};
-
 type VariablesStorage = {
-  [key: string]: Variable[];
+  [key: string]: warp_controller.Variable[];
 };
 
 const storageKey = (connectedWallet: ConnectedWallet) =>
@@ -35,7 +24,7 @@ export const useVariableStorage = () => {
   );
 
   const setVariables = useCallback(
-    (variables: Variable[]) => {
+    (variables: warp_controller.Variable[]) => {
       if (!connectedWallet) {
         return;
       }
@@ -59,16 +48,16 @@ export const useVariableStorage = () => {
   }, [storedVariables, connectedWallet]);
 
   const saveAll = useCallback(
-    (variables: Variable[]) => {
+    (variables: warp_controller.Variable[]) => {
       setVariables(variables);
     },
     [setVariables]
   );
 
   const updateVariable = useCallback(
-    (variable: Variable, prev: Variable) => {
+    (variable: warp_controller.Variable, prev: warp_controller.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(prev)));
-      let updatedVariables: Variable[] = [...variables];
+      let updatedVariables: warp_controller.Variable[] = [...variables];
 
       if (variableExists) {
         const newVariables = [...variables];
@@ -82,9 +71,9 @@ export const useVariableStorage = () => {
   );
 
   const saveVariable = useCallback(
-    (variable: Variable) => {
+    (variable: warp_controller.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
-      let updatedVariables: Variable[] = [...variables];
+      let updatedVariables: warp_controller.Variable[] = [...variables];
 
       if (!variableExists) {
         updatedVariables = [...variables, variable];

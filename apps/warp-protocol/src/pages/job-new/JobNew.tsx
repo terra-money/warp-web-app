@@ -5,7 +5,7 @@ import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { LUNA, warp_controller } from 'types';
+import { LUNA, warp_controller, warp_resolver } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -62,7 +62,7 @@ export const JobNew = (props: JobNewProps) => {
                               navigate('/job-new/condition');
                             } else {
                               const {
-                                template = {} as warp_controller.Template,
+                                template = {} as warp_resolver.Template,
                                 name,
                                 reward,
                                 message,

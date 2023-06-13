@@ -6,7 +6,7 @@ import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provide
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 import { templateVariables } from 'utils/variable';
 
 export interface DetailsFormInput {
@@ -14,7 +14,7 @@ export interface DetailsFormInput {
   description: string;
   reward: string;
   message: string;
-  template?: warp_controller.Template;
+  template?: warp_resolver.Template;
   selectedTabType?: 'template' | 'message';
 }
 

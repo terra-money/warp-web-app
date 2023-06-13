@@ -1,7 +1,7 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
-import { LUNA, warp_controller } from 'types';
+import { LUNA, warp_controller, warp_resolver } from 'types';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
@@ -39,7 +39,7 @@ export const useJobStorage = () => {
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_controller.Template) => {
+    (template: warp_resolver.Template) => {
       const details: DetailsFormInput = {
         reward: '',
         description: '',

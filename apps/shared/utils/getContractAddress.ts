@@ -11,6 +11,7 @@ interface ContractDefinition {
 export interface ContractAddresses {
   "warp-controller": ContractDefinition;
   "warp-account": ContractDefinition;
+  "warp-resolver": ContractDefinition;
 }
 
 export const CONTRACT_ADDRESSES = contracts as unknown as Record<

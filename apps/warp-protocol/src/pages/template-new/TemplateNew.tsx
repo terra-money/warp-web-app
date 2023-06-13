@@ -16,7 +16,6 @@ import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
-import { Variable } from 'pages/variables/useVariableStorage';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
 import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
 import { parseMsgs } from 'pages/job-new/JobNew';
@@ -110,7 +109,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 const extractUsedVariables = (
   formattedStr: string,
   msgs: warp_controller.CosmosMsgFor_Empty[],
-  vars: Variable[],
+  vars: warp_controller.Variable[],
   condition?: warp_controller.Condition
 ) => {
   return uniqBy(

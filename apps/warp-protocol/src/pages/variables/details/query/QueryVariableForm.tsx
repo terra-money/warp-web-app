@@ -12,7 +12,6 @@ import { InputAdornment } from '@mui/material';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { isMatch } from 'lodash';
-import { QueryVariable } from 'pages/variables/useVariableStorage';
 
 import styles from './QueryVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
@@ -20,7 +19,7 @@ import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableK
 import { generatePaths } from 'utils';
 
 export type QueryVariableFormProps = UIElementProps & {
-  selectedVariable?: QueryVariable;
+  selectedVariable?: warp_controller.QueryVariable;
   renderActions: (formState: QueryVariableState) => JSX.Element;
 };
 

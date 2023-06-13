@@ -2,7 +2,7 @@ import { useContractAddress } from '@terra-money/apps/hooks';
 import { CW20Addr } from '@terra-money/apps/types';
 import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
 import { QueryClient, useQuery, useQueryClient, UseQueryResult } from 'react-query';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 import { QUERY_KEY } from './queryKey';
 import { contractQuery } from '@terra-money/apps/queries';
 
@@ -10,10 +10,10 @@ const fetchTemplate = async (
   network: NetworkInfo,
   contractAddress: CW20Addr,
   templateId: string
-): Promise<warp_controller.Template> => {
+): Promise<warp_resolver.Template> => {
   const response = await contractQuery<
-    Extract<warp_controller.QueryMsg, { query_template: {} }>,
-    warp_controller.TemplateResponse
+    Extract<warp_resolver.QueryMsg, { query_template: {} }>,
+    warp_resolver.TemplateResponse
   >(network, contractAddress, { query_template: { id: templateId } });
 
   return response.template;
@@ -21,7 +21,7 @@ const fetchTemplate = async (
 
 const findTemplate = (queryClient: QueryClient, queryKey: string, templateId: string) =>
   queryClient
-    .getQueriesData<warp_controller.Template[]>(queryKey)
+    .getQueriesData<warp_resolver.Template[]>(queryKey)
     .flatMap(([_, streams]) => streams)
     .filter((d) => Boolean(d))
     .find((d) => d.id === templateId);
@@ -34,7 +34,7 @@ export const readTemplateFromCache = (templateId: string | undefined, queryClien
   return findTemplate(queryClient, QUERY_KEY.TEMPLATES, templateId);
 };
 
-export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_controller.Template | undefined> => {
+export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_resolver.Template | undefined> => {
   const wallet = useWallet();
   const contractAddress = useContractAddress('warp-controller');
   const queryClient = useQueryClient();
@@ -55,5 +55,5 @@ export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_contr
     }
   );
 
-  return query as UseQueryResult<warp_controller.Template | undefined>;
+  return query as UseQueryResult<warp_resolver.Template | undefined>;
 };

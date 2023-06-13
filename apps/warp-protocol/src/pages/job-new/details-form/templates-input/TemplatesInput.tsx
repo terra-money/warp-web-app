@@ -7,14 +7,14 @@ import { FormControl } from 'components/form-control/FormControl';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 
 type TemplatesInputProps = UIElementProps & {
-  value?: warp_controller.Template | null;
+  value?: warp_resolver.Template | null;
   label: string;
-  options: warp_controller.Template[];
+  options: warp_resolver.Template[];
   placeholder: string;
-  onChange: (value: warp_controller.Template | undefined) => void;
+  onChange: (value: warp_resolver.Template | undefined) => void;
 };
 
 export function TemplatesInput(props: TemplatesInputProps) {

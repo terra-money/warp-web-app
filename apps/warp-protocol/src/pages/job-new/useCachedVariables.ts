@@ -1,17 +1,20 @@
 import { useConnectedWallet } from '@terra-money/wallet-provider';
-import { Variable } from 'pages/variables/useVariableStorage';
 import { useCallback, useMemo } from 'react';
 import { variableName } from 'utils/variable';
 import { useLocalStorage } from 'usehooks-ts';
+import { warp_controller } from 'types';
 
 export const useCachedVariables = () => {
   const connectedWallet = useConnectedWallet();
 
   const initialValue = useMemo(() => [], []);
-  const [cachedVariables, setCachedVariables] = useLocalStorage<Variable[]>(`__warp_cached_variables`, initialValue);
+  const [cachedVariables, setCachedVariables] = useLocalStorage<warp_controller.Variable[]>(
+    `__warp_cached_variables`,
+    initialValue
+  );
 
   const setVariables = useCallback(
-    (variables: Variable[]) => {
+    (variables: warp_controller.Variable[]) => {
       if (!connectedWallet) {
         return;
       }
@@ -30,7 +33,7 @@ export const useCachedVariables = () => {
   }, [cachedVariables, connectedWallet]);
 
   const saveAll = useCallback(
-    (variables: Variable[]) => {
+    (variables: warp_controller.Variable[]) => {
       setVariables(variables);
     },
     [setVariables]
@@ -41,9 +44,9 @@ export const useCachedVariables = () => {
   }, [setVariables]);
 
   const updateVariable = useCallback(
-    (variable: Variable, prev: Variable) => {
+    (variable: warp_controller.Variable, prev: warp_controller.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(prev)));
-      let updatedVariables: Variable[] = [...variables];
+      let updatedVariables: warp_controller.Variable[] = [...variables];
 
       if (variableExists) {
         const newVariables = [...variables];
@@ -57,9 +60,9 @@ export const useCachedVariables = () => {
   );
 
   const saveVariable = useCallback(
-    (variable: Variable) => {
+    (variable: warp_controller.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
-      let updatedVariables: Variable[] = [...variables];
+      let updatedVariables: warp_controller.Variable[] = [...variables];
 
       if (!variableExists) {
         updatedVariables = [...variables, variable];

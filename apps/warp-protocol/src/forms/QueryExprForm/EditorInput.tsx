@@ -15,7 +15,6 @@ import { SuggestItemsMenu } from './SuggestItemsMenu';
 import { variableName } from 'utils/variable';
 import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 import { IAceEditor } from 'react-ace/lib/types';
-import { Variable } from 'pages/variables/useVariableStorage';
 import { warp_controller } from 'types';
 
 export interface EditorInputProps {
@@ -37,7 +36,7 @@ export interface EditorInputProps {
     currentLineItemName?: string;
     showSuggestItems: boolean;
     onSuggestItemClick: (name: string, editor: IAceEditor) => void;
-    variables: Variable[];
+    variables: warp_controller.Variable[];
   };
   onEditorCursorChange?: (editor: IAceEditor) => void;
 }

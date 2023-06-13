@@ -6,14 +6,14 @@ import styles from './QueryVariableDialog.module.sass';
 
 import { Button } from 'components/primitives';
 import { QueryVariableForm } from 'pages/variables/details/query/QueryVariableForm';
-import { QueryVariable } from 'pages/variables/useVariableStorage';
 import { parseQuery } from 'utils';
+import { warp_controller } from 'types';
 
 export type QueryVariableDialogProps = {
-  variable?: QueryVariable;
+  variable?: warp_controller.QueryVariable;
 };
 
-export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps, QueryVariable>) => {
+export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps, warp_controller.QueryVariable>) => {
   const { closeDialog, variable } = props;
 
   return (
@@ -57,5 +57,5 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
 };
 
 export const useQueryVariableDialog = () => {
-  return useDialog<QueryVariableDialogProps, QueryVariable>(QueryVariableDialog);
+  return useDialog<QueryVariableDialogProps, warp_controller.QueryVariable>(QueryVariableDialog);
 };

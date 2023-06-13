@@ -3,19 +3,19 @@ import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
 import { useWarpConfig } from 'queries/useConfigQuery';
 import { useEffect, useRef } from 'react';
 import { LUNA } from 'types';
-import { warp_controller } from '../types/contracts';
+import { warp_resolver } from '../types/contracts';
 import { TX_KEY } from './txKey';
 
-export type CreateTemplateTxProps = warp_controller.SubmitTemplateMsg;
+export type CreateTemplateTxProps = warp_resolver.SubmitTemplateMsg;
 
-type SubmitTemplateMsg = Extract<warp_controller.ExecuteMsg, { submit_template: {} }>;
+type SubmitTemplateMsg = Extract<warp_resolver.ExecuteMsg, { submit_template: {} }>;
 
 export const useCreateTemplateTx = () => {
-  const contractAddress = useContractAddress('warp-controller');
+  const contractAddress = useContractAddress('warp-resolver');
 
   const { data: config } = useWarpConfig();
 
-  const configRef = useRef<warp_controller.Config | undefined>();
+  const configRef = useRef<warp_resolver.Config | undefined>();
 
   useEffect(() => {
     configRef.current = config;

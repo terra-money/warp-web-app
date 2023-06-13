@@ -1,7 +1,7 @@
-import { Variable } from 'pages/variables/useVariableStorage';
+import { warp_controller } from 'types';
 
 export interface ListData {
-  variables: Variable[];
-  selectedVariable?: Variable;
-  onSelectionChanged: (variable: Variable) => void;
+  variables: warp_controller.Variable[];
+  selectedVariable?: warp_controller.Variable;
+  onSelectionChanged: (variable: warp_controller.Variable) => void;
 }
