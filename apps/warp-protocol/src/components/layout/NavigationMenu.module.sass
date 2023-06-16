@@ -10,6 +10,7 @@
   justify-content: center
   align-items: center
   border-radius: 40px
+  border: solid 1px transparent
 
   &:not(&:last-child)
     margin-bottom: 28px
@@ -24,3 +25,34 @@
     svg
       path
         stroke: rgb(51, 53, 55)
+
+  &:hover
+    border-color: #34383A
+
+.tooltip
+  display: flex
+  flex-direction: row
+  align-items: flex-start
+  padding: 8px
+  gap: 8px
+  position: absolute
+  left: 48px
+  top: 50%
+  transform: translateY(-50%)
+  background: rgba(64, 69, 77, 0.6)
+  box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.08)
+  backdrop-filter: blur(50px)
+  border-radius: 8px
+  visibility: hidden
+  opacity: 0
+  transition: opacity 0.3s
+  color: var(--text-color-secondary)
+  font-size: 14px
+
+.route:hover .tooltip
+  visibility: visible
+  opacity: 1
+  z-index: 10000
+
+.iconWrapper
+  position: relative

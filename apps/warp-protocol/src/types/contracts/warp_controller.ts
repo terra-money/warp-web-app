@@ -17,12 +17,12 @@ export module warp_controller {
     a_min: Uint128;
     cancellation_fee_percentage: Uint64;
     creation_fee_percentage: Uint64;
+    fee_collector: Addr;
     minimum_reward: Uint128;
     owner: Addr;
     q_max: Uint64;
     t_max: Uint64;
     t_min: Uint64;
-    template_fee: Uint128;
     warp_account_code_id: Uint64;
   }
   export interface ConfigResponse {
@@ -196,6 +196,11 @@ export module warp_controller {
   export type GovMsg = {
     vote: {
       proposal_id: number;
+      /**
+       * The vote option.
+       *
+       * This should be called "option" for consistency with Cosmos SDK. Sorry for that. See <https://github.com/CosmWasm/cosmwasm/issues/1571>.
+       */
       vote: VoteOption;
     };
   };
@@ -240,15 +245,20 @@ export module warp_controller {
       }
     | {
         update_config: UpdateConfigMsg;
+      };
+  export type AssetInfo =
+    | {
+        native: string;
       }
     | {
-        submit_template: SubmitTemplateMsg;
+        cw20: Addr;
       }
     | {
-        edit_template: EditTemplateMsg;
-      }
-    | {
-        delete_template: DeleteTemplateMsg;
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        cw721: [Addr, string];
       };
   export type Condition =
     | {
@@ -359,7 +369,7 @@ export module warp_controller {
     | {
         query: QueryVariable;
       };
-  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset';
+  export type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset' | 'json';
   export type UpdateFnValue =
     | {
         uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
@@ -485,9 +495,18 @@ export module warp_controller {
           contract_addr: string;
         };
       };
-  export type TemplateKind = 'query' | 'msg';
+  export type Fund =
+    | {
+        cw20: Cw20Fund;
+      }
+    | {
+        cw721: Cw721Fund;
+      };
   export interface CreateJobMsg {
+    assets_to_withdraw?: AssetInfo[] | null;
     condition: Condition;
+    description: string;
+    labels: string[];
     msgs: string[];
     name: string;
     recurring: boolean;
@@ -570,7 +589,9 @@ export module warp_controller {
   }
   export interface ExternalExpr {
     body?: string | null;
-    headers?: string[] | null;
+    headers?: {
+      [k: string]: string;
+    } | null;
     method?: Method | null;
     selector: string;
     url: string;
@@ -592,7 +613,9 @@ export module warp_controller {
   }
   export interface UpdateJobMsg {
     added_reward?: Uint128 | null;
+    description?: string | null;
     id: Uint64;
+    labels?: string[] | null;
     name?: string | null;
   }
   export interface ExecuteJobMsg {
@@ -606,45 +629,40 @@ export module warp_controller {
   export interface EvictJobMsg {
     id: Uint64;
   }
-  export interface CreateAccountMsg {}
+  export interface CreateAccountMsg {
+    funds?: Fund[] | null;
+  }
+  export interface Cw20Fund {
+    amount: Uint128;
+    contract_addr: string;
+  }
+  export interface Cw721Fund {
+    contract_addr: string;
+    token_id: string;
+  }
   export interface UpdateConfigMsg {
     a_max?: Uint128 | null;
     a_min?: Uint128 | null;
     cancellation_fee_percentage?: Uint64 | null;
     creation_fee_percentage?: Uint64 | null;
+    fee_collector?: string | null;
     minimum_reward?: Uint128 | null;
     owner?: string | null;
     q_max?: Uint64 | null;
     t_max?: Uint64 | null;
     t_min?: Uint64 | null;
-    template_fee?: Uint128 | null;
-  }
-  export interface SubmitTemplateMsg {
-    condition?: Condition | null;
-    formatted_str: string;
-    kind: TemplateKind;
-    msg: string;
-    name: string;
-    vars: Variable[];
-  }
-  export interface EditTemplateMsg {
-    id: Uint64;
-    name?: string | null;
-  }
-  export interface DeleteTemplateMsg {
-    id: Uint64;
   }
   export interface InstantiateMsg {
     a_max: Uint128;
     a_min: Uint128;
     cancellation_fee: Uint64;
     creation_fee: Uint64;
+    fee_collector?: string | null;
     minimum_reward: Uint128;
     owner?: string | null;
     q_max: Uint64;
     t_max: Uint64;
     t_min: Uint64;
-    template_fee: Uint128;
     warp_account_code_id: Uint64;
   }
   export type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled' | 'Evicted';
@@ -652,8 +670,11 @@ export module warp_controller {
     job: Job;
   }
   export interface Job {
+    assets_to_withdraw: AssetInfo[];
     condition: Condition;
+    description: string;
     id: Uint64;
+    labels: string[];
     last_update_time: Uint64;
     msgs: string[];
     name: string;
@@ -676,12 +697,6 @@ export module warp_controller {
         query_jobs: QueryJobsMsg;
       }
     | {
-        query_resolve_job_condition: QueryResolveJobConditionMsg;
-      }
-    | {
-        query_resolve_condition: QueryResolveConditionMsg;
-      }
-    | {
         simulate_query: SimulateQueryMsg;
       }
     | {
@@ -692,12 +707,6 @@ export module warp_controller {
       }
     | {
         query_config: QueryConfigMsg;
-      }
-    | {
-        query_template: QueryTemplateMsg;
-      }
-    | {
-        query_templates: QueryTemplatesMsg;
       };
   export interface QueryJobMsg {
     id: Uint64;
@@ -716,13 +725,6 @@ export module warp_controller {
     _0: Uint128;
     _1: Uint64;
   }
-  export interface QueryResolveJobConditionMsg {
-    id: Uint64;
-  }
-  export interface QueryResolveConditionMsg {
-    condition: Condition;
-    vars: Variable[];
-  }
   export interface SimulateQueryMsg {
     query: QueryRequestFor_String;
   }
@@ -734,34 +736,7 @@ export module warp_controller {
     start_after?: string | null;
   }
   export interface QueryConfigMsg {}
-  export interface QueryTemplateMsg {
-    id: Uint64;
-  }
-  export interface QueryTemplatesMsg {
-    ids?: Uint64[] | null;
-    kind?: TemplateKind | null;
-    limit?: number | null;
-    name?: string | null;
-    owner?: Addr | null;
-    start_after?: Uint64 | null;
-  }
   export interface SimulateResponse {
     response: string;
-  }
-  export interface Template {
-    condition?: Condition | null;
-    formatted_str: string;
-    id: Uint64;
-    kind: TemplateKind;
-    msg: string;
-    name: string;
-    owner: Addr;
-    vars: Variable[];
-  }
-  export interface TemplateResponse {
-    template: Template;
-  }
-  export interface TemplatesResponse {
-    templates: Template[];
   }
 }

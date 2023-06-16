@@ -29,33 +29,37 @@ export const useWithdrawFundsTx = () => {
 
         return TxBuilder.new()
           .execute<ExecuteMsg>(wallet.walletAddress, account.account, {
-            msgs: [
-              {
-                wasm: {
-                  execute: {
-                    contract_addr: token.token,
-                    msg: Buffer.from(JSON.stringify(transferMsg)).toString('base64'),
-                    funds: [],
+            generic: {
+              msgs: [
+                {
+                  wasm: {
+                    execute: {
+                      contract_addr: token.token,
+                      msg: Buffer.from(JSON.stringify(transferMsg)).toString('base64'),
+                      funds: [],
+                    },
                   },
                 },
-              },
-            ],
+              ],
+            },
           })
           .build();
       }
 
       return TxBuilder.new()
         .execute<ExecuteMsg>(wallet.walletAddress, account.account, {
-          msgs: [
-            {
-              bank: {
-                send: {
-                  amount: [{ denom: token.denom, amount: amount.toString() }],
-                  to_address: wallet.walletAddress,
+          generic: {
+            msgs: [
+              {
+                bank: {
+                  send: {
+                    amount: [{ denom: token.denom, amount: amount.toString() }],
+                    to_address: wallet.walletAddress,
+                  },
                 },
               },
-            },
-          ],
+            ],
+          },
         })
         .build();
     },

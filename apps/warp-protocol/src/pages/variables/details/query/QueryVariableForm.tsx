@@ -1,6 +1,6 @@
-import { Button, Throbber, Text, TextInput } from 'components/primitives';
+import { Throbber, Text, TextInput } from 'components/primitives';
 import classNames from 'classnames';
-import { Container, Form, UIElementProps } from '@terra-money/apps/components';
+import { Form, UIElementProps } from '@terra-money/apps/components';
 import { useEffect, useMemo } from 'react';
 import { useContractAddress } from '@terra-money/apps/hooks';
 import { useValueWithDelay } from 'hooks/useValueWithDelay';
@@ -9,12 +9,9 @@ import { QueryVariableInput, QueryVariableState, queryVariableToInput, useQueryV
 import { usePreviewQueryDialog } from 'components/dialog/preview-query/PreviewQueryDialog';
 import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
-import { TemplateForm } from 'pages/job-new/details-form/template-form/TemplateForm';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
-import { useTemplatesQuery } from 'queries';
 import { isMatch } from 'lodash';
-import { QueryVariable } from 'pages/variables/useVariableStorage';
 
 import styles from './QueryVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
@@ -22,13 +19,9 @@ import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableK
 import { generatePaths } from 'utils';
 
 export type QueryVariableFormProps = UIElementProps & {
-  selectedVariable?: QueryVariable;
+  selectedVariable?: warp_controller.QueryVariable;
   renderActions: (formState: QueryVariableState) => JSX.Element;
 };
-
-type TabType = 'template' | 'message';
-
-const tabTypes = ['template', 'message'] as TabType[];
 
 const queryVarKinds: warp_controller.VariableKind[] = [
   'string',
@@ -39,9 +32,10 @@ const queryVarKinds: warp_controller.VariableKind[] = [
   'amount',
   'asset',
   'timestamp',
+  'json',
 ];
 
-export const useQueryExample = () => {
+export const useQueryExample = (): warp_controller.QueryRequestFor_String => {
   const contractAddress = useContractAddress('warp-controller');
 
   return useMemo(
@@ -59,18 +53,8 @@ export const useQueryExample = () => {
 export const QueryVariableForm = (props: QueryVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useQueryVariableForm();
-  const {
-    name,
-    nameError,
-    selectedTabType,
-    queryJson,
-    queryJsonError,
-    querySelector,
-    querySelectorError,
-    template,
-    submitDisabled,
-    kind,
-  } = formState;
+  const { name, nameError, queryJson, queryJsonError, querySelector, querySelectorError, submitDisabled, kind } =
+    formState;
 
   const queryJsonToValidate = useValueWithDelay(queryJson);
   const { isLoading, data, isFetching, error } = useSimulateQuery(queryJsonToValidate);
@@ -108,8 +92,6 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
     return undefined;
   }, [data, isLoading, isFetching, openPreview, queryJson, queryJsonError, error]);
 
-  const { data: options = [] } = useTemplatesQuery({ kind: 'query' });
-
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
       input(queryVariableToInput(selectedVariable));
@@ -120,13 +102,12 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
   const variableModified = useMemo(
     () =>
       !isMatch(queryVariableToInput(selectedVariable), {
-        template,
         name,
         queryJson,
         querySelector,
         kind,
       } as QueryVariableInput),
-    [selectedVariable, name, kind, querySelector, queryJson, template]
+    [selectedVariable, name, kind, querySelector, queryJson]
   );
 
   return (
@@ -163,47 +144,17 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
           }}
         />
 
-        <Container className={styles.tabs} direction="row">
-          {tabTypes.map((tabType) => (
-            <Button
-              className={classNames(styles.tab, tabType === selectedTabType && styles.selected_tab)}
-              onClick={() => input({ selectedTabType: tabType })}
-              variant="secondary"
-            >
-              {tabType}
-            </Button>
-          ))}
-        </Container>
-        {selectedTabType === 'template' && (
-          <>
-            <TemplateForm
-              options={options}
-              template={template}
-              setTemplate={(template) => input({ template })}
-              setTemplateVars={(vars) =>
-                input({
-                  template: { ...(template as warp_controller.Template), vars: vars.map((v) => ({ static: v })) },
-                })
-              }
-              onMessageComposed={(message) => input({ queryJson: message })}
-            />
-          </>
-        )}
-        {selectedTabType === 'message' && (
-          <>
-            <EditorInput
-              rootClassName={styles.msg_input}
-              label="Message"
-              className={styles.msg_input_inner}
-              error={queryJsonError}
-              example={queryExample}
-              valid={Boolean(queryJsonError)}
-              placeholder="Type your message here"
-              value={queryJson}
-              onChange={(value) => input({ queryJson: value })}
-            />
-          </>
-        )}
+        <EditorInput
+          rootClassName={styles.msg_input}
+          label="Message"
+          className={styles.msg_input_inner}
+          error={queryJsonError}
+          example={queryExample}
+          valid={Boolean(queryJsonError)}
+          placeholder="Type your message here"
+          value={queryJson}
+          onChange={(value) => input({ queryJson: value })}
+        />
 
         <QuerySelectorInput
           endLabel={endLabel}

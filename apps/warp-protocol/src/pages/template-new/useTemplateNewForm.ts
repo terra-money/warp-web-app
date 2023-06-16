@@ -1,15 +1,14 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_controller } from 'types';
+import { warp_controller, warp_resolver } from 'types';
 import { generatePaths } from 'utils';
-import { hasOnlyStaticVariables, scanForReferences, variableName } from 'utils/variable';
-import { Variable } from 'pages/variables/useVariableStorage';
+import { hasOnlyStaticVariables, variableName } from 'utils/variable';
+import { scanForReferences } from 'utils/msgs';
 
 interface TemplateNewInput {
   name: string;
-  kind: warp_controller.TemplateKind;
-  vars: Variable[];
+  vars: warp_controller.Variable[];
   formattedStr: string;
   msg: string;
   paths: string[];
@@ -21,10 +20,9 @@ export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNe
 
 export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 
-export const templateToInput = (template?: warp_controller.Template): TemplateNewInput => {
+export const templateToInput = (template?: warp_resolver.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
-    kind: template?.kind ?? ('' as any),
     vars: template?.vars ?? [],
     formattedStr: template?.formatted_str ?? '',
     msg: template?.msg ?? '',
@@ -32,7 +30,7 @@ export const templateToInput = (template?: warp_controller.Template): TemplateNe
   };
 };
 
-export const useTemplateNewForm = (template?: warp_controller.Template) => {
+export const useTemplateNewForm = (template?: warp_resolver.Template) => {
   const initialValue = useMemo<TemplateNewState>(() => {
     const res = {
       ...templateToInput(template),
@@ -73,8 +71,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
-    const kindError = isEmpty(state.kind) ? 'Template type must be assigned' : undefined;
-
     const formattedStrLengthError =
       state.formattedStr.length > 280 ? 'Template string must be shorter than 280 characters.' : undefined;
 
@@ -94,7 +90,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
         !state.msg ||
         state.msg.length < 1 ||
         msgError ||
-        kindError ||
         formattedStrError
     );
 
@@ -104,7 +99,6 @@ export const useTemplateNewForm = (template?: warp_controller.Template) => {
       nameError,
       msgError,
       submitDisabled,
-      kindError,
       formattedStrError,
     });
   };

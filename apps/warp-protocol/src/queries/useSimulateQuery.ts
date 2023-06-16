@@ -3,7 +3,7 @@ import { contractQuery } from '@terra-money/apps/queries';
 import { useAssertConnectedWallet, useContractAddress } from '@terra-money/apps/hooks';
 import { QUERY_KEY } from './queryKey';
 import { warp_controller } from 'types';
-import { base64encode, encodeQuery } from '../utils';
+import { base64encode, parseQuery } from '../utils';
 import { useMemo } from 'react';
 
 export function useSimulateQuery(queryJson: string): UseQueryResult<object | undefined> {
@@ -20,7 +20,7 @@ export function useSimulateQuery(queryJson: string): UseQueryResult<object | und
       let query = undefined;
 
       try {
-        query = encodeQuery(queryJson);
+        query = parseQuery(queryJson);
       } catch (e) {}
 
       if (!query) {

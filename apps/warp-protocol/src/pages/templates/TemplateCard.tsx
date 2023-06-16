@@ -4,8 +4,7 @@ import { Text } from 'components/primitives';
 import styles from './TemplateCard.module.sass';
 import { Panel } from 'components/panel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { warp_controller } from 'types';
-import { Pill } from 'components/primitives/pill/Pill';
+import { warp_resolver } from 'types';
 import { useDeleteTemplateTx } from 'tx';
 import { MenuAction } from 'components/menu-button/MenuAction';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
@@ -18,7 +17,7 @@ import { useCopy } from 'hooks';
 import { ActionButton } from 'components/action-button/ActionButton';
 
 interface TemplateCardProps extends UIElementProps {
-  template: warp_controller.Template;
+  template: warp_resolver.Template;
 }
 
 type FormattedDisplayProps = UIElementProps & {
@@ -77,9 +76,6 @@ export const TemplateCard = (props: TemplateCardProps) => {
           </Text>
         </Container>
         <Container className={styles.right}>
-          <Pill color="blue" className={styles.pill}>
-            {template.kind === 'msg' ? 'Job' : 'Query'}
-          </Pill>
           <DropdownMenu
             menuClass={styles.menu}
             action={
@@ -92,16 +88,14 @@ export const TemplateCard = (props: TemplateCardProps) => {
               />
             }
           >
-            {template.kind === 'msg' && (
-              <MenuAction
-                onClick={() => {
-                  setJobTemplate(template);
-                  navigate(`/job-new`);
-                }}
-              >
-                New job
-              </MenuAction>
-            )}
+            <MenuAction
+              onClick={() => {
+                setJobTemplate(template);
+                navigate(`/job-new`);
+              }}
+            >
+              New job
+            </MenuAction>
             {connectedWallet?.walletAddress === template.owner && (
               <MenuAction onClick={() => openEditTemplateDialog({ template })}>Edit</MenuAction>
             )}

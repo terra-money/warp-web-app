@@ -10,12 +10,11 @@ import { Button, Link, Text } from 'components/primitives';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 import { useJobStorage } from '../useJobStorage';
-import { Variable } from 'pages/variables/useVariableStorage';
 import { useCachedVariables } from '../useCachedVariables';
 
 type ConditionFormProps = UIElementProps & {
   loading: boolean;
-  onNext: (props: { cond: warp_controller.Condition; variables: Variable[] }) => Promise<void>;
+  onNext: (props: { cond: warp_controller.Condition; variables: warp_controller.Variable[] }) => Promise<void>;
 };
 
 export const ConditionForm = (props: ConditionFormProps) => {

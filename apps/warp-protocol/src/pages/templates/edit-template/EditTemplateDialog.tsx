@@ -8,11 +8,11 @@ import { FormControl } from 'components/form-control/FormControl';
 import { Form } from 'components/form/Form';
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
 import { useEditTemplateTx } from 'tx';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 import { useEditTemplateForm } from './useEditTemplateForm';
 
 export type EditTemplateDialogProps = {
-  template: warp_controller.Template;
+  template: warp_resolver.Template;
 };
 
 export const EditTemplateDialog = (props: DialogProps<EditTemplateDialogProps>) => {

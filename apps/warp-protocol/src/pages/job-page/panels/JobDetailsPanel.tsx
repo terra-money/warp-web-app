@@ -49,6 +49,11 @@ export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
           {truncateAddress(job.info.owner, [8, 8])}
         </Text>
       </FormControl>
+      <FormControl labelVariant="secondary" label="Description">
+        <Text variant="text" className={styles.description}>
+          {job.info.description ?? '-'}
+        </Text>
+      </FormControl>
     </Panel>
   );
 };

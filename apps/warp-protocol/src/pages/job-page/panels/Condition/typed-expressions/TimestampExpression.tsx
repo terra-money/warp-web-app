@@ -1,5 +1,5 @@
 import { warp_controller } from '../../../../../types';
-import { useOperatorLabel } from '../useOperatorLabel';
+import { operatorLabel } from '../operatorLabel';
 import { format } from 'date-fns';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
@@ -13,7 +13,7 @@ const toDate = (timestamp: string) => new Date(Number(timestamp) * 1000);
 
 export const TimestampExpression = (props: BlockHeightExpressionProps) => {
   const { expression, className } = props;
-  const operator = useOperatorLabel(expression.op);
+  const operator = operatorLabel(expression.op);
 
   return (
     <span className={className}>

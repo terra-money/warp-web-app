@@ -5,17 +5,18 @@ import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { LUNA, warp_controller } from 'types';
+import { LUNA, warp_controller, warp_resolver } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
 import { decodeMsg, useJobStorage } from './useJobStorage';
-import { filterUnreferencedVariables, hydrateQueryVariablesWithStatics } from 'utils/variable';
+import { hydrateQueryVariablesWithStatics } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
+import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
 
 type JobNewProps = UIElementProps & {};
 
@@ -61,21 +62,23 @@ export const JobNew = (props: JobNewProps) => {
                               navigate('/job-new/condition');
                             } else {
                               const {
-                                template = {} as warp_controller.Template,
+                                template = {} as warp_resolver.Template,
                                 name,
                                 reward,
                                 message,
+                                description,
                                 variables,
                               } = props;
                               const { condition } = template;
 
-                              const msgs = encodeMsgs(message);
-                              const referenced = filterUnreferencedVariables(variables, message, condition!);
+                              const msgs = parseMsgs(message);
+                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, condition!);
                               const vars = hydrateQueryVariablesWithStatics(referenced);
 
                               const resp = await createJobTx({
                                 name,
                                 vars,
+                                description,
                                 reward: microfy(reward, LUNA.decimals),
                                 msgs,
                                 condition: condition!,
@@ -101,15 +104,16 @@ export const JobNew = (props: JobNewProps) => {
                           onNext={async (props) => {
                             if (detailsInput) {
                               const { cond, variables } = props;
-                              const { name, reward, message } = detailsInput;
+                              const { name, reward, message, description } = detailsInput;
 
-                              const msgs = encodeMsgs(message);
-                              const referenced = filterUnreferencedVariables(variables, message, cond);
+                              const msgs = parseMsgs(message);
+                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, cond);
                               const vars = hydrateQueryVariablesWithStatics(referenced);
 
                               const resp = await createJobTx({
                                 name,
                                 vars,
+                                description,
                                 reward: microfy(reward, LUNA.decimals),
                                 msgs,
                                 condition: cond,
@@ -136,17 +140,23 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-export const decodeMsgs = (msgs: warp_controller.CosmosMsgFor_Empty[]): string => {
-  return JSON.stringify(msgs.map(decodeMsg));
+export const decodeMsgs = (msgs: string[]) => {
+  return msgs.map((m) => JSON.parse(m)).map(decodeMsg);
 };
 
 export const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+  const msgs = parseMsgs(value);
+
+  return msgs.map(encodeMsg);
+};
+
+export const parseMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
   const parsed = JSON.parse(value);
   const msgs: warp_controller.CosmosMsgFor_Empty[] = Array.isArray(parsed)
     ? (parsed as warp_controller.CosmosMsgFor_Empty[])
     : [parsed];
 
-  return msgs.map(encodeMsg);
+  return msgs;
 };
 
 const encodeMsg = (input: warp_controller.CosmosMsgFor_Empty): warp_controller.CosmosMsgFor_Empty => {

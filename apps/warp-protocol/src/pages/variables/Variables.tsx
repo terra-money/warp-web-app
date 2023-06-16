@@ -1,7 +1,7 @@
 import styles from './Variables.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Text } from 'components/primitives';
-import { Variable, useVariableStorage } from './useVariableStorage';
+import { useVariableStorage } from './useVariableStorage';
 import { useState } from 'react';
 import { IfConnected } from 'components/if-connected';
 import { NotConnected } from 'components/not-connected';
@@ -9,12 +9,13 @@ import { Nav } from './nav/Nav';
 import { Details } from './details';
 import { useNewVariableDialog } from './dialogs/VariableDialog';
 import { variableName } from 'utils/variable';
+import { warp_controller } from 'types';
 
 type VariablesContentProps = {};
 
 const VariablesContent = (props: VariablesContentProps) => {
   const { variables, saveVariable, removeVariable, updateVariable } = useVariableStorage();
-  const [selectedVariable, setSelectedVariable] = useState<Variable | undefined>(undefined);
+  const [selectedVariable, setSelectedVariable] = useState<warp_controller.Variable | undefined>(undefined);
 
   const openNewVariableDialog = useNewVariableDialog();
 

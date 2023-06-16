@@ -8,7 +8,7 @@ import { useCreateTemplateTx } from 'tx';
 import { useTemplateNewForm } from './useTemplateNewForm';
 import { useEffect } from 'react';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
-import { filterUnreferencedVariables, formattedStringVariables, variableName } from 'utils/variable';
+import { formattedStringVariables, variableName } from 'utils/variable';
 import { DetailsForm } from './DetailsForm';
 import { uniqBy } from 'lodash';
 import { ConditionBuilder } from 'pages/job-new/condition-builder/ConditionBuilder';
@@ -16,9 +16,9 @@ import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_controller } from 'types';
-import { useSearchParams } from 'react-router-dom';
-import { Variable } from 'pages/variables/useVariableStorage';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
+import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { parseMsgs } from 'pages/job-new/JobNew';
 
 type TemplateNewProps = UIElementProps & {};
 
@@ -29,11 +29,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
   const [input, formState] = useTemplateNewForm();
 
-  const [searchParams] = useSearchParams();
-
-  const mode = searchParams.get('mode') ?? 'advanced';
-
-  const { name, msg, submitDisabled, formattedStr, vars, kind } = formState;
+  const { name, msg, submitDisabled, formattedStr, vars } = formState;
 
   const [createTemplateTxResult, createTemplateTx] = useCreateTemplateTx();
 
@@ -70,7 +66,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
           <Routes>
             <Route path="/details" element={<DetailsForm formState={formState} input={input} />} />
             <Route path="/condition" element={<ConditionBuilder cond={cond} setCond={setCond} />} />
-            <Route path="*" element={<Navigate to="/template-new/details?mode=basic" replace />} />
+            <Route path="*" element={<Navigate to="/template-new/details" replace />} />
           </Routes>
         </>
         <Footer>
@@ -80,12 +76,12 @@ export const TemplateNew = (props: TemplateNewProps) => {
             disabled={submitDisabled}
             onClick={async () => {
               const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
+              const msgs = parseMsgs(msg);
               const res = await createTemplateTx({
                 formatted_str: formattedStr,
                 msg,
-                kind,
                 condition,
-                vars: extractUsedVariables(formattedStr, msg, vars, condition),
+                vars: extractUsedVariables(formattedStr, msgs, vars, condition),
                 name,
               });
 
@@ -96,7 +92,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
           >
             Save
           </Button>
-          {!inConditionTab && kind === 'msg' && mode === 'advanced' && (
+          {!inConditionTab && (
             <Button gutters="large" variant="secondary" onClick={() => navigate('/template-new/condition')}>
               Add condition
             </Button>
@@ -112,10 +108,12 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
 const extractUsedVariables = (
   formattedStr: string,
-  msg: string,
-  vars: Variable[],
+  msgs: warp_controller.CosmosMsgFor_Empty[],
+  vars: warp_controller.Variable[],
   condition?: warp_controller.Condition
-) =>
-  uniqBy([...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msg, condition)], (v) =>
-    variableName(v)
+) => {
+  return uniqBy(
+    [...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariablesInCosmosMsg(vars, msgs, condition)],
+    (v) => variableName(v)
   );
+};

@@ -1,13 +1,11 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
-import { LUNA, warp_controller } from 'types';
+import { LUNA, warp_controller, warp_resolver } from 'types';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
-
-export const decodedMsgs = (job: Job) => job.info.msgs.map((msg) => JSON.parse(msg)).map(decodeMsg);
 
 export const useJobStorage = () => {
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
@@ -30,7 +28,8 @@ export const useJobStorage = () => {
       const details: DetailsFormInput = {
         reward: demicrofy(job.reward, LUNA.decimals).toString(),
         name: job.info.name,
-        message: JSON.stringify(decodedMsgs(job), null, 2),
+        description: job.info.description,
+        message: JSON.stringify(job, null, 2),
       };
 
       setDetailsInput(details);
@@ -40,9 +39,10 @@ export const useJobStorage = () => {
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_controller.Template) => {
+    (template: warp_resolver.Template) => {
       const details: DetailsFormInput = {
         reward: '',
+        description: '',
         name: '',
         message: JSON.stringify(template.msg, null, 2),
         template,

@@ -7,16 +7,16 @@ import { Panel } from 'components/panel';
 import { Button, Text } from 'components/primitives';
 import { variableName } from 'utils/variable';
 import { useNewVariableDialog } from '../dialogs/VariableDialog';
-import { Variable } from '../useVariableStorage';
 import { VariablePill } from '../variable-pill/VariablePill';
 import styles from './Nav.module.sass';
+import { warp_controller } from 'types';
 
 type NavProps = UIElementProps & {
-  variables: Variable[];
-  selectedVariable?: Variable;
-  saveVariable: (v: Variable) => void;
-  deleteVariable: (v: Variable) => void;
-  onVariableClick: (variable: Variable) => void;
+  variables: warp_controller.Variable[];
+  selectedVariable?: warp_controller.Variable;
+  saveVariable: (v: warp_controller.Variable) => void;
+  deleteVariable: (v: warp_controller.Variable) => void;
+  onVariableClick: (variable: warp_controller.Variable) => void;
 };
 
 export const Nav = (props: NavProps) => {

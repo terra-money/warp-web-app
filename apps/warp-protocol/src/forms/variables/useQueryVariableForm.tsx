@@ -1,17 +1,12 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
-import { QueryVariable } from 'pages/variables/useVariableStorage';
 import { useMemo } from 'react';
-import { isEmpty } from 'lodash';
 import { warp_controller } from 'types';
-import { templateVariables } from 'utils/variable';
 
 export interface QueryVariableInput {
   name: string;
   queryJson: string;
   kind: warp_controller.VariableKind;
   querySelector: string;
-  template?: warp_controller.Template;
-  selectedTabType: 'template' | 'message';
 }
 
 export interface QueryVariableState extends FormState<QueryVariableInput> {
@@ -20,21 +15,18 @@ export interface QueryVariableState extends FormState<QueryVariableInput> {
 
 export type QueryVariableFormInput = FormInput<QueryVariableInput>;
 
-export const queryVariableToInput = (queryVariable?: QueryVariable): QueryVariableInput => {
-  const queryJson = queryVariable ? JSON.stringify(decodeQuery(queryVariable.init_fn.query), null, 2) : '';
+export const queryVariableToInput = (queryVariable?: warp_controller.QueryVariable): QueryVariableInput => {
+  const queryJson = queryVariable ? JSON.stringify(queryVariable.init_fn.query, null, 2) : '';
 
   return {
     kind: queryVariable?.kind ?? ('' as any),
     name: queryVariable?.name ?? '',
     queryJson,
     querySelector: queryVariable?.init_fn.selector ?? '',
-    template: queryVariable?.template ?? undefined,
-    selectedTabType:
-      !Boolean(queryVariable?.template) && Boolean(queryVariable?.init_fn.query) ? 'message' : 'template',
   };
 };
 
-export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
+export const useQueryVariableForm = (queryVariable?: warp_controller.QueryVariable) => {
   const initialValue = useMemo<QueryVariableState>(
     () => ({
       ...queryVariableToInput(queryVariable),
@@ -67,10 +59,6 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
       state.querySelector === null || state.querySelector.length < 1 || querySelectorError
     );
 
-    const templateError = Boolean(state.template && templateVariables(state.template).find((v) => isEmpty(v.value)))
-      ? 'All variables must be filled.'
-      : undefined;
-
     const submitDisabled = Boolean(
       state.name === undefined ||
         state.name === null ||
@@ -79,8 +67,7 @@ export const useQueryVariableForm = (queryVariable?: QueryVariable) => {
         state.queryJson === undefined ||
         state.queryJsonError ||
         querySelectorError ||
-        !querySelectorValid ||
-        templateError
+        !querySelectorValid
     );
 
     dispatch({

@@ -6,14 +6,15 @@ import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provide
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_controller } from 'types';
+import { warp_resolver } from 'types';
 import { templateVariables } from 'utils/variable';
 
 export interface DetailsFormInput {
   name: string;
+  description: string;
   reward: string;
   message: string;
-  template?: warp_controller.Template;
+  template?: warp_resolver.Template;
   selectedTabType?: 'template' | 'message';
 }
 
@@ -59,6 +60,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       name: input?.name ?? '',
       reward: input?.reward ?? '',
       message: input?.message ?? '',
+      description: input?.description ?? '',
       template: input?.template ?? undefined,
       selectedTabType: input?.selectedTabType ?? 'template',
       submitDisabled: input ? false : true,
@@ -99,6 +101,9 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
+    const descriptionError =
+      state.description.length > 200 ? 'The description can not exceed the maximum of 200 characters' : undefined;
+
     const uReward = state.reward ? microfy(state.reward, LUNA.decimals) : Big(0);
 
     const rewardError = uReward.gt(state.tokenBalance) ? 'The amount can not exceed the maximum balance' : undefined;
@@ -116,6 +121,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
         state.name === null ||
         state.name.length < 1 ||
         nameError ||
+        descriptionError ||
         state.message === undefined ||
         messageError ||
         rewardError ||
@@ -131,6 +137,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       nameError,
       messageValid,
       messageError,
+      descriptionError,
       templateError,
       submitDisabled,
     });

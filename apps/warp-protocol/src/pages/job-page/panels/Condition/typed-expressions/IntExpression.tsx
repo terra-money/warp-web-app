@@ -1,5 +1,5 @@
 import { warp_controller } from 'types';
-import { useOperatorLabel } from '../useOperatorLabel';
+import { operatorLabel } from '../operatorLabel';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
 import { ExpressionValue } from './ExpressionValue';
@@ -11,7 +11,7 @@ export type IntExpressionProps = {
 
 export const IntExpression = (props: IntExpressionProps) => {
   const { expression, className, job } = props;
-  const operator = useOperatorLabel(expression.op);
+  const operator = operatorLabel(expression.op);
 
   const left = <ExpressionValue job={job} value={expression.left} />;
   const right = <ExpressionValue job={job} value={expression.right} />;
