@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { TopContent } from 'top-content/TopContent';
 import { FeaturesContent } from 'features/Features';
 
-export const APP_URL = 'https://beta.warp.money';
+export const APP_URL = 'https://app.warp.money';
 
 const App = () => {
   const topBarRef = useRef<HTMLDivElement>(null);
