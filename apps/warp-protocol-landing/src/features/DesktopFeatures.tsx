@@ -38,7 +38,7 @@ const features: Feature[] = [
   },
   {
     id: 4,
-    imageUrl: 'images/SdkSlide.png',
+    imageUrl: 'images/SdkSlide2.png',
     heading: 'For builders',
     description: 'Warp SDK',
     footer:
