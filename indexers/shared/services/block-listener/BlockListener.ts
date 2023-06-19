@@ -1,5 +1,4 @@
-import { BlockInfo, TxInfo } from '@terra-money/terra.js';
-import { LCDClient } from '@terra-money/terra.js/dist/client';
+import { BlockInfo, LCDClient, TxInfo } from '@terra-money/feather.js';
 import axios from 'axios';
 import { Timestamp } from 'types';
 import { Logger, sleep } from 'utils';
@@ -23,14 +22,14 @@ export class BlockListener {
   private wait = async (height: number): Promise<[BlockInfo, TxInfo[]]> => {
     while (true) {
       try {
-        const block = await this.lcd.tendermint.blockInfo(height);
+        const block = await this.lcd.tendermint.blockInfo(process.env.CHAIN_ID, height);
 
         if (block === null || block === undefined) {
           await sleep(1000);
           continue;
         }
 
-        const txs = await this.lcd.tx.txInfosByHeight(height);
+        const txs = await this.lcd.tx.txInfosByHeight(process.env.CHAIN_ID, height);
 
         return [block, txs];
       } catch (err) {
