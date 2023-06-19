@@ -22,7 +22,6 @@ export class BlockListener {
   private wait = async (height: number): Promise<[BlockInfo, TxInfo[]]> => {
     while (true) {
       try {
-        // tmp comment
         const block = await this.lcd.tendermint.blockInfo(process.env.CHAIN_ID, height);
 
         if (block === null || block === undefined) {
