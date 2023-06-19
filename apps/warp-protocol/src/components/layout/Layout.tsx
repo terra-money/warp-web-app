@@ -14,7 +14,6 @@ export const Layout = ({ children }: LayoutProps) => {
         <Text variant="label" className={styles.protocol_name}>
           Warp protocol
         </Text>
-        <span className={styles.beta_pill}>Beta</span>
       </>
       <Sidebar className={styles.sidebar} />
       <div className={styles.content}>{children}</div>
