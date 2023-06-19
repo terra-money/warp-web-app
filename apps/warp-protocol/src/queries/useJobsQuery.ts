@@ -27,12 +27,12 @@ type JobsQueryOpts = warp_controller.QueryJobsMsg & {
 export const useJobsQuery = (opts: JobsQueryOpts = {}): UseQueryResult<Job[] | undefined> => {
   const wallet = useWallet();
   const contractAddress = useContractAddress('warp-controller');
-  const enabled = opts.enabled ?? true;
+  const { enabled = true, ...queryOpts } = opts;
 
   const query = useQuery(
     [QUERY_KEY.JOBS, wallet.network, contractAddress, JSON.stringify(opts)],
     async ({ queryKey }) => {
-      const jobs = await fetchJobs(queryKey[1] as NetworkInfo, queryKey[2] as CW20Addr, opts);
+      const jobs = await fetchJobs(queryKey[1] as NetworkInfo, queryKey[2] as CW20Addr, queryOpts);
 
       return jobs.map((j) => new Job(j));
     },
