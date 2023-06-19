@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main 
+      - beta
       - warp/**
     paths:
       - apps/warp-protocol/**
@@ -12,6 +13,7 @@ on:
   pull_request:
     branches:
       - main 
+      - beta
       - warp/main
     paths:
       - apps/warp-protocol/**
