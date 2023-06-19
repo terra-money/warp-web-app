@@ -46,7 +46,7 @@ export const TransactionSnackbar = (props: TransactionSnackbarProps) => {
       return;
     }
 
-    if (transaction.txHash.length === 0 && transaction.status === TransactionStatus.Failed) {
+    if (transaction.status === TransactionStatus.Failed) {
       openTxErrorDialog({ transaction });
       return;
     }
