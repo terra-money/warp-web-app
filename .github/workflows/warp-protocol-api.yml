@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - test
+      - beta
+      
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
@@ -16,6 +18,7 @@ on:
     branches:
       - main
       - test
+      - beta
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
@@ -127,6 +130,18 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+      
+      - name: Set tags
+        run: |
+          if [ ${GITHUB_REF} == "refs/heads/main" ]; then
+            echo "DOCKER_IMAGE_TAG=phoenix-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/test" ]; then
+            echo "DOCKER_IMAGE_TAG=pisco-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/beta" ]; then
+            echo "DOCKER_IMAGE_TAG=beta" >> $GITHUB_ENV
+          else 
+            echo "DOCKER_IMAGE_TAG=latest" >> $GITHUB_ENV
+          fi
 
       - name: Build, tag, and push docker image to AWS ECR
         uses: docker/build-push-action@v3
@@ -137,7 +152,7 @@ jobs:
           file: ${{ env.IDX_DOCKERFILE }}
           context: ${{ env.IDX_CONTEXT_PATH }}
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.IDX_ECR_REPO }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.IDX_ECR_REPO }}:${{ env.DOCKER_IMAGE_TAG }}
 
   api-delivery:
     runs-on: ubuntu-latest
@@ -169,6 +184,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Set tags
+        run: |
+          if [ ${GITHUB_REF} == "refs/heads/main" ]; then
+            echo "DOCKER_IMAGE_TAG=phoenix-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/test" ]; then
+            echo "DOCKER_IMAGE_TAG=pisco-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/beta" ]; then
+            echo "DOCKER_IMAGE_TAG=beta" >> $GITHUB_ENV
+          else 
+            echo "DOCKER_IMAGE_TAG=latest" >> $GITHUB_ENV
+          fi
+
       - name: Build, tag, and push docker image to AWS ECR
         uses: docker/build-push-action@v3
         with:
@@ -178,7 +205,7 @@ jobs:
           file: ${{ env.API_DOCKERFILE }}
           context: ${{ env.API_CONTEXT_PATH }}
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.API_ECR_REPO }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.API_ECR_REPO }}:${{ env.DOCKER_IMAGE_TAG }}
 
   dispatch:
     runs-on: ubuntu-latest
@@ -190,6 +217,8 @@ jobs:
         run: |
           if [ ${GITHUB_REF} == "refs/heads/main" ]; then
             echo "TF_GITHUB_REF=phoenix-1" >> $GITHUB_ENV
+          elif [ ${GITHUB_REF} == "refs/heads/beta" ]; then
+            echo "TF_GITHUB_REF=phoenix-1-beta" >> $GITHUB_ENV
           elif [ ${GITHUB_REF} == "refs/heads/test" ]; then
             echo "TF_GITHUB_REF=pisco-1" >> $GITHUB_ENV
           fi
