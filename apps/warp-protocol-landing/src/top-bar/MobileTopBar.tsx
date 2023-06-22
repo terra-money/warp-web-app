@@ -102,7 +102,7 @@ export const MobileTopBar = forwardRef<
               onClick={onWebAppClick}
               className={styles.menu_heading}
             >
-              Web App
+              App
             </Text>
           </Container>
           <Container className={styles.bottom} direction="column">

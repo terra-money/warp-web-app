@@ -15,12 +15,11 @@ export const TopContent = (props: TopContentProps) => {
 
   return (
     <div className={classNames(styles.root, className)}>
-      <div className={styles.title}>
-        Limitless on-chain automation
-      </div>
-      <Text variant='label' className={styles.description}>
-        Sign future transactions. Program serverless bots. Enable automated
-        features in your dApp.
+      <div className={styles.title}>Limitless on-chain automation</div>
+      <Text variant="label" className={styles.description}>
+        Limited only by a developer’s imagination, Warp enables developers to
+        integrate new features into their platform with cost-efficient,
+        decentralized automation.
       </Text>
       <div className={styles.buttons}>
         <Button
@@ -28,14 +27,14 @@ export const TopContent = (props: TopContentProps) => {
           variant="primary"
           onClick={onWebAppClick}
         >
-          Web app
+          Launch app
         </Button>
         <Button
           className={styles.button}
           variant="secondary"
           onClick={onDocsClick}
         >
-          Read docs
+          Read the docs
         </Button>
       </div>
     </div>
