@@ -54,7 +54,7 @@ export const DesktopTopBar = forwardRef<
           fill="none"
           onClick={onWebAppClick}
         >
-          Web App
+          App
         </Button>
       </Container>
     </div>
