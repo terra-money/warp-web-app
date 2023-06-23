@@ -20,9 +20,10 @@ export class BlockListener {
   }
 
   private wait = async (height: number): Promise<[BlockInfo, TxInfo[]]> => {
+    let block: BlockInfo;
     while (true) {
       try {
-        const block = await this.lcd.tendermint.blockInfo(process.env.CHAIN_ID, height);
+        block = await this.lcd.tendermint.blockInfo(process.env.CHAIN_ID, height);
 
         if (block === null || block === undefined) {
           await sleep(1000);
@@ -37,6 +38,15 @@ export class BlockListener {
           // likely the block doesn't exist so we skip writing this as an error
           await sleep(1000);
           continue;
+        }
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message &&
+          err.response.data.message.includes('json: error calling MarshalJSON for type types.RawContractMessage:')
+        ) {
+          this.logger.error(`Corrupted transaction @ height: ${height} "${err.response.data.message}"`);
+          return [block, []];
         }
         this.logger.error(`Error waiting for block ${height} "${err.toString()}"`);
         await sleep(1000);
