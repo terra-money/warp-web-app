@@ -3,11 +3,11 @@ import { Job } from 'types/job';
 import { FormControl } from 'components/form-control/FormControl';
 import { Text } from 'components/primitives';
 import { TokenAmount } from 'components/token-amount';
-import { truncateAddress } from '@terra-money/apps/utils';
 import { Panel } from 'components/panel';
 import styles from './JobDetailsPanel.module.sass';
 import classNames from 'classnames';
 import { LUNA } from '@terra-money/apps/types';
+import { useCopy } from 'hooks';
 
 export type JobDetailsPanelProps = {
   job: Job;
@@ -15,6 +15,8 @@ export type JobDetailsPanelProps = {
 
 export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
   const { job, className } = props;
+
+  const copy = useCopy('address', job.info.owner);
 
   return (
     <Panel className={classNames(styles.root, className)}>
@@ -45,8 +47,8 @@ export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
         </Text>
       </FormControl>
       <FormControl labelVariant="secondary" label="Creator">
-        <Text variant="text" className={styles.creator}>
-          {truncateAddress(job.info.owner, [8, 8])}
+        <Text variant="text" className={styles.creator} onClick={copy}>
+          {job.info.owner}
         </Text>
       </FormControl>
       <FormControl labelVariant="secondary" label="Description">
