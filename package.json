@@ -26,5 +26,8 @@
     "json-schema-to-typescript": "^11.0.2",
     "lorem-ipsum": "^2.0.8"
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@3.2.3",
+  "resolutions": {
+    "@terra-money/warp-sdk": "portal:/Users/djsimovic/Work/warp-sdk"
+  }
 }

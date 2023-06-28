@@ -1,4 +1,4 @@
-import { LCDClient } from "@terra-money/terra.js";
+import { LCDClient } from "@terra-money/feather.js";
 import { TxState } from "../TxState";
 import { find } from "../utils/find";
 import { ActionType, TxDispatch, TxThunkArgument } from "./types";

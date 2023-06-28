@@ -1,4 +1,4 @@
-import { TxLog } from "@terra-money/terra.js";
+import { TxLog } from "@terra-money/feather.js";
 import {
   CreateTxFailed,
   SignBytesFailed,

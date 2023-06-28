@@ -39,7 +39,7 @@ export const useEditJobTx = () => {
       let rewardMsgPart = reward ? { added_reward: reward.toString() } : {};
 
       if (!accountRef.current || !configRef.current) {
-        return { msgs: [] };
+        return txBuilder.build();
       }
 
       if (reward) {

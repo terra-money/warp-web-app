@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
 import { QUERY_KEY } from './queryKey';
-import { LCDClient } from '@terra-money/terra.js/dist/client';
+import { LCDClient } from '@terra-money/feather.js';
 import { CW20Addr } from '@terra-money/apps/types';
 
 interface CW20TokenResponse {
@@ -19,8 +19,13 @@ export const fetchCW20Token = async (
     networkOrLCD instanceof LCDClient
       ? networkOrLCD
       : new LCDClient({
-          URL: networkOrLCD.lcd,
-          chainID: networkOrLCD.chainID,
+          [networkOrLCD.chainID]: {
+            lcd: networkOrLCD.lcd,
+            chainID: networkOrLCD.chainID,
+            gasAdjustment: 1.75,
+            gasPrices: { uluna: 0.15 },
+            prefix: 'terra',
+          },
         });
 
   const response = await lcd.wasm.contractQuery<CW20TokenResponse>(tokenAddr, {

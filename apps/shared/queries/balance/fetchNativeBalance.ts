@@ -1,7 +1,7 @@
-import { NetworkInfo } from "@terra-money/wallet-provider";
-import { LCDClient } from "@terra-money/terra.js/dist/client";
-import { u } from "../../types";
-import Big from "big.js";
+import { NetworkInfo } from '@terra-money/wallet-provider';
+import { LCDClient } from '@terra-money/feather.js';
+import { u } from '../../types';
+import Big from 'big.js';
 
 export const fetchNativeBalance = async (
   networkOrLCD: NetworkInfo | LCDClient,
@@ -12,8 +12,13 @@ export const fetchNativeBalance = async (
     networkOrLCD instanceof LCDClient
       ? networkOrLCD
       : new LCDClient({
-          URL: networkOrLCD.lcd,
-          chainID: networkOrLCD.chainID,
+          [networkOrLCD.chainID]: {
+            lcd: networkOrLCD.lcd,
+            chainID: networkOrLCD.chainID,
+            gasAdjustment: 1.75,
+            gasPrices: { uluna: 0.15 },
+            prefix: 'terra',
+          },
         });
 
   const [coins] = await lcd.bank.balance(walletAddr);

@@ -26,7 +26,7 @@ export const useCreateTemplateTx = () => {
       const { wallet, formatted_str, vars, name, msg, condition } = options;
 
       if (!configRef.current) {
-        return { msgs: [] };
+        return TxBuilder.new().build();
       }
 
       return TxBuilder.new()

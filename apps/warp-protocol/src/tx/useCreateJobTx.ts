@@ -40,7 +40,7 @@ export const useCreateJobTx = () => {
       let txBuilder = TxBuilder.new();
 
       if (!accountRef.current || !configRef.current) {
-        return { msgs: [] };
+        return txBuilder.build();
       }
 
       if (!containsAllReferencedVarsInCosmosMsg(vars, msgs, condition)) {
