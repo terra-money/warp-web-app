@@ -18,6 +18,7 @@ type DesktopBottomBarProps = UIElementProps & {
   onDiscordClick: () => void;
   onTelegramClick: () => void;
   onTwitterClick: () => void;
+  onBrandClick: () => void;
 };
 
 export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
@@ -32,6 +33,7 @@ export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
     onDiscordClick,
     onTelegramClick,
     onTwitterClick,
+    onBrandClick
   } = props;
 
   return (
@@ -71,6 +73,14 @@ export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
             onClick={onContactClick}
           >
             Contact
+          </Button>
+          <Button
+            className={classNames(styles.button, styles.btn_gray)}
+            variant="primary"
+            fill="none"
+            onClick={onBrandClick}
+          >
+            Brand Assets
           </Button>
           <Button
             className={classNames(styles.button, styles.btn_gray)}

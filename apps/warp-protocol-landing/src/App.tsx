@@ -2,8 +2,9 @@ import styles from './App.module.sass';
 import { TopBar } from './top-bar/TopBar';
 import { BottomBar } from './bottom-bar/BottomBar';
 import { useCallback, useRef, useState } from 'react';
-import { TopContent } from 'top-content/TopContent';
-import { FeaturesContent } from 'features/Features';
+import { Navigate, Route, Routes, useNavigate } from 'react-router';
+import Home from 'pages/home/Home';
+import Brand from 'pages/brand/Brand';
 
 export const APP_URL = 'https://app.warp.money';
 
@@ -13,17 +14,28 @@ const App = () => {
 
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
   const onHomeClick = useCallback(() => {
-    topBarRef.current?.scrollIntoView({ behavior: 'smooth',  });
-  }, [topBarRef]);
+    navigate('/home');
+    topBarRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [topBarRef, navigate]);
 
   const onDocsClick = useCallback(() => {
     window.open('https://docs.warp.money');
   }, []);
 
+  const onBrandClick = useCallback(() => {
+    navigate('brand');
+  }, [navigate]);
+
   const onFeaturesClick = useCallback(() => {
-    featuresRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [featuresRef]);
+    navigate('/home');
+
+    setTimeout(() => {
+      featuresRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 0);
+  }, [featuresRef, navigate]);
 
   const onWebAppClick = useCallback(() => {
     window.open(APP_URL);
@@ -67,17 +79,21 @@ const App = () => {
         onTelegramClick={onTelegramClick}
         onDiscordClick={onDiscordClick}
       />
-      <div className={styles.middle}>
-        <TopContent
-          onDocsClick={onDocsClick}
-          onWebAppClick={onWebAppClick}
-          className={styles.top_content}
+      <Routes>
+        <Route
+          path="/home"
+          element={
+            <Home
+              onDocsClick={onDocsClick}
+              onWebAppClick={onWebAppClick}
+              featuresRef={featuresRef}
+            />
+          }
         />
-        <FeaturesContent
-          ref={featuresRef}
-          className={styles.features_content}
-        />
-      </div>
+        <Route path="/brand" element={<Brand />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
+      </Routes>
+
       <BottomBar
         onDocsClick={onDocsClick}
         onFeaturesClick={onFeaturesClick}
@@ -88,6 +104,7 @@ const App = () => {
         onTelegramClick={onTelegramClick}
         onDiscordClick={onDiscordClick}
         onContactClick={onContactClick}
+        onBrandClick={onBrandClick}
         className={styles.bottom_bar}
       />
     </div>

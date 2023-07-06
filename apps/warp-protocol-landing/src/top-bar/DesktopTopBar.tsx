@@ -21,7 +21,9 @@ export const DesktopTopBar = forwardRef<
   return (
     <div className={styles.root} ref={ref}>
       <Container direction="row" className={styles.left}>
-        <div className={styles.logo}>warp.</div>
+        <div className={styles.logo} onClick={onHomeClick}>
+          warp.
+        </div>
       </Container>
       <Container direction="row" className={styles.right}>
         <Button
