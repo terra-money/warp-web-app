@@ -6,13 +6,13 @@ import { TxState } from "./TxState";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { LocalStorageTxStore } from "./storage/LocalStorageTxStore";
 import { createTxStoreMiddleware } from "./storage";
+import { useLcdClient } from '@terra-money/wallet-kit';
 import {
   pendingSubject,
   completedSubject,
   cancelledSubject,
   failedSubject,
 } from "./rx";
-import { useLCDClient } from "@terra-money/wallet-provider";
 import {
   CompletedTransaction,
   FailedTransaction,
@@ -69,7 +69,7 @@ const TransactionsProvider = (props: TransactionsProviderProps) => {
   const [{ onPending, onCancelled, onCompleted, onFailed }, setEventHandlers] =
     useState<TxEventHandlers>({});
 
-  const lcd = useLCDClient();
+  const lcd = useLcdClient();
 
   const value = useThunkReducer(transactionsReducer, initialState, (state) => {
     return {

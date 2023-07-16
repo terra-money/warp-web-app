@@ -1,6 +1,6 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { microfy } from '@terra-money/apps/libs/formatting';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
@@ -25,7 +25,7 @@ export const JobNew = (props: JobNewProps) => {
 
   const [txResult, createJobTx] = useCreateJobTx();
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
   const navigate = useNavigate();
 
   const varsInput = useMemo(() => detailsInput?.template?.vars, [detailsInput]);
@@ -39,7 +39,7 @@ export const JobNew = (props: JobNewProps) => {
       <div className={styles.root}>
         <IfConnected
           then={
-            !connectedWallet ? (
+            !localWallet.connectedWallet ? (
               <Throbber className={styles.loading} />
             ) : (
               <>

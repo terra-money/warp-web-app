@@ -1,4 +1,4 @@
-import { useWallet } from '@terra-money/wallet-provider';
+// import { useWallet } from '@terra-money/wallet-kit';
 import { Frequency } from 'utils';
 
 const API_ENDPOINTS: Record<string, string> = {
@@ -65,7 +65,8 @@ export const createApiEndpoint = (network: string, endpoint: Endpoints): string 
 };
 
 export const useApiEndpoint = (endpoint: Endpoints): string => {
-  const { network } = useWallet();
+  // const { network } = useWallet();
 
-  return createApiEndpoint(network.name, endpoint);
+  // TODO: fix
+  return createApiEndpoint('mainnet', endpoint);
 };

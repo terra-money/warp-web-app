@@ -2,7 +2,6 @@ import { Throbber, Text, TextInput } from 'components/primitives';
 import classNames from 'classnames';
 import { Form, UIElementProps } from '@terra-money/apps/components';
 import { useEffect, useMemo } from 'react';
-import { useContractAddress } from '@terra-money/apps/hooks';
 import { useValueWithDelay } from 'hooks/useValueWithDelay';
 import { useSimulateQuery } from 'queries/useSimulateQuery';
 import { QueryVariableInput, QueryVariableState, queryVariableToInput, useQueryVariableForm } from 'forms/variables';
@@ -17,6 +16,7 @@ import styles from './QueryVariableForm.module.sass';
 import { warp_controller } from 'types/contracts/warp_controller';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { generatePaths } from 'utils';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 export type QueryVariableFormProps = UIElementProps & {
   selectedVariable?: warp_controller.QueryVariable;
@@ -36,7 +36,9 @@ const queryVarKinds: warp_controller.VariableKind[] = [
 ];
 
 export const useQueryExample = (): warp_controller.QueryRequestFor_String => {
-  const contractAddress = useContractAddress('warp-controller');
+  const sdk = useWarpSdk();
+
+  const contractAddress = sdk.chain.contracts.controller;
 
   return useMemo(
     () => ({

@@ -1,40 +1,21 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { CW20Addr } from '@terra-money/apps/types';
-import { NetworkInfo, useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useQuery, UseQueryResult } from 'react-query';
 import { warp_controller } from 'types';
 import { QUERY_KEY } from './queryKey';
-import { contractQuery } from '@terra-money/apps/queries';
-
-const fetchWarpAccount = async (
-  network: NetworkInfo,
-  contractAddress: CW20Addr,
-  walletAddress: string
-): Promise<warp_controller.Account> => {
-  const response = await contractQuery<
-    Extract<warp_controller.QueryMsg, { query_account: {} }>,
-    warp_controller.AccountResponse
-  >(network, contractAddress, { query_account: { owner: walletAddress } }, { account: undefined } as any);
-
-  return response.account;
-};
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 export const useWarpAccount = (): UseQueryResult<warp_controller.Account | undefined> => {
-  const connectedWallet = useConnectedWallet();
-  const contractAddress = useContractAddress('warp-controller');
+  const { connectedWallet, chainId } = useLocalWallet();
+  const sdk = useWarpSdk();
 
   const query = useQuery(
-    [QUERY_KEY.WARP_ACCOUNT, connectedWallet?.network, contractAddress, connectedWallet?.walletAddress],
-    async ({ queryKey }) => {
+    [QUERY_KEY.WARP_ACCOUNT, chainId, connectedWallet?.walletAddress],
+    async () => {
       if (!connectedWallet) {
         return undefined;
       }
 
-      const account = await fetchWarpAccount(
-        queryKey[1] as NetworkInfo,
-        queryKey[2] as CW20Addr,
-        queryKey[3] as string
-      );
+      const account = await sdk.account(connectedWallet.walletAddress);
 
       return account;
     },

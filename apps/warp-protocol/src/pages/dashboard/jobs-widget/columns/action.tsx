@@ -9,7 +9,7 @@ import { useExecuteJobDialog } from '../dialogs/execute-job/ExecuteJobDialog';
 import { useCancelJobDialog } from '../dialogs/cancel-job/CancelJobDialog';
 import { Job } from 'types/job';
 import { useNavigate } from 'react-router';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
@@ -25,9 +25,10 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
 
   const { data: warpAccount } = useWarpAccount();
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
   const { saveJob } = useJobStorage();
 
+  const connectedWallet = localWallet.connectedWallet;
   const isCreator = connectedWallet && job.info.owner === connectedWallet.walletAddress;
 
   const onViewJob = useCallback(() => navigate(`/jobs/${job.info.id}`), [navigate, job]);

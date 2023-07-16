@@ -1,8 +1,15 @@
-import { FormFunction, FormInitializer, FormModifier, FormState, useForm } from '@terra-money/apps/hooks';
+import {
+  FormFunction,
+  FormInitializer,
+  FormModifier,
+  FormState,
+  LocalWallet,
+  useForm,
+  useLocalWallet,
+} from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
 import { LUNA, Token, u } from '@terra-money/apps/types';
-import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
@@ -28,7 +35,7 @@ interface DetailsFormState extends FormState<DetailsFormInput> {
 
 const dispatchBalance = async (
   dispatch: FormModifier<DetailsFormState>,
-  connectedWallet: ConnectedWallet,
+  localWallet: LocalWallet,
   token: Token,
   prefix: string
 ) => {
@@ -37,10 +44,8 @@ const dispatchBalance = async (
     [`${prefix}BalanceLoading`]: true,
   });
 
-  const { network, walletAddress } = connectedWallet;
-
   try {
-    const balance = await fetchTokenBalance(network, token, walletAddress);
+    const balance = await fetchTokenBalance(localWallet.lcd, token, localWallet.walletAddress);
 
     dispatch({
       [`${prefix}Balance`]: balance as u<Big>,
@@ -72,15 +77,15 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     [input]
   );
 
-  const connectedWallet = useConnectedWallet();
+  const wallet = useLocalWallet();
 
   const initializer: FormInitializer<DetailsFormState> = async (_, dispatch) => {
-    if (connectedWallet === undefined) {
+    if (wallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 
-    dispatchBalance(dispatch, connectedWallet, LUNA, 'native');
-    dispatchBalance(dispatch, connectedWallet, LUNA, 'token');
+    dispatchBalance(dispatch, wallet, LUNA, 'native');
+    dispatchBalance(dispatch, wallet, LUNA, 'token');
   };
 
   const form: FormFunction<DetailsFormInput, DetailsFormState> = async (input, getState, dispatch) => {

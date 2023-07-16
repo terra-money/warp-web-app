@@ -1,8 +1,14 @@
-import { FormFunction, FormInitializer, FormModifier, useForm } from '@terra-money/apps/hooks';
+import {
+  FormFunction,
+  FormInitializer,
+  FormModifier,
+  LocalWallet,
+  useForm,
+  useLocalWallet,
+} from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
 import { LUNA, Token, u } from '@terra-money/apps/types';
-import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { Job } from 'types/job';
@@ -22,21 +28,15 @@ interface EditJobState extends EditJobInput {
   balanceLoading: boolean;
 }
 
-const dispatchBalance = async (
-  dispatch: FormModifier<EditJobState>,
-  connectedWallet: ConnectedWallet,
-  token: Token
-) => {
+const dispatchBalance = async (dispatch: FormModifier<EditJobState>, localWallet: LocalWallet, token: Token) => {
   dispatch({
     reward: '',
     balance: Big(0) as u<Big>,
     balanceLoading: true,
   });
 
-  const { network, walletAddress } = connectedWallet;
-
   try {
-    const balance = await fetchTokenBalance(network, token, walletAddress);
+    const balance = await fetchTokenBalance(localWallet.lcd, token, localWallet.walletAddress);
 
     dispatch({
       reward: '',
@@ -64,14 +64,14 @@ export const useEditJobForm = (job: Job) => {
     [job]
   );
 
-  const connectedWallet = useConnectedWallet();
+  const wallet = useLocalWallet();
 
   const initializer: FormInitializer<EditJobState> = async (_, dispatch) => {
-    if (connectedWallet === undefined) {
+    if (wallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 
-    dispatchBalance(dispatch, connectedWallet, LUNA);
+    dispatchBalance(dispatch, wallet, LUNA);
   };
 
   const form: FormFunction<EditJobInput, EditJobState> = async (input, getState, dispatch) => {

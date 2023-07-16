@@ -1,16 +1,16 @@
 import { Button, ButtonProps } from 'components/primitives';
 import { forwardRef, MouseEventHandler, useCallback } from 'react';
-import { ConnectType, useConnectedWallet } from '@terra-money/wallet-provider';
 import { useConnectWalletDialog } from '../dialog/connect-wallet';
 import { sleep } from 'utils';
 import { useCreateAccountDialog } from 'components/dialog/connect-wallet/CreateAccountDialog';
 import { useWarpAccount } from 'queries/useWarpAccount';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 export type ConnectedButtonProps = ButtonProps;
 
 export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProps>((props, ref) => {
   const { onClick, ...rest } = props;
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
   const openConnectDialog = useConnectWalletDialog();
 
   const { data: warpAccount, isFetching: accountFetching } = useWarpAccount();
@@ -19,12 +19,12 @@ export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProp
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
     async (event) => {
-      let connectionType: ConnectType | undefined;
+      // let connectionType: ConnectType | undefined;
       let accountReady: boolean | undefined = Boolean(warpAccount) && !accountFetching;
 
       // If wallet is not connected, open connect dialog and wait for connection
-      if (!connectedWallet) {
-        connectionType = await openConnectDialog({
+      if (!localWallet.connectedWallet) {
+        await openConnectDialog({
           title: 'Hold up!',
           subtitle: 'You need to connect your terra wallet to perform this action.',
         });
@@ -40,11 +40,12 @@ export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProp
       // Connections with extension are instant, so we can call onClick immediately
       // If another connection type was selected, disregard the original action
       // The user will have to press the button again after connecting
-      if ((connectedWallet || connectionType === ConnectType.EXTENSION) && accountReady) {
+      // TODO: check if this works without || connectionType === ConnectType.EXTENSION)
+      if (localWallet.connectedWallet && accountReady) {
         onClick?.(event);
       }
     },
-    [onClick, connectedWallet, openConnectDialog, warpAccount, accountFetching, openCreateAccountDialog]
+    [onClick, localWallet.connectedWallet, openConnectDialog, warpAccount, accountFetching, openCreateAccountDialog]
   );
 
   return <Button {...rest} onClick={handleClick} />;

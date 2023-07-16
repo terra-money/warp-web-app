@@ -1,9 +1,10 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import { QUERY_KEY } from 'queries';
-import { NetworkInfo, useWallet } from '@terra-money/wallet-provider';
+import { LCDClientConfig } from '@terra-money/feather.js';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
-export const fetchBlockHeight = async (network: NetworkInfo): Promise<number> => {
-  const response = await fetch(`${network.lcd}/blocks/latest`);
+export const fetchBlockHeight = async (info: LCDClientConfig): Promise<number> => {
+  const response = await fetch(`${info.lcd}/blocks/latest`);
 
   const json = await response.json();
 
@@ -11,12 +12,16 @@ export const fetchBlockHeight = async (network: NetworkInfo): Promise<number> =>
 };
 
 export const useBlockHeightQuery = (): UseQueryResult<number> => {
-  const { network } = useWallet();
+  const wallet = useLocalWallet();
 
   return useQuery(
-    [QUERY_KEY.BLOCK_HEIGHT, network.lcd],
+    [QUERY_KEY.BLOCK_HEIGHT, wallet.chainId],
     () => {
-      return fetchBlockHeight(network);
+      if (!wallet) {
+        return undefined;
+      }
+
+      return fetchBlockHeight(wallet.lcdClientConfig);
     },
     {
       keepPreviousData: false,

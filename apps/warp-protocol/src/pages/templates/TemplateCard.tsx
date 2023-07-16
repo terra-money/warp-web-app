@@ -11,7 +11,7 @@ import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useNavigate } from 'react-router';
 import { useMemo } from 'react';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useEditTemplateDialog } from './edit-template';
 import { useCopy } from 'hooks';
 import { ActionButton } from 'components/action-button/ActionButton';
@@ -58,7 +58,7 @@ export const TemplateCard = (props: TemplateCardProps) => {
 
   const { setJobTemplate } = useJobStorage();
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const openEditTemplateDialog = useEditTemplateDialog();
 
@@ -96,10 +96,10 @@ export const TemplateCard = (props: TemplateCardProps) => {
             >
               New job
             </MenuAction>
-            {connectedWallet?.walletAddress === template.owner && (
+            {localWallet?.walletAddress === template.owner && (
               <MenuAction onClick={() => openEditTemplateDialog({ template })}>Edit</MenuAction>
             )}
-            {connectedWallet?.walletAddress === template.owner && (
+            {localWallet?.walletAddress === template.owner && (
               <MenuAction
                 onClick={async () => {
                   await deleteTemplateTx({ id: template.id });

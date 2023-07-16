@@ -1,5 +1,5 @@
 import { ClickAwayListener } from '@mui/material';
-import { useConnectedWallet, useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { useWallet, WalletStatus } from '@terra-money/wallet-kit';
 import { UIElementProps } from '@terra-money/apps/components';
 import { useCallback, useState } from 'react';
 import { Container } from '@terra-money/apps/components';
@@ -10,6 +10,7 @@ import styles from './WalletWidget.module.sass';
 import { useConnectWalletDialog } from 'components/dialog/connect-wallet';
 import { Menu, MenuItem } from 'components/menu/Menu';
 import { useCopy } from 'hooks/useCopy';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 interface NotConnectedButtonProps extends Pick<ButtonProps, 'onClick'> {}
 
@@ -47,8 +48,9 @@ export const WalletWidget = (props: UIElementProps) => {
 
   const copy = useCopy('address');
   const { disconnect } = useWallet();
+  const localWallet = useLocalWallet();
 
-  const connectedWallet = useConnectedWallet();
+  console.log({ localWallet });
 
   const [open, setOpen] = useState(false);
 
@@ -62,11 +64,14 @@ export const WalletWidget = (props: UIElementProps) => {
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <div className={classNames(styles.root, className)}>
-        {connectedWallet === undefined || connectedWallet.walletAddress === undefined ? (
+        {localWallet.connectedWallet === undefined || localWallet.connectedWallet.walletAddress === undefined ? (
           <NotConnectedButton onClick={() => openConnectWalletDialog({})} />
         ) : (
           <>
-            <ConnectedButton address={connectedWallet.walletAddress} onClick={() => setOpen((open) => !open)} />
+            <ConnectedButton
+              address={localWallet.connectedWallet.walletAddress}
+              onClick={() => setOpen((open) => !open)}
+            />
             {open && (
               <Menu className={styles.menu}>
                 <MenuItem onClick={disconnectWallet}>Disconnect</MenuItem>

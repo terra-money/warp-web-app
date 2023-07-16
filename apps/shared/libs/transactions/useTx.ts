@@ -1,15 +1,15 @@
 import { CreateTxOptions } from '@terra-money/feather.js';
-import { useConnectedWallet, useLCDClient, ConnectedWallet, TxResult } from '@terra-money/wallet-provider';
 import { useAsyncFn } from 'react-use';
 import { useTransactionsContext } from '.';
 import { addTxAction } from './actions';
+import { PostResponse } from '@terra-money/wallet-kit';
 import { FailedTransaction, TransactionPayload, TransactionStatus } from './types';
 import { failedSubject } from './rx';
-import { useRefCallback } from '../../hooks';
+import { LocalWallet, useLocalWallet, useRefCallback } from '../../hooks';
 
 type TxOrFactory<Options> =
   | CreateTxOptions
-  | ((options: Omit<Options, 'wallet'> & { wallet: ConnectedWallet }) => CreateTxOptions);
+  | ((options: Omit<Options, 'wallet'> & { wallet: LocalWallet }) => Promise<CreateTxOptions>);
 
 type PayloadOrFactory<Options> = TransactionPayload | ((options: Options) => TransactionPayload);
 
@@ -26,22 +26,20 @@ const useTx = <Options>(
 ) => {
   const [, dispatch] = useTransactionsContext();
 
-  const lcd = useLCDClient();
-
-  const wallet = useConnectedWallet();
+  const wallet = useLocalWallet();
 
   const txCallback = useRefCallback(
     async (options: Options) => {
-      if (wallet === undefined || wallet.availablePost === false) {
+      if (wallet === undefined) {
         throw new Error('The wallet is not connected or is unable to post a message.');
       }
 
       const payload = typeof payloadOrFactory === 'function' ? payloadOrFactory(options) : payloadOrFactory;
 
-      let tx;
+      let tx: CreateTxOptions;
 
       try {
-        tx = typeof txOrFactory === 'function' ? txOrFactory({ ...options, wallet }) : txOrFactory;
+        tx = typeof txOrFactory === 'function' ? await txOrFactory({ ...options, wallet }) : txOrFactory;
       } catch (error: any) {
         failedSubject.next({
           txHash: '',
@@ -52,9 +50,9 @@ const useTx = <Options>(
         throw error;
       }
 
-      let txResult: TxResult;
+      let resp: PostResponse;
       try {
-        txResult = await wallet.post(tx);
+        resp = await wallet.wallet.post(tx);
       } catch (error: TxError) {
         // if the tx fails here it means it didn't make it to the mempool
         failedSubject.next({
@@ -71,15 +69,15 @@ const useTx = <Options>(
       // however we are displaying a pending operation status so
       // we really want the response to complete when the tx has been
       // submitted to the mempool
-      const completion = dispatch(addTxAction(txResult.result.txhash, payload, lcd));
+      const completion = dispatch(addTxAction(resp.result!.txhash, payload, wallet.lcd));
 
       if (useTxOptions.waitForCompletion) {
         await completion;
       }
 
-      return txResult;
+      return resp;
     },
-    [lcd, wallet]
+    [wallet]
   );
 
   return useAsyncFn(txCallback);

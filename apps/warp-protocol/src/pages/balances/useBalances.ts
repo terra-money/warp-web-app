@@ -1,4 +1,4 @@
-import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
+import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
 import { useCallback, useMemo } from 'react';
 import { LUNA, Token } from 'types';
 import { useLocalStorage } from 'usehooks-ts';
@@ -7,11 +7,10 @@ type BalancesStorage = {
   [key: string]: Token[];
 };
 
-const storageKey = (connectedWallet: ConnectedWallet) =>
-  `${connectedWallet.network.name}--${connectedWallet.walletAddress}`;
+const storageKey = (connectedWallet: LocalWallet) => `${connectedWallet.chainId}--${connectedWallet.walletAddress}`;
 
 export const useBalances = () => {
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const defaultTokens = useMemo(() => [LUNA], []);
 
@@ -19,27 +18,27 @@ export const useBalances = () => {
 
   const setBalances = useCallback(
     (tokens: Token[]) => {
-      if (!connectedWallet) {
+      if (!localWallet.connectedWallet) {
         return;
       }
 
       setStoredBalances((storedBalances) => {
         return {
           ...storedBalances,
-          [storageKey(connectedWallet)]: tokens,
+          [storageKey(localWallet)]: tokens,
         };
       });
     },
-    [connectedWallet, setStoredBalances]
+    [localWallet, setStoredBalances]
   );
 
   const balances = useMemo(() => {
-    if (!connectedWallet) {
+    if (!localWallet.connectedWallet) {
       return [];
     }
 
-    return storedBalances[storageKey(connectedWallet)] ?? defaultTokens;
-  }, [storedBalances, connectedWallet, defaultTokens]);
+    return storedBalances[storageKey(localWallet)] ?? defaultTokens;
+  }, [storedBalances, localWallet, defaultTokens]);
 
   const saveAll = useCallback(
     (tokens: Token[]) => {

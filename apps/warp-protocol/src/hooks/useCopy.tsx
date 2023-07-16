@@ -1,4 +1,4 @@
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { useCopyToClipboard } from 'react-use';
@@ -13,16 +13,16 @@ const copyFieldToText: Record<CopyField, string> = {
 
 export const useCopy = (field: CopyField, walletAddress?: string) => {
   const [, copyToClipboard] = useCopyToClipboard();
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const { enqueueSnackbar } = useSnackbar();
 
   return useCallback(() => {
-    copyToClipboard(walletAddress ?? connectedWallet?.walletAddress ?? '');
+    copyToClipboard(walletAddress ?? localWallet.connectedWallet?.walletAddress ?? '');
     enqueueSnackbar(<CopySnackbar text={copyFieldToText[field]} />, {
       preventDuplicate: true,
       anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
       autoHideDuration: 2000,
     });
-  }, [connectedWallet, copyToClipboard, enqueueSnackbar, field, walletAddress]);
+  }, [localWallet, copyToClipboard, enqueueSnackbar, field, walletAddress]);
 };

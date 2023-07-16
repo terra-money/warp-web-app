@@ -1,40 +1,42 @@
-import { sleep } from '@terra-money/apps/utils';
-import { NetworkInfo } from '@terra-money/wallet-provider';
-import { TX_KEY } from 'tx';
-import { fetchIndexerState } from './fetchIndexerState';
-import { min } from 'd3-array';
+const test = {};
 
-interface IndexerCompletionOptions {
-  network: NetworkInfo;
-  height: number;
-  timeout?: number;
-  txKey: TX_KEY;
-  callback: () => void;
-}
+export default test;
+// import { sleep } from '@terra-money/apps/utils';
+// import { TX_KEY } from 'tx';
+// import { fetchIndexerState } from './fetchIndexerState';
+// import { min } from 'd3-array';
 
-// TODO: could be smarter here and map the required indexers to TX_KEY
-const INDEXER_KEYS = ['indexer:warp-jobs', 'indexer:warp-jobs-tx-history'];
+// interface IndexerCompletionOptions {
+//   networkName: string;
+//   height: number;
+//   timeout?: number;
+//   txKey: TX_KEY;
+//   callback: () => void;
+// }
 
-export const indexerCompletion = async (options: IndexerCompletionOptions): Promise<void> => {
-  const { network, height, timeout = 10000, callback } = options;
+// // TODO: could be smarter here and map the required indexers to TX_KEY
+// const INDEXER_KEYS = ['indexer:warp-jobs', 'indexer:warp-jobs-tx-history'];
 
-  const now = Date.now();
+// export const indexerCompletion = async (options: IndexerCompletionOptions): Promise<void> => {
+//   const { networkName, height, timeout = 10000, callback } = options;
 
-  while (Date.now() < now + timeout) {
-    const state = await fetchIndexerState(network);
+//   const now = Date.now();
 
-    // wait for all of the required indexers to process the block
-    const minHeight = min(
-      state.filter((s) => INDEXER_KEYS.includes(s.pk)),
-      (v) => v.height
-    );
+//   while (Date.now() < now + timeout) {
+//     const state = await fetchIndexerState(networkName);
 
-    if (minHeight && minHeight >= height) {
-      break;
-    }
+//     // wait for all of the required indexers to process the block
+//     const minHeight = min(
+//       state.filter((s) => INDEXER_KEYS.includes(s.pk)),
+//       (v) => v.height
+//     );
 
-    await sleep(1000);
-  }
+//     if (minHeight && minHeight >= height) {
+//       break;
+//     }
 
-  callback();
-};
+//     await sleep(1000);
+//   }
+
+//   callback();
+// };

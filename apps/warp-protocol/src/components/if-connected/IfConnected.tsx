@@ -1,5 +1,6 @@
 import { Container } from '@terra-money/apps/components';
-import { ConnectedWallet, useConnectedWallet, useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
+import { useWallet, WalletStatus } from '@terra-money/wallet-kit';
 import { NotConnected } from 'components/not-connected';
 import { Button, Text, Throbber } from 'components/primitives';
 import { useWarpAccount } from 'queries/useWarpAccount';
@@ -8,7 +9,7 @@ import { useCreateAccountTx } from 'tx';
 import styles from './IfConnected.module.sass';
 
 interface IfConnectedProps {
-  then: ReactNode | ((connectedWallet: ConnectedWallet) => ReactNode);
+  then: ReactNode | ((connectedWallet: LocalWallet) => ReactNode);
   else?: ReactNode;
   hideLoader?: boolean;
 }
@@ -16,7 +17,7 @@ interface IfConnectedProps {
 export const IfConnected = (props: IfConnectedProps) => {
   const { then: thenChildren, else: elseChildren = <NotConnected />, hideLoader } = props;
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
   const wallet = useWallet();
 
   const { data: warpAccount, isLoading: isWarpAccountLoading } = useWarpAccount();
@@ -26,7 +27,7 @@ export const IfConnected = (props: IfConnectedProps) => {
     return hideLoader ? null : <Throbber className={styles.loading} variant="primary" />;
   }
 
-  if (!connectedWallet) {
+  if (!localWallet.connectedWallet) {
     return <>{elseChildren}</>;
   }
 
@@ -47,5 +48,5 @@ export const IfConnected = (props: IfConnectedProps) => {
     );
   }
 
-  return <>{typeof thenChildren === 'function' ? thenChildren(connectedWallet) : thenChildren}</>;
+  return <>{typeof thenChildren === 'function' ? thenChildren(localWallet) : thenChildren}</>;
 };
