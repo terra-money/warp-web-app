@@ -22,6 +22,7 @@ export const useWarpAccount = (): UseQueryResult<warp_controller.Account | undef
     {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      retry: false,
     }
   );
 
