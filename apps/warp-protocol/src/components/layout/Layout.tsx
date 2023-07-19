@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { Sidebar } from './Sidebar';
 import styles from './Layout.module.sass';
 import { ReactComponent as BackgroundWrap } from 'components/assets/BackgroundWrap.svg';
-import { Button, Text } from 'components/primitives';
+import { Text } from 'components/primitives';
 import { useChainSelector } from '@terra-money/apps/hooks';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useChainSelectorDialog } from 'components/dialog/chain-selector/ChainSelectorDialog';
@@ -20,18 +20,13 @@ export const Layout = ({ children }: LayoutProps) => {
         <Text variant="label" className={styles.protocol_name}>
           Warp protocol
         </Text>
-        <Button
-          className={styles.chain_selector}
-          variant="secondary"
-          icon={selectedChain.icon}
-          onClick={() => openChainSelectorDialog({})}
-          iconGap="none"
-        >
+        <div className={styles.chain_selector} onClick={() => openChainSelectorDialog({})}>
+          <div className={styles.chain_icon}>{selectedChain.icon}</div>
           <Text variant="text" className={styles.chain_text}>
             {selectedChain.name}
           </Text>
           <KeyboardArrowDownIcon className={styles.chevron} />
-        </Button>
+        </div>
       </>
       <Sidebar className={styles.sidebar} />
       <div className={styles.content}>{children}</div>

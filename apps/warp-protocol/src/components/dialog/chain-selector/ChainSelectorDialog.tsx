@@ -1,4 +1,4 @@
-import { Button, Text } from 'components/primitives';
+import { Text } from 'components/primitives';
 import { useDialog, DialogProps, useChainSelector, ChainMetadata } from '@terra-money/apps/hooks';
 import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import { ReactComponent as CheckCircleIcon } from 'components/assets/CheckCircle.svg';
@@ -29,7 +29,7 @@ export const ChainSelectorDialog = (props: DialogProps<ChainSelectorDialogProps,
       <DialogBody className={styles.body}>
         {supportedChains.map((chain, idx) => {
           return (
-            <Button className={styles.chain} key={idx} onClick={() => onSelectChain(chain)}>
+            <div className={styles.chain} key={idx} onClick={() => onSelectChain(chain)}>
               <span className={styles.chain_icon}>{chain.icon}</span>
               <Text variant="text" className={styles.chain_name}>
                 {chain.name}
@@ -40,7 +40,7 @@ export const ChainSelectorDialog = (props: DialogProps<ChainSelectorDialogProps,
                   <CheckCircleIcon className={styles.check} />
                 </div>
               )}
-            </Button>
+            </div>
           );
         })}
       </DialogBody>
