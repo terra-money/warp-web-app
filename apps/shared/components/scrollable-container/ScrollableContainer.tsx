@@ -68,7 +68,7 @@ export const ScrollableContainer = forwardRef<HTMLDivElement, ScrollableContaine
 
   useEffect(() => {
     onHeaderVisibilityChange && onHeaderVisibilityChange(headerVisible);
-  }, [headerVisible]);
+  }, [headerVisible, onHeaderVisibilityChange]);
 
   useEffect(() => {
     if (stickyRef?.current) {
