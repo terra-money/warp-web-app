@@ -50,8 +50,6 @@ export const WalletWidget = (props: UIElementProps) => {
   const { disconnect } = useWallet();
   const localWallet = useLocalWallet();
 
-  console.log({ localWallet });
-
   const [open, setOpen] = useState(false);
 
   const disconnectWallet = useCallback(() => {
