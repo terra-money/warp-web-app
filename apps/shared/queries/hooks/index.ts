@@ -1,1 +1,1 @@
-export * from "./usePaginatedResultItems";
+export * from './usePaginatedResultItems';

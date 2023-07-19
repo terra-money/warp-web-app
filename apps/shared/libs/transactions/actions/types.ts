@@ -1,8 +1,8 @@
-import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import { TxState } from "../TxState";
-import { Transaction } from "../types";
-import { BehaviorSubject } from "rxjs";
-import { TxLog } from "@terra-money/feather.js";
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { TxState } from '../TxState';
+import { Transaction } from '../types';
+import { BehaviorSubject } from 'rxjs';
+import { TxLog } from '@terra-money/feather.js';
 
 export enum ActionType {
   Add,
@@ -14,17 +14,17 @@ export enum ActionType {
 
 type AddTxAction = {
   type: ActionType.Add;
-  payload: Pick<Transaction, "txHash" | "payload">;
+  payload: Pick<Transaction, 'txHash' | 'payload'>;
 };
 
 type DeleteTxAction = {
   type: ActionType.Delete;
-  payload: Pick<Transaction, "txHash">;
+  payload: Pick<Transaction, 'txHash'>;
 };
 
 type CompleteTxAction = {
   type: ActionType.Complete;
-  payload: Pick<Transaction, "txHash"> & {
+  payload: Pick<Transaction, 'txHash'> & {
     height: number;
     logs: TxLog[];
   };
@@ -32,7 +32,7 @@ type CompleteTxAction = {
 
 type FailedTxAction = {
   type: ActionType.Failed;
-  payload: Pick<Transaction, "txHash"> & {
+  payload: Pick<Transaction, 'txHash'> & {
     error: Error;
   };
 };
@@ -41,12 +41,7 @@ type ClearAllAction = {
   type: ActionType.ClearAll;
 };
 
-export type TxAction =
-  | AddTxAction
-  | DeleteTxAction
-  | CompleteTxAction
-  | FailedTxAction
-  | ClearAllAction;
+export type TxAction = AddTxAction | DeleteTxAction | CompleteTxAction | FailedTxAction | ClearAllAction;
 
 export interface TxThunkArgument {
   pending: BehaviorSubject<Transaction>;
@@ -57,16 +52,6 @@ export interface TxThunkArgument {
 
 export type TxDispatch = ThunkDispatch<TxState, TxThunkArgument, TxAction>;
 
-export type TxThunkAction = ThunkAction<
-  void,
-  TxState,
-  TxThunkArgument,
-  TxAction
->;
+export type TxThunkAction = ThunkAction<void, TxState, TxThunkArgument, TxAction>;
 
-export type TxAsyncThunkAction = ThunkAction<
-  Promise<void>,
-  TxState,
-  TxThunkArgument,
-  TxAction
->;
+export type TxAsyncThunkAction = ThunkAction<Promise<void>, TxState, TxThunkArgument, TxAction>;

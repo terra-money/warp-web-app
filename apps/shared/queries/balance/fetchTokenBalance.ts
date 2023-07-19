@@ -1,8 +1,8 @@
-import { LCDClient } from "@terra-money/feather.js";
-import Big from "big.js";
-import { u, Token } from "../../types";
-import { fetchCW20Balance } from "./fetchCW20Balance";
-import { fetchNativeBalance } from "./fetchNativeBalance";
+import { LCDClient } from '@terra-money/feather.js';
+import Big from 'big.js';
+import { u, Token } from '../../types';
+import { fetchCW20Balance } from './fetchCW20Balance';
+import { fetchNativeBalance } from './fetchNativeBalance';
 
 export const fetchTokenBalance = async (
   lcd: LCDClient,
@@ -14,11 +14,11 @@ export const fetchTokenBalance = async (
   }
 
   switch (token.type) {
-    case "native":
+    case 'native':
       return fetchNativeBalance(lcd, walletAddr, token.denom);
-    case "ibc":
+    case 'ibc':
       return fetchNativeBalance(lcd, walletAddr, token.denom);
-    case "cw20":
+    case 'cw20':
       return fetchCW20Balance(lcd, walletAddr, token.token);
   }
 };

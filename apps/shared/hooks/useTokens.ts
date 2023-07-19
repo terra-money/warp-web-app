@@ -1,10 +1,6 @@
-import {
-  useCW20TokensQuery,
-  useIBCTokensQuery,
-  useNativeTokensQuery,
-} from "../queries";
-import { useMemo } from "react";
-import { Token } from "../types";
+import { useCW20TokensQuery, useIBCTokensQuery, useNativeTokensQuery } from '../queries';
+import { useMemo } from 'react';
+import { Token } from '../types';
 
 export type Tokens = Record<string, Token>;
 
@@ -14,8 +10,7 @@ type TokensResponse = {
 };
 
 export const useTokens = (): TokensResponse => {
-  const { data: nativeTokens, isLoading: isLoadingNative } =
-    useNativeTokensQuery();
+  const { data: nativeTokens, isLoading: isLoadingNative } = useNativeTokensQuery();
 
   const { data: cw20Tokens, isLoading: isLoadingCw20 } = useCW20TokensQuery();
   const { data: ibcTokens, isLoading: isLoadingIbc } = useIBCTokensQuery();
@@ -35,12 +30,5 @@ export const useTokens = (): TokensResponse => {
       tokens: {},
       isLoading: isLoadingNative || isLoadingCw20 || isLoadingIbc,
     };
-  }, [
-    nativeTokens,
-    cw20Tokens,
-    ibcTokens,
-    isLoadingNative,
-    isLoadingCw20,
-    isLoadingIbc,
-  ]);
+  }, [nativeTokens, cw20Tokens, ibcTokens, isLoadingNative, isLoadingCw20, isLoadingIbc]);
 };

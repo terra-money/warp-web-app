@@ -1,17 +1,10 @@
-import big, { Big, BigSource } from "big.js";
-import { easeCircleOut } from "d3-ease";
-import { timer } from "d3-timer";
-import {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
-import { easeLinear } from "d3-ease";
-import classNames from "classnames";
-import styles from "./AnimateNumber.module.sass";
+import big, { Big, BigSource } from 'big.js';
+import { easeCircleOut } from 'd3-ease';
+import { timer } from 'd3-timer';
+import { DetailedHTMLProps, HTMLAttributes, useCallback, useEffect, useMemo, useRef } from 'react';
+import { easeLinear } from 'd3-ease';
+import classNames from 'classnames';
+import styles from './AnimateNumber.module.sass';
 
 export type Formatter<T extends BigSource> = (value: T) => string;
 
@@ -26,11 +19,7 @@ interface Options {
   ease?: (nomalizedTime: number) => number;
 }
 
-const interpolateBig = ({
-  from,
-  to,
-  ease = easeLinear,
-}: Options): ((e: number) => Big) => {
+const interpolateBig = ({ from, to, ease = easeLinear }: Options): ((e: number) => Big) => {
   const gap = big(to).minus(from);
 
   return (elapsed: number) => {
@@ -39,10 +28,7 @@ const interpolateBig = ({
 };
 
 export interface AnimateNumberProps<T extends BigSource>
-  extends Omit<
-    DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>,
-    "children"
-  > {
+  extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>, 'children'> {
   children: T;
   initialValue?: Big;
   format: Formatter<T>;
@@ -80,7 +66,7 @@ export function AnimateNumber<T extends BigSource>({
         const str = _format.current(num as T);
 
         if (decimalPointsFontSize) {
-          const [integer, decimal] = str.split(".");
+          const [integer, decimal] = str.split('.');
           _mainElement.current.textContent = integer;
 
           if (_subElement.current && decimal) {
