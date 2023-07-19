@@ -41,5 +41,5 @@ export const useLocalWallet = (): LocalWallet => {
       walletAddress: connectedWallet ? connectedWallet.addresses[selectedChainId] : '',
       lcd,
     };
-  }, [connectedWallet, wallet, lcdClientConfig, lcd]);
+  }, [connectedWallet, wallet, lcdClientConfig, lcd, selectedChain, selectedChainId]);
 };

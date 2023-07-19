@@ -1,9 +1,9 @@
 import { LCDClientConfig } from '@terra-money/feather.js';
-import { useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
-import { ReactNode, createContext, useContext, useMemo, useState, useCallback } from 'react';
+import { useWallet } from '@terra-money/wallet-kit';
+import { ReactNode, createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
-import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, NetworkName } from '@terra-money/warp-sdk';
-import { useWarpSdk } from './useWarpSdk';
+import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
+import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, ChainModule } from '@terra-money/warp-sdk';
 
 export type ChainMetadata = SdkChainMetadata & {
   icon: ReactNode;
@@ -20,7 +20,7 @@ type ChainSelectorContextState = {
 const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
   switch (sdkMetadata.name) {
     case 'injective':
-      return { ...sdkMetadata, icon: <TerraIcon /> };
+      return { ...sdkMetadata, icon: <InjectiveIcon /> };
     case 'terra':
       return { ...sdkMetadata, icon: <TerraIcon /> };
   }
@@ -30,7 +30,6 @@ const ChainSelectorContext = createContext<ChainSelectorContextState | undefined
 
 const useChainSelector = () => {
   const context = useContext(ChainSelectorContext);
-
   if (context === undefined) {
     throw Error('The ChainSelectorContext has not been defined.');
   }
@@ -44,42 +43,50 @@ interface ChainSelectorProviderProps {
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network } = useWallet();
-  const connectedWallet = useConnectedWallet();
 
-  const [selectedChain, setSelectedChainMetadata] = useState<ChainMetadata>(getChainMetadata(TERRA_CHAIN));
-  const [selectedChainId, setSelectedChainId] = useState<string>(TERRA_CHAIN.mainnet);
+  const [selectedChainMetadata, setSelectedChainMetadata] = useState<ChainMetadata>(getChainMetadata(TERRA_CHAIN));
+  const [localState, setLocalState] = useState<{ selectedChainId: string; lcdClientConfig: LCDClientConfig }>({
+    selectedChainId: TERRA_CHAIN.mainnet,
+    lcdClientConfig: network[TERRA_CHAIN.mainnet],
+  });
 
-  const lcdClientConfig = network[selectedChainId] as LCDClientConfig;
+  const { selectedChainId, lcdClientConfig } = localState;
 
-  const sdk = useWarpSdk();
+  const chainModule = useMemo(() => {
+    return new ChainModule(lcdClientConfig);
+  }, [lcdClientConfig]);
 
   const setSelectedChain = useCallback(
     (chainName: ChainName) => {
-      const metadata = sdk.chain.chainMetadata(chainName);
-
-      let chainId;
-
-      if (connectedWallet) {
-        chainId = metadata[connectedWallet.network as NetworkName];
-      } else {
-        chainId = metadata.mainnet;
-      }
+      const metadata = chainModule.chainMetadata(chainName);
+      // check if testnet or mainnet by useWallet's network
+      const chainId = 'pisco-1' in network ? metadata.testnet : metadata.mainnet;
 
       setSelectedChainMetadata(getChainMetadata(metadata));
-      setSelectedChainId(chainId);
+      setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });
     },
-    [setSelectedChainMetadata, setSelectedChainId, connectedWallet, sdk]
+    [setSelectedChainMetadata, chainModule, network]
   );
 
+  useEffect(() => {
+    // network changed in useWallet
+    if (!(selectedChainId in network)) {
+      setSelectedChain(selectedChainMetadata.name);
+      return;
+    }
+  }, [network, selectedChainMetadata, setSelectedChain, selectedChainId]);
+
   const value = useMemo<ChainSelectorContextState>(() => {
-    return {
+    const ret = {
       selectedChainId,
-      selectedChain,
+      selectedChain: selectedChainMetadata,
       lcdClientConfig,
       setSelectedChain,
-      supportedChains: sdk.chain.supportedChains().map(getChainMetadata),
+      supportedChains: chainModule.supportedChains().map(getChainMetadata),
     };
-  }, [selectedChainId, selectedChain, lcdClientConfig, sdk]);
+
+    return ret;
+  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain]);
 
   return <ChainSelectorContext.Provider value={value}>{children}</ChainSelectorContext.Provider>;
 };

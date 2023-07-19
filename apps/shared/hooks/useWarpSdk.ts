@@ -6,10 +6,6 @@ export const useWarpSdk = () => {
   const wallet = useLocalWallet();
 
   return useMemo(() => {
-    if (!wallet) {
-      throw new Error('Wallet not connected.');
-    }
-
     return new WarpSdk(
       {
         connectedWallet: {
