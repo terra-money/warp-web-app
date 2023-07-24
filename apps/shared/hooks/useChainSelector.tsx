@@ -1,6 +1,6 @@
 import { LCDClientConfig } from '@terra-money/feather.js';
 import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
-import { ReactNode, createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
 import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, ChainModule } from '@terra-money/warp-sdk';
@@ -41,37 +41,35 @@ interface ChainSelectorProviderProps {
   children: ReactNode;
 }
 
-const injectiveNetworks: LCDClientConfig[] = [
-  {
+export const injectiveNetworks: Record<string, LCDClientConfig> = {
+  'injective-888': {
     chainID: 'injective-888',
     lcd: 'https://k8s.testnet.lcd.injective.network',
     gasAdjustment: 1.75,
     gasPrices: {
       INJ: 0.05,
     },
-    prefix: 'inj2',
+    // prefix: 'inj1',
+    prefix: 'inj',
   },
-  {
+  'injective-1': {
     chainID: 'injective-1',
     lcd: 'https://lcd.injective.network',
     gasAdjustment: 1.75,
     gasPrices: {
       INJ: 0.05,
     },
-    prefix: 'inj',
+    // prefix: 'inj',
+    prefix: 'inj2',
   },
-];
-
-const injectiveNetworksInfo = injectiveNetworks.reduce((obj, item) => {
-  return { ...obj, [item.chainID]: item };
-}, {});
+};
 
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network: prevNetwork, disconnect } = useWallet();
   const connectedWallet = useConnectedWallet();
 
-  const network = useMemo<InfoResponse>(() => ({ ...prevNetwork, ...injectiveNetworksInfo }), [prevNetwork]);
+  const network = useMemo<InfoResponse>(() => ({ ...prevNetwork, ...injectiveNetworks }), [prevNetwork]);
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',

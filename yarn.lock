@@ -4260,6 +4260,7 @@ __metadata:
     "@emotion/styled": ^11.10.0
     "@mui/material": ^5.10.2
     "@terra-money/feather.js": ^1.0.7-beta.4
+    "@terra-money/feather.js-injective": "npm:@terra-money/feather.js@1.0.9-injective.0"
     "@terra-money/wallet-kit": ^1.0.4
     "@terra-money/warp-sdk": ^0.1.30
     "@testing-library/jest-dom": ^5.16.5
