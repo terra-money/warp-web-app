@@ -76,6 +76,7 @@ const TransactionsProvider = (props: TransactionsProviderProps) => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value[0].initialized]);
 
   useEffect(() => {

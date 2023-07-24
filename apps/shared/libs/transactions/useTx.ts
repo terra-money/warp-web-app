@@ -3,7 +3,7 @@ import { useAsyncFn } from 'react-use';
 import { useTransactionsContext } from '.';
 import { addTxAction } from './actions';
 import { PostResponse } from '@terra-money/wallet-kit';
-import { FailedTransaction, TransactionPayload, TransactionStatus } from './types';
+import { TransactionPayload, TransactionStatus } from './types';
 import { failedSubject } from './rx';
 import { LocalWallet, useLocalWallet, useRefCallback } from '../../hooks';
 
@@ -16,8 +16,6 @@ type PayloadOrFactory<Options> = TransactionPayload | ((options: Options) => Tra
 interface UseTxOptions {
   waitForCompletion?: boolean;
 }
-
-type TxError = Pick<FailedTransaction, 'error'> | any;
 
 const useTx = <Options>(
   txOrFactory: TxOrFactory<Options>,
@@ -53,7 +51,7 @@ const useTx = <Options>(
       let resp: PostResponse;
       try {
         resp = await wallet.wallet.post(tx);
-      } catch (error: TxError) {
+      } catch (error: any) {
         // if the tx fails here it means it didn't make it to the mempool
         failedSubject.next({
           txHash: '',

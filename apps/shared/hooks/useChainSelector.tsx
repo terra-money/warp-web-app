@@ -103,7 +103,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
         disconnect();
       }
     },
-    [setSelectedChainMetadata, chainModule, network, disconnect, connectedWallet]
+    [setSelectedChainMetadata, chainModule, network, disconnect, connectedWallet, setLocalState]
   );
 
   useEffect(() => {
