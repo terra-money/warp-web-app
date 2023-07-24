@@ -22,11 +22,7 @@ export const useIBCTokensQuery = (): UseQueryResult<IBCTokensResponse> => {
   return useQuery(
     [QUERY_KEY.IBC_TOKENS, wallet.chainId],
     () => {
-      if (!wallet.connectedWallet) {
-        return undefined;
-      }
-
-      return fetchIBCTokens(wallet.connectedWallet.network!);
+      return fetchIBCTokens(wallet.connectedWallet?.network ?? 'mainnet');
     },
     {
       refetchOnMount: false,

@@ -22,11 +22,7 @@ export const useCW20TokensQuery = (): UseQueryResult<CW20TokensResponse> => {
   return useQuery(
     [QUERY_KEY.CW20_TOKENS, wallet.chainId],
     () => {
-      if (!wallet.connectedWallet) {
-        return undefined;
-      }
-
-      return fetchCW20Tokens(wallet.connectedWallet.network!);
+      return fetchCW20Tokens(wallet.connectedWallet?.network ?? 'mainnet'); 
     },
     {
       refetchOnMount: false,
