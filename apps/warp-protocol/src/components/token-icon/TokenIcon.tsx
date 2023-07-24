@@ -1,11 +1,13 @@
 import { DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 import luna from 'components/assets/Luna.svg';
+import inj from 'components/assets/Injective.svg';
 import styles from './TokenIcon.module.sass';
 import { ReactComponent as WarpTokenIcon } from 'components/assets/WarpToken.svg';
 import classNames from 'classnames';
 
 const KNOWN_TOKENS: Record<string, string> = {
   luna,
+  inj,
 };
 
 type Variant = 'normal' | 'inset';

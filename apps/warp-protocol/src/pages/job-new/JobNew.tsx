@@ -5,7 +5,7 @@ import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { LUNA, warp_controller, warp_resolver } from 'types';
+import { warp_controller, warp_resolver } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
 import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 type JobNewProps = UIElementProps & {};
 
@@ -33,6 +34,8 @@ export const JobNew = (props: JobNewProps) => {
   const [searchParams] = useSearchParams();
 
   const mode = searchParams.get('mode') ?? 'advanced';
+
+  const nativeToken = useNativeToken();
 
   return (
     <CachedVariablesSession input={varsInput}>
@@ -79,7 +82,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
-                                reward: microfy(reward, LUNA.decimals),
+                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: condition!,
                               });
@@ -114,7 +117,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
-                                reward: microfy(reward, LUNA.decimals),
+                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: cond,
                               });

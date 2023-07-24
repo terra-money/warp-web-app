@@ -1,17 +1,20 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
-import { LUNA, warp_controller, warp_resolver } from 'types';
+import { warp_controller, warp_resolver } from 'types';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 export const useJobStorage = () => {
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
     '__warp_details_input',
     {} as any
   );
+
+  const nativeToken = useNativeToken();
 
   const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', {} as any);
 
@@ -26,7 +29,7 @@ export const useJobStorage = () => {
   const saveJob = useCallback(
     (job: Job) => {
       const details: DetailsFormInput = {
-        reward: demicrofy(job.reward, LUNA.decimals).toString(),
+        reward: demicrofy(job.reward, nativeToken.decimals).toString(),
         name: job.info.name,
         description: job.info.description,
         message: JSON.stringify(job, null, 2),
@@ -35,7 +38,7 @@ export const useJobStorage = () => {
       setDetailsInput(details);
       setCond(job.condition);
     },
-    [setDetailsInput, setCond]
+    [setDetailsInput, setCond, nativeToken.decimals]
   );
 
   const setJobTemplate = useCallback(

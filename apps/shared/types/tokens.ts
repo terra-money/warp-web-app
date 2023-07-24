@@ -25,6 +25,17 @@ export const LUNA: NativeToken = {
   coinGeckoId: 'terra-luna-2',
 };
 
+export const INJ: NativeToken = {
+  key: 'inj',
+  type: 'native',
+  denom: 'inj',
+  name: 'Injective',
+  symbol: 'INJ',
+  decimals: 18,
+  icon: 'https://assets.terra.money/icon/svg/ibc/ATOM.svg',
+  coinGeckoId: 'injective-protocol',
+};
+
 export interface NativeTokensResponse {
   [tokenAddr: string]: NativeToken;
 }

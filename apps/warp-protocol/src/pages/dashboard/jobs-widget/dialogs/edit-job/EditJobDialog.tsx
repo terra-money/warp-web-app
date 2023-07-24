@@ -12,7 +12,7 @@ import { AmountInput } from '../../inputs/AmountInput';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { Job } from 'types/job';
 import { useEditJobTx } from 'tx';
-import { LUNA } from 'types';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 export type EditJobDialogProps = {
   job: Job;
@@ -36,6 +36,8 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
   );
 
   const jobModified = useMemo(() => !isMatch(updatedJob, job), [updatedJob, job]);
+
+  const nativeToken = useNativeToken();
 
   return (
     <Dialog>
@@ -72,7 +74,7 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
             balance={balance}
             balanceLoading={balanceLoading}
             error={rewardError}
-            token={LUNA}
+            token={nativeToken}
             valid={rewardValid}
           />
         </DialogBody>
@@ -86,7 +88,7 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
                 const resp = await editJobTx({
                   name,
                   jobId: job.info.id,
-                  reward: !isEmpty(reward) ? microfy(reward, LUNA.decimals) : undefined,
+                  reward: !isEmpty(reward) ? microfy(reward, nativeToken.decimals) : undefined,
                 });
 
                 if (resp.success) {

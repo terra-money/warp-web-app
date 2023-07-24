@@ -8,8 +8,9 @@ import {
 } from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
-import { LUNA, Token, u } from '@terra-money/apps/types';
+import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
+import { useNativeToken } from 'hooks/useNativeToken';
 import { useMemo } from 'react';
 import { Job } from 'types/job';
 
@@ -66,12 +67,14 @@ export const useEditJobForm = (job: Job) => {
 
   const wallet = useLocalWallet();
 
+  const nativeToken = useNativeToken();
+
   const initializer: FormInitializer<EditJobState> = async (_, dispatch) => {
     if (wallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 
-    dispatchBalance(dispatch, wallet, LUNA);
+    dispatchBalance(dispatch, wallet, nativeToken);
   };
 
   const form: FormFunction<EditJobInput, EditJobState> = async (input, getState, dispatch) => {
@@ -82,7 +85,7 @@ export const useEditJobForm = (job: Job) => {
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
-    const uReward = input.reward ? microfy(input.reward, LUNA.decimals) : Big(0);
+    const uReward = input.reward ? microfy(input.reward, nativeToken.decimals) : Big(0);
 
     const rewardError = uReward.gt(state.balance) ? 'The amount can not exceed the maximum balance' : undefined;
 

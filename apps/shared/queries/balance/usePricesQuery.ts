@@ -1,7 +1,7 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import Big from 'big.js';
 import { useCW20TokensQuery, useIBCTokensQuery } from '../tokens';
-import { CW20TokensResponse, IBCTokensResponse, LUNA, Token } from '../../types';
+import { CW20TokensResponse, IBCTokensResponse, INJ, LUNA, Token } from '../../types';
 
 const mapTokens = (tokens: Token[]): Record<string, string> => {
   return tokens.reduce((previous, current) => {
@@ -21,7 +21,7 @@ export const fetchCoinGeckoPrices = async (
   ibcTokens: IBCTokensResponse
 ): Promise<Record<string, Big>> => {
   const tokens = {
-    ...mapTokens([LUNA]),
+    ...mapTokens([LUNA, INJ]),
     ...mapTokens(Object.values(cw20Tokens)),
     ...mapTokens(Object.values(ibcTokens)),
   };

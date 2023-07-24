@@ -54,7 +54,7 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
           if (warpAccountRef.current) {
             closeDialog(true, { closeAll: true });
           }
-        }, 250);
+        }, 400);
       }
     };
 

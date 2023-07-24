@@ -9,12 +9,13 @@ import {
 } from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
-import { LUNA, Token, u } from '@terra-money/apps/types';
+import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_resolver } from 'types';
 import { templateVariables } from 'utils/variable';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 export interface DetailsFormInput {
   name: string;
@@ -78,14 +79,15 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
   );
 
   const wallet = useLocalWallet();
+  const nativeToken = useNativeToken();
 
   const initializer: FormInitializer<DetailsFormState> = async (_, dispatch) => {
     if (wallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 
-    dispatchBalance(dispatch, wallet, LUNA, 'native');
-    dispatchBalance(dispatch, wallet, LUNA, 'token');
+    dispatchBalance(dispatch, wallet, nativeToken, 'native');
+    dispatchBalance(dispatch, wallet, nativeToken, 'token');
   };
 
   const form: FormFunction<DetailsFormInput, DetailsFormState> = async (input, getState, dispatch) => {
@@ -109,7 +111,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     const descriptionError =
       state.description.length > 200 ? 'The description can not exceed the maximum of 200 characters' : undefined;
 
-    const uReward = state.reward ? microfy(state.reward, LUNA.decimals) : Big(0);
+    const uReward = state.reward ? microfy(state.reward, nativeToken.decimals) : Big(0);
 
     const rewardError = uReward.gt(state.tokenBalance) ? 'The amount can not exceed the maximum balance' : undefined;
 

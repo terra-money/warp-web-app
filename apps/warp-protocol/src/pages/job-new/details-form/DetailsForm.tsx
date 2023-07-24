@@ -7,7 +7,7 @@ import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { useNavigate } from 'react-router';
-import { LUNA, warp_controller } from 'types';
+import { warp_controller } from 'types';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
@@ -18,6 +18,7 @@ import { variableName } from 'utils/variable';
 import { useCachedVariables } from '../useCachedVariables';
 import { useCallback, useEffect } from 'react';
 import { useJobStorage } from '../useJobStorage';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: warp_controller.Variable[] }) => void;
@@ -52,6 +53,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
       tokenBalanceLoading,
     },
   ] = useDetailsForm(detailsInput);
+
+  const nativeToken = useNativeToken();
 
   const navigate = useNavigate();
 
@@ -117,7 +120,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
           balance={tokenBalance}
           balanceLoading={tokenBalanceLoading}
           error={rewardError}
-          token={LUNA}
+          token={nativeToken}
           valid={rewardValid}
         />
         <FormControl label="Description" className={styles.description_input}>

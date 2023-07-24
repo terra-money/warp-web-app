@@ -1,6 +1,7 @@
 import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
+import { useNativeToken } from 'hooks/useNativeToken';
 import { useCallback, useMemo } from 'react';
-import { LUNA, Token } from 'types';
+import { Token } from 'types';
 import { useLocalStorage } from 'usehooks-ts';
 
 type BalancesStorage = {
@@ -11,8 +12,9 @@ const storageKey = (connectedWallet: LocalWallet) => `${connectedWallet.chainId}
 
 export const useBalances = () => {
   const localWallet = useLocalWallet();
+  const nativeToken = useNativeToken();
 
-  const defaultTokens = useMemo(() => [LUNA], []);
+  const defaultTokens = useMemo(() => [nativeToken], [nativeToken]);
 
   const [storedBalances, setStoredBalances] = useLocalStorage<BalancesStorage>('__warp_stored_balances', {});
 
