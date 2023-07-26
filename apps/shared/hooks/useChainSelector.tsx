@@ -87,8 +87,6 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
     return new ChainModule(lcdClientConfig);
   }, [lcdClientConfig]);
 
-  console.log({ network });
-
   const setSelectedChain = useCallback(
     (chainName: ChainName) => {
       const metadata = chainModule.chainMetadata(chainName);
