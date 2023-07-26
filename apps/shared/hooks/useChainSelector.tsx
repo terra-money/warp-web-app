@@ -1,6 +1,6 @@
 import { LCDClientConfig } from '@terra-money/feather.js';
 import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
-import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
 import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, ChainModule } from '@terra-money/warp-sdk';
@@ -76,19 +76,18 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
     TERRA_CHAIN
   );
 
-  const [localState, setLocalState] = useLocalStorage<{ selectedChainId: string; lcdClientConfig: LCDClientConfig }>(
-    '__warp_selected_chain_local_state',
-    {
-      selectedChainId: TERRA_CHAIN.mainnet,
-      lcdClientConfig: network[TERRA_CHAIN.mainnet],
-    }
-  );
+  const [localState, setLocalState] = useState<{ selectedChainId: string; lcdClientConfig: LCDClientConfig }>({
+    selectedChainId: selectedChainMetadata.mainnet,
+    lcdClientConfig: network[selectedChainMetadata.mainnet],
+  });
 
   const { selectedChainId, lcdClientConfig } = localState;
 
   const chainModule = useMemo(() => {
     return new ChainModule(lcdClientConfig);
   }, [lcdClientConfig]);
+
+  console.log({ network });
 
   const setSelectedChain = useCallback(
     (chainName: ChainName) => {
@@ -107,8 +106,8 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   );
 
   useEffect(() => {
-    // network changed in useWallet
-    if (!(selectedChainId in network)) {
+    // network changed in useWallet + hack for empty networks object returned by useWallet, remove when fixed
+    if (!(selectedChainId in network) && Object.keys(network).length > 2) {
       setSelectedChain(selectedChainMetadata.name);
       return;
     }
