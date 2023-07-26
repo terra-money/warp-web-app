@@ -42,25 +42,23 @@ interface ChainSelectorProviderProps {
 }
 
 export const injectiveNetworks: Record<string, LCDClientConfig> = {
-  'injective-888': {
-    chainID: 'injective-888',
-    lcd: 'https://k8s.testnet.lcd.injective.network',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      INJ: 0.05,
-    },
-    // prefix: 'inj1',
-    prefix: 'inj',
-  },
+  // 'injective-888': {
+  //   chainID: 'injective-888',
+  //   lcd: 'https://k8s.testnet.lcd.injective.network',
+  //   gasAdjustment: 1.75,
+  //   gasPrices: {
+  //     inj: 1500000000,
+  //   },
+  //   prefix: 'inj',
+  // },
   'injective-1': {
     chainID: 'injective-1',
     lcd: 'https://lcd.injective.network',
     gasAdjustment: 1.75,
     gasPrices: {
-      INJ: 0.05,
+      inj: 1500000000,
     },
-    // prefix: 'inj',
-    prefix: 'inj2',
+    prefix: 'inj',
   },
 };
 

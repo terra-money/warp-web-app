@@ -34,7 +34,7 @@
     "@terra-money/feather.js": "^1.0.7-beta.4",
     "@terra-money/feather.js-injective": "npm:@terra-money/feather.js@1.0.9-injective.0",
     "@terra-money/wallet-kit": "^1.0.4",
-    "@terra-money/warp-sdk": "^0.1.30",
+    "@terra-money/warp-sdk": "^0.1.31",
     "assert": "^2.0.0",
     "big.js": "^6.2.1",
     "buffer": "^6.0.3",

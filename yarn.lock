@@ -4262,7 +4262,7 @@ __metadata:
     "@terra-money/feather.js": ^1.0.7-beta.4
     "@terra-money/feather.js-injective": "npm:@terra-money/feather.js@1.0.9-injective.0"
     "@terra-money/wallet-kit": ^1.0.4
-    "@terra-money/warp-sdk": ^0.1.30
+    "@terra-money/warp-sdk": ^0.1.31
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -4438,9 +4438,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/warp-sdk@portal:/Users/djsimovic/Work/warp-sdk::locator=warp-protocol%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@terra-money/warp-sdk@portal:/Users/djsimovic/Work/warp-sdk::locator=warp-protocol%40workspace%3A."
+"@terra-money/warp-sdk@npm:^0.1.31":
+  version: 0.1.31
+  resolution: "@terra-money/warp-sdk@npm:0.1.31"
   dependencies:
     "@terra-money/feather.js": ^1.0.7-beta.4
     "@terra-money/feather.js-injective": "npm:@terra-money/feather.js@1.0.9-injective.0"
@@ -4454,8 +4454,9 @@ __metadata:
     lodash: ^4.17.21
     pino: ^8.4.2
     typescript: ^4.8.2
+  checksum: 32934515ae9795bd8a4c912a03f69c4bcb12aceda08bf17e3b9637fdf81e0f1ba19bc49a4b088cc9cc22d16037ca4be06ef12ef185aad433fe24cb821ad7ba7f
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@testing-library/dom@npm:^8.5.0":
   version: 8.19.0
@@ -5403,7 +5404,7 @@ __metadata:
     "@popperjs/core": ^2.11.6
     "@terra-money/feather.js": ^1.0.7-beta.4
     "@terra-money/wallet-kit": ^1.0.4
-    "@terra-money/warp-sdk": ^0.1.30
+    "@terra-money/warp-sdk": ^0.1.31
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
