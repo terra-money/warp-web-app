@@ -1,8 +1,7 @@
 import { Token } from 'types';
-import { FormModifier, useForm } from '@terra-money/apps/hooks';
+import { FormModifier, LocalWallet, useForm, useLocalWallet } from '@terra-money/apps/hooks';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
-import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
 
@@ -30,7 +29,7 @@ const initialState: AddFundsState = {
 
 const dispatchTokenBalance = (
   token: Token | undefined,
-  connectedWallet: ConnectedWallet,
+  localWallet: LocalWallet,
   dispatch: FormModifier<AddFundsState>
 ) => {
   dispatch({
@@ -39,9 +38,7 @@ const dispatchTokenBalance = (
     balanceLoading: true,
   });
 
-  const { network, walletAddress } = connectedWallet;
-
-  fetchTokenBalance(network, token, walletAddress)
+  fetchTokenBalance(localWallet.lcd, token, localWallet.walletAddress)
     .then((balance) => {
       dispatch({
         balance,
@@ -57,16 +54,16 @@ const dispatchTokenBalance = (
 };
 
 export const useAddFundsForm = (selectedToken?: Token) => {
-  const connectedWallet = useConnectedWallet();
+  const wallet = useLocalWallet();
 
   return useForm<AddFundsInput, AddFundsState>(
     async (input, getState, dispatch) => {
-      if (connectedWallet === undefined) {
+      if (wallet.connectedWallet === undefined) {
         throw Error('The wallet is not connected');
       }
 
       if ('token' in input) {
-        dispatchTokenBalance(input.token, connectedWallet, dispatch);
+        dispatchTokenBalance(input.token, wallet, dispatch);
       }
 
       const state = {
@@ -91,12 +88,12 @@ export const useAddFundsForm = (selectedToken?: Token) => {
     },
     { ...initialState, token: selectedToken },
     async (state, dispatch) => {
-      if (connectedWallet === undefined) {
+      if (wallet.connectedWallet === undefined) {
         throw Error('The wallet is not connected');
       }
 
       if (state.token) {
-        dispatchTokenBalance(state.token, connectedWallet, dispatch);
+        dispatchTokenBalance(state.token, wallet, dispatch);
       }
     }
   );

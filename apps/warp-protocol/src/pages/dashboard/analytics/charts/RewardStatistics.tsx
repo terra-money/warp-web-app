@@ -7,6 +7,9 @@ import Big from 'big.js';
 import { ChartContainer } from 'components/chart-container';
 import styles from './RewardStatistics.module.sass';
 import { u } from '@terra-money/apps/types';
+import { useNativeToken } from 'hooks/useNativeToken';
+import { useChainSelector } from '@terra-money/apps/hooks';
+import { SmallPlaceholder } from '../placeholders/SmallPlaceholder';
 
 export const RewardStatistics = (props: UIElementProps) => {
   const { className } = props;
@@ -14,6 +17,19 @@ export const RewardStatistics = (props: UIElementProps) => {
   const { isLoading, values, total } = useAnalyticsData('reward_amount', 'monthly', 1000000, false);
 
   const average = values.length === 0 ? 0 : Big(total).div(values.length);
+
+  const nativeToken = useNativeToken();
+
+  const { selectedChain } = useChainSelector();
+
+  if (selectedChain.name === 'injective') {
+    return (
+      <Container className={classNames(styles.root, className)} direction="column">
+        <SmallPlaceholder />
+        <SmallPlaceholder />
+      </Container>
+    );
+  }
 
   return (
     <Container className={classNames(styles.root, className)} direction="column">
@@ -24,14 +40,14 @@ export const RewardStatistics = (props: UIElementProps) => {
           <>
             <AnimateNumber
               format={(v) =>
-                formatAmount(demicrofy(v as u<Big>, 6), {
+                formatAmount(demicrofy(v as u<Big>, nativeToken.decimals), {
                   decimals: 1,
                 })
               }
             >
               {total}
             </AnimateNumber>
-            <sub>&nbsp;LUNA</sub>
+            <sub>&nbsp;{nativeToken.symbol}</sub>
           </>
         }
       />
@@ -42,14 +58,14 @@ export const RewardStatistics = (props: UIElementProps) => {
           <>
             <AnimateNumber
               format={(v) =>
-                formatAmount(demicrofy(v as u<Big>, 6), {
+                formatAmount(demicrofy(v as u<Big>, nativeToken.decimals), {
                   decimals: 1,
                 })
               }
             >
               {average}
             </AnimateNumber>
-            <sub>&nbsp;LUNA</sub>
+            <sub>&nbsp;{nativeToken.symbol}</sub>
           </>
         }
       />

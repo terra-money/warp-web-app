@@ -1,5 +1,5 @@
-import { Token } from "../types";
-import { useTokens } from "./useTokens";
+import { Token } from '../types';
+import { useTokens } from './useTokens';
 
 type Addr = string;
 
@@ -27,11 +27,11 @@ export const useToken = (
   const key =
     asset === undefined
       ? undefined
-      : typeof asset === "string"
+      : typeof asset === 'string'
       ? asset
-      : "native" in asset
+      : 'native' in asset
       ? asset.native
-      : "cw20" in asset
+      : 'cw20' in asset
       ? asset.cw20
       : undefined;
 

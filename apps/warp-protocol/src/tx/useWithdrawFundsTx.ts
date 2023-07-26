@@ -1,67 +1,23 @@
-import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
+import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
-import { Token, warp_account, warp_controller } from 'types';
+import { Token } from 'types';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
-import { useWarpAccount } from 'queries/useWarpAccount';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 interface WithdrawFundsTxProps {
   token: Token;
   amount: u<Big>;
 }
 
-type ExecuteMsg = warp_account.ExecuteMsg;
-
 export const useWithdrawFundsTx = () => {
-  const { data: account = {} as warp_controller.Account } = useWarpAccount();
+  const sdk = useWarpSdk();
 
   return useTx<WithdrawFundsTxProps>(
-    (options) => {
+    async (options) => {
       const { token, amount, wallet } = options;
 
-      if (token.type === 'cw20') {
-        const transferMsg = {
-          transfer: {
-            amount: amount.toString(),
-            recipient: account.owner,
-          },
-        };
-
-        return TxBuilder.new()
-          .execute<ExecuteMsg>(wallet.walletAddress, account.account, {
-            generic: {
-              msgs: [
-                {
-                  wasm: {
-                    execute: {
-                      contract_addr: token.token,
-                      msg: Buffer.from(JSON.stringify(transferMsg)).toString('base64'),
-                      funds: [],
-                    },
-                  },
-                },
-              ],
-            },
-          })
-          .build();
-      }
-
-      return TxBuilder.new()
-        .execute<ExecuteMsg>(wallet.walletAddress, account.account, {
-          generic: {
-            msgs: [
-              {
-                bank: {
-                  send: {
-                    amount: [{ denom: token.denom, amount: amount.toString() }],
-                    to_address: wallet.walletAddress,
-                  },
-                },
-              },
-            ],
-          },
-        })
-        .build();
+      return sdk.tx.withdrawFromAccount(wallet.walletAddress, wallet.walletAddress, token, amount.toString());
     },
     {
       txKey: TX_KEY.WITHDRAW_FUNDS,

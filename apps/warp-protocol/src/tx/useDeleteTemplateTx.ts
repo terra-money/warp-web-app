@@ -1,26 +1,18 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
+import { useTx } from '@terra-money/apps/libs/transactions';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 import { warp_resolver } from '../types/contracts';
 import { TX_KEY } from './txKey';
 
 export type DeleteTemplateTxProps = warp_resolver.DeleteTemplateMsg;
 
-type DeleteTemplateMsg = Extract<warp_resolver.ExecuteMsg, { delete_template: {} }>;
-
 export const useDeleteTemplateTx = () => {
-  const contractAddress = useContractAddress('warp-resolver');
+  const sdk = useWarpSdk();
 
   return useTx<DeleteTemplateTxProps>(
-    (options) => {
+    async (options) => {
       const { wallet, id } = options;
 
-      return TxBuilder.new()
-        .execute<DeleteTemplateMsg>(wallet.walletAddress, contractAddress, {
-          delete_template: {
-            id,
-          },
-        })
-        .build();
+      return sdk.tx.deleteTemplate(wallet.walletAddress, id);
     },
     {
       txKey: TX_KEY.DELETE_TEMPLATE,

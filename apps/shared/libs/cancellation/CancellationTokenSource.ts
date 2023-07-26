@@ -1,6 +1,6 @@
-import { CancellationError } from "./CancellationError";
-import { CancellationToken } from "./CancellationToken";
-import { CancellationSubscriber } from "./types";
+import { CancellationError } from './CancellationError';
+import { CancellationToken } from './CancellationToken';
+import { CancellationSubscriber } from './types';
 
 export class CancellationTokenSource implements CancellationToken {
   private _cancellation: Error | undefined;

@@ -1,11 +1,11 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { microfy } from '@terra-money/apps/libs/formatting';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { LUNA, warp_controller, warp_resolver } from 'types';
+import { warp_controller, warp_resolver } from 'types';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
 import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 type JobNewProps = UIElementProps & {};
 
@@ -25,7 +26,7 @@ export const JobNew = (props: JobNewProps) => {
 
   const [txResult, createJobTx] = useCreateJobTx();
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
   const navigate = useNavigate();
 
   const varsInput = useMemo(() => detailsInput?.template?.vars, [detailsInput]);
@@ -34,12 +35,14 @@ export const JobNew = (props: JobNewProps) => {
 
   const mode = searchParams.get('mode') ?? 'advanced';
 
+  const nativeToken = useNativeToken();
+
   return (
     <CachedVariablesSession input={varsInput}>
       <div className={styles.root}>
         <IfConnected
           then={
-            !connectedWallet ? (
+            !localWallet.connectedWallet ? (
               <Throbber className={styles.loading} />
             ) : (
               <>
@@ -79,7 +82,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
-                                reward: microfy(reward, LUNA.decimals),
+                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: condition!,
                               });
@@ -114,7 +117,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
-                                reward: microfy(reward, LUNA.decimals),
+                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: cond,
                               });

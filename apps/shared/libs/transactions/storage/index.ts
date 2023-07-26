@@ -1,2 +1,2 @@
-export * from "./TxStore";
-export * from "./createTxStoreMiddleware";
+export * from './TxStore';
+export * from './createTxStoreMiddleware';

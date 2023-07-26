@@ -1,6 +1,5 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
-import { warp_resolver } from '../types/contracts';
+import { useTx } from '@terra-money/apps/libs/transactions';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 import { TX_KEY } from './txKey';
 
 export type EditTemplateTxProps = {
@@ -8,23 +7,17 @@ export type EditTemplateTxProps = {
   id: string;
 };
 
-type EditTemplateMsg = Extract<warp_resolver.ExecuteMsg, { edit_template: {} }>;
-
 export const useEditTemplateTx = () => {
-  const contractAddress = useContractAddress('warp-resolver');
+  const sdk = useWarpSdk();
 
   return useTx<EditTemplateTxProps>(
-    (options) => {
+    async (options) => {
       const { wallet, name, id } = options;
 
-      return TxBuilder.new()
-        .execute<EditTemplateMsg>(wallet.walletAddress, contractAddress, {
-          edit_template: {
-            id,
-            name,
-          },
-        })
-        .build();
+      return sdk.tx.editTemplate(wallet.walletAddress, {
+        id,
+        name,
+      });
     },
     {
       txKey: TX_KEY.EDIT_TEMPLATE,

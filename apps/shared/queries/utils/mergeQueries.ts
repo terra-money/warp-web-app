@@ -1,9 +1,6 @@
-import { UseQueryResult } from "react-query";
+import { UseQueryResult } from 'react-query';
 
-export const mergeQueries = <T>(
-  queries: UseQueryResult<T>[],
-  mergeData: (acc: T, curr: T) => T
-): UseQueryResult<T> => {
+export const mergeQueries = <T>(queries: UseQueryResult<T>[], mergeData: (acc: T, curr: T) => T): UseQueryResult<T> => {
   return queries.reduce((acc, curr) => {
     return {
       ...acc,

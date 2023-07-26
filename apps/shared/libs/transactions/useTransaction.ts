@@ -1,5 +1,5 @@
-import { Transaction } from ".";
-import { useTransactions } from "./useTransactions";
+import { Transaction } from '.';
+import { useTransactions } from './useTransactions';
 
 const useTransaction = (txHash: string): Transaction | undefined => {
   const transactions = useTransactions();

@@ -6,6 +6,10 @@
     "child_process": false,
     "fs": false
   },
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"./{**/*,*}.{ts,tsx}\""
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -20,16 +24,17 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "./.eslintrc.js"
     ]
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.2",
-    "@terra-money/terra.js": "^3.1.6",
-    "@terra-money/wallet-provider": "^3.11.1",
+    "@terra-money/feather.js": "^1.0.7-beta.4",
+    "@terra-money/feather.js-injective": "npm:@terra-money/feather.js@1.0.9-injective.0",
+    "@terra-money/wallet-kit": "^1.0.4",
+    "@terra-money/warp-sdk": "^0.1.31",
     "assert": "^2.0.0",
     "big.js": "^6.2.1",
     "buffer": "^6.0.3",
@@ -56,6 +61,7 @@
     "stream-http": "^3.2.0",
     "typescript": "^4.8.2",
     "url": "^0.11.0",
+    "usehooks-ts": "^2.6.0",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
@@ -68,7 +74,11 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
     "jest-watch-typeahead": "2.1.1",
+    "prettier": "^2.7.1",
     "react-app-rewired": "^2.2.1"
   }
 }

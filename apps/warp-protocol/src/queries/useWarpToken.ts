@@ -1,9 +1,11 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
+import { CW20Addr } from '@terra-money/warp-sdk';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 import { CW20Token } from 'types';
 
 export const useWarpToken = (): CW20Token => {
+  const sdk = useWarpSdk();
   // TODO: add token address
-  const contractAddress = useContractAddress('warp-controller');
+  const contractAddress = sdk.chain.contracts.controller;
 
   return {
     protocol: 'Warp',
@@ -11,7 +13,7 @@ export const useWarpToken = (): CW20Token => {
     symbol: 'WARP',
     decimals: 6,
     type: 'cw20',
-    token: contractAddress,
+    token: contractAddress as CW20Addr,
     key: contractAddress,
     icon: 'https://assets.terra.money/icon/svg/CW.svg',
   };

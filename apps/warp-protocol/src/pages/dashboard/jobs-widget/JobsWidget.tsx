@@ -7,7 +7,7 @@ import { EmptyView } from './EmptyView';
 import { ActionButton } from 'components/action-button/ActionButton';
 import styles from './JobsWidget.module.sass';
 import { jobWidgetColumns } from './columns';
-import { Link, Text } from 'components/primitives';
+import { Button, Link, Text } from 'components/primitives';
 import { useJobsQuery } from 'queries/useJobsQuery';
 import { Job } from 'types/job';
 import { useJobFiltersDialog } from './dialogs/job-filters/JobFiltersDialog';
@@ -95,7 +95,7 @@ export const JobsWidget = (props: JobsWidgetProps) => {
             )}
           </Text>
           <Actions>
-            <ActionButton
+            <Button
               variant="secondary"
               className={styles.filters}
               onClick={async () => {
@@ -111,7 +111,7 @@ export const JobsWidget = (props: JobsWidgetProps) => {
                 <div className={styles.name}>Filters</div>
                 {statusFilter && <div className={styles.status}>{statusFilter}</div>}
               </div>
-            </ActionButton>
+            </Button>
             <ActionButton
               className={styles.new}
               icon={<PlusIcon className={styles.new_icon} />}

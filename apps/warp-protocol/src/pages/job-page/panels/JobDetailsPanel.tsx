@@ -6,8 +6,8 @@ import { TokenAmount } from 'components/token-amount';
 import { Panel } from 'components/panel';
 import styles from './JobDetailsPanel.module.sass';
 import classNames from 'classnames';
-import { LUNA } from '@terra-money/apps/types';
 import { useCopy } from 'hooks';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 export type JobDetailsPanelProps = {
   job: Job;
@@ -17,6 +17,8 @@ export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
   const { job, className } = props;
 
   const copy = useCopy('address', job.info.owner);
+
+  const nativeToken = useNativeToken();
 
   return (
     <Panel className={classNames(styles.root, className)}>
@@ -35,7 +37,7 @@ export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
           className={styles.reward}
           variant="text"
           decimals={2}
-          token={LUNA}
+          token={nativeToken}
           amount={job.reward}
           showSymbol={true}
           showUsdAmount={true}

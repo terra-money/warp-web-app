@@ -4,13 +4,13 @@ import {
   PendingTransaction,
   useTransactionSubscribers,
 } from '@terra-money/apps/libs/transactions';
-import { useWallet } from '@terra-money/wallet-provider';
+// import { useWallet } from '@terra-money/wallet-kit';
 import { TransactionSnackbar } from 'components/snackbar/TransactionSnackbar';
 import { useSnackbar } from 'notistack';
 import { useRefetchQueries } from 'queries';
 import { TX_KEY } from 'tx';
 import { useRefCallback } from '@terra-money/apps/hooks';
-import { indexerCompletion } from 'utils';
+// import { indexerCompletion } from 'utils';
 
 type TxMessages = Record<TX_KEY, string>;
 
@@ -41,7 +41,7 @@ const FailedSnackbarMessages: TxMessages = {
 };
 
 export const useTransactionSnackbars = () => {
-  const { network } = useWallet();
+  // const { network } = useWallet();
 
   const refetch = useRefetchQueries();
 
@@ -70,28 +70,43 @@ export const useTransactionSnackbars = () => {
   const onCompleted = useRefCallback(
     (transaction: CompletedTransaction) => {
       const txKey = transaction.payload['txKey'] as TX_KEY;
-      indexerCompletion({
-        network,
-        height: transaction.height,
-        txKey,
-        callback: () => {
-          refetch(txKey);
+      // indexerCompletion({
+      //   network,
+      //   height: transaction.height,
+      //   txKey,
+      //   callback: () => {
+      //     refetch(txKey);
 
-          closeSnackbar(transaction.txHash);
+      //     closeSnackbar(transaction.txHash);
 
-          enqueueSnackbar(
-            <TransactionSnackbar
-              transaction={transaction}
-              variant="completed"
-              message={CompletedSnackbarMessages[txKey]}
-            />,
-            {
-              anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-              autoHideDuration: 5000,
-            }
-          );
-        },
-      });
+      //     enqueueSnackbar(
+      //       <TransactionSnackbar
+      //         transaction={transaction}
+      //         variant="completed"
+      //         message={CompletedSnackbarMessages[txKey]}
+      //       />,
+      //       {
+      //         anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
+      //         autoHideDuration: 5000,
+      //       }
+      //     );
+      //   },
+      // });
+      refetch(txKey);
+
+      closeSnackbar(transaction.txHash);
+
+      enqueueSnackbar(
+        <TransactionSnackbar
+          transaction={transaction}
+          variant="completed"
+          message={CompletedSnackbarMessages[txKey]}
+        />,
+        {
+          anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
+          autoHideDuration: 5000,
+        }
+      );
     },
     [refetch, enqueueSnackbar, closeSnackbar]
   );

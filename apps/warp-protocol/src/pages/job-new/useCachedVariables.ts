@@ -1,11 +1,11 @@
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useCallback, useMemo } from 'react';
 import { variableName } from 'utils/variable';
 import { useLocalStorage } from 'usehooks-ts';
 import { warp_controller } from 'types';
 
 export const useCachedVariables = () => {
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const initialValue = useMemo(() => [], []);
   const [cachedVariables, setCachedVariables] = useLocalStorage<warp_controller.Variable[]>(
@@ -15,22 +15,22 @@ export const useCachedVariables = () => {
 
   const setVariables = useCallback(
     (variables: warp_controller.Variable[]) => {
-      if (!connectedWallet) {
+      if (!localWallet.connectedWallet) {
         return;
       }
 
       setCachedVariables(variables);
     },
-    [connectedWallet, setCachedVariables]
+    [localWallet, setCachedVariables]
   );
 
   const variables = useMemo(() => {
-    if (!connectedWallet) {
+    if (!localWallet.connectedWallet) {
       return [];
     }
 
     return cachedVariables ?? [];
-  }, [cachedVariables, connectedWallet]);
+  }, [cachedVariables, localWallet]);
 
   const saveAll = useCallback(
     (variables: warp_controller.Variable[]) => {

@@ -5,6 +5,6 @@ export * from './generateAllObjectPaths';
 export * from './encodeQuery';
 export * from './createPaddedArray';
 export * from './mergeArray';
-export * from './indexerCompletion';
+// export * from './indexerCompletion';
 export * from './fetchIndexerState';
 export * from './sleep';

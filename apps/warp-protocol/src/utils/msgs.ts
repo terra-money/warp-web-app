@@ -39,8 +39,6 @@ export function extractReferencedVarNamesInCosmosMsg(
   const referencedVars: Set<string> = new Set();
   const unreferencedVars: Set<string> = new Set(vars.map((v) => variableName(v)));
 
-  console.log({ msgs });
-
   msgs.forEach((msg) => scanForReferencesForCosmosMsg(msg).forEach((varName) => referencedVars.add(varName)));
 
   vars.forEach((v) => {
@@ -123,9 +121,7 @@ export const scanForReferences = (obj: any): string[] => {
 };
 
 const scanForReferencesForCosmosMsg = (msg: warp_controller.CosmosMsgFor_Empty): string[] => {
-  console.log({ msg });
   const obj = decodeMsg(msg);
-  console.log({ obj });
   return scanForReferences(obj);
 };
 

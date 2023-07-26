@@ -1,5 +1,5 @@
 import { ClickAwayListener } from '@mui/material';
-import { useConnectedWallet, useWallet, WalletStatus } from '@terra-money/wallet-provider';
+import { useWallet, WalletStatus } from '@terra-money/wallet-kit';
 import { UIElementProps } from '@terra-money/apps/components';
 import { useCallback, useState } from 'react';
 import { Container } from '@terra-money/apps/components';
@@ -10,6 +10,8 @@ import styles from './WalletWidget.module.sass';
 import { useConnectWalletDialog } from 'components/dialog/connect-wallet';
 import { Menu, MenuItem } from 'components/menu/Menu';
 import { useCopy } from 'hooks/useCopy';
+import { useChainSelector, useLocalWallet } from '@terra-money/apps/hooks';
+import { useReadOnlyWarningDialog } from 'components/dialog/read-only-warning/ReadOnlyWarningDialog';
 
 interface NotConnectedButtonProps extends Pick<ButtonProps, 'onClick'> {}
 
@@ -47,8 +49,7 @@ export const WalletWidget = (props: UIElementProps) => {
 
   const copy = useCopy('address');
   const { disconnect } = useWallet();
-
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const [open, setOpen] = useState(false);
 
@@ -58,15 +59,29 @@ export const WalletWidget = (props: UIElementProps) => {
   }, [setOpen, disconnect]);
 
   const openConnectWalletDialog = useConnectWalletDialog();
+  const openReadOnlyWarningDialog = useReadOnlyWarningDialog();
+
+  const { selectedChain } = useChainSelector();
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
       <div className={classNames(styles.root, className)}>
-        {connectedWallet === undefined || connectedWallet.walletAddress === undefined ? (
-          <NotConnectedButton onClick={() => openConnectWalletDialog({})} />
+        {localWallet.connectedWallet === undefined || localWallet.connectedWallet.walletAddress === undefined ? (
+          <NotConnectedButton
+            onClick={() => {
+              if (selectedChain.name === 'injective') {
+                openReadOnlyWarningDialog({});
+              } else {
+                openConnectWalletDialog({});
+              }
+            }}
+          />
         ) : (
           <>
-            <ConnectedButton address={connectedWallet.walletAddress} onClick={() => setOpen((open) => !open)} />
+            <ConnectedButton
+              address={localWallet.connectedWallet.walletAddress}
+              onClick={() => setOpen((open) => !open)}
+            />
             {open && (
               <Menu className={styles.menu}>
                 <MenuItem onClick={disconnectWallet}>Disconnect</MenuItem>

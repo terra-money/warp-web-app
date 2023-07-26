@@ -2,7 +2,7 @@ import { Token } from 'types';
 import { useForm } from '@terra-money/apps/hooks';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 
 interface AddFundsInput {
@@ -21,10 +21,10 @@ const initialState: AddFundsState = {
 };
 
 export const useWithdrawFundsForm = (token: Token, balance: u<Big>) => {
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   return useForm<AddFundsInput, AddFundsState>(async (input, getState, dispatch) => {
-    if (connectedWallet === undefined) {
+    if (localWallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 

@@ -1,39 +1,19 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
+import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
-import { warp_controller } from '../types/contracts';
-import { useWarpAccount } from 'queries/useWarpAccount';
-import { useEffect, useRef } from 'react';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 interface ExecuteJobTxProps {
   jobId: string;
 }
 
-type ExecuteMsgType = Extract<warp_controller.ExecuteMsg, { execute_job: {} }>;
-
 export const useExecuteJobTx = () => {
-  const contractAddress = useContractAddress('warp-controller');
-  const { data: account } = useWarpAccount();
-
-  const accountRef = useRef<warp_controller.Account | undefined>();
-
-  useEffect(() => {
-    accountRef.current = account;
-  }, [account]);
+  const sdk = useWarpSdk();
 
   return useTx<ExecuteJobTxProps>(
-    (options) => {
+    async (options) => {
       const { wallet, jobId } = options;
 
-      let txBuilder = TxBuilder.new();
-
-      return txBuilder
-        .execute<ExecuteMsgType>(wallet.walletAddress, contractAddress, {
-          execute_job: {
-            id: jobId,
-          },
-        })
-        .build();
+      return sdk.tx.executeJob(wallet.walletAddress, jobId);
     },
     {
       txKey: TX_KEY.EXECUTE_JOB,

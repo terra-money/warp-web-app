@@ -1,10 +1,8 @@
-import { FormState } from "../hooks";
+import { FormState } from '../hooks';
 
-export function isFormStateValid<T extends {}>(
-  formState: FormState<T>
-): boolean {
+export function isFormStateValid<T extends {}>(formState: FormState<T>): boolean {
   return Object.entries(formState).every(([key, value]) => {
-    const isErrorField = key.endsWith("Error");
+    const isErrorField = key.endsWith('Error');
     if (!isErrorField) {
       return true;
     }

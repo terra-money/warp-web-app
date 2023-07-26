@@ -1,17 +1,9 @@
-import { TxLog } from "@terra-money/terra.js";
-import {
-  CreateTxFailed,
-  SignBytesFailed,
-  Timeout,
-  TxFailed,
-  TxUnspecifiedError,
-  UserDenied,
-} from "@terra-money/wallet-provider";
+import { TxLog } from '@terra-money/feather.js';
 
 export enum TransactionStatus {
-  Pending = "Pending",
-  Completed = "Completed",
-  Failed = "Failed",
+  Pending = 'Pending',
+  Completed = 'Completed',
+  Failed = 'Failed',
 }
 
 export type TransactionPayload = {
@@ -35,20 +27,10 @@ export type CompletedTransaction = TransactionBase & {
 };
 
 export type FailedTransaction = {
-  txHash: string | "";
+  txHash: string | '';
   status: TransactionStatus.Failed;
   payload: TransactionPayload;
-  error:
-    | Error
-    | UserDenied
-    | Timeout
-    | SignBytesFailed
-    | CreateTxFailed
-    | TxFailed
-    | TxUnspecifiedError;
+  error: Error;
 };
 
-export type Transaction =
-  | PendingTransaction
-  | CompletedTransaction
-  | FailedTransaction;
+export type Transaction = PendingTransaction | CompletedTransaction | FailedTransaction;

@@ -1,5 +1,4 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useQuery, UseQueryResult } from 'react-query';
 import { QUERY_KEY } from './queryKey';
 
@@ -16,11 +15,10 @@ type StakingQueryResult = {
 };
 
 export const useStakingQuery = (opts: StakingQueryOpts): UseQueryResult<StakingQueryResult | undefined> => {
-  const connectedWallet = useConnectedWallet();
-  const contractAddress = useContractAddress('warp-controller');
+  const { connectedWallet, chainId } = useLocalWallet();
 
   const query = useQuery(
-    [QUERY_KEY.STAKING, connectedWallet?.network, contractAddress, JSON.stringify(opts)],
+    [QUERY_KEY.STAKING, chainId, JSON.stringify(opts)],
     async ({ queryKey }) => {
       if (!connectedWallet) {
         return [];

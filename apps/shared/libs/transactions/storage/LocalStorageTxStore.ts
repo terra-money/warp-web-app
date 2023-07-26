@@ -1,5 +1,5 @@
-import { Transaction } from "..";
-import { TxStore } from "./TxStore";
+import { Transaction } from '..';
+import { TxStore } from './TxStore';
 
 class LocalStorageTxStore implements TxStore {
   private readonly _key: string;
@@ -31,7 +31,7 @@ class LocalStorageTxStore implements TxStore {
 
   private parseJSON = (value: string | null): Transaction[] | undefined => {
     try {
-      return value === "undefined" ? undefined : JSON.parse(value ?? "");
+      return value === 'undefined' ? undefined : JSON.parse(value ?? '');
     } catch {
       return undefined;
     }

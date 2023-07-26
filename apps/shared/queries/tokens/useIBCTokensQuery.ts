@@ -1,5 +1,5 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { useWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '../../hooks';
 import { IBCTokensResponse } from '../../types';
 import { fixTokenResponse } from '../index';
 import { QUERY_KEY } from '../queryKey';
@@ -17,12 +17,12 @@ const fetchIBCTokens = async (network: string): Promise<IBCTokensResponse> => {
 };
 
 export const useIBCTokensQuery = (): UseQueryResult<IBCTokensResponse> => {
-  const { network } = useWallet();
+  const wallet = useLocalWallet();
 
   return useQuery(
-    [QUERY_KEY.IBC_TOKENS, network.name],
+    [QUERY_KEY.IBC_TOKENS, wallet.chainId],
     () => {
-      return fetchIBCTokens(network.name);
+      return fetchIBCTokens(wallet.connectedWallet?.network ?? 'mainnet');
     },
     {
       refetchOnMount: false,

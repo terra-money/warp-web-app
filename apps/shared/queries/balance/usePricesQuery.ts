@@ -1,13 +1,7 @@
-import { useQuery, UseQueryResult } from "react-query";
-import { useWallet } from "@terra-money/wallet-provider";
-import Big from "big.js";
-import { useCW20TokensQuery, useIBCTokensQuery } from "../tokens";
-import {
-  CW20TokensResponse,
-  IBCTokensResponse,
-  LUNA,
-  Token,
-} from "../../types";
+import { useQuery, UseQueryResult } from 'react-query';
+import Big from 'big.js';
+import { useCW20TokensQuery, useIBCTokensQuery } from '../tokens';
+import { CW20TokensResponse, IBCTokensResponse, INJ, LUNA, Token } from '../../types';
 
 const mapTokens = (tokens: Token[]): Record<string, string> => {
   return tokens.reduce((previous, current) => {
@@ -27,18 +21,18 @@ export const fetchCoinGeckoPrices = async (
   ibcTokens: IBCTokensResponse
 ): Promise<Record<string, Big>> => {
   const tokens = {
-    ...mapTokens([LUNA]),
+    ...mapTokens([LUNA, INJ]),
     ...mapTokens(Object.values(cw20Tokens)),
     ...mapTokens(Object.values(ibcTokens)),
   };
 
-  const uri = `https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency}&ids=${Object.keys(
-    tokens
-  ).join(",")}`;
+  const uri = `https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency}&ids=${Object.keys(tokens).join(
+    ','
+  )}`;
 
   const response = await fetch(uri);
   if (response.status !== 200) {
-    console.log("An error occurred trying to fetch the prices");
+    console.log('An error occurred trying to fetch the prices');
     return {};
   }
 
@@ -52,16 +46,14 @@ export const fetchCoinGeckoPrices = async (
   }, {});
 };
 
-type QuoteCurrency = "usd";
+type QuoteCurrency = 'usd';
 
 export const usePricesQuery = (
   // TODO - Come up with a better way to pass the query key
-  queryName: string = "QUERY:PRICES"
+  queryName: string = 'QUERY:PRICES'
 ): UseQueryResult<Record<string, Big>> => {
-  const { network } = useWallet();
-
   // this should eventually come from personalization settings
-  const currency: QuoteCurrency = "usd";
+  const currency: QuoteCurrency = 'usd';
 
   const { data: cw20Tokens } = useCW20TokensQuery();
 
@@ -70,7 +62,7 @@ export const usePricesQuery = (
   const FiveMinutes = 5 * 60 * 1000;
 
   return useQuery(
-    [queryName, network],
+    [queryName],
     () => {
       if (cw20Tokens === undefined || ibcTokens === undefined) {
         return Promise.resolve({});

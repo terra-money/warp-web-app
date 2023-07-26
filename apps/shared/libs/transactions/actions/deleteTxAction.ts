@@ -1,4 +1,4 @@
-import { ActionType, TxThunkAction } from ".";
+import { ActionType, TxThunkAction } from '.';
 
 const deleteTxAction = (txHash: string): TxThunkAction => {
   return (dispatch) => {
