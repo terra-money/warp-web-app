@@ -19,7 +19,6 @@ COPY --from=builder_stage_1 /build /build
 
 WORKDIR /build
 
-COPY refs.json .
 COPY indexers/shared/package.json ./indexers/shared/package.json
 COPY indexers/warp-protocol/package.json ./indexers/warp-protocol/package.json
 COPY apps/shared-api/package.json ./apps/shared-api/package.json
