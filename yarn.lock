@@ -70,7 +70,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
-    "@terra-money/feather.js": 1.0.7-beta.1
+    "@terra-money/feather.js": 1.0.7-beta.4
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^0.27.2
@@ -4337,29 +4337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/feather.js@npm:1.0.7-beta.1":
-  version: 1.0.7-beta.1
-  resolution: "@terra-money/feather.js@npm:1.0.7-beta.1"
-  dependencies:
-    "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7"
-    "@terra-money/terra.proto": 3.0.5
-    axios: ^0.27.2
-    bech32: ^2.0.0
-    bip32: ^2.0.6
-    bip39: ^3.0.3
-    bufferutil: ^4.0.3
-    decimal.js: ^10.2.1
-    jscrypto: ^1.0.1
-    readable-stream: ^3.6.0
-    secp256k1: ^4.0.2
-    tmp: ^0.2.1
-    utf-8-validate: ^5.0.5
-    ws: ^7.5.9
-  checksum: 3c212092ac25313286ea7c22554bd0a679ae8420d10a924cb65d9c8a2594f4a77597f07dd3bc6f35ce2d837c56839fa9605755c69499e3dc39356bdd365a82a8
-  languageName: node
-  linkType: hard
-
-"@terra-money/feather.js@npm:^1.0.7-beta.4":
+"@terra-money/feather.js@npm:1.0.7-beta.4, @terra-money/feather.js@npm:^1.0.7-beta.4":
   version: 1.0.7-beta.4
   resolution: "@terra-money/feather.js@npm:1.0.7-beta.4"
   dependencies:
@@ -5480,7 +5458,8 @@ __metadata:
     "@apps-shared/indexers": "workspace:^"
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
-    "@terra-money/feather.js": 1.0.7-beta.1
+    "@terra-money/feather.js": ^1.0.7-beta.4
+    "@terra-money/warp-sdk": ^0.1.31
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^0.27.2

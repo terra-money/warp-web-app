@@ -5,7 +5,7 @@ import { TableNames } from "./TableNames";
 export const PK_NAME = "pk";
 
 export class StateTableInitializer extends TableInitializer {
-  constructor(tableName: string = TableNames.state()) {
+  constructor(chainName: string, tableName: string = TableNames.state(chainName)) {
     super({ tableName });
   }
 

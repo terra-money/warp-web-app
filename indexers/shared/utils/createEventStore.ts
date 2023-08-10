@@ -3,7 +3,8 @@ import { DynamoDBEventStore, EventStore } from "../services/event-store";
 import { createDynamoDBClient } from "./createDynamoDBClient";
 
 export const createEventStore = (
-  tableName: string = TableNames.events()
+  chainName: string,
+  tableName: string = TableNames.events(chainName)
 ): EventStore => {
   return new DynamoDBEventStore({
     tableName,

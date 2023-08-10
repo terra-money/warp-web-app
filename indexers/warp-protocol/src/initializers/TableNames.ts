@@ -1,13 +1,13 @@
 import { makeTableName } from '@apps-shared/indexers/utils';
 
 export class TableNames {
-  static analytics() {
-    return makeTableName('analytics');
+  static analytics(chainName: string) {
+    return makeTableName('analytics', chainName);
   }
-  static jobs() {
-    return makeTableName('jobs');
+  static jobs(chainName: string) {
+    return makeTableName('jobs', chainName);
   }
-  static accounts() {
-    return makeTableName('accounts');
+  static accounts(chainName: string) {
+    return makeTableName('accounts', chainName);
   }
 }

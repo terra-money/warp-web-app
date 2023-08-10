@@ -8,29 +8,33 @@ type AsyncCallback = (block: Block) => Promise<void>;
 
 type BlockListenerOptions = {
   lcd: LCDClient;
+  chainId: string;
 };
 
 export class BlockListener {
   private readonly logger: Logger;
   private readonly lcd: LCDClient;
 
+  public chainId: string;
+
   constructor(options: BlockListenerOptions) {
     this.logger = new Logger('BlockListener');
     this.lcd = options.lcd;
+    this.chainId = options.chainId;
   }
 
   private wait = async (height: number): Promise<[BlockInfo, TxInfo[]]> => {
     let block: BlockInfo;
     while (true) {
       try {
-        block = await this.lcd.tendermint.blockInfo(process.env.CHAIN_ID, height);
+        block = await this.lcd.tendermint.blockInfo(this.chainId, height);
 
         if (block === null || block === undefined) {
           await sleep(1000);
           continue;
         }
 
-        const txs = await this.lcd.tx.txInfosByHeight(process.env.CHAIN_ID, height);
+        const txs = await this.lcd.tx.txInfosByHeight(this.chainId, height);
 
         return [block, txs];
       } catch (err) {

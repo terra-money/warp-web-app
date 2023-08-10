@@ -7,7 +7,7 @@ export const PK_NAME = 'pk';
 export const SK_NAME = 'sk';
 
 export class AccountsTableInitializer extends TableInitializer {
-  constructor(tableName: string = TableNames.jobs()) {
+  constructor(chainName: string, tableName: string = TableNames.jobs(chainName)) {
     super({ tableName });
   }
 

@@ -21,6 +21,7 @@ interface IndexerOptions<Entity>
     "tableName" | "pkName" | "pk" | "skName" | "sk" | "skName"
   > {
   name: string;
+  chainName: string;
 }
 
 export interface IndexFnOptions {
@@ -45,22 +46,22 @@ export abstract class EventIndexer<Entity> implements Runnable {
     this.logger = new Logger(options.name);
 
     this.persistence = createPersistence<Entity>(
-      this.options.tableName ?? makeTableName(this.options.name),
+      this.options.tableName ?? makeTableName(this.options.name, this.options.chainName),
       this.options.pk,
       this.options.sk,
       this.options.pkName,
       this.options.skName
     );
 
-    this.state = createState(`indexer:warp-${this.options.name}`);
+    this.state = createState(`indexer:warp-${this.options.name}`, this.options.chainName);
 
-    this.events = createEventStore();
+    this.events = createEventStore(this.options.chainName);
   }
 
   abstract index(options: IndexFnOptions): Promise<void>;
 
   private fetchCollectorEpoch = async (): Promise<Epoch> => {
-    const state = createState("collector:warp-events");
+    const state = createState("collector:warp-events", this.options.chainName);
 
     return await state.get(Environment.getGenesis());
   };
