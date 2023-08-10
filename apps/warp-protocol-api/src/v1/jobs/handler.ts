@@ -14,7 +14,7 @@ export const get: RequestHandler = async (request, response): Promise<void> => {
   const dynamoDBClient = createDynamoDBClient();
 
   const jobs = await fetchAll<Entity>(dynamoDBClient, {
-    TableName: TableNames.jobs(),
+    TableName: TableNames.jobs(params.chain),
     IndexName: "idx-owner",
     Limit: params.limit,
     KeyConditionExpression: `#a = :a and ${JOBS_SK_NAME} = :b`,

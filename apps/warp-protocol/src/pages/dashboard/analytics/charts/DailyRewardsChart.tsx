@@ -8,8 +8,6 @@ import styles from './DailyRewardsChart.module.sass';
 import { u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useNativeToken } from 'hooks/useNativeToken';
-import { useChainSelector } from '@terra-money/apps/hooks';
-import { BigPlaceholder } from '../placeholders/BigPlaceholder';
 
 export const DailyRewardsChart = (props: UIElementProps) => {
   const { className } = props;
@@ -17,12 +15,6 @@ export const DailyRewardsChart = (props: UIElementProps) => {
   const { isLoading, total, values, labels } = useAnalyticsData('reward_amount');
 
   const nativeToken = useNativeToken();
-
-  const { selectedChain } = useChainSelector();
-
-  if (selectedChain.name === 'injective') {
-    return <BigPlaceholder />;
-  }
 
   return (
     <ChartContainer

@@ -19,15 +19,20 @@ const makePK = (...parts: string[]) => {
 };
 
 export class Indexer extends EventIndexer<Entity> {
-  constructor() {
+  chainName: string;
+
+  constructor(chainName: string) {
     super({
       name: 'analytics',
-      tableName: TableNames.analytics(),
+      tableName: TableNames.analytics(chainName),
       pk: PK,
       sk: SK,
       pkName: ANALYTICS_PK_NAME,
+      chainName,
       skName: ANALYTICS_SK_NAME,
     });
+
+    this.chainName = chainName;
   }
 
   private save = async (type: string, counts: Array<Pick<Entity, 'timestamp' | 'value'>>) => {
@@ -52,7 +57,7 @@ export class Indexer extends EventIndexer<Entity> {
 
     for (let timestamp of timestamps) {
       const entities = await fetchAll<Entity>(dynamoDBClient, {
-        TableName: TableNames.analytics(),
+        TableName: TableNames.analytics(this.chainName),
         KeyConditions: {
           [ANALYTICS_PK_NAME]: {
             AttributeValueList: [{ S: fromPK }],

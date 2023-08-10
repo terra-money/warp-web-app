@@ -1,13 +1,13 @@
-import { CreateTableCommandInput } from "@aws-sdk/client-dynamodb";
-import { TableNames } from "./TableNames";
-import { TableInitializer } from "@apps-shared/indexers/initializers";
+import { CreateTableCommandInput } from '@aws-sdk/client-dynamodb';
+import { TableNames } from './TableNames';
+import { TableInitializer } from '@apps-shared/indexers/initializers';
 
-export const PK_NAME = "pk";
+export const PK_NAME = 'pk';
 
-export const SK_NAME = "sk";
+export const SK_NAME = 'sk';
 
 export class JobsTableInitializer extends TableInitializer {
-  constructor(tableName: string = TableNames.jobs()) {
+  constructor(chainName: string, tableName: string = TableNames.jobs(chainName)) {
     super({ tableName });
   }
 
@@ -17,42 +17,42 @@ export class JobsTableInitializer extends TableInitializer {
       KeySchema: [
         {
           AttributeName: PK_NAME,
-          KeyType: "HASH",
+          KeyType: 'HASH',
         },
         {
           AttributeName: SK_NAME,
-          KeyType: "RANGE",
+          KeyType: 'RANGE',
         },
       ],
       AttributeDefinitions: [
         {
           AttributeName: PK_NAME,
-          AttributeType: "S",
+          AttributeType: 'S',
         },
         {
           AttributeName: SK_NAME,
-          AttributeType: "S",
+          AttributeType: 'S',
         },
         {
-          AttributeName: "owner",
-          AttributeType: "S",
+          AttributeName: 'owner',
+          AttributeType: 'S',
         },
       ],
       GlobalSecondaryIndexes: [
         {
-          IndexName: "idx-owner",
+          IndexName: 'idx-owner',
           KeySchema: [
             {
-              AttributeName: "owner",
-              KeyType: "HASH",
+              AttributeName: 'owner',
+              KeyType: 'HASH',
             },
             {
               AttributeName: SK_NAME,
-              KeyType: "RANGE",
+              KeyType: 'RANGE',
             },
           ],
           Projection: {
-            ProjectionType: "ALL",
+            ProjectionType: 'ALL',
           },
           ProvisionedThroughput: {
             ReadCapacityUnits: 3,

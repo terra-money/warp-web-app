@@ -4,7 +4,8 @@ import { createDynamoDBClient } from "./createDynamoDBClient";
 
 export const createState = (
   keyName: string,
-  tableName: string = TableNames.state()
+  chainName: string,
+  tableName: string = TableNames.state(chainName)
 ): State => {
   return new DynamoDBState({
     keyName,

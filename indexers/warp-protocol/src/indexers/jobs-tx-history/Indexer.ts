@@ -25,15 +25,20 @@ export const PK: KeySelector<Entity> = (data) => data.job_id;
 export const SK: KeySelector<Entity> = (data) => `tx:${data.timestamp}`;
 
 export class Indexer extends EventIndexer<Entity> {
-  constructor() {
+  chainName: string;
+
+  constructor(chainName: string) {
     super({
       name: 'jobs-tx-history',
-      tableName: TableNames.jobs(),
+      tableName: TableNames.jobs(chainName),
       pk: PK,
       sk: SK,
       pkName: JOBS_PK_NAME,
+      chainName,
       skName: JOBS_SK_NAME,
     });
+
+    this.chainName = chainName;
   }
 
   private update = async <InputEvent extends Event, OutputEntity extends Entity>(

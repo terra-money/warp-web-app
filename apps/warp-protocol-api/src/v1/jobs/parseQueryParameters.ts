@@ -3,12 +3,13 @@ import {
   parseQueryString,
   withLimitParam,
 } from "@apps-shared/api/utils";
-import { QueryParamConfigMap, StringParam } from "serialize-query-params";
+import { QueryParamConfigMap, StringParam, withDefault } from "serialize-query-params";
 import { ParsedQs } from "qs";
 
 interface QueryStringParameters {
   owner?: string;
   limit: number;
+  chain: string;
 }
 
 export const parseQueryParameters = (
@@ -17,6 +18,7 @@ export const parseQueryParameters = (
   const definition: QueryParamConfigMap = {
     owner: StringParam,
     limit: withLimitParam(),
+    chain: withDefault(StringParam, 'terra')
   };
 
   const validation = (params: QueryStringParameters): QueryStringParameters => {

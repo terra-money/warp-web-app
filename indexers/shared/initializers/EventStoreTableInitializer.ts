@@ -1,9 +1,9 @@
-import { CreateTableCommandInput } from "@aws-sdk/client-dynamodb";
-import { TableInitializer } from "./TableInitializer";
-import { TableNames } from "./TableNames";
+import { CreateTableCommandInput } from '@aws-sdk/client-dynamodb';
+import { TableInitializer } from './TableInitializer';
+import { TableNames } from './TableNames';
 
 export class EventStoreTableInitializer extends TableInitializer {
-  constructor(tableName: string = TableNames.events()) {
+  constructor(chainName: string, tableName: string = TableNames.events(chainName)) {
     super({ tableName });
   }
 
@@ -12,43 +12,43 @@ export class EventStoreTableInitializer extends TableInitializer {
       TableName: tableName,
       KeySchema: [
         {
-          AttributeName: "pk",
-          KeyType: "HASH",
+          AttributeName: 'pk',
+          KeyType: 'HASH',
         },
         {
-          AttributeName: "sk",
-          KeyType: "RANGE",
+          AttributeName: 'sk',
+          KeyType: 'RANGE',
         },
       ],
       AttributeDefinitions: [
         {
-          AttributeName: "pk",
-          AttributeType: "S",
+          AttributeName: 'pk',
+          AttributeType: 'S',
         },
         {
-          AttributeName: "sk",
-          AttributeType: "B",
+          AttributeName: 'sk',
+          AttributeType: 'B',
         },
         {
-          AttributeName: "timestamp",
-          AttributeType: "N",
+          AttributeName: 'timestamp',
+          AttributeType: 'N',
         },
       ],
       LocalSecondaryIndexes: [
         {
-          IndexName: "idx-timestamp",
+          IndexName: 'idx-timestamp',
           KeySchema: [
             {
-              AttributeName: "pk",
-              KeyType: "HASH",
+              AttributeName: 'pk',
+              KeyType: 'HASH',
             },
             {
-              AttributeName: "timestamp",
-              KeyType: "RANGE",
+              AttributeName: 'timestamp',
+              KeyType: 'RANGE',
             },
           ],
           Projection: {
-            ProjectionType: "ALL",
+            ProjectionType: 'ALL',
           },
         },
       ],

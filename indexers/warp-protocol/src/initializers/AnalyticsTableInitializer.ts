@@ -7,7 +7,7 @@ export const PK_NAME = "type";
 export const SK_NAME = "timestamp";
 
 export class AnalyticsTableInitializer extends TableInitializer {
-  constructor(tableName: string = TableNames.analytics()) {
+  constructor(chainName: string, tableName: string = TableNames.analytics(chainName)) {
     super({ tableName });
   }
 
