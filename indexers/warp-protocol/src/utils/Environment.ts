@@ -54,12 +54,45 @@ export class Environment {
     Environment.chain = new ChainModule(Environment.lcd.config['phoenix-1']);
   }
 
-  static getGenesis = (): Epoch => {
+  static getGenesis = (chainName: string): Epoch => {
     // TODO: figure out what to do with this
-    return {
-      height: +process.env.GENESIS_HEIGHT,
-      timestamp: +process.env.GENESIS_TIMESTAMP,
-    };
+    if (chainName === 'terra') {
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 5538968,
+          // timestamp: 1686943148351
+          timestamp: 1686943148,
+          // "genesis_timestamp": "1676484704",
+          // "genesis_height": "3792619"
+        };
+      } else {
+        // testnet
+        return {
+          height: 6037839,
+          // timestamp: 1686785347000
+          timestamp: 1686785347,
+        };
+        // "genesis_timestamp": "1657555200",
+        // "genesis_height": "2738748"
+      }
+    }
+
+    if (chainName === 'injective') {
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 39864742,
+          // timestamp: 1690386412736
+          timestamp: 1690386412,
+        };
+      } else {
+        // testnet
+        return {
+          height: 13824322,
+          // timestamp: 1689894487535
+          timestamp: 1689894487,
+        };
+      }
+    }
   };
 
   static getContractAddress(chainName: string, contract: keyof ContractAddresses) {

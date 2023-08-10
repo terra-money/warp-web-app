@@ -63,7 +63,7 @@ export abstract class EventIndexer<Entity> implements Runnable {
   private fetchCollectorEpoch = async (): Promise<Epoch> => {
     const state = createState("collector:warp-events", this.options.chainName);
 
-    return await state.get(Environment.getGenesis());
+    return await state.get(Environment.getGenesis(this.options.chainName));
   };
 
   run = async (): Promise<void> => {
@@ -71,7 +71,7 @@ export abstract class EventIndexer<Entity> implements Runnable {
 
     const current = await this.fetchCollectorEpoch();
 
-    const genesis = Environment.getGenesis();
+    const genesis = Environment.getGenesis(this.options.chainName);
 
     await this.index({
       current,

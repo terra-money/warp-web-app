@@ -17,7 +17,7 @@ const run = async (chainName: string) => {
 
   const state = createState('collector:warp-events', chainName);
 
-  const genesis = Environment.getGenesis();
+  const genesis = Environment.getGenesis(chainName);
 
   const warpControllerAddress = Environment.getContractAddress(chainName, 'controller');
 
