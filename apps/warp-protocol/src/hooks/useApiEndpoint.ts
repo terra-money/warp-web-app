@@ -22,28 +22,29 @@ type AnalyticsEndpoint = {
     limit: number;
     direction?: Direction;
     type: string;
+    chain: string;
   };
 };
 
 type HealthCheckEndpoint = {
   path: 'v1/health-check';
-  params: { type: string };
+  params: { type: string; chain: string };
 };
 
 type JobEndpoint = {
   path: 'v1/jobs/{id}';
-  route: { id: string };
+  route: { id: string; chain: string };
 };
 
 type JobHistoryEndpoint = {
   path: 'v1/jobs/{id}/history';
   route: { id: string };
-  params: { limit: number; direction?: Direction };
+  params: { limit: number; direction?: Direction; chain: string };
 };
 
 type JobsEndpoint = {
   path: 'v1/jobs';
-  params: { owner: string };
+  params: { owner: string; chain: string };
 };
 
 type Endpoints = AnalyticsEndpoint | HealthCheckEndpoint | JobEndpoint | JobHistoryEndpoint | JobsEndpoint;
