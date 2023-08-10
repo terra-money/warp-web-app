@@ -1,15 +1,8 @@
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react';
 
 export enum Theme {
-  Light = "light",
-  Dark = "dark",
+  Light = 'light',
+  Dark = 'dark',
 }
 
 type ThemeContextType = [Theme, Dispatch<SetStateAction<Theme>>];
@@ -19,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw Error("ThemeContext has not been defined.");
+    throw Error('ThemeContext has not been defined.');
   }
   return context;
 };
@@ -34,9 +27,7 @@ const ThemeProvider = (props: ThemeProviderProps) => {
 
   const state = useState(defaultTheme);
 
-  return (
-    <ThemeContext.Provider value={state}>{children}</ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={state}>{children}</ThemeContext.Provider>;
 };
 
 export { ThemeProvider, useTheme };

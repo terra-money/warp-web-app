@@ -1,17 +1,17 @@
-import { UIElementProps } from "@terra-money/apps/components";
-import classNames from "classnames";
-import { useNavigationType } from "react-router";
-import { CSSTransition } from "react-transition-group";
-import styles from "./AnimatedPage.module.sass";
+import { UIElementProps } from '@terra-money/apps/components';
+import classNames from 'classnames';
+import { useNavigationType } from 'react-router';
+import { CSSTransition } from 'react-transition-group';
+import styles from './AnimatedPage.module.sass';
 
-type Gutters = "none" | "normal";
+type Gutters = 'none' | 'normal';
 
 interface AnimatedPageProps extends UIElementProps {
   gutters?: Gutters;
 }
 
 export const AnimatedPage = (props: AnimatedPageProps) => {
-  const { className, children, gutters = "normal" } = props;
+  const { className, children, gutters = 'normal' } = props;
 
   const type = useNavigationType();
 
@@ -27,7 +27,7 @@ export const AnimatedPage = (props: AnimatedPageProps) => {
     >
       <div
         className={classNames(className, styles.root, {
-          [styles.gutters]: gutters === "normal",
+          [styles.gutters]: gutters === 'normal',
         })}
         data-navigation={type}
       >

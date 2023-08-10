@@ -8,7 +8,7 @@ import { useWarpToken } from '../../../queries/useWarpToken';
 import { useTokenBalanceQuery } from '../../../queries/useTokenBalanceQuery';
 import { ChangeEvent, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 type StakeWarpDialogProps = void;
 
@@ -21,10 +21,10 @@ export const StakeWarpDialog = (props: DialogProps<StakeWarpDialogProps, StakeWa
 
   const [amount, setAmount] = useState('');
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
 
   const warp = useWarpToken();
-  const { data: balance = 0 } = useTokenBalanceQuery(connectedWallet?.walletAddress!, warp);
+  const { data: balance = 0 } = useTokenBalanceQuery(localWallet.connectedWallet?.walletAddress!, warp);
 
   const onChange = (ev: ChangeEvent<HTMLInputElement>) => {
     let num = null;

@@ -1,80 +1,68 @@
-import { ConnectType, useConnectedWallet, useWallet } from '@terra-money/wallet-provider';
+import { useWallet } from '@terra-money/wallet-kit';
 import { Button, Text } from 'components/primitives';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ReactComponent as WalletIcon } from 'components/assets/Wallet.svg';
-import { useDialog, DialogProps } from '@terra-money/apps/hooks';
+import { useEffect, useRef, useState } from 'react';
+import { useDialog, DialogProps, useLocalWallet } from '@terra-money/apps/hooks';
 import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import styles from './ConnectWalletDialog.module.sass';
-import { useLocalStorage } from 'usehooks-ts';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useCreateAccountDialog } from './CreateAccountDialog';
-
-const connectionsMetadata = {
-  [ConnectType.EXTENSION]: {
-    icon: <WalletIcon />,
-  },
-  [ConnectType.WALLETCONNECT]: {
-    icon: <WalletIcon />,
-  },
-};
-
-const supportedSet = new Set(Object.keys(connectionsMetadata)) as Set<ConnectType>;
+import { warp_controller } from 'types';
 
 type ConnectWalletDialogProps = {
   title?: string;
   subtitle?: string;
 };
 
-export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps, ConnectType>) => {
+// TODO: filter for supported available wallets
+
+export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps, boolean>) => {
   const { closeDialog, title, subtitle } = props;
-  const { connect, availableConnections } = useWallet();
-  const [, setLastConnectedType] = useLocalStorage<ConnectType>(
-    '__payment_protocol_last_connect_type',
-    ConnectType.EXTENSION
-  );
+  const { connect, availableWallets } = useWallet();
 
-  const { data: warpAccount, isFetching } = useWarpAccount();
-
+  const warpAccountQuery = useWarpAccount();
+  const { data: warpAccount } = warpAccountQuery;
   const openCreateAccountDialog = useCreateAccountDialog();
 
   const [executed, setExecuted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const connectedWallet = useConnectedWallet();
+  const localWallet = useLocalWallet();
+
+  const warpAccountRef = useRef<warp_controller.Account>();
+
+  warpAccountRef.current = warpAccount;
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     const cb = async () => {
-      if (connectedWallet) {
-        // // TODO: check for loading state flicker
-        if (!warpAccount && !isFetching && !executed) {
-          setExecuted(true);
-          const resp = await openCreateAccountDialog({});
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
-          if (resp) {
-            closeDialog(connectedWallet.connectType, { closeAll: true });
+      if (localWallet.connectedWallet) {
+        timeoutId = setTimeout(async () => {
+          if (!warpAccountRef.current && !executed) {
+            setExecuted(true);
+            const resp = await openCreateAccountDialog({});
+
+            if (resp) {
+              closeDialog(true, { closeAll: true });
+            }
           }
-        }
 
-        if (warpAccount) {
-          closeDialog(connectedWallet?.connectType, { closeAll: true });
-        }
+          if (warpAccountRef.current) {
+            closeDialog(true, { closeAll: true });
+          }
+        }, 400);
       }
     };
 
     cb();
-  }, [warpAccount, isFetching, connectedWallet, closeDialog, openCreateAccountDialog, setExecuted, executed]);
 
-  const connectWallet = useCallback(
-    async (connectionType: ConnectType) => {
-      connect(connectionType);
-      setLastConnectedType(connectionType);
-    },
-    [connect, setLastConnectedType]
-  );
-
-  const supportedConnections = useMemo(
-    () => availableConnections.filter((c) => supportedSet.has(c.type)),
-    [availableConnections]
-  );
+    // Clear the timeout if the component re-renders or unmounts
+    return () => clearTimeout(timeoutId);
+  }, [warpAccountRef, localWallet.connectedWallet, closeDialog, openCreateAccountDialog, setExecuted, executed]);
 
   return (
     <Dialog className={styles.root}>
@@ -85,9 +73,17 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
             {subtitle}
           </Text>
         )}
-        {supportedConnections.map((c, idx) => {
+        {availableWallets.map((c, idx) => {
           return (
-            <Button loading={isFetching} className={styles.connection} key={idx} onClick={() => connectWallet(c.type)}>
+            <Button
+              loading={loading}
+              className={styles.connection}
+              key={idx}
+              onClick={() => {
+                connect(c.id);
+                setLoading(true);
+              }}
+            >
               {c.name}
               <img src={c.icon} alt={c.name} />
             </Button>
@@ -99,5 +95,5 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
 };
 
 export const useConnectWalletDialog = () => {
-  return useDialog<ConnectWalletDialogProps, ConnectType>(ConnectWalletDialog);
+  return useDialog<ConnectWalletDialogProps, boolean>(ConnectWalletDialog);
 };

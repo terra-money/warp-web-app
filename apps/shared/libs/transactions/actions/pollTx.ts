@@ -1,4 +1,4 @@
-import { LCDClient, TxInfo } from '@terra-money/terra.js';
+import { LCDClient, TxInfo } from '@terra-money/feather.js';
 import { sleep } from '../../../utils';
 import { CancellationToken, None } from '../../cancellation';
 import { TerraTxError } from './terraTxError';
@@ -23,7 +23,8 @@ export const pollTx = async function (
 
   while (Date.now() < timeout && cancellationToken.cancelled() === false) {
     try {
-      const resp = await lcd.tx.txInfo(txHash);
+      // TODO: temporary, updated with f(selected_chain, selected_network)
+      const resp = await lcd.tx.txInfo(txHash, 'pisco-1');
 
       if (resp.code !== 0) {
         throw new TerraTxError(resp);

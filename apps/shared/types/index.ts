@@ -1,4 +1,4 @@
-import Big, { BigSource } from 'big.js';
+import { BigSource } from 'big.js';
 
 export type NominalType<T extends BigSource> = { __type: T };
 

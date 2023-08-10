@@ -1,4 +1,4 @@
-import { None } from "../libs/cancellation";
+import { None } from '../libs/cancellation';
 
 export function sleep(ms: number, token = None) {
   return new Promise<void>((resolve, reject) => {

@@ -1,28 +1,19 @@
-import { useContractAddress } from '@terra-money/apps/hooks';
-import { useTx, TxBuilder } from '@terra-money/apps/libs/transactions';
+import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
-import { warp_controller } from 'types/contracts';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 interface CancelJobTxProps {
   jobId: string;
 }
 
-type ExecuteMsgType = Extract<warp_controller.ExecuteMsg, { delete_job: {} }>;
-
 export const useCancelJobTx = () => {
-  const contractAddress = useContractAddress('warp-controller');
+  const sdk = useWarpSdk();
 
   return useTx<CancelJobTxProps>(
-    (options) => {
+    async (options) => {
       const { wallet, jobId } = options;
 
-      return TxBuilder.new()
-        .execute<ExecuteMsgType>(wallet.walletAddress, contractAddress, {
-          delete_job: {
-            id: jobId,
-          },
-        })
-        .build();
+      return sdk.tx.deleteJob(wallet.walletAddress, jobId);
     },
     {
       txKey: TX_KEY.CANCEL_JOB,

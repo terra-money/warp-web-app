@@ -5,7 +5,7 @@ export type RefCallback<T> = T & NominalType<'RefCallback'>;
 
 export const useRefCallback = <T extends (...args: any[]) => any>(
   callback: T,
-  deps: DependencyList,
+  deps: DependencyList
 ): RefCallback<T> => {
   const ref = useRef(callback);
 
@@ -20,6 +20,6 @@ export const useRefCallback = <T extends (...args: any[]) => any>(
         const fn = ref.current;
         return fn(...args);
       }) as RefCallback<T>,
-    [ref],
+    [ref]
   );
 };

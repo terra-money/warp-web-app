@@ -1,6 +1,6 @@
-import { TxState } from "./TxState";
-import { ActionType, TxAction } from "./actions";
-import { CompletedTransaction, TransactionStatus } from "./types";
+import { TxState } from './TxState';
+import { ActionType, TxAction } from './actions';
+import { CompletedTransaction, TransactionStatus } from './types';
 
 const transactionsReducer = (state: TxState, action: TxAction): TxState => {
   switch (action.type) {
@@ -19,9 +19,7 @@ const transactionsReducer = (state: TxState, action: TxAction): TxState => {
     case ActionType.Delete:
       return {
         ...state,
-        transactions: state.transactions.filter(
-          (transaction) => transaction.txHash !== action.payload.txHash
-        ),
+        transactions: state.transactions.filter((transaction) => transaction.txHash !== action.payload.txHash),
       };
     case ActionType.Complete:
       return {

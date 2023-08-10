@@ -1,13 +1,21 @@
-import { FormFunction, FormInitializer, FormModifier, FormState, useForm } from '@terra-money/apps/hooks';
+import {
+  FormFunction,
+  FormInitializer,
+  FormModifier,
+  FormState,
+  LocalWallet,
+  useForm,
+  useLocalWallet,
+} from '@terra-money/apps/hooks';
 import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
-import { LUNA, Token, u } from '@terra-money/apps/types';
-import { ConnectedWallet, useConnectedWallet } from '@terra-money/wallet-provider';
+import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import { warp_resolver } from 'types';
 import { templateVariables } from 'utils/variable';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 export interface DetailsFormInput {
   name: string;
@@ -28,7 +36,7 @@ interface DetailsFormState extends FormState<DetailsFormInput> {
 
 const dispatchBalance = async (
   dispatch: FormModifier<DetailsFormState>,
-  connectedWallet: ConnectedWallet,
+  localWallet: LocalWallet,
   token: Token,
   prefix: string
 ) => {
@@ -37,10 +45,8 @@ const dispatchBalance = async (
     [`${prefix}BalanceLoading`]: true,
   });
 
-  const { network, walletAddress } = connectedWallet;
-
   try {
-    const balance = await fetchTokenBalance(network, token, walletAddress);
+    const balance = await fetchTokenBalance(localWallet.lcd, token, localWallet.walletAddress);
 
     dispatch({
       [`${prefix}Balance`]: balance as u<Big>,
@@ -72,15 +78,16 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     [input]
   );
 
-  const connectedWallet = useConnectedWallet();
+  const wallet = useLocalWallet();
+  const nativeToken = useNativeToken();
 
   const initializer: FormInitializer<DetailsFormState> = async (_, dispatch) => {
-    if (connectedWallet === undefined) {
+    if (wallet.connectedWallet === undefined) {
       throw Error('The wallet is not connected');
     }
 
-    dispatchBalance(dispatch, connectedWallet, LUNA, 'native');
-    dispatchBalance(dispatch, connectedWallet, LUNA, 'token');
+    dispatchBalance(dispatch, wallet, nativeToken, 'native');
+    dispatchBalance(dispatch, wallet, nativeToken, 'token');
   };
 
   const form: FormFunction<DetailsFormInput, DetailsFormState> = async (input, getState, dispatch) => {
@@ -104,7 +111,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     const descriptionError =
       state.description.length > 200 ? 'The description can not exceed the maximum of 200 characters' : undefined;
 
-    const uReward = state.reward ? microfy(state.reward, LUNA.decimals) : Big(0);
+    const uReward = state.reward ? microfy(state.reward, nativeToken.decimals) : Big(0);
 
     const rewardError = uReward.gt(state.tokenBalance) ? 'The amount can not exceed the maximum balance' : undefined;
 

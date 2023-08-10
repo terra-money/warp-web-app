@@ -1,5 +1,5 @@
-import { TxAction, TxDispatch } from "../actions";
-import { TxStore } from "./TxStore";
+import { TxAction, TxDispatch } from '../actions';
+import { TxStore } from './TxStore';
 
 const createTxStoreMiddleware =
   (store: TxStore) =>

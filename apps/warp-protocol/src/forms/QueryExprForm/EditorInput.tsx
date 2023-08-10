@@ -8,7 +8,6 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-text';
 import 'ace-builds/src-noconflict/theme-merbivore';
-import { useContractAddress } from '@terra-money/apps/hooks';
 import { Container } from '@terra-money/apps/components';
 import CustomTextSyntaxMode from './CustomTextSyntaxMode';
 import { SuggestItemsMenu } from './SuggestItemsMenu';
@@ -16,6 +15,7 @@ import { variableName } from 'utils/variable';
 import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 import { IAceEditor } from 'react-ace/lib/types';
 import { warp_controller } from 'types';
+import { useWarpSdk } from '@terra-money/apps/hooks';
 
 export interface EditorInputProps {
   className?: string;
@@ -52,7 +52,10 @@ const defaultExample = (contractAddr: string): warp_controller.CosmosMsgFor_Empt
 });
 
 const EditorInput = (props: EditorInputProps) => {
-  const contractAddr = useContractAddress('warp-controller');
+  const sdk = useWarpSdk();
+
+  const contractAddr = sdk.chain.contracts.controller;
+
   const {
     endLabel,
     className,

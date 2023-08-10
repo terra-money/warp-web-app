@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import Big from 'big.js';
 import styles from './JobStatistics.module.sass';
 import { ChartContainer } from 'components/chart-container';
+import { useChainSelector } from '@terra-money/apps/hooks';
+import { SmallPlaceholder } from '../placeholders/SmallPlaceholder';
 
 export const JobsStatistics = (props: UIElementProps) => {
   const { className } = props;
@@ -13,6 +15,17 @@ export const JobsStatistics = (props: UIElementProps) => {
   const { isLoading, values, total } = useAnalyticsData('create_job_count', 'monthly', 1000000, false);
 
   const average = values.length === 0 ? 0 : Big(total).div(values.length);
+
+  const { selectedChain } = useChainSelector();
+
+  if (selectedChain.name === 'injective') {
+    return (
+      <Container className={classNames(styles.root, className)} direction="column">
+        <SmallPlaceholder />
+        <SmallPlaceholder />
+      </Container>
+    );
+  }
 
   return (
     <Container className={classNames(styles.root, className)} direction="column">

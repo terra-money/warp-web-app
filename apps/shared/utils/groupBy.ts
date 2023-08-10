@@ -1,7 +1,4 @@
-export function groupBy<T, K extends string>(
-  items: T[],
-  getKey: (item: T) => K
-): Partial<Record<K, T[]>> {
+export function groupBy<T, K extends string>(items: T[], getKey: (item: T) => K): Partial<Record<K, T[]>> {
   const record: Partial<Record<K, T[]>> = {};
 
   items.forEach((item) => {

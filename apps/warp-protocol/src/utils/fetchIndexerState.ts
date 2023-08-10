@@ -1,4 +1,3 @@
-import { NetworkInfo } from '@terra-money/wallet-provider';
 import { createApiEndpoint } from 'hooks';
 
 interface StateEntry {
@@ -6,8 +5,8 @@ interface StateEntry {
   height: number;
 }
 
-export const fetchIndexerState = async (network: NetworkInfo): Promise<StateEntry[]> => {
-  const endpoint = createApiEndpoint(network.name, {
+export const fetchIndexerState = async (networkName: string): Promise<StateEntry[]> => {
+  const endpoint = createApiEndpoint(networkName, {
     path: 'v1/health-check',
     params: { type: 'state' },
   });

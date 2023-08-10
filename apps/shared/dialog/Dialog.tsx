@@ -1,8 +1,8 @@
-import { Modal } from "@mui/material";
-import classNames from "classnames";
-import { ReactNode } from "react";
-import { useDialogContext } from "./DialogProvider";
-import styles from "./Dialog.module.sass";
+import { Modal } from '@mui/material';
+import classNames from 'classnames';
+import { ReactNode } from 'react';
+import { useDialogContext } from './DialogProvider';
+import styles from './Dialog.module.sass';
 
 interface DialogProps {
   index: number;

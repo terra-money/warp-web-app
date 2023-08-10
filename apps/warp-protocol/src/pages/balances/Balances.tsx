@@ -1,13 +1,13 @@
 import { Text, Button } from 'components/primitives';
 import { Container } from '@terra-money/apps/components';
 import { BalanceCard } from './BalanceCard';
-import { ConnectedWallet } from '@terra-money/wallet-provider';
 import styles from './Balances.module.sass';
 import { useBalances } from './useBalances';
 import { useTokenListDialog } from './token-list';
+import { LocalWallet } from '@terra-money/apps/hooks';
 
 interface BalancesProps {
-  connectedWallet: ConnectedWallet;
+  connectedWallet: LocalWallet;
 }
 
 export const Balances = (props: BalancesProps) => {

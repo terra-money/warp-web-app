@@ -1,11 +1,12 @@
 import {
   Coins,
+  CreateTxOptions,
   ExecuteContractProposal,
   MsgExecuteContract,
   MsgSend,
   MsgSubmitProposal,
   MsgVote,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import { hookMsg } from './utils/hookMsg';
 
 type Msg = MsgExecuteContract | MsgSubmitProposal | MsgVote | MsgSend;
@@ -104,7 +105,8 @@ export class TxBuilder {
     return this;
   }
 
-  build() {
-    return { msgs: this.msgs };
+  build(): CreateTxOptions {
+    // TODO: temporary, updated with f(selected_chain, selected_network)
+    return { msgs: this.msgs, chainID: 'pisco-1' };
   }
 }
