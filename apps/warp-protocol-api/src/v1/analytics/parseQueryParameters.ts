@@ -18,6 +18,7 @@ interface QueryStringParameters {
   limit: number;
   direction: Direction;
   type: string;
+  chain: string;
 }
 
 export const parseQueryParameters = (
@@ -28,6 +29,7 @@ export const parseQueryParameters = (
     limit: withLimitParam(),
     direction: withDirectionParam(),
     type: withDefault(StringParam, "total"),
+    chain: withDefault(StringParam, 'terra')
   };
 
   return parseQueryString<QueryStringParameters>(query, definition);

@@ -16,7 +16,7 @@ export const get: RequestHandler = async (request, response) => {
   const dynamoDBClient = createDynamoDBClient();
 
   const entities = await fetchAll<Entity>(dynamoDBClient, {
-    TableName: TableNames.analytics(),
+    TableName: TableNames.analytics(params.chain),
     KeyConditions: {
       [ANALYTICS_PK_NAME]: {
         AttributeValueList: [{ S: pk }],
