@@ -7,6 +7,8 @@ import { Environment } from 'utils';
 import { Runnable } from '@apps-shared/indexers/services/runnable';
 import { AccountsTableInitializer } from 'initializers';
 
+Environment.load();
+
 const run = async (chainName: string) => {
   const blockListener = new BlockListener({
     lcd: Environment.lcd,
