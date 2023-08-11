@@ -50,8 +50,10 @@ export class Environment {
   static load() {
     dotenv.config();
     Environment.lcd = new LCDClient(process.env.NETWORK === 'mainnet' ? mainnetConfig : testnetConfig);
-    // set to phoenix-1 by default, not relevant
-    Environment.chain = new ChainModule(Environment.lcd.config['phoenix-1']);
+    // set to terra by default, not relevant
+    Environment.chain = new ChainModule(
+      Environment.lcd.config[process.env.NETWORK === 'mainnet' ? 'phoenix-1' : 'pisco-1']
+    );
   }
 
   static getGenesis = (chainName: string): Epoch => {
