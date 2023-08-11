@@ -69,7 +69,7 @@ export const EditTemplateDialog = (props: DialogProps<EditTemplateDialogProps>) 
                   id: template.id,
                 });
 
-                if (resp.success) {
+                if (resp.code !== 0) {
                   closeDialog(undefined, { closeAll: true });
                 }
               }

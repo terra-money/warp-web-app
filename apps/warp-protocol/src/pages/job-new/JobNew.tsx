@@ -87,7 +87,7 @@ export const JobNew = (props: JobNewProps) => {
                                 condition: condition!,
                               });
 
-                              if (resp.success) {
+                              if (resp.code !== 0) {
                                 navigate('/jobs');
                               }
                             }
@@ -122,7 +122,7 @@ export const JobNew = (props: JobNewProps) => {
                                 condition: cond,
                               });
 
-                              if (resp.success) {
+                              if (resp.code !== 0) {
                                 navigate('/jobs');
                               }
                             }

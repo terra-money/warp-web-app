@@ -32,7 +32,7 @@ export const CancelJobDialog = (props: DialogProps<CancelJobDialogProps>) => {
             onClick={async () => {
               const resp = await cancelJobTx({ jobId: job.info.id });
 
-              if (resp.success) {
+              if (resp.code !== 0) {
                 closeDialog(undefined, { closeAll: true });
               }
             }}

@@ -85,7 +85,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
                 name,
               });
 
-              if (res.success) {
+              if (res.code !== 0) {
                 navigate('/templates');
               }
             }}
