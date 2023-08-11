@@ -3920,7 +3920,7 @@ __metadata:
     "@mui/material": ^5.10.2
     "@terra-money/feather.js": ^1.0.10
     "@terra-money/wallet-kit": ^1.0.7
-    "@terra-money/warp-sdk": ^0.1.33
+    "@terra-money/warp-sdk": ^0.1.34
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -4060,22 +4060,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/warp-sdk@npm:^0.1.33":
-  version: 0.1.33
-  resolution: "@terra-money/warp-sdk@npm:0.1.33"
+"@terra-money/warp-sdk@npm:^0.1.34":
+  version: 0.1.34
+  resolution: "@terra-money/warp-sdk@npm:0.1.34"
   dependencies:
     "@terra-money/feather.js": ^1.0.10
-    "@types/jsonpath": ^0.2.0
     "@types/node": ^16.11.56
     axios: ^1.1.2
     big.js: ^6.2.1
     date-fns: ^2.29.3
     dotenv: ^16.0.1
     jsonpath: ^1.1.1
+    jsonpath-plus: ^7.2.0
     lodash: ^4.17.21
     pino: ^8.4.2
     typescript: ^4.8.2
-  checksum: 3f87529f479a21d5d85e46ffee9cea657f1c1f1e886581463e856fc7905c30d8b67b58eae7167bc23b34e3a8e67702ba0883a7961523e1eea66ccd947621c00d
+  checksum: b4f04b0992d91b5984f8f1e3fbb7d2b8ecd2a170379b46b36151b9cb385623d63e0918f111d592bf52ae1b388e1d8abfc8c8998dfbb20066683cfba0e157bd10
   languageName: node
   linkType: hard
 
@@ -4998,7 +4998,7 @@ __metadata:
     "@popperjs/core": ^2.11.6
     "@terra-money/feather.js": ^1.0.10
     "@terra-money/wallet-kit": ^1.0.7
-    "@terra-money/warp-sdk": ^0.1.33
+    "@terra-money/warp-sdk": ^0.1.34
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -5075,7 +5075,7 @@ __metadata:
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
     "@terra-money/feather.js": ^1.0.10
-    "@terra-money/warp-sdk": ^0.1.33
+    "@terra-money/warp-sdk": ^0.1.34
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^0.27.2
@@ -5084,7 +5084,6 @@ __metadata:
     date-fns: ^2.29.2
     dotenv: ^16.0.1
     esbuild: ^0.14.54
-    esbuild-node-externals: ^1.6.0
     pino: ^8.4.2
     ts-node: ^10.9.1
     tsconfig-paths: ^4.1.0
@@ -8460,18 +8459,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-node-externals@npm:^1.6.0":
-  version: 1.8.0
-  resolution: "esbuild-node-externals@npm:1.8.0"
-  dependencies:
-    find-up: ^5.0.0
-    tslib: ^2.4.1
-  peerDependencies:
-    esbuild: 0.12 - 0.18
-  checksum: 6d1cb4e1c6877c33fc7cae9f901944d0867610f293649bdfae3a99a8b3a658b471ad7c350660c198ce31d33a1ae852de407ed3336d58a4e05b9b0856dbda1837
-  languageName: node
-  linkType: hard
-
 "esbuild-openbsd-64@npm:0.14.54":
   version: 0.14.54
   resolution: "esbuild-openbsd-64@npm:0.14.54"
@@ -11785,6 +11772,13 @@ __metadata:
     graceful-fs:
       optional: true
   checksum: 7af3b8e1ac8fe7f1eccc6263c6ca14e1966fcbc74b618d3c78a0a2075579487547b94f72b7a1114e844a1e15bb00d440e5d1720bfc4612d790a6f285d5ea8354
+  languageName: node
+  linkType: hard
+
+"jsonpath-plus@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "jsonpath-plus@npm:7.2.0"
+  checksum: 05f447339d29be861e307d6e812aec1b9b88a3ba6bba286966a4e8bed3e752bee3d715eabfc21dce968be85ccb48bf79d2c1af78da7b9b74cd1b446d4d5d02f5
   languageName: node
   linkType: hard
 
@@ -16858,13 +16852,6 @@ __metadata:
   version: 2.4.1
   resolution: "tslib@npm:2.4.1"
   checksum: 19480d6e0313292bd6505d4efe096a6b31c70e21cf08b5febf4da62e95c265c8f571f7b36fcc3d1a17e068032f59c269fab3459d6cd3ed6949eafecf64315fca
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.4.1":
-  version: 2.6.1
-  resolution: "tslib@npm:2.6.1"
-  checksum: b0d176d176487905b66ae4d5856647df50e37beea7571c53b8d10ba9222c074b81f1410fb91da13debaf2cbc970663609068bdebafa844ea9d69b146527c38fe
   languageName: node
   linkType: hard
 
