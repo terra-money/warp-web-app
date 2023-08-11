@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
+    "declaration": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
     "module": "ESNext",
     "outDir": "dist",
     "rootDir": "src",
-    "lib": ["ES2022", "dom"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": "src"
   },
   "include": ["./src"],
