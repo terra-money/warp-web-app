@@ -61,7 +61,7 @@ export const DeveloperForm = (props: DeveloperFormProps) => {
             if (message) {
               const resp = await createJobTx(JSON.parse(message));
 
-              if (resp.success) {
+              if (resp.code !== 0) {
                 navigate('/jobs');
               }
             }

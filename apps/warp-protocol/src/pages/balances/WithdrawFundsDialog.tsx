@@ -57,7 +57,7 @@ const WithdrawFundsDialog = (props: DialogProps<WithdrawFundsProps>) => {
                 token: token,
                 amount: microfy(Big(amount), token.decimals),
               });
-              if (response?.success) {
+              if (response.code !== 0) {
                 closeDialog();
               }
             }

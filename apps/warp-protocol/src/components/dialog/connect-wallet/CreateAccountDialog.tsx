@@ -31,7 +31,7 @@ export const CreateAccountDialog = (props: DialogProps<CreateAccountDialogProps,
           onClick={async () => {
             const result = await createAccountTx({ waitForCompletion: true });
 
-            if (result.success) {
+            if (result.code !== 0) {
               closeDialog(true, { closeAll: true });
             }
           }}
