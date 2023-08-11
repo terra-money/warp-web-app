@@ -1,3 +1,5 @@
+const { nodeExternalsPlugin } = require('esbuild-node-externals');
+
 require('esbuild')
   .build({
     entryPoints: [
@@ -14,5 +16,7 @@ require('esbuild')
     target: ['node14'],
     outdir: 'dist',
     outbase: 'src',
+    external: ['jsonpath'],
+    plugins: [nodeExternalsPlugin()],
   })
   .catch(() => process.exit(1));
