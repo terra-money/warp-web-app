@@ -32,7 +32,7 @@
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.2",
     "@terra-money/feather.js": "^1.0.10",
-    "@terra-money/wallet-kit": "^1.0.4",
+    "@terra-money/wallet-kit": "^1.0.7",
     "@terra-money/warp-sdk": "^0.1.33",
     "assert": "^2.0.0",
     "big.js": "^6.2.1",
