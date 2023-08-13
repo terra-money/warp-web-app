@@ -34,7 +34,9 @@ const testnetConfig: Record<string, LCDClientConfig> = {
   },
   'injective-888': {
     chainID: 'injective-888',
-    lcd: 'https://k8s.testnet.lcd.injective.network',
+    // lcd: 'https://k8s.testnet.lcd.injective.network',
+    // temporarily index history from archive node
+    lcd: 'http://146.59.252.210:10337',
     gasAdjustment: 1.75,
     gasPrices: {
       inj: 1500000000,
