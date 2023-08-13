@@ -76,6 +76,8 @@ export class EventCollector implements Runnable {
     this.logger.info(`Starting from height ${height}`);
 
     await this.blockListener.listen(height, async (block) => {
+      this.logger.info(`Processing block ${block.height}`);
+
       const events = this.map(block);
 
       if (events.length > 0) {
