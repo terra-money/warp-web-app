@@ -43,7 +43,7 @@ export class BlockListener {
 
         return [block, txs];
       } catch (err) {
-        if (axios.isAxiosError(err) && err.response.status === 400) {
+        if (axios.isAxiosError(err) && err.response?.status === 400) {
           // likely the block doesn't exist so we skip writing this as an error
           await sleep(1000);
           continue;
@@ -57,8 +57,12 @@ export class BlockListener {
           this.logger.error(`Corrupted transaction @ height: ${height} "${err.response.data.message}"`);
           return [block, []];
         }
+
         this.logger.error(`Error waiting for block ${height} "${err.toString()}"`);
-        await sleep(1000);
+
+        const randomizedSleepPeriod = 100 + Math.floor(Math.random() * 400);
+
+        await sleep(randomizedSleepPeriod);
       }
     }
   };
