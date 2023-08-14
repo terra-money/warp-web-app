@@ -32,7 +32,7 @@ export const ExecuteJobDialog = (props: DialogProps<ExecuteJobDialogProps>) => {
             onClick={async () => {
               const resp = await executeJobTx({ jobId: job.info.id });
 
-              if (resp.success) {
+              if (resp.code !== 0) {
                 closeDialog(undefined, { closeAll: true });
               }
             }}

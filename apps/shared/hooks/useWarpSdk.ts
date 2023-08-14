@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
 import { WarpSdk } from '@terra-money/warp-sdk';
-import {
-  LCDClient as InjectiveLCDClient,
-  LCDClientConfig as InjectiveLCDClientConfig,
-} from '@terra-money/feather.js-injective';
 import { useLocalWallet } from '@terra-money/apps/hooks/useLocalWallet';
 import { injectiveNetworks, useChainSelector } from './useChainSelector';
+import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
 
 export const useWarpSdk = () => {
   const wallet = useLocalWallet();
@@ -16,12 +13,12 @@ export const useWarpSdk = () => {
 
   return useMemo(() => {
     if (chainName === 'injective') {
-      const lcd = new InjectiveLCDClient(injectiveNetworks as Record<string, InjectiveLCDClientConfig>);
+      const lcd = new LCDClient(injectiveNetworks as Record<string, LCDClientConfig>);
 
       return new WarpSdk(
         {
           connectedWallet: {
-            lcd: lcd as any,
+            lcd: lcd,
             wallet: wallet.wallet,
           },
         },

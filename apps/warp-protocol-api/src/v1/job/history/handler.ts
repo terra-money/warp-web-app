@@ -19,7 +19,7 @@ export const get: RequestHandler = async (request, response) => {
 
   // TODO: can include this in the same query as the history
   const job = await fetch<JobEntity>(dynamoDBClient, {
-    TableName: TableNames.jobs(),
+    TableName: TableNames.jobs(params.chain),
     Key: {
       [JOBS_PK_NAME]: { S: id },
       [JOBS_SK_NAME]: {
@@ -36,7 +36,7 @@ export const get: RequestHandler = async (request, response) => {
   }
 
   const entities = await fetchAll<Entity>(dynamoDBClient, {
-    TableName: TableNames.jobs(),
+    TableName: TableNames.jobs(params.chain),
     Limit: params.limit,
     ScanIndexForward: params.direction !== "desc",
     KeyConditions: {

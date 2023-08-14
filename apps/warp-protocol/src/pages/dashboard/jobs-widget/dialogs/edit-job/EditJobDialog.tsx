@@ -91,7 +91,7 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
                   reward: !isEmpty(reward) ? microfy(reward, nativeToken.decimals) : undefined,
                 });
 
-                if (resp.success) {
+                if (resp.code !== 0) {
                   closeDialog(undefined, { closeAll: true });
                 }
               }

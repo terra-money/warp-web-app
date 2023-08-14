@@ -10,7 +10,8 @@ require('esbuild')
     minify: true,
     sourcemap: true,
     platform: 'node',
-    target: 'es2022',
+    format: 'cjs',
+    target: ['node14'],
     outdir: 'dist',
     outbase: 'src',
   })

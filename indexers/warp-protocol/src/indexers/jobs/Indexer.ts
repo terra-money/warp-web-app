@@ -2,7 +2,7 @@ import { EventIndexer, IndexFnOptions } from 'indexers/EventIndexer';
 import { Entity } from './types';
 import { LCDClient } from '@terra-money/feather.js';
 import { TableNames, JOBS_PK_NAME, JOBS_SK_NAME } from 'initializers';
-import { batch, createLCDClient } from '@apps-shared/indexers/utils';
+import { batch } from '@apps-shared/indexers/utils';
 import { KeySelector } from '@apps-shared/indexers/services/persistence';
 import { fetchByHeight } from '@apps-shared/indexers/services/event-store';
 import { Environment } from 'utils';
@@ -14,15 +14,20 @@ export const PK: KeySelector<Entity> = (data) => data.id;
 export const SK = 'job';
 
 export class Indexer extends EventIndexer<Entity> {
-  constructor() {
+  chainName: string;
+
+  constructor(chainName: string) {
     super({
       name: 'jobs',
-      tableName: TableNames.jobs(),
+      tableName: TableNames.jobs(chainName),
       pk: PK,
       pkName: JOBS_PK_NAME,
       sk: SK,
+      chainName,
       skName: JOBS_SK_NAME,
     });
+
+    this.chainName = chainName;
   }
 
   private getModifiedJobIds = async (min: number, max: number): Promise<Array<string>> => {
@@ -56,9 +61,9 @@ export class Indexer extends EventIndexer<Entity> {
   };
 
   private synchronize = async (jobIds: string[]): Promise<void> => {
-    const lcd = createLCDClient();
+    const lcd = Environment.lcd;
 
-    const contractAddress = Environment.getContractAddress('warp-controller');
+    const contractAddress = Environment.getContractAddress(this.chainName, 'controller');
 
     const jobs = [];
 

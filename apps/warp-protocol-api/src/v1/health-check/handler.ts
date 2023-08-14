@@ -17,12 +17,12 @@ const deserializeEntity = (
   return unmarshall(attributes) as Entity;
 };
 
-const getState = async (): Promise<Entity[]> => {
+const getState = async (chainName: string): Promise<Entity[]> => {
   const dynamoDBClient = createDynamoDBClient();
 
   const response = await dynamoDBClient.send(
     new ScanCommand({
-      TableName: TableNames.state(),
+      TableName: TableNames.state(chainName),
     })
   );
 
@@ -34,7 +34,7 @@ export const get: RequestHandler = async (request, response) => {
 
   switch (params.type) {
     case "state":
-      const state = await getState();
+      const state = await getState(params.chain);
       response.json(state);
       break;
 
