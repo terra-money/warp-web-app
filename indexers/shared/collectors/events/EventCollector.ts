@@ -75,25 +75,39 @@ export class EventCollector implements Runnable {
 
     this.logger.info(`Starting from height ${height}`);
 
-    await this.blockListener.listen(height, async (block) => {
-      this.logger.info(`Processing block ${block.height}`);
+    await this.blockListener.listen(height, async (blockPromises) => {
+      const allEvents: Event[] = [];
 
-      const events = this.map(block);
+      const eventPromises: Promise<{ events: Event[]; block: Block }>[] = blockPromises.map((blockPromise) => {
+        return blockPromise.then((block) => {
+          const events = this.map(block);
 
-      if (events.length > 0) {
-        this.logger.info(`Found ${events.length} at height ${block.height}`);
-        await this.eventStore.save(events);
-      }
+          if (events.length > 0) {
+            this.logger.info(`Found ${events.length} at height ${block.height}`);
+          }
 
-      if (events.length > 0 || block.height % 100 === 0) {
-        // some indexers are triggered when there are new
-        // events so we only update this when their are events
-        // or periodically for restoration purposes
-        await this.state.set({
-          height: block.height,
-          timestamp: block.timestamp,
+          return { events, block };
         });
+      });
+
+      for (const { events } of await Promise.all(eventPromises)) {
+        allEvents.push(...events);
       }
+
+      const firstBlock = await blockPromises[0];
+      const lastBlock = await blockPromises[blockPromises.length - 1];
+
+      this.logger.info(`Processing blocks ${firstBlock.height} to ${lastBlock.height}`);
+
+      if (allEvents.length > 0) {
+        this.logger.info(`Processed ${allEvents.length} events`);
+        await this.eventStore.save(allEvents);
+      }
+
+      await this.state.set({
+        height: lastBlock.height,
+        timestamp: lastBlock.timestamp,
+      });
     });
   };
 }

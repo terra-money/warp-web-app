@@ -4,15 +4,17 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main 
-      - warp/**
+      - main
+      - test
+      - beta
     paths:
       - apps/warp-protocol/**
       - .github/workflows/apps-warp-protocol.yml
   pull_request:
     branches:
-      - main 
-      - warp/main
+      - main
+      - test
+      - beta
     paths:
       - apps/warp-protocol/**
       - .github/workflows/apps-warp-protocol.yml
