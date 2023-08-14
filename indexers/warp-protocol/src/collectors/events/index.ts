@@ -13,6 +13,7 @@ const run = async (chainName: string) => {
   const blockListener = new BlockListener({
     lcd: Environment.lcd,
     chainId: Environment.getChainId(chainName),
+    batchSize: 128,
   });
 
   const eventStore = createEventStore(chainName);
