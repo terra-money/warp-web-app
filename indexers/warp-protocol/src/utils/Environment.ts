@@ -84,9 +84,11 @@ export class Environment {
     if (chainName === 'injective') {
       if (process.env.NETWORK === 'mainnet') {
         return {
-          height: 39864742,
-          // timestamp: 1690386412736
-          timestamp: 1690386412,
+          // height: 39864742,
+          // // timestamp: 1690386412736
+          // timestamp: 1690386412,
+          height: 40585350,
+          timestamp: 1691010500,
         };
       } else {
         // testnet

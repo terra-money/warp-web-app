@@ -5,10 +5,10 @@ interface StateEntry {
   height: number;
 }
 
-export const fetchIndexerState = async (networkName: string, chainName: string): Promise<StateEntry[]> => {
+export const fetchIndexerState = async (networkName: string): Promise<StateEntry[]> => {
   const endpoint = createApiEndpoint(networkName, {
     path: 'v1/health-check',
-    params: { type: 'state', chain: chainName },
+    params: { type: 'state' },
   });
 
   try {
