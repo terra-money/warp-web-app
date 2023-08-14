@@ -4,11 +4,12 @@ import { Timestamp } from 'types';
 import { Logger, sleep } from 'utils';
 import { Block } from './types';
 
-type AsyncCallback = (block: Block) => Promise<void>;
+type AsyncCallback = (blockPromises: Promise<Block>[]) => Promise<void>;
 
 type BlockListenerOptions = {
   lcd: LCDClient;
   chainId: string;
+  batchSize: number;
 };
 
 export class BlockListener {
@@ -16,25 +17,29 @@ export class BlockListener {
   private readonly lcd: LCDClient;
 
   public chainId: string;
+  public batchSize: number;
 
   constructor(options: BlockListenerOptions) {
     this.logger = new Logger('BlockListener');
     this.lcd = options.lcd;
     this.chainId = options.chainId;
+    this.batchSize = options.batchSize;
   }
 
   private wait = async (height: number): Promise<[BlockInfo, TxInfo[]]> => {
     let block: BlockInfo;
+
     while (true) {
       try {
-        block = await this.lcd.tendermint.blockInfo(this.chainId, height);
+        const [block, txs] = await Promise.all([
+          this.lcd.tendermint.blockInfo(this.chainId, height),
+          this.lcd.tx.txInfosByHeight(this.chainId, height),
+        ]);
 
         if (block === null || block === undefined) {
           await sleep(1000);
           continue;
         }
-
-        const txs = await this.lcd.tx.txInfosByHeight(this.chainId, height);
 
         return [block, txs];
       } catch (err) {
@@ -81,12 +86,14 @@ export class BlockListener {
     };
   };
 
-  listen = async (height: number, callback: AsyncCallback) => {
+  listen = async (startHeight: number, callback: AsyncCallback) => {
     while (true) {
-      const block = await this.fetchBlock(height);
+      const heights = Array.from({ length: this.batchSize }, (_, i) => startHeight + i);
+      const blockPromises = heights.map((height) => this.fetchBlock(height));
+
       try {
-        await callback(block);
-        height++;
+        await callback(blockPromises);
+        startHeight += this.batchSize;
       } catch (error) {
         this.logger.error('Failed to execute the callback');
         await sleep(1000);
