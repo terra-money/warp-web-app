@@ -93,7 +93,7 @@ export class Environment {
       } else {
         // testnet
         return {
-          height: 13824322,
+          height: 14834209,
           // timestamp: 1689894487535
           timestamp: 1689894487,
         };
