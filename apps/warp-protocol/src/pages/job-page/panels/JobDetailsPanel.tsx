@@ -6,6 +6,7 @@ import { TokenAmount } from 'components/token-amount';
 import { Panel } from 'components/panel';
 import styles from './JobDetailsPanel.module.sass';
 import classNames from 'classnames';
+import { format } from 'date-fns';
 import { useCopy } from 'hooks';
 import { useNativeToken } from 'hooks/useNativeToken';
 
@@ -56,6 +57,11 @@ export const JobDetailsPanel = (props: JobDetailsPanelProps) => {
       <FormControl labelVariant="secondary" label="Description">
         <Text variant="text" className={styles.description}>
           {job.info.description ?? '-'}
+        </Text>
+      </FormControl>
+      <FormControl labelVariant="secondary" label="Last update">
+        <Text variant="text" className={styles.lastUpdated}>
+          {format(new Date(Number(job.info.last_update_time) * 1000), 'dd MMM yyyy p')}
         </Text>
       </FormControl>
     </Panel>
