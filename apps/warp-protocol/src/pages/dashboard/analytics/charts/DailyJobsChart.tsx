@@ -5,19 +5,11 @@ import { BarChart } from 'components/bar-chat';
 import { useAnalyticsData } from './useAnalyticsData';
 import styles from './DailyJobsChart.module.sass';
 import { ChartContainer } from 'components/chart-container';
-import { useChainSelector } from '@terra-money/apps/hooks';
-import { BigPlaceholder } from '../placeholders/BigPlaceholder';
 
 export const DailyJobsChart = (props: UIElementProps) => {
   const { className } = props;
 
   const { isLoading, total, values, labels } = useAnalyticsData('create_job_count');
-
-  const { selectedChain } = useChainSelector();
-
-  if (selectedChain.name === 'injective') {
-    return <BigPlaceholder />;
-  }
 
   return (
     <ChartContainer

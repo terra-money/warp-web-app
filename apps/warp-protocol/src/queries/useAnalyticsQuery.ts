@@ -2,6 +2,7 @@ import { useQuery } from 'react-query';
 import { QUERY_KEY } from './queryKey';
 import { useApiEndpoint } from 'hooks';
 import { Frequency } from 'utils';
+import { useChainSelector } from '@terra-money/apps/hooks';
 
 export type AnalyticsTypeName =
   | 'create_job_count'
@@ -14,6 +15,8 @@ export type AnalyticsTypeName =
 type Response = Array<{ timestamp: number; value: string }>;
 
 export const useAnalyticsQuery = (type: AnalyticsTypeName, limit: number = 7, frequency: Frequency = 'daily') => {
+  const { selectedChain } = useChainSelector();
+
   const endpoint = useApiEndpoint({
     path: 'v1/analytics',
     params: {
@@ -21,6 +24,7 @@ export const useAnalyticsQuery = (type: AnalyticsTypeName, limit: number = 7, fr
       limit,
       direction: 'desc',
       type,
+      chain: selectedChain.name,
     },
   });
 
