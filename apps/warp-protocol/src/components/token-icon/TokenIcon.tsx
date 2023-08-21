@@ -23,7 +23,7 @@ export const TokenIcon = (props: TokenIconProps) => {
 
   let src = symbol && KNOWN_TOKENS[symbol.toLowerCase()] ? KNOWN_TOKENS[symbol.toLowerCase()] : path;
 
-  src = src && src.length > 0 ? src : 'https://assets.terra.money/icon/svg/CW.svg';
+  src = src && src.length > 0 ? src : 'https://assets.terra.dev/icon/svg/CW.svg';
 
   // TODO: remove once warp token icon is uploaded to terra assets
   if (symbol === 'WARP') {

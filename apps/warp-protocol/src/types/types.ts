@@ -21,7 +21,7 @@ export const LUNA: NativeToken = {
   name: 'LUNA',
   symbol: 'LUNA',
   decimals: 6,
-  icon: 'https://assets.terra.money/icon/svg/Luna.svg',
+  icon: 'https://assets.terra.dev/icon/svg/Luna.svg',
   coinGeckoId: 'terra-luna-2',
 };
 

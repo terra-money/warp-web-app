@@ -9,7 +9,7 @@ interface CW20TokensNetworkResponse {
 }
 
 const fetchCW20Tokens = async (network: string): Promise<CW20TokensResponse> => {
-  const response = await fetch('https://assets.terra.money/cw20/tokens.json');
+  const response = await fetch('https://assets.terra.dev/cw20/tokens.json');
 
   const tokens: CW20TokensNetworkResponse = await response.json();
 

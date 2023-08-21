@@ -15,6 +15,6 @@ export const useWarpToken = (): CW20Token => {
     type: 'cw20',
     token: contractAddress as CW20Addr,
     key: contractAddress,
-    icon: 'https://assets.terra.money/icon/svg/CW.svg',
+    icon: 'https://assets.terra.dev/icon/svg/CW.svg',
   };
 };
