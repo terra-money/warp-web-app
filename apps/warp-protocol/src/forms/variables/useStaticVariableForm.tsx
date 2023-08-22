@@ -1,10 +1,10 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export interface StaticVariableInput {
   name: string;
-  kind: warp_controller.VariableKind;
+  kind: warp_resolver.VariableKind;
   value: string;
 }
 
@@ -14,15 +14,15 @@ export interface StaticVariableState extends FormState<StaticVariableInput> {
 
 export type StaticVariableFormInput = FormInput<StaticVariableInput>;
 
-export const staticVariableToInput = (variable?: warp_controller.StaticVariable): StaticVariableInput => {
+export const staticVariableToInput = (variable?: warp_resolver.StaticVariable): StaticVariableInput => {
   return {
     name: variable?.name ?? '',
-    kind: variable?.kind ?? ('' as warp_controller.VariableKind),
+    kind: variable?.kind ?? ('' as warp_resolver.VariableKind),
     value: variable?.value ?? '',
   };
 };
 
-export const useStaticVariableForm = (variable?: warp_controller.StaticVariable) => {
+export const useStaticVariableForm = (variable?: warp_resolver.StaticVariable) => {
   const initialValue = useMemo<StaticVariableState>(
     () => ({
       ...staticVariableToInput(variable),

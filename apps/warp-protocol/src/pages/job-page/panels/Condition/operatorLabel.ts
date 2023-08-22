@@ -1,6 +1,6 @@
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
-type Operator = warp_controller.NumOp | warp_controller.StringOp | warp_controller.NumExprOp;
+type Operator = warp_resolver.NumOp | warp_resolver.StringOp | warp_resolver.NumExprOp;
 
 export const operatorLabel = (operator: Operator) => {
   switch (operator) {

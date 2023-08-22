@@ -1,16 +1,16 @@
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useQuery, UseQueryResult } from 'react-query';
-import { warp_resolver } from 'types';
 import { QUERY_KEY } from './queryKey';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { warp_templates } from '@terra-money/warp-sdk';
 
-type TemplatesQueryOpts = warp_resolver.QueryTemplatesMsg & {
+type TemplatesQueryOpts = warp_templates.QueryTemplatesMsg & {
   enabled?: boolean;
 };
 
 export const useTemplatesQuery = (
   opts: TemplatesQueryOpts = {}
-): UseQueryResult<warp_resolver.Template[] | undefined> => {
+): UseQueryResult<warp_templates.Template[] | undefined> => {
   const enabled = opts.enabled ?? true;
   const wallet = useLocalWallet();
   const sdk = useWarpSdk();
@@ -29,5 +29,5 @@ export const useTemplatesQuery = (
     }
   );
 
-  return query as UseQueryResult<warp_resolver.Template[] | undefined>;
+  return query as UseQueryResult<warp_templates.Template[] | undefined>;
 };

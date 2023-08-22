@@ -1,13 +1,13 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export interface ExternalVariableInput {
   name: string;
-  kind: warp_controller.VariableKind;
+  kind: warp_resolver.VariableKind;
   body?: string | null;
   headers?: object | null;
-  method?: warp_controller.Method | null;
+  method?: warp_resolver.Method | null;
   selector: string;
   url: string;
 }
@@ -18,7 +18,7 @@ export interface ExternalVariableState extends FormState<ExternalVariableInput> 
 
 export type ExternalVariableFormInput = FormInput<ExternalVariableInput>;
 
-export const externalVariableToInput = (externalVariable?: warp_controller.ExternalVariable): ExternalVariableInput => {
+export const externalVariableToInput = (externalVariable?: warp_resolver.ExternalVariable): ExternalVariableInput => {
   return {
     kind: externalVariable?.kind ?? ('' as any),
     name: externalVariable?.name ?? '',
@@ -30,7 +30,7 @@ export const externalVariableToInput = (externalVariable?: warp_controller.Exter
   };
 };
 
-export const useExternalVariableForm = (externalVariable?: warp_controller.ExternalVariable) => {
+export const useExternalVariableForm = (externalVariable?: warp_resolver.ExternalVariable) => {
   const initialValue = useMemo<ExternalVariableState>(
     () => ({
       ...externalVariableToInput(externalVariable),

@@ -1,11 +1,11 @@
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { operatorLabel } from '../operatorLabel';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { useBlockHeightQuery } from '../../../../../queries/useBlockHeightQuery';
 import { Job } from 'types/job';
 
 export type BlockHeightExpressionProps = {
-  expression: warp_controller.BlockExpr;
+  expression: warp_resolver.BlockExpr;
   job: Job;
 } & UIElementProps;
 

@@ -7,11 +7,11 @@ import { useQueryVariableDialog } from './query/QueryVariableDialog';
 import { useExternalVariableDialog } from './external/ExternalVariableDialog';
 import { useCallback } from 'react';
 import { Container } from '@terra-money/apps/components';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type VariableDialogProps = {};
 
-export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_controller.Variable>) => {
+export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_resolver.Variable>) => {
   const { closeDialog } = props;
 
   const openStaticVariableDialog = useStaticVariableDialog();
@@ -88,7 +88,7 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_cont
 };
 
 export const useNewVariableDialog = () => {
-  return useDialog<VariableDialogProps, warp_controller.Variable>(VariableDialog);
+  return useDialog<VariableDialogProps, warp_resolver.Variable>(VariableDialog);
 };
 
 export const useEditVariableDialog = () => {
@@ -97,7 +97,7 @@ export const useEditVariableDialog = () => {
   const openExternalVariableDialog = useExternalVariableDialog();
 
   return useCallback(
-    async (v: warp_controller.Variable): Promise<warp_controller.Variable | undefined> => {
+    async (v: warp_resolver.Variable): Promise<warp_resolver.Variable | undefined> => {
       if ('static' in v) {
         const resp = await openStaticVariableDialog({ variable: v.static });
 

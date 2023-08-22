@@ -1,6 +1,6 @@
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useQuery, UseQueryResult } from 'react-query';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 import { QUERY_KEY } from './queryKey';
 import { Job } from 'types/job';
 import { useWarpSdk } from '@terra-money/apps/hooks';

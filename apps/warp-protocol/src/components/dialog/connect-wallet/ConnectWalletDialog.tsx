@@ -6,7 +6,7 @@ import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import styles from './ConnectWalletDialog.module.sass';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useCreateAccountDialog } from './CreateAccountDialog';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 
 type ConnectWalletDialogProps = {
   title?: string;

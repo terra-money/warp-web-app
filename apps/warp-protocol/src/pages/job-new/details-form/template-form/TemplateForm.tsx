@@ -1,5 +1,5 @@
 import { Container } from '@terra-money/apps/components';
-import { warp_resolver } from 'types';
+import { warp_templates } from '@terra-money/warp-sdk';
 import styles from '../DetailsForm.module.sass';
 import jsonpath from 'jsonpath';
 import { useEffect, useMemo } from 'react';
@@ -8,7 +8,7 @@ import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
 import { findVariablePath, templateVariables } from 'utils/variable';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 
-const composeMsgFromTemplate = (template: warp_resolver.Template): string => {
+const composeMsgFromTemplate = (template: warp_templates.Template): string => {
   const vars = templateVariables(template);
   let json = JSON.parse(template.msg);
 
@@ -29,10 +29,10 @@ const composeMsgFromTemplate = (template: warp_resolver.Template): string => {
 
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
-  template?: warp_resolver.Template;
-  setTemplate: (template: warp_resolver.Template | undefined) => void;
-  setTemplateVars: (vars: warp_resolver.StaticVariable[]) => void;
-  options: warp_resolver.Template[];
+  template?: warp_templates.Template;
+  setTemplate: (template: warp_templates.Template | undefined) => void;
+  setTemplateVars: (vars: warp_templates.StaticVariable[]) => void;
+  options: warp_templates.Template[];
 };
 
 export const TemplateForm = (props: TemplateFormProps) => {

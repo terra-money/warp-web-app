@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { Job } from 'types/job';
 import { useExternalVariableDisplayDialog } from './external/ExternalVariableDisplayDialog';
 import { useQueryVariableDisplayDialog } from './query/QueryVariableDisplayDialog';
@@ -11,7 +11,7 @@ export const useVariableDisplayDialog = () => {
   const openExternalVariableDisplayDialog = useExternalVariableDisplayDialog();
 
   return useCallback(
-    async (v: warp_controller.Variable, job: Job): Promise<void | undefined> => {
+    async (v: warp_resolver.Variable, job: Job): Promise<void | undefined> => {
       if ('static' in v) {
         return openStaticVariableDisplayDialog({ variable: v.static, job });
       }

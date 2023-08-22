@@ -1,5 +1,4 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { warp_controller } from '../../../../types';
 import { BlockHeightExpression } from './typed-expressions/BlockHeightExpression';
 import { StringExpression } from './typed-expressions/StringExpression';
 import { TimestampExpression } from './typed-expressions/TimestampExpression';
@@ -8,9 +7,10 @@ import { DecimalExpression } from './typed-expressions/DecimalExpression';
 import { IntExpression } from './typed-expressions/IntExpression';
 import { UIntExpression } from './typed-expressions/UIntExpression';
 import { Job } from 'types/job';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type ExpressionProps = {
-  expression: warp_controller.Expr;
+  expression: warp_resolver.Expr;
   job: Job;
 } & UIElementProps;
 

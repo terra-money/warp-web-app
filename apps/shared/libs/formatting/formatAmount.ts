@@ -18,9 +18,9 @@ export const formatAmount = (amount: BigSource, options: FormatAmountOptions = D
 
   // Convert amount to Big for precise arithmetic operations
   const bigAmount = Big(amount);
-  
+
   // Check if the amount is smaller than the smallest representable number for the given decimals
-  if (decimals > 0 && bigAmount.lt(Big(1).div(Big(10).pow(decimals)))) {
+  if (decimals > 0 && bigAmount.gt(0) && bigAmount.lt(Big(1).div(Big(10).pow(decimals)))) {
     return `< 0.${'0'.repeat(decimals - 1)}1`;
   }
 

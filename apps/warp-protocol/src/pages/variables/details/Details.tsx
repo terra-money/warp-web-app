@@ -9,11 +9,11 @@ import { ExternalVariableForm } from './external/ExternalVariableForm';
 import { variableName } from 'utils/variable';
 import { parseQuery } from 'utils';
 import { VariablePill } from '../variable-pill/VariablePill';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type DetailsProps = UIElementProps & {
-  selectedVariable: warp_controller.Variable | undefined;
-  updateVariable: (variable: warp_controller.Variable) => void;
+  selectedVariable: warp_resolver.Variable | undefined;
+  updateVariable: (variable: warp_resolver.Variable) => void;
   deleteVariable: (name: string) => void;
 };
 
@@ -46,6 +46,7 @@ export const Details = (props: DetailsProps) => {
                       },
                       kind,
                       name,
+                      encode: false,
                     },
                   });
                 }}
@@ -82,6 +83,7 @@ export const Details = (props: DetailsProps) => {
                       name,
                       value,
                       kind,
+                      encode: false,
                     },
                   });
                 }}
@@ -124,6 +126,7 @@ export const Details = (props: DetailsProps) => {
                         method,
                       },
                       kind,
+                      encode: false,
                     },
                   });
                 }}

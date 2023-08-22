@@ -1,6 +1,6 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { forwardRef, useEffect, useState } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { isEqual, isEmpty } from 'lodash';
 
 import styles from './ConditionNode.module.sass';
@@ -8,11 +8,11 @@ import { OperatorInput } from './operator-input/OperatorInput';
 import { DateInput } from './date-input/DateInput';
 
 type TimestampExprNodeProps = UIElementProps & {
-  expr: warp_controller.TimeExpr;
-  setExpr: (expr: warp_controller.TimeExpr) => void;
+  expr: warp_resolver.TimeExpr;
+  setExpr: (expr: warp_resolver.TimeExpr) => void;
 };
 
-const timeOperators: warp_controller.TimeOp[] = ['gt', 'lt'];
+const timeOperators: warp_resolver.TimeOp[] = ['gt', 'lt'];
 
 const toTimestamp = (date?: Date) => String(Math.floor((date?.getTime() ?? 0) / 1000));
 const toDate = (timestamp: string) => (isEmpty(timestamp) ? undefined : new Date(Number(timestamp) * 1000));
@@ -20,7 +20,7 @@ const toDate = (timestamp: string) => (isEmpty(timestamp) ? undefined : new Date
 export const TimestampExprNode = forwardRef((props: TimestampExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
   const { expr, setExpr } = props;
 
-  const [op, setOp] = useState<warp_controller.TimeOp>(expr.op);
+  const [op, setOp] = useState<warp_resolver.TimeOp>(expr.op);
   const [comparator, setComparator] = useState<Date | undefined>(toDate(expr.comparator));
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export const TimestampExprNode = forwardRef((props: TimestampExprNodeProps, ref:
   }, [op, comparator, setExpr, expr]);
 
   const Op = (
-    <OperatorInput<warp_controller.TimeOp>
+    <OperatorInput<warp_resolver.TimeOp>
       operators={timeOperators}
       value={op}
       onChange={setOp}

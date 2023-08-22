@@ -5,14 +5,14 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialo
 import styles from './StaticVariableDialog.module.sass';
 
 import { Button } from 'components/primitives';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { StaticVariableForm } from 'pages/variables/details/static/StaticVariableForm';
 
 export type StaticVariableDialogProps = {
-  variable?: warp_controller.StaticVariable;
+  variable?: warp_resolver.StaticVariable;
 };
 
-export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProps, warp_controller.StaticVariable>) => {
+export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProps, warp_resolver.StaticVariable>) => {
   const { closeDialog, variable } = props;
 
   return (
@@ -36,6 +36,7 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
                         name,
                         value,
                         kind,
+                        encode: false,
                       });
                     }
                   }}
@@ -55,5 +56,5 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
 };
 
 export const useStaticVariableDialog = () => {
-  return useDialog<StaticVariableDialogProps, warp_controller.StaticVariable>(StaticVariableDialog);
+  return useDialog<StaticVariableDialogProps, warp_resolver.StaticVariable>(StaticVariableDialog);
 };

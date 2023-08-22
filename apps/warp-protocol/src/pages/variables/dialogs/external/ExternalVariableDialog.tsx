@@ -5,15 +5,15 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialo
 import styles from './ExternalVariableDialog.module.sass';
 
 import { Button } from 'components/primitives';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { ExternalVariableForm } from 'pages/variables/details/external/ExternalVariableForm';
 
 export type ExternalVariableDialogProps = {
-  variable?: warp_controller.ExternalVariable;
+  variable?: warp_resolver.ExternalVariable;
 };
 
 export const ExternalVariableDialog = (
-  props: DialogProps<ExternalVariableDialogProps, warp_controller.ExternalVariable>
+  props: DialogProps<ExternalVariableDialogProps, warp_resolver.ExternalVariable>
 ) => {
   const { closeDialog, variable } = props;
 
@@ -44,6 +44,7 @@ export const ExternalVariableDialog = (
                           method,
                         },
                         kind,
+                        encode: false,
                       });
                     }
                   }}
@@ -63,5 +64,5 @@ export const ExternalVariableDialog = (
 };
 
 export const useExternalVariableDialog = () => {
-  return useDialog<ExternalVariableDialogProps, warp_controller.ExternalVariable>(ExternalVariableDialog);
+  return useDialog<ExternalVariableDialogProps, warp_resolver.ExternalVariable>(ExternalVariableDialog);
 };

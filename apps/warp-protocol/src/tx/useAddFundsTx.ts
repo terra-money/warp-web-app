@@ -1,10 +1,11 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
-import { Token, warp_controller } from 'types';
+import { Token } from 'types';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { warp_controller } from '@terra-money/warp-sdk';
 
 interface AddFundsTxProps {
   token: Token;

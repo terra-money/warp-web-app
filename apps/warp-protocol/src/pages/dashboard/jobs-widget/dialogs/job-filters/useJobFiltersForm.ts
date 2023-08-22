@@ -1,6 +1,6 @@
 import { FormFunction, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 import { validateAddress } from 'utils/validateAddress';
 
 export type ConditionStatus = 'Active' | 'Inactive';

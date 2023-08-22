@@ -11,19 +11,19 @@ import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { useNewVariableDialog } from 'pages/variables/dialogs/VariableDialog';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type SelectVariableProps = {
-  selectedVariable?: warp_controller.Variable;
+  selectedVariable?: warp_resolver.Variable;
 };
 
-const SelectVariableDialog = (props: DialogProps<SelectVariableProps, warp_controller.Variable>) => {
+const SelectVariableDialog = (props: DialogProps<SelectVariableProps, warp_resolver.Variable>) => {
   const { closeDialog, selectedVariable } = props;
 
   const { variables, saveVariable } = useCachedVariables();
 
   const listData = useMemo<ListData>(() => {
-    const onSelectionChanged = (variable: warp_controller.Variable) => {
+    const onSelectionChanged = (variable: warp_resolver.Variable) => {
       closeDialog(variable);
     };
 
@@ -79,5 +79,5 @@ const SelectVariableDialog = (props: DialogProps<SelectVariableProps, warp_contr
 };
 
 export const useSelectVariableDialog = () => {
-  return useDialog<SelectVariableProps, warp_controller.Variable>(SelectVariableDialog);
+  return useDialog<SelectVariableProps, warp_resolver.Variable>(SelectVariableDialog);
 };

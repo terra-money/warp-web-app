@@ -1,12 +1,12 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
-import { warp_controller, warp_resolver } from 'types';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
 
 export const useJobStorage = () => {
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
@@ -16,9 +16,9 @@ export const useJobStorage = () => {
 
   const nativeToken = useNativeToken();
 
-  const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', {} as any);
+  const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>('__warp_condition', {} as any);
 
-  const { clearAll: clearAllCachedVariables } = useCachedVariables();
+  const { clearAll: clearAllCachedVariables, setVariables } = useCachedVariables();
 
   const clearJobStorage = useCallback(() => {
     setDetailsInput({} as any);
@@ -32,17 +32,18 @@ export const useJobStorage = () => {
         reward: demicrofy(job.reward, nativeToken.decimals).toString(),
         name: job.info.name,
         description: job.info.description,
-        message: JSON.stringify(job, null, 2),
+        message: JSON.stringify(job.info.msgs, null, 2),
       };
 
       setDetailsInput(details);
-      setCond(job.condition);
+      setCond(job.info.condition);
+      setVariables(job.info.vars);
     },
-    [setDetailsInput, setCond, nativeToken.decimals]
+    [setDetailsInput, setCond, nativeToken.decimals, setVariables]
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_resolver.Template) => {
+    (template: warp_templates.Template) => {
       const details: DetailsFormInput = {
         reward: '',
         description: '',
@@ -70,7 +71,7 @@ export const useJobStorage = () => {
   );
 };
 
-export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
+export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
   if ('wasm' in msg) {
     if ('execute' in msg.wasm) {
       return {

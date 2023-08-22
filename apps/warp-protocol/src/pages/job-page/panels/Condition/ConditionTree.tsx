@@ -1,15 +1,15 @@
 import styles from './ConditionTree.module.sass';
-import { warp_controller } from 'types';
 
 import { Condition } from './Conditon';
 import { ReactNode } from 'react';
 import { UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import { Job } from 'types/job';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type ConditionTreeProps = {
   title: ReactNode;
-  items: warp_controller.Condition[];
+  items: warp_resolver.Condition[];
   isRoot?: boolean;
   job: Job;
 } & UIElementProps;

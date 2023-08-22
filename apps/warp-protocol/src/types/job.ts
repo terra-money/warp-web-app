@@ -1,14 +1,14 @@
 import { u } from '@terra-money/apps/types';
+import { warp_resolver, Job as WarpJob } from '@terra-money/warp-sdk';
 import Big from 'big.js';
-import { warp_controller } from './contracts';
 
 export class Job {
-  info: warp_controller.Job;
-  condition: warp_controller.Condition;
-  vars: warp_controller.Variable[];
+  info: WarpJob;
+  condition: warp_resolver.Condition;
+  vars: warp_resolver.Variable[];
   reward: u<Big>;
 
-  constructor(info: warp_controller.Job) {
+  constructor(info: WarpJob) {
     this.info = info;
     this.condition = info.condition;
     this.vars = info.vars;

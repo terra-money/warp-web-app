@@ -1,26 +1,26 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { forwardRef, useEffect, useState } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { isEqual } from 'lodash';
 
 import styles from './ConditionNode.module.sass';
 import { OperatorInput } from './operator-input/OperatorInput';
 import { ValueInput } from './value-input/ValueInput';
 
-type Expr = warp_controller.GenExprFor_ValueFor_StringAnd_StringOp;
-type Value = warp_controller.ValueFor_String;
+type Expr = warp_resolver.GenExprFor_ValueFor_StringAnd_StringOp;
+type Value = warp_resolver.ValueFor_String;
 
 type StringExprNodeProps = UIElementProps & {
   expr: Expr;
   setExpr: (expr: Expr) => void;
 };
 
-const numOperators: warp_controller.StringOp[] = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
+const numOperators: warp_resolver.StringOp[] = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
 
 export const StringExprNode = forwardRef((props: StringExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
   const { expr, setExpr } = props;
 
-  const [op, setOp] = useState<warp_controller.StringOp>(expr.op);
+  const [op, setOp] = useState<warp_resolver.StringOp>(expr.op);
   const [left, setLeft] = useState<Value>(expr.left);
   const [right, setRight] = useState<Value>(expr.right);
 
@@ -33,7 +33,7 @@ export const StringExprNode = forwardRef((props: StringExprNodeProps, ref: React
   const Left = <ValueInput variant="text" value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
-    <OperatorInput<warp_controller.StringOp>
+    <OperatorInput<warp_resolver.StringOp>
       operators={numOperators}
       value={op}
       onChange={setOp}

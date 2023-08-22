@@ -15,7 +15,7 @@ import { ConditionBuilder } from 'pages/job-new/condition-builder/ConditionBuild
 import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
 import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
 import { parseMsgs } from 'pages/job-new/JobNew';
@@ -75,7 +75,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
             loading={createTemplateTxResult.loading}
             disabled={submitDisabled}
             onClick={async () => {
-              const condition = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
+              const condition = filterEmptyCond(cond ?? ({} as warp_resolver.Condition));
               const msgs = parseMsgs(msg);
               const res = await createTemplateTx({
                 formatted_str: formattedStr,
@@ -108,9 +108,9 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
 const extractUsedVariables = (
   formattedStr: string,
-  msgs: warp_controller.CosmosMsgFor_Empty[],
-  vars: warp_controller.Variable[],
-  condition?: warp_controller.Condition
+  msgs: warp_resolver.CosmosMsgFor_Empty[],
+  vars: warp_resolver.Variable[],
+  condition?: warp_resolver.Condition
 ) => {
   return uniqBy(
     [...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariablesInCosmosMsg(vars, msgs, condition)],
