@@ -78,7 +78,7 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
         wasm: {
           execute: {
             ...msg.wasm.execute,
-            msg: fromBase64(msg.wasm.execute.msg),
+            msg: safeFromBase64(msg.wasm.execute.msg),
           },
         },
       };
@@ -89,7 +89,7 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
         wasm: {
           instantiate: {
             ...msg.wasm.instantiate,
-            msg: fromBase64(msg.wasm.instantiate.msg),
+            msg: safeFromBase64(msg.wasm.instantiate.msg),
           },
         },
       };
@@ -100,7 +100,7 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
         wasm: {
           migrate: {
             ...msg.wasm.migrate,
-            msg: fromBase64(msg.wasm.migrate.msg),
+            msg: safeFromBase64(msg.wasm.migrate.msg),
           },
         },
       };
@@ -112,4 +112,12 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
 
 export const fromBase64 = (value: string) => {
   return JSON.parse(Buffer.from(value, 'base64').toString());
+};
+
+export const safeFromBase64 = (value: string) => {
+  try {
+    return JSON.parse(Buffer.from(value, 'base64').toString());
+  } catch (err) {
+    return value;
+  }
 };
