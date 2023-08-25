@@ -82,36 +82,6 @@ export const injectiveNetworks: (networkName: NetworkName) => Record<string, LCD
   } as Record<string, LCDClientConfig>;
 };
 
-export const neutronNetworks: (networkName: NetworkName) => Record<string, LCDClientConfig> = (
-  networkName: NetworkName
-) => {
-  if (networkName === 'testnet') {
-    return {
-      'pion-1': {
-        chainID: 'pion-1',
-        lcd: 'https://rest-palvus.pion-1.ntrn.tech',
-        gasAdjustment: 1.75,
-        gasPrices: {
-          untrn: 0.05,
-        },
-        prefix: 'neutron',
-      },
-    } as Record<string, LCDClientConfig>;
-  }
-
-  return {
-    'neutron-1': {
-      chainID: 'neutron-1',
-      lcd: 'https://rest-kralum.neutron-1.neutron.org',
-      gasAdjustment: 1.75,
-      gasPrices: {
-        untrn: 0.05,
-      },
-      prefix: 'neutron',
-    },
-  } as Record<string, LCDClientConfig>;
-};
-
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network: prevNetwork, disconnect } = useWallet();
@@ -121,7 +91,6 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
     () => ({
       ...prevNetwork,
       ...injectiveNetworks(networkName(prevNetwork)),
-      ...neutronNetworks(networkName(prevNetwork)),
     }),
     [prevNetwork]
   );
@@ -160,7 +129,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
   useEffect(() => {
     // network changed in useWallet + hack for empty networks object returned by useWallet, remove when fixed
-    if (!(selectedChainId in network) && Object.keys(network).length > 2) {
+    if (!(selectedChainId in network) && Object.keys(network).length > 1) {
       setSelectedChain(selectedChainMetadata.name);
       return;
     }
