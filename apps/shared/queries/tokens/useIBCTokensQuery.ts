@@ -22,6 +22,10 @@ export const useIBCTokensQuery = (): UseQueryResult<IBCTokensResponse> => {
   return useQuery(
     [QUERY_KEY.IBC_TOKENS, wallet.chainId],
     () => {
+      if (wallet.chain.name !== 'terra') {
+        return {};
+      }
+
       return fetchIBCTokens(wallet.connectedWallet?.network ?? 'mainnet');
     },
     {

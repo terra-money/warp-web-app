@@ -1,7 +1,8 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import Big from 'big.js';
-import { useCW20TokensQuery, useIBCTokensQuery } from '../tokens';
-import { CW20TokensResponse, IBCTokensResponse, INJ, LUNA, Token } from '../../types';
+import { isEmpty } from 'lodash';
+import { Token } from '../../types';
+import { Tokens, useTokens } from '../../hooks';
 
 const mapTokens = (tokens: Token[]): Record<string, string> => {
   return tokens.reduce((previous, current) => {
@@ -15,16 +16,8 @@ const mapTokens = (tokens: Token[]): Record<string, string> => {
   }, {});
 };
 
-export const fetchCoinGeckoPrices = async (
-  currency: string,
-  cw20Tokens: CW20TokensResponse,
-  ibcTokens: IBCTokensResponse
-): Promise<Record<string, Big>> => {
-  const tokens = {
-    ...mapTokens([LUNA, INJ]),
-    ...mapTokens(Object.values(cw20Tokens)),
-    ...mapTokens(Object.values(ibcTokens)),
-  };
+export const fetchCoinGeckoPrices = async (currency: string, tokensMap: Tokens): Promise<Record<string, Big>> => {
+  const tokens = mapTokens(Object.values(tokensMap));
 
   const uri = `https://api.coingecko.com/api/v3/simple/price?vs_currencies=${currency}&ids=${Object.keys(tokens).join(
     ','
@@ -55,22 +48,21 @@ export const usePricesQuery = (
   // this should eventually come from personalization settings
   const currency: QuoteCurrency = 'usd';
 
-  const { data: cw20Tokens } = useCW20TokensQuery();
-
-  const { data: ibcTokens } = useIBCTokensQuery();
+  const { tokens } = useTokens();
 
   const FiveMinutes = 5 * 60 * 1000;
 
   return useQuery(
     [queryName],
     () => {
-      if (cw20Tokens === undefined || ibcTokens === undefined) {
+      if (isEmpty(tokens)) {
         return Promise.resolve({});
       }
-      return fetchCoinGeckoPrices(currency, cw20Tokens, ibcTokens);
+
+      return fetchCoinGeckoPrices(currency, tokens);
     },
     {
-      enabled: cw20Tokens !== undefined && ibcTokens !== undefined,
+      enabled: !isEmpty(tokens),
       refetchOnMount: false,
       refetchInterval: FiveMinutes,
     }

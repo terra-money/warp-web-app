@@ -160,7 +160,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
   useEffect(() => {
     // network changed in useWallet + hack for empty networks object returned by useWallet, remove when fixed
-    if (!(selectedChainId in network) && Object.keys(network).length > 1) {
+    if (!(selectedChainId in network) && Object.keys(network).length > 2) {
       setSelectedChain(selectedChainMetadata.name);
       return;
     }
