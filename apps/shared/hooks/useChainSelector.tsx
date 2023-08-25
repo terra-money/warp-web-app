@@ -3,7 +3,14 @@ import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet
 import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
-import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, ChainModule } from '@terra-money/warp-sdk';
+import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
+import {
+  ChainMetadata as SdkChainMetadata,
+  TERRA_CHAIN,
+  ChainName,
+  ChainModule,
+  NetworkName,
+} from '@terra-money/warp-sdk';
 import { useLocalStorage } from 'usehooks-ts';
 
 export type ChainMetadata = SdkChainMetadata & {
@@ -24,8 +31,12 @@ const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
       return { ...sdkMetadata, icon: <InjectiveIcon /> };
     case 'terra':
       return { ...sdkMetadata, icon: <TerraIcon /> };
+    case 'neutron':
+      return { ...sdkMetadata, icon: <NeutronIcon /> };
   }
 };
+
+const networkName = (networks: InfoResponse): NetworkName => ('pisco-1' in networks ? 'testnet' : 'mainnet');
 
 const ChainSelectorContext = createContext<ChainSelectorContextState | undefined>(undefined);
 
@@ -41,25 +52,64 @@ interface ChainSelectorProviderProps {
   children: ReactNode;
 }
 
-export const injectiveNetworks: Record<string, LCDClientConfig> = {
-  // 'injective-888': {
-  //   chainID: 'injective-888',
-  //   lcd: 'https://k8s.testnet.lcd.injective.network',
-  //   gasAdjustment: 1.75,
-  //   gasPrices: {
-  //     inj: 1500000000,
-  //   },
-  //   prefix: 'inj',
-  // },
-  'injective-1': {
-    chainID: 'injective-1',
-    lcd: 'https://lcd.injective.network',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      inj: 1500000000,
+export const injectiveNetworks: (networkName: NetworkName) => Record<string, LCDClientConfig> = (
+  networkName: NetworkName
+) => {
+  if (networkName === 'testnet') {
+    return {
+      'injective-888': {
+        chainID: 'injective-888',
+        lcd: 'https://k8s.testnet.lcd.injective.network',
+        gasAdjustment: 1.75,
+        gasPrices: {
+          inj: 1500000000,
+        },
+        prefix: 'inj',
+      },
+    } as Record<string, LCDClientConfig>;
+  }
+
+  return {
+    'injective-1': {
+      chainID: 'injective-1',
+      lcd: 'https://lcd.injective.network',
+      gasAdjustment: 1.75,
+      gasPrices: {
+        inj: 1500000000,
+      },
+      prefix: 'inj',
     },
-    prefix: 'inj',
-  },
+  } as Record<string, LCDClientConfig>;
+};
+
+export const neutronNetworks: (networkName: NetworkName) => Record<string, LCDClientConfig> = (
+  networkName: NetworkName
+) => {
+  if (networkName === 'testnet') {
+    return {
+      'pion-1': {
+        chainID: 'pion-1',
+        lcd: 'https://rest-palvus.pion-1.ntrn.tech',
+        gasAdjustment: 1.75,
+        gasPrices: {
+          untrn: 0.05,
+        },
+        prefix: 'neutron',
+      },
+    } as Record<string, LCDClientConfig>;
+  }
+
+  return {
+    'neutron-1': {
+      chainID: 'neutron-1',
+      lcd: 'https://rest-kralum.neutron-1.neutron.org',
+      gasAdjustment: 1.75,
+      gasPrices: {
+        untrn: 0.05,
+      },
+      prefix: 'neutron',
+    },
+  } as Record<string, LCDClientConfig>;
 };
 
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
@@ -67,7 +117,14 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { network: prevNetwork, disconnect } = useWallet();
   const connectedWallet = useConnectedWallet();
 
-  const network = useMemo<InfoResponse>(() => ({ ...prevNetwork, ...injectiveNetworks }), [prevNetwork]);
+  const network = useMemo<InfoResponse>(
+    () => ({
+      ...prevNetwork,
+      ...injectiveNetworks(networkName(prevNetwork)),
+      ...neutronNetworks(networkName(prevNetwork)),
+    }),
+    [prevNetwork]
+  );
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
@@ -89,7 +146,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
     (chainName: ChainName) => {
       const metadata = chainModule.chainMetadata(chainName);
       // check if testnet or mainnet by useWallet's network
-      const chainId = 'pisco-1' in network ? metadata.testnet : metadata.mainnet;
+      const chainId = networkName(network) === 'testnet' ? metadata.testnet : metadata.mainnet;
 
       setSelectedChainMetadata(getChainMetadata(metadata));
       setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });

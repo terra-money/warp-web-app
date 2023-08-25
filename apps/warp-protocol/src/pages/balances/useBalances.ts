@@ -1,7 +1,7 @@
 import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
 import { useNativeToken } from 'hooks/useNativeToken';
 import { useCallback, useMemo } from 'react';
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { useLocalStorage } from 'usehooks-ts';
 
 type BalancesStorage = {

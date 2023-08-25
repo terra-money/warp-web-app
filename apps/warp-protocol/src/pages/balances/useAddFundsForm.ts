@@ -1,4 +1,4 @@
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { FormModifier, LocalWallet, useForm, useLocalWallet } from '@terra-money/apps/hooks';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';

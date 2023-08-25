@@ -22,6 +22,15 @@ const mainnetConfig: Record<string, LCDClientConfig> = {
     },
     prefix: 'inj',
   },
+  'neutron-1': {
+    chainID: 'neutron-1',
+    lcd: 'https://rest-kralum.neutron-1.neutron.org',
+    gasAdjustment: 1.75,
+    gasPrices: {
+      untrn: 0.05,
+    },
+    prefix: 'neutron',
+  },
 };
 
 const testnetConfig: Record<string, LCDClientConfig> = {
@@ -34,14 +43,23 @@ const testnetConfig: Record<string, LCDClientConfig> = {
   },
   'injective-888': {
     chainID: 'injective-888',
-    // lcd: 'https://k8s.testnet.lcd.injective.network',
+    lcd: 'https://k8s.testnet.lcd.injective.network',
     // temporarily index history from archive node
-    lcd: 'http://146.59.252.210:10337',
+    // lcd: 'http://146.59.252.210:10337',
     gasAdjustment: 1.75,
     gasPrices: {
       inj: 1500000000,
     },
     prefix: 'inj',
+  },
+  'pion-1': {
+    chainID: 'pion-1',
+    lcd: 'https://rest-palvus.pion-1.ntrn.tech',
+    gasAdjustment: 1.75,
+    gasPrices: {
+      untrn: 0.05,
+    },
+    prefix: 'neutron',
   },
 };
 
@@ -96,6 +114,22 @@ export class Environment {
           height: 14834209,
           // timestamp: 1689894487535
           timestamp: 1689894487,
+        };
+      }
+    }
+
+    if (chainName === 'neutron') {
+      // TODO: implement this (values are placeholder)
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 5538968,
+          timestamp: 1686943148,
+        };
+      } else {
+        // testnet
+        return {
+          height: 6037839,
+          timestamp: 1686785347,
         };
       }
     }
