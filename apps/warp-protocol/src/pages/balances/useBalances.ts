@@ -1,4 +1,4 @@
-import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
+import { LocalWallet, useChainSuffix, useLocalWallet } from '@terra-money/apps/hooks';
 import { useNativeToken } from 'hooks/useNativeToken';
 import { useCallback, useMemo } from 'react';
 import { Token } from '@terra-money/apps/types';
@@ -16,7 +16,8 @@ export const useBalances = () => {
 
   const defaultTokens = useMemo(() => [nativeToken], [nativeToken]);
 
-  const [storedBalances, setStoredBalances] = useLocalStorage<BalancesStorage>('__warp_stored_balances', {});
+  const storedBalancesKey = useChainSuffix('__warp_stored_balances');
+  const [storedBalances, setStoredBalances] = useLocalStorage<BalancesStorage>(storedBalancesKey, {});
 
   const setBalances = useCallback(
     (tokens: Token[]) => {

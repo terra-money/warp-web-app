@@ -1,4 +1,4 @@
-import { useLocalWallet } from '@terra-money/apps/hooks';
+import { useChainSuffix, useLocalWallet } from '@terra-money/apps/hooks';
 import { useCallback, useMemo } from 'react';
 import { variableName } from 'utils/variable';
 import { useLocalStorage } from 'usehooks-ts';
@@ -8,8 +8,9 @@ export const useCachedVariables = () => {
   const localWallet = useLocalWallet();
 
   const initialValue = useMemo(() => [], []);
+  const cachedVariablesKey = useChainSuffix(`__warp_cached_variables`);
   const [cachedVariables, setCachedVariables] = useLocalStorage<warp_resolver.Variable[]>(
-    `__warp_cached_variables`,
+    cachedVariablesKey,
     initialValue
   );
 

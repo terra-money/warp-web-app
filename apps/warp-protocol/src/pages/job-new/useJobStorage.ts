@@ -7,16 +7,16 @@ import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
 import { useNativeToken } from 'hooks/useNativeToken';
 import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { useChainSuffix } from '@terra-money/apps/hooks';
 
 export const useJobStorage = () => {
-  const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
-    '__warp_details_input',
-    {} as any
-  );
+  const detailsInputKey = useChainSuffix('__warp_details_input');
+  const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(detailsInputKey, {} as any);
 
   const nativeToken = useNativeToken();
 
-  const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>('__warp_condition', {} as any);
+  const conditionKey = useChainSuffix('__warp_condition');
+  const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>(conditionKey, {} as any);
 
   const { clearAll: clearAllCachedVariables, setVariables } = useCachedVariables();
 
