@@ -1,67 +1,9 @@
 import dotenv from 'dotenv';
 import { Epoch } from '@apps-shared/indexers/types';
-import { ChainModule, ChainName, ContractAddresses } from '@terra-money/warp-sdk';
-import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
+import { ChainModule, ChainName, ContractAddresses, NetworkName } from '@terra-money/warp-sdk';
+import { LCDClient } from '@terra-money/feather.js';
 
 dotenv.config();
-
-const mainnetConfig: Record<string, LCDClientConfig> = {
-  'phoenix-1': {
-    chainID: 'phoenix-1',
-    lcd: 'https://phoenix-lcd.terra.dev',
-    gasAdjustment: 1.75,
-    gasPrices: { uluna: 0.15 },
-    prefix: 'terra',
-  },
-  'injective-1': {
-    chainID: 'injective-1',
-    lcd: 'https://lcd.injective.network',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      inj: 1500000000,
-    },
-    prefix: 'inj',
-  },
-  'neutron-1': {
-    chainID: 'neutron-1',
-    lcd: 'https://rest-kralum.neutron-1.neutron.org',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      untrn: 0.05,
-    },
-    prefix: 'neutron',
-  },
-};
-
-const testnetConfig: Record<string, LCDClientConfig> = {
-  'pisco-1': {
-    lcd: 'https://pisco-lcd.terra.dev',
-    chainID: 'pisco-1',
-    gasAdjustment: 1.75,
-    gasPrices: { uluna: 0.15 },
-    prefix: 'terra',
-  },
-  'injective-888': {
-    chainID: 'injective-888',
-    lcd: 'https://k8s.testnet.lcd.injective.network',
-    // temporarily index history from archive node
-    // lcd: 'http://146.59.252.210:10337',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      inj: 1500000000,
-    },
-    prefix: 'inj',
-  },
-  'pion-1': {
-    chainID: 'pion-1',
-    lcd: 'https://rest-palvus.pion-1.ntrn.tech',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      untrn: 0.05,
-    },
-    prefix: 'neutron',
-  },
-};
 
 export class Environment {
   public static lcd: LCDClient;
@@ -69,7 +11,7 @@ export class Environment {
 
   static load() {
     dotenv.config();
-    Environment.lcd = new LCDClient(process.env.NETWORK === 'mainnet' ? mainnetConfig : testnetConfig);
+    Environment.lcd = ChainModule.lcdClient({ networks: [process.env.NETWORK as NetworkName] });
     // set to terra by default, not relevant
     Environment.chain = new ChainModule(
       Environment.lcd.config[process.env.NETWORK === 'mainnet' ? 'phoenix-1' : 'pisco-1']
