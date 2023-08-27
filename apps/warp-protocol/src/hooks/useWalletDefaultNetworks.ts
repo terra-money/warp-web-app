@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getInitialConfig, InfoResponse } from '@terra-money/wallet-kit';
-import { injectiveNetworks } from '@terra-money/apps/hooks';
 
 export const useWalletDefaultNetworks = (): InfoResponse | undefined => {
   const [config, setConfig] = useState<InfoResponse | undefined>();
@@ -10,7 +9,7 @@ export const useWalletDefaultNetworks = (): InfoResponse | undefined => {
       try {
         const result = await getInitialConfig();
 
-        setConfig({ ...result, ...injectiveNetworks });
+        setConfig({ ...result });
       } catch (err) {
         setConfig(undefined);
       }

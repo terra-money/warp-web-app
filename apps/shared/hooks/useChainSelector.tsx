@@ -1,4 +1,4 @@
-import { LCDClientConfig } from '@terra-money/feather.js';
+import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
 import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
 import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
@@ -23,6 +23,7 @@ type ChainSelectorContextState = {
   lcdClientConfig: LCDClientConfig;
   setSelectedChain: (chain: ChainName) => void;
   supportedChains: ChainMetadata[];
+  lcd: LCDClient;
 };
 
 const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
@@ -52,36 +53,6 @@ interface ChainSelectorProviderProps {
   children: ReactNode;
 }
 
-export const injectiveNetworks: (networkName: NetworkName) => Record<string, LCDClientConfig> = (
-  networkName: NetworkName
-) => {
-  if (networkName === 'testnet') {
-    return {
-      'injective-888': {
-        chainID: 'injective-888',
-        lcd: 'https://k8s.testnet.lcd.injective.network',
-        gasAdjustment: 1.75,
-        gasPrices: {
-          inj: 1500000000,
-        },
-        prefix: 'inj',
-      },
-    } as Record<string, LCDClientConfig>;
-  }
-
-  return {
-    'injective-1': {
-      chainID: 'injective-1',
-      lcd: 'https://lcd.injective.network',
-      gasAdjustment: 1.75,
-      gasPrices: {
-        inj: 1500000000,
-      },
-      prefix: 'inj',
-    },
-  } as Record<string, LCDClientConfig>;
-};
-
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network: prevNetwork, disconnect } = useWallet();
@@ -90,7 +61,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const network = useMemo<InfoResponse>(
     () => ({
       ...prevNetwork,
-      ...injectiveNetworks(networkName(prevNetwork)),
+      ...ChainModule.lcdClientConfig([networkName(prevNetwork)], ['injective']),
     }),
     [prevNetwork]
   );
@@ -140,12 +111,13 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       selectedChainId,
       selectedChain: getChainMetadata(selectedChainMetadata),
       lcdClientConfig,
+      lcd: new LCDClient(network),
       setSelectedChain,
       supportedChains: chainModule.supportedChains().map(getChainMetadata),
     };
 
     return ret;
-  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain]);
+  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain, network]);
 
   return <ChainSelectorContext.Provider value={value}>{children}</ChainSelectorContext.Provider>;
 };
