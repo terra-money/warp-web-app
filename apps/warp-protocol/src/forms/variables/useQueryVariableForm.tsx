@@ -1,11 +1,11 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export interface QueryVariableInput {
   name: string;
   queryJson: string;
-  kind: warp_controller.VariableKind;
+  kind: warp_resolver.VariableKind;
   querySelector: string;
 }
 
@@ -15,7 +15,7 @@ export interface QueryVariableState extends FormState<QueryVariableInput> {
 
 export type QueryVariableFormInput = FormInput<QueryVariableInput>;
 
-export const queryVariableToInput = (queryVariable?: warp_controller.QueryVariable): QueryVariableInput => {
+export const queryVariableToInput = (queryVariable?: warp_resolver.QueryVariable): QueryVariableInput => {
   const queryJson = queryVariable ? JSON.stringify(queryVariable.init_fn.query, null, 2) : '';
 
   return {
@@ -26,7 +26,7 @@ export const queryVariableToInput = (queryVariable?: warp_controller.QueryVariab
   };
 };
 
-export const useQueryVariableForm = (queryVariable?: warp_controller.QueryVariable) => {
+export const useQueryVariableForm = (queryVariable?: warp_resolver.QueryVariable) => {
   const initialValue = useMemo<QueryVariableState>(
     () => ({
       ...queryVariableToInput(queryVariable),
@@ -81,7 +81,7 @@ export const useQueryVariableForm = (queryVariable?: warp_controller.QueryVariab
   return useForm<QueryVariableInput, QueryVariableState>(form, initialValue);
 };
 
-export const decodeQuery = (query?: warp_controller.QueryRequestFor_String) => {
+export const decodeQuery = (query?: warp_resolver.QueryRequestFor_String) => {
   if (!query) {
     return query;
   }

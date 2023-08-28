@@ -2,14 +2,14 @@ import { useTx } from '@terra-money/apps/libs/transactions';
 import { u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { warp_controller } from '../types/contracts';
 import { TX_KEY } from './txKey';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 interface EditJobTx {
   name?: string;
   reward?: u<Big>;
   jobId: string;
-  condition?: warp_controller.Condition;
+  condition?: warp_resolver.Condition;
 }
 
 export const useEditJobTx = () => {

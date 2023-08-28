@@ -13,16 +13,16 @@ import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
 
 import styles from './StaticVariableForm.module.sass';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { VariableValueInput } from './variable-value-input/VariableValueInput';
 
 export type StaticVariableFormProps = UIElementProps & {
-  selectedVariable?: warp_controller.StaticVariable;
+  selectedVariable?: warp_resolver.StaticVariable;
   renderActions: (formState: StaticVariableState) => JSX.Element;
 };
 
-const staticVariableKinds: warp_controller.VariableKind[] = [
+const staticVariableKinds: warp_resolver.VariableKind[] = [
   'string',
   'uint',
   'int',

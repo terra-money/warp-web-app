@@ -11,7 +11,7 @@ import { Button, Link, Text } from 'components/primitives';
 import { useJobsQuery } from 'queries/useJobsQuery';
 import { Job } from 'types/job';
 import { useJobFiltersDialog } from './dialogs/job-filters/JobFiltersDialog';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 import { useNewJobDialog } from 'components/layout/dialogs/NewJobDialog';
 
 type JobsWidgetProps = {

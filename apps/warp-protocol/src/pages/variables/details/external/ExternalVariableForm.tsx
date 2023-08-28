@@ -13,7 +13,7 @@ import { FormControl } from 'components/form-control/FormControl';
 import { InputAdornment } from '@mui/material';
 
 import styles from './ExternalVariableForm.module.sass';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { MethodInput } from './method-input/MethodInput';
@@ -22,14 +22,14 @@ import { usePreviewExternalDialog } from './preview-dialog/PreviewExternalDialog
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { generatePaths } from 'utils';
 
-const httpMethods: warp_controller.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
+const httpMethods: warp_resolver.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
 
 export type ExternalVariableFormProps = UIElementProps & {
-  selectedVariable?: warp_controller.ExternalVariable;
+  selectedVariable?: warp_resolver.ExternalVariable;
   renderActions: (formState: ExternalVariableState) => JSX.Element;
 };
 
-const externalVarKinds: warp_controller.VariableKind[] = [
+const externalVarKinds: warp_resolver.VariableKind[] = [
   'string',
   'uint',
   'int',
@@ -151,7 +151,7 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
             error={urlError !== undefined}
           />
         </FormControl>
-        <MethodInput<warp_controller.Method>
+        <MethodInput<warp_resolver.Method>
           methods={httpMethods}
           value={method ?? undefined}
           label="Method"

@@ -1,11 +1,11 @@
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { operatorLabel } from '../operatorLabel';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
 import { ExpressionValue } from './ExpressionValue';
 
 export type DecimalExpressionProps = {
-  expression: warp_controller.GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
+  expression: warp_resolver.GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
   job: Job;
 } & UIElementProps;
 

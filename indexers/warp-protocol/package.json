@@ -16,12 +16,12 @@
     "@aws-sdk/client-dynamodb": "^3.159.0",
     "@aws-sdk/util-dynamodb": "^3.159.0",
     "@terra-money/feather.js": "^1.0.10",
-    "@terra-money/warp-sdk": "^0.1.34",
+    "@terra-money/warp-sdk": "^0.1.46",
     "@types/node": "^16.11.56",
-    "axios": "^0.27.2",
+    "axios": "^1.1.2",
     "big.js": "^6.2.1",
     "d3-array": "^3.2.0",
-    "date-fns": "^2.29.2",
+    "date-fns": "^2.29.3",
     "dotenv": "^16.0.1",
     "pino": "^8.4.2",
     "typescript": "^4.8.2"
@@ -31,12 +31,5 @@
     "esbuild": "^0.14.54",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0"
-  },
-  "generate-types": {
-    "contracts": [
-      "warp-controller",
-      "warp-account"
-    ],
-    "output": "src/types/contracts"
   }
 }

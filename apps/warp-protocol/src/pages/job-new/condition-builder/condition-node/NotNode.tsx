@@ -2,7 +2,7 @@ import { UIElementProps } from '@terra-money/apps/components';
 import { Button } from 'components/primitives';
 import React, { useEffect, useRef } from 'react';
 import { forwardRef } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { isEmpty } from 'lodash';
 import { ConcreteNode } from './ConcreteNode';
 
@@ -14,8 +14,8 @@ import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 
 type NotNodeProps = UIElementProps & {
   parentRef: React.MutableRefObject<HTMLDivElement | null>;
-  setCond: (cond: warp_controller.Condition) => void;
-  condition: warp_controller.Condition;
+  setCond: (cond: warp_resolver.Condition) => void;
+  condition: warp_resolver.Condition;
 };
 
 export const NotNode = forwardRef((props: NotNodeProps, inputRef: React.Ref<HTMLButtonElement>) => {

@@ -1,11 +1,11 @@
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { base64encode } from './base64encode';
 
-export const parseQuery = (value: string): warp_controller.QueryRequestFor_String => {
-  return JSON.parse(value) as warp_controller.QueryRequestFor_String;
+export const parseQuery = (value: string): warp_resolver.QueryRequestFor_String => {
+  return JSON.parse(value) as warp_resolver.QueryRequestFor_String;
 };
 
-export const encodeQuery = (value: string): warp_controller.QueryRequestFor_String => {
+export const encodeQuery = (value: string): warp_resolver.QueryRequestFor_String => {
   const input = parseQuery(value);
 
   if (!('wasm' in input)) {

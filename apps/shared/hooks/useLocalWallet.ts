@@ -1,5 +1,5 @@
 import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
-import { ConnectResponse, useConnectedWallet, useLcdClient, useWallet, WalletResponse } from '@terra-money/wallet-kit';
+import { ConnectResponse, useConnectedWallet, useWallet, WalletResponse } from '@terra-money/wallet-kit';
 import { useMemo } from 'react';
 import { ChainMetadata, useChainSelector } from './useChainSelector';
 
@@ -21,8 +21,7 @@ export const useLocalWallet = (): LocalWallet => {
   const connectedWallet = useConnectedWallet();
   const wallet = useWallet();
 
-  const { lcdClientConfig, selectedChainId, selectedChain } = useChainSelector();
-  const lcd = useLcdClient();
+  const { lcdClientConfig, lcd, selectedChainId, selectedChain } = useChainSelector();
 
   return useMemo(() => {
     return {

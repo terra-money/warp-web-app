@@ -7,7 +7,7 @@ import { KeySelector } from '@apps-shared/indexers/services/persistence';
 import { fetchByHeight } from '@apps-shared/indexers/services/event-store';
 import { Environment } from 'utils';
 import { WarpControllerJobEvents, WarpPK } from 'types/events';
-import { warp_controller } from 'types/contracts';
+import { warp_controller } from '@terra-money/warp-sdk';
 
 export const PK: KeySelector<Entity> = (data) => data.id;
 

@@ -1,14 +1,14 @@
 import { FormFunction, FormInput, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_controller, warp_resolver } from 'types';
+import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
 import { generatePaths } from 'utils';
 import { hasOnlyStaticVariables, variableName } from 'utils/variable';
 import { scanForReferences } from 'utils/msgs';
 
 interface TemplateNewInput {
   name: string;
-  vars: warp_controller.Variable[];
+  vars: warp_resolver.Variable[];
   formattedStr: string;
   msg: string;
   paths: string[];
@@ -20,7 +20,7 @@ export interface TemplateNewState extends TemplateNewInput, FormState<TemplateNe
 
 export type TemplateNewFormInput = FormInput<TemplateNewInput>;
 
-export const templateToInput = (template?: warp_resolver.Template): TemplateNewInput => {
+export const templateToInput = (template?: warp_templates.Template): TemplateNewInput => {
   return {
     name: template?.name ?? '',
     vars: template?.vars ?? [],
@@ -30,7 +30,7 @@ export const templateToInput = (template?: warp_resolver.Template): TemplateNewI
   };
 };
 
-export const useTemplateNewForm = (template?: warp_resolver.Template) => {
+export const useTemplateNewForm = (template?: warp_templates.Template) => {
   const initialValue = useMemo<TemplateNewState>(() => {
     const res = {
       ...templateToInput(template),

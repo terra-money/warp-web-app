@@ -1,21 +1,20 @@
-import { warp_controller } from 'types';
 import { decodeQuery } from 'forms/variables';
 import { encodeQuery } from './encodeQuery';
-import { warp_resolver } from 'types/contracts/warp_resolver';
+import { warp_resolver, warp_templates, extractVariableName } from '@terra-money/warp-sdk';
 
-export const resolveVariableRef = (ref: string, vars: warp_controller.Variable[]) => {
-  const name = extractName(ref);
+export const resolveVariableRef = (ref: string, vars: warp_resolver.Variable[]) => {
+  const name = extractVariableName(ref);
   const v = vars.find((v) => variableName(v) === name);
-  return v as warp_controller.Variable;
+  return v as warp_resolver.Variable;
 };
 
 export const isVariableRef = (value: string) => value.startsWith('$warp.variable.');
 
-export const variableRef = (variable: warp_controller.Variable) => {
+export const variableRef = (variable: warp_resolver.Variable) => {
   return `$warp.variable.${variableName(variable)}`;
 };
 
-export const variableName = (v: warp_controller.Variable): string => {
+export const variableName = (v: warp_resolver.Variable): string => {
   if (!v) {
     return 'unknown';
   }
@@ -31,7 +30,7 @@ export const variableName = (v: warp_controller.Variable): string => {
   return v.query.name;
 };
 
-export const variableValue = (v: warp_controller.Variable) => {
+export const variableValue = (v: warp_resolver.Variable) => {
   if ('static' in v) {
     return v.static.value;
   }
@@ -43,7 +42,7 @@ export const variableValue = (v: warp_controller.Variable) => {
   return v.query.value;
 };
 
-export const variableKind = (v: warp_controller.Variable): warp_controller.VariableKind => {
+export const variableKind = (v: warp_resolver.Variable): warp_resolver.VariableKind => {
   if ('static' in v) {
     return v.static.kind;
   }
@@ -55,14 +54,9 @@ export const variableKind = (v: warp_controller.Variable): warp_controller.Varia
   return v.query.kind;
 };
 
-const extractName = (str: string) => {
-  const prefix = '$warp.variable.';
-  return str.substring(prefix.length);
-};
-
-export const templateVariables = (template: warp_resolver.Template) => {
+export const templateVariables = (template: warp_templates.Template) => {
   const staticVariables = template.vars.filter((v) => 'static' in v) as Extract<
-    warp_controller.Variable,
+    warp_resolver.Variable,
     { static: {} }
   >[];
 
@@ -97,13 +91,13 @@ export const formattedStringVarNames = (formattedString: string) => {
   return formattedString.match(/\{[^}]+\}/g)?.map((s) => s.slice(1, -1)) || [];
 };
 
-export const formattedStringVariables = (formattedString: string, variables: warp_controller.Variable[]) => {
+export const formattedStringVariables = (formattedString: string, variables: warp_resolver.Variable[]) => {
   const variableNames = formattedStringVarNames(formattedString);
 
-  return variableNames.map((name) => variables.find((v) => variableName(v) === name)) as warp_controller.Variable[];
+  return variableNames.map((name) => variables.find((v) => variableName(v) === name)) as warp_resolver.Variable[];
 };
 
-export function hasOnlyStaticVariables(formattedString: string, variables: warp_controller.Variable[]): boolean {
+export function hasOnlyStaticVariables(formattedString: string, variables: warp_resolver.Variable[]): boolean {
   // Extract all the variable names from the formatted string
   const variableNames = formattedStringVarNames(formattedString);
 
@@ -111,10 +105,10 @@ export function hasOnlyStaticVariables(formattedString: string, variables: warp_
   return variableNames.every((name) => variables.some((v) => 'static' in v && v.static.name === name));
 }
 
-export function hydrateQueryVariablesWithStatics(variables: warp_controller.Variable[]): warp_controller.Variable[] {
+export function hydrateQueryVariablesWithStatics(variables: warp_resolver.Variable[]): warp_resolver.Variable[] {
   const staticVariables = variables
     .filter((variable) => 'static' in variable)
-    .map((variable) => 'static' in variable && variable.static) as warp_controller.StaticVariable[];
+    .map((variable) => 'static' in variable && variable.static) as warp_resolver.StaticVariable[];
 
   return variables.map((variable) => {
     if ('query' in variable) {

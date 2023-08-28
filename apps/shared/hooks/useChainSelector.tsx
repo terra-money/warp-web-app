@@ -1,9 +1,16 @@
-import { LCDClientConfig } from '@terra-money/feather.js';
+import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
 import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
 import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
-import { ChainMetadata as SdkChainMetadata, TERRA_CHAIN, ChainName, ChainModule } from '@terra-money/warp-sdk';
+import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
+import {
+  ChainMetadata as SdkChainMetadata,
+  TERRA_CHAIN,
+  ChainName,
+  ChainModule,
+  NetworkName,
+} from '@terra-money/warp-sdk';
 import { useLocalStorage } from 'usehooks-ts';
 
 export type ChainMetadata = SdkChainMetadata & {
@@ -16,6 +23,7 @@ type ChainSelectorContextState = {
   lcdClientConfig: LCDClientConfig;
   setSelectedChain: (chain: ChainName) => void;
   supportedChains: ChainMetadata[];
+  lcd: LCDClient;
 };
 
 const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
@@ -24,8 +32,12 @@ const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
       return { ...sdkMetadata, icon: <InjectiveIcon /> };
     case 'terra':
       return { ...sdkMetadata, icon: <TerraIcon /> };
+    case 'neutron':
+      return { ...sdkMetadata, icon: <NeutronIcon /> };
   }
 };
+
+const networkName = (networks: InfoResponse): NetworkName => ('pisco-1' in networks ? 'testnet' : 'mainnet');
 
 const ChainSelectorContext = createContext<ChainSelectorContextState | undefined>(undefined);
 
@@ -41,33 +53,18 @@ interface ChainSelectorProviderProps {
   children: ReactNode;
 }
 
-export const injectiveNetworks: Record<string, LCDClientConfig> = {
-  // 'injective-888': {
-  //   chainID: 'injective-888',
-  //   lcd: 'https://k8s.testnet.lcd.injective.network',
-  //   gasAdjustment: 1.75,
-  //   gasPrices: {
-  //     inj: 1500000000,
-  //   },
-  //   prefix: 'inj',
-  // },
-  'injective-1': {
-    chainID: 'injective-1',
-    lcd: 'https://lcd.injective.network',
-    gasAdjustment: 1.75,
-    gasPrices: {
-      inj: 1500000000,
-    },
-    prefix: 'inj',
-  },
-};
-
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network: prevNetwork, disconnect } = useWallet();
   const connectedWallet = useConnectedWallet();
 
-  const network = useMemo<InfoResponse>(() => ({ ...prevNetwork, ...injectiveNetworks }), [prevNetwork]);
+  const network = useMemo<InfoResponse>(
+    () => ({
+      ...prevNetwork,
+      ...ChainModule.lcdClientConfig([networkName(prevNetwork)], ['injective']),
+    }),
+    [prevNetwork]
+  );
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
@@ -89,7 +86,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
     (chainName: ChainName) => {
       const metadata = chainModule.chainMetadata(chainName);
       // check if testnet or mainnet by useWallet's network
-      const chainId = 'pisco-1' in network ? metadata.testnet : metadata.mainnet;
+      const chainId = networkName(network) === 'testnet' ? metadata.testnet : metadata.mainnet;
 
       setSelectedChainMetadata(getChainMetadata(metadata));
       setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });
@@ -114,12 +111,13 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       selectedChainId,
       selectedChain: getChainMetadata(selectedChainMetadata),
       lcdClientConfig,
+      lcd: new LCDClient(network),
       setSelectedChain,
       supportedChains: chainModule.supportedChains().map(getChainMetadata),
     };
 
     return ret;
-  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain]);
+  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain, network]);
 
   return <ChainSelectorContext.Provider value={value}>{children}</ChainSelectorContext.Provider>;
 };

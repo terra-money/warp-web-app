@@ -7,7 +7,7 @@ import { ReactComponent as ExcalamationIcon } from 'components/assets/Exclamatio
 import { ReactComponent as HourglassIcon } from 'components/assets/Hourglass.svg';
 
 import styles from './StatusPill.module.sass';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 
 type StatusPillProps = UIElementProps & {
   status: warp_controller.JobStatus;

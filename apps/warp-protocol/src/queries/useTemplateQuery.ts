@@ -1,12 +1,12 @@
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import { QueryClient, useQuery, useQueryClient, UseQueryResult } from 'react-query';
-import { warp_resolver } from 'types';
 import { QUERY_KEY } from './queryKey';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { warp_templates } from '@terra-money/warp-sdk';
 
 const findTemplate = (queryClient: QueryClient, queryKey: string, templateId: string) =>
   queryClient
-    .getQueriesData<warp_resolver.Template[]>(queryKey)
+    .getQueriesData<warp_templates.Template[]>(queryKey)
     .flatMap(([_, streams]) => streams)
     .filter((d) => Boolean(d))
     .find((d) => d.id === templateId);
@@ -19,7 +19,7 @@ export const readTemplateFromCache = (templateId: string | undefined, queryClien
   return findTemplate(queryClient, QUERY_KEY.TEMPLATES, templateId);
 };
 
-export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_resolver.Template | undefined> => {
+export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_templates.Template | undefined> => {
   const queryClient = useQueryClient();
   const wallet = useLocalWallet();
   const sdk = useWarpSdk();
@@ -40,5 +40,5 @@ export const useTemplateQuery = (templateId?: string): UseQueryResult<warp_resol
     }
   );
 
-  return query as UseQueryResult<warp_resolver.Template | undefined>;
+  return query as UseQueryResult<warp_templates.Template | undefined>;
 };

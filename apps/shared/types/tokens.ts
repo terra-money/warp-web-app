@@ -21,8 +21,19 @@ export const LUNA: NativeToken = {
   name: 'LUNA',
   symbol: 'LUNA',
   decimals: 6,
-  icon: 'https://assets.terra.money/icon/svg/LUNA.png',
+  icon: 'https://assets.terra.dev/icon/svg/LUNA.png',
   coinGeckoId: 'terra-luna-2',
+};
+
+export const NEUTRON: NativeToken = {
+  key: 'untrn',
+  type: 'native',
+  denom: 'untrn',
+  name: 'Neutron',
+  symbol: 'NTRN',
+  decimals: 6,
+  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+  coinGeckoId: 'neutron',
 };
 
 export const INJ: NativeToken = {
@@ -32,7 +43,7 @@ export const INJ: NativeToken = {
   name: 'Injective',
   symbol: 'INJ',
   decimals: 18,
-  icon: 'https://assets.terra.money/icon/svg/ibc/ATOM.svg',
+  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
   coinGeckoId: 'injective-protocol',
 };
 

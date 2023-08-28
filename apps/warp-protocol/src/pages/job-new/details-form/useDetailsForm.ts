@@ -13,7 +13,7 @@ import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_resolver } from 'types';
+import { warp_templates } from '@terra-money/warp-sdk';
 import { templateVariables } from 'utils/variable';
 import { useNativeToken } from 'hooks/useNativeToken';
 
@@ -22,7 +22,7 @@ export interface DetailsFormInput {
   description: string;
   reward: string;
   message: string;
-  template?: warp_resolver.Template;
+  template?: warp_templates.Template;
   selectedTabType?: 'template' | 'message';
 }
 

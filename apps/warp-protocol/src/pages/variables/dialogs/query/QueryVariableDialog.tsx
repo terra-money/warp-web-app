@@ -7,13 +7,13 @@ import styles from './QueryVariableDialog.module.sass';
 import { Button } from 'components/primitives';
 import { QueryVariableForm } from 'pages/variables/details/query/QueryVariableForm';
 import { parseQuery } from 'utils';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type QueryVariableDialogProps = {
-  variable?: warp_controller.QueryVariable;
+  variable?: warp_resolver.QueryVariable;
 };
 
-export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps, warp_controller.QueryVariable>) => {
+export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps, warp_resolver.QueryVariable>) => {
   const { closeDialog, variable } = props;
 
   return (
@@ -38,6 +38,7 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
                         name,
                         init_fn: { query: parseQuery(queryJson), selector: querySelector },
                         kind,
+                        encode: false,
                       });
                     }
                   }}
@@ -57,5 +58,5 @@ export const QueryVariableDialog = (props: DialogProps<QueryVariableDialogProps,
 };
 
 export const useQueryVariableDialog = () => {
-  return useDialog<QueryVariableDialogProps, warp_controller.QueryVariable>(QueryVariableDialog);
+  return useDialog<QueryVariableDialogProps, warp_resolver.QueryVariable>(QueryVariableDialog);
 };

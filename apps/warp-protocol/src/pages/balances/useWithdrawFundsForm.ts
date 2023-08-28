@@ -1,4 +1,4 @@
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { useForm } from '@terra-money/apps/hooks';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';

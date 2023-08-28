@@ -9,7 +9,7 @@ interface IBCTokensNetworkResponse {
 }
 
 const fetchIBCTokens = async (network: string): Promise<IBCTokensResponse> => {
-  const response = await fetch('https://assets.terra.money/ibc/tokens.json');
+  const response = await fetch('https://assets.terra.dev/ibc/tokens.json');
 
   const tokens: IBCTokensNetworkResponse = await response.json();
 
@@ -22,6 +22,10 @@ export const useIBCTokensQuery = (): UseQueryResult<IBCTokensResponse> => {
   return useQuery(
     [QUERY_KEY.IBC_TOKENS, wallet.chainId],
     () => {
+      if (wallet.chain.name !== 'terra') {
+        return {};
+      }
+
       return fetchIBCTokens(wallet.connectedWallet?.network ?? 'mainnet');
     },
     {

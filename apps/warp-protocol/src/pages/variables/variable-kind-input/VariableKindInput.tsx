@@ -7,14 +7,14 @@ import { FormControl } from 'components/form-control/FormControl';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type VariableKindInputProps = UIElementProps & {
-  value?: warp_controller.VariableKind | null;
+  value?: warp_resolver.VariableKind | null;
   label: string;
-  options: warp_controller.VariableKind[];
+  options: warp_resolver.VariableKind[];
   placeholder: string;
-  onChange: (value: warp_controller.VariableKind | undefined) => void;
+  onChange: (value: warp_resolver.VariableKind | undefined) => void;
 };
 
 export function VariableKindInput(props: VariableKindInputProps) {

@@ -9,7 +9,7 @@ import { UIElementProps } from '@terra-money/apps/components';
 import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { MsgInput } from 'forms/QueryExprForm/MsgInput';
 
 import styles from './VariableValueInput.module.sass';
@@ -18,7 +18,7 @@ type VariableValueInputProps = UIElementProps & {
   value: string;
   label?: string;
   placeholder?: string;
-  kind?: warp_controller.VariableKind;
+  kind?: warp_resolver.VariableKind;
   onChange: (v: string) => void;
 };
 

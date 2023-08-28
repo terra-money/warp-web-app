@@ -5,7 +5,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ReactComponent as LightningIcon } from 'components/assets/Lightning.svg';
 import { ReactComponent as PuzzleIcon } from 'components/assets/Puzzle.svg';
 import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 import styles from './ValueInput.module.sass';
 import { NumericInput } from 'components/primitives/numeric-input';
@@ -17,9 +17,9 @@ import { resolveVariableRef, variableName, variableRef } from 'utils/variable';
 import { useSelectVariableDialog } from '../select-variable/SelectVariableDialog';
 
 type Value =
-  | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-  | warp_controller.ValueFor_String
-  | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+  | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+  | warp_resolver.ValueFor_String
+  | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
 
 type ValueInputProps<T extends Value> = UIElementProps & {
   value: T;
@@ -32,7 +32,7 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
 
   const openSelectVariableDialog = useSelectVariableDialog();
 
-  const onSelectVariable = async (value: T, setValue: (variable: warp_controller.Variable) => void) => {
+  const onSelectVariable = async (value: T, setValue: (variable: warp_resolver.Variable) => void) => {
     const resp = await openSelectVariableDialog({
       selectedVariable: 'ref' in value ? resolveVariableRef(value.ref, variables) : undefined,
     });

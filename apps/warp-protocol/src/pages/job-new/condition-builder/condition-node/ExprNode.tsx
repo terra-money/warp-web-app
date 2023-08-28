@@ -2,7 +2,7 @@ import { UIElementProps } from '@terra-money/apps/components';
 import { ReactComponent as TrashIcon } from 'components/assets/Trash.svg';
 import { Button, Text } from 'components/primitives';
 import { forwardRef } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { BlockheightExprNode } from './BlockheightExprNode';
 import { BoolExprNode } from './BoolExprNode';
 import styles from './ConditionNode.module.sass';
@@ -12,8 +12,8 @@ import { StringExprNode } from './StringExprNode';
 import { TimestampExprNode } from './TimestampExprNode';
 
 type ExprNodeProps = UIElementProps & {
-  expr: warp_controller.Expr;
-  setCond: (cond: warp_controller.Condition) => void;
+  expr: warp_resolver.Expr;
+  setCond: (cond: warp_resolver.Condition) => void;
 };
 
 export const ExprNode = forwardRef((props: ExprNodeProps, ref: React.Ref<HTMLDivElement>) => {

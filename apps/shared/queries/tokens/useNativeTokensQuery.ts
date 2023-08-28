@@ -1,15 +1,19 @@
 import { useQuery, UseQueryResult } from 'react-query';
-import { INJ, LUNA, NativeTokensResponse } from '../../types';
+import { useChainSelector } from '../../hooks';
+import { INJ, LUNA, NativeTokensResponse, NEUTRON } from '../../types';
 
 export const useNativeTokensQuery = (
   queryName: string = 'QUERY:NATIVE_TOKENS'
 ): UseQueryResult<NativeTokensResponse> => {
+  const { selectedChain } = useChainSelector();
+
   return useQuery(
     [queryName],
     () => {
       return {
-        [LUNA.key]: LUNA,
-        [INJ.key]: INJ,
+        ...(selectedChain.name === 'terra' && { [LUNA.key]: LUNA }),
+        ...(selectedChain.name === 'injective' && { [INJ.key]: INJ }),
+        ...(selectedChain.name === 'neutron' && { [NEUTRON.key]: NEUTRON }),
       };
     },
     {

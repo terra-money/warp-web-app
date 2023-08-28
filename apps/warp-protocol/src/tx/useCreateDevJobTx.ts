@@ -1,7 +1,7 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { warp_controller } from '../types/contracts';
 import { TX_KEY } from './txKey';
+import { warp_controller } from '@terra-money/warp-sdk';
 
 export type CreateDevJobTxProps = warp_controller.CreateJobMsg;
 

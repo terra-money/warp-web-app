@@ -1,6 +1,6 @@
 import { UIElementProps } from '@terra-money/apps/components';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { forwardRef, useRef } from 'react';
-import { warp_controller } from 'types';
 import { AndNode } from './AndNode';
 
 import styles from './ConditionNode.module.sass';
@@ -9,13 +9,13 @@ import { NotNode } from './NotNode';
 import { OrNode } from './OrNode';
 
 type ConcreteNodeProps = UIElementProps & {
-  setCond: (cond: warp_controller.Condition) => void;
-  condition?: warp_controller.Condition;
+  setCond: (cond: warp_resolver.Condition) => void;
+  condition?: warp_resolver.Condition;
   parentRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 export const ConcreteNode = forwardRef((props: ConcreteNodeProps, inputRef?: React.Ref<HTMLButtonElement>) => {
-  const { setCond, condition = {} as warp_controller.Condition, parentRef } = props;
+  const { setCond, condition = {} as warp_resolver.Condition, parentRef } = props;
   let node = null;
 
   let btnRef = useRef<HTMLButtonElement>(null);

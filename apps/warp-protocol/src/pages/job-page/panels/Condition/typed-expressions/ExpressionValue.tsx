@@ -1,13 +1,13 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableValue } from './VariableValue';
 
 type ExprValue =
-  | warp_controller.ValueFor_String
-  | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
-  | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-  | warp_controller.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+  | warp_resolver.ValueFor_String
+  | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+  | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+  | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
 
 export type ExpressionValueProps = {
   value: ExprValue;

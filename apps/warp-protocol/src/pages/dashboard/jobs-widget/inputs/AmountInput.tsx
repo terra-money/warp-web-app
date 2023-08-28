@@ -7,7 +7,7 @@ import { Text } from 'components/primitives/text';
 import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
 import { demicrofy, formatAmount } from '@terra-money/apps/libs/formatting';
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { Throbber } from 'components/primitives';
 import styles from './AmountInput.module.sass';
 

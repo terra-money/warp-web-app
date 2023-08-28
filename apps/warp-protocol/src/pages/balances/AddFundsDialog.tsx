@@ -4,7 +4,7 @@ import { useAddFundsForm } from './useAddFundsForm';
 import { Button } from 'components/primitives';
 import { demicrofy, microfy } from '@terra-money/apps/libs/formatting';
 import Big from 'big.js';
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { useAddFundsTx } from 'tx';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { TokenInput } from './token-input/TokenInput';

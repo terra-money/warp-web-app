@@ -4,7 +4,7 @@ import { MenuAction } from 'components/menu-button/MenuAction';
 import { Button } from 'components/primitives';
 import React, { useEffect } from 'react';
 import { createRef, forwardRef, useRef } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { ConcreteNode } from './ConcreteNode';
 
 import styles from './ConditionNode.module.sass';
@@ -13,8 +13,8 @@ import { Line } from './Line';
 
 type OrNodeProps = UIElementProps & {
   parentRef: React.MutableRefObject<HTMLDivElement | null>;
-  setCond: (cond: warp_controller.Condition) => void;
-  conditions: warp_controller.Condition[];
+  setCond: (cond: warp_resolver.Condition) => void;
+  conditions: warp_resolver.Condition[];
 };
 
 export const OrNode = forwardRef((props: OrNodeProps, inputRef: React.Ref<HTMLButtonElement>) => {

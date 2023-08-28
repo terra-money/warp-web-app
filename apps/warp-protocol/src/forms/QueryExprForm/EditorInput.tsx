@@ -14,7 +14,7 @@ import { SuggestItemsMenu } from './SuggestItemsMenu';
 import { variableName } from 'utils/variable';
 import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 import { IAceEditor } from 'react-ace/lib/types';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 
 export interface EditorInputProps {
@@ -36,12 +36,12 @@ export interface EditorInputProps {
     currentLineItemName?: string;
     showSuggestItems: boolean;
     onSuggestItemClick: (name: string, editor: IAceEditor) => void;
-    variables: warp_controller.Variable[];
+    variables: warp_resolver.Variable[];
   };
   onEditorCursorChange?: (editor: IAceEditor) => void;
 }
 
-const defaultExample = (contractAddr: string): warp_controller.CosmosMsgFor_Empty => ({
+const defaultExample = (contractAddr: string): warp_resolver.CosmosMsgFor_Empty => ({
   wasm: {
     execute: {
       contract_addr: contractAddr,

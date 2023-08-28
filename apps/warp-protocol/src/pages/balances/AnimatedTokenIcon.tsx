@@ -2,9 +2,9 @@ import luna from 'components/assets/Luna.svg';
 import inj from 'components/assets/Injective.svg';
 import classNames from 'classnames';
 import { UIElementProps } from '@terra-money/apps/components';
-import { Token } from 'types/types';
 import { ReactComponent as WarpTokenIcon } from 'components/assets/WarpToken.svg';
 import styles from './AnimatedTokenIcon.module.sass';
+import { Token } from '@terra-money/apps/types';
 
 const KNOWN_TOKENS: Record<string, string> = {
   luna,
@@ -22,7 +22,7 @@ export const AnimatedTokenIcon = (props: AnimatedTokenIconProps) => {
   let src =
     token.symbol && KNOWN_TOKENS[token.symbol.toLowerCase()] ? KNOWN_TOKENS[token.symbol.toLowerCase()] : token.icon;
 
-  src = src && src.length > 0 ? src : 'https://assets.terra.money/icon/svg/CW.svg';
+  src = src && src.length > 0 ? src : 'https://assets.terra.dev/icon/svg/CW.svg';
 
   // TODO: remove once warp token icon is uploaded to terra assets
   if (token.symbol === 'WARP') {

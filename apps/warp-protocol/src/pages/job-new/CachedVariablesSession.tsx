@@ -4,11 +4,11 @@ import { uniqBy } from 'lodash';
 import { useCachedVariables } from './useCachedVariables';
 import { variableName } from 'utils/variable';
 import { useEventListener } from 'usehooks-ts';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 interface CachedVariablesSessionProps {
   children: ReactNode;
-  input?: warp_controller.Variable[];
+  input?: warp_resolver.Variable[];
 }
 
 export const CachedVariablesSession = (props: CachedVariablesSessionProps) => {

@@ -1,11 +1,11 @@
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { operatorLabel } from '../operatorLabel';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
 import { ExpressionValue } from './ExpressionValue';
 
 export type StringExpressionProps = {
-  expression: warp_controller.GenExprFor_ValueFor_StringAnd_StringOp;
+  expression: warp_resolver.GenExprFor_ValueFor_StringAnd_StringOp;
   job: Job;
 } & UIElementProps;
 
