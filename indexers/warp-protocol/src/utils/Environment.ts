@@ -61,17 +61,16 @@ export class Environment {
     }
 
     if (chainName === 'neutron') {
-      // TODO: implement this (values are placeholder)
       if (process.env.NETWORK === 'mainnet') {
         return {
-          height: 5538968,
-          timestamp: 1686943148,
+          height: 2556383,
+          timestamp: 1693231160,
         };
       } else {
         // testnet
         return {
-          height: 6037839,
-          timestamp: 1686785347,
+          height: 4219391,
+          timestamp: 1692910321,
         };
       }
     }
