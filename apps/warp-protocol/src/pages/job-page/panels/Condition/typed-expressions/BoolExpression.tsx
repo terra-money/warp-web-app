@@ -1,4 +1,3 @@
-// import { warp_controller } from '../../../../../types';
 import { UIElementProps } from '@terra-money/apps/components';
 import { Job } from 'types/job';
 import { VariableValue } from './VariableValue';

@@ -9,7 +9,7 @@ import { TextInput } from 'components/primitives/text-input';
 import { InputAdornment } from '@mui/material';
 import { WalletInput } from '../../inputs/WalletInput';
 import { useJobFiltersForm } from './useJobFiltersForm';
-import { warp_controller } from 'types';
+import { warp_controller } from '@terra-money/warp-sdk';
 import { StatusInput } from './status-input/StatusInput';
 import { Container } from '@terra-money/apps/components';
 

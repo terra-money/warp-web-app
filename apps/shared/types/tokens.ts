@@ -25,6 +25,17 @@ export const LUNA: NativeToken = {
   coinGeckoId: 'terra-luna-2',
 };
 
+export const NEUTRON: NativeToken = {
+  key: 'untrn',
+  type: 'native',
+  denom: 'untrn',
+  name: 'Neutron',
+  symbol: 'NTRN',
+  decimals: 6,
+  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+  coinGeckoId: 'neutron',
+};
+
 export const INJ: NativeToken = {
   key: 'inj',
   type: 'native',

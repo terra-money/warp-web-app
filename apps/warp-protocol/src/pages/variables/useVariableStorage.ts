@@ -1,11 +1,11 @@
-import { LocalWallet, useLocalWallet } from '@terra-money/apps/hooks';
+import { LocalWallet, useChainSuffix, useLocalWallet } from '@terra-money/apps/hooks';
 import { useCallback, useMemo } from 'react';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { useLocalStorage } from 'usehooks-ts';
 import { variableName } from 'utils/variable';
 
 type VariablesStorage = {
-  [key: string]: warp_controller.Variable[];
+  [key: string]: warp_resolver.Variable[];
 };
 
 const storageKey = (localWallet: LocalWallet) => `${localWallet.chainId}--${localWallet.walletAddress}`;
@@ -17,13 +17,11 @@ export const useVariableStorage = () => {
     return {};
   }, []);
 
-  const [storedVariables, setStoredVariables] = useLocalStorage<VariablesStorage>(
-    '__warp_stored_variables',
-    initialValue
-  );
+  const storedVariablesKey = useChainSuffix('__warp_stored_variables');
+  const [storedVariables, setStoredVariables] = useLocalStorage<VariablesStorage>(storedVariablesKey, initialValue);
 
   const setVariables = useCallback(
-    (variables: warp_controller.Variable[]) => {
+    (variables: warp_resolver.Variable[]) => {
       if (!localWallet.connectedWallet) {
         return;
       }
@@ -47,16 +45,16 @@ export const useVariableStorage = () => {
   }, [storedVariables, localWallet]);
 
   const saveAll = useCallback(
-    (variables: warp_controller.Variable[]) => {
+    (variables: warp_resolver.Variable[]) => {
       setVariables(variables);
     },
     [setVariables]
   );
 
   const updateVariable = useCallback(
-    (variable: warp_controller.Variable, prev: warp_controller.Variable) => {
+    (variable: warp_resolver.Variable, prev: warp_resolver.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(prev)));
-      let updatedVariables: warp_controller.Variable[] = [...variables];
+      let updatedVariables: warp_resolver.Variable[] = [...variables];
 
       if (variableExists) {
         const newVariables = [...variables];
@@ -70,9 +68,9 @@ export const useVariableStorage = () => {
   );
 
   const saveVariable = useCallback(
-    (variable: warp_controller.Variable) => {
+    (variable: warp_resolver.Variable) => {
       const variableExists = Boolean(variables.find((v) => variableName(v) === variableName(variable)));
-      let updatedVariables: warp_controller.Variable[] = [...variables];
+      let updatedVariables: warp_resolver.Variable[] = [...variables];
 
       if (!variableExists) {
         updatedVariables = [...variables, variable];

@@ -5,13 +5,13 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialo
 import styles from './ExternalVariableDisplayDialog.module.sass';
 
 import { Button, Text } from 'components/primitives';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { UpdateFnValue } from '../expression/UpdateFnValue';
 import { Job } from 'types/job';
 import { FormControl } from 'components/form-control/FormControl';
 
 export type ExternalVariableDisplayDialogProps = {
-  variable: warp_controller.ExternalVariable;
+  variable: warp_resolver.ExternalVariable;
   job: Job;
 };
 

@@ -2,9 +2,9 @@ import luna from 'components/assets/Luna.svg';
 import inj from 'components/assets/Injective.svg';
 import classNames from 'classnames';
 import { UIElementProps } from '@terra-money/apps/components';
-import { Token } from 'types/types';
 import { ReactComponent as WarpTokenIcon } from 'components/assets/WarpToken.svg';
 import styles from './AnimatedTokenIcon.module.sass';
+import { Token } from '@terra-money/apps/types';
 
 const KNOWN_TOKENS: Record<string, string> = {
   luna,

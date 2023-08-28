@@ -1,8 +1,8 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { Pill } from 'components/primitives/pill/Pill';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
-const pillColor = (variable: warp_controller.Variable) => {
+const pillColor = (variable: warp_resolver.Variable) => {
   if ('static' in variable) {
     return 'purple';
   }
@@ -18,7 +18,7 @@ const pillColor = (variable: warp_controller.Variable) => {
   return 'green';
 };
 
-const pillContent = (variable: warp_controller.Variable) => {
+const pillContent = (variable: warp_resolver.Variable) => {
   if ('static' in variable) {
     return 'Static';
   }
@@ -35,7 +35,7 @@ const pillContent = (variable: warp_controller.Variable) => {
 };
 
 type VariablePillProps = UIElementProps & {
-  variable: warp_controller.Variable;
+  variable: warp_resolver.Variable;
 };
 
 export const VariablePill = (props: VariablePillProps) => {

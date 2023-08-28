@@ -2,7 +2,7 @@ import { Container, UIElementProps } from '@terra-money/apps/components';
 import styles from './ConditionForm.module.sass';
 import { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { Form } from 'components/form/Form';
 import { ConditionBuilder } from '../condition-builder/ConditionBuilder';
 import { Footer } from '../footer/Footer';
@@ -14,7 +14,7 @@ import { useCachedVariables } from '../useCachedVariables';
 
 type ConditionFormProps = UIElementProps & {
   loading: boolean;
-  onNext: (props: { cond: warp_controller.Condition; variables: warp_controller.Variable[] }) => Promise<void>;
+  onNext: (props: { cond: warp_resolver.Condition; variables: warp_resolver.Variable[] }) => Promise<void>;
 };
 
 export const ConditionForm = (props: ConditionFormProps) => {
@@ -28,7 +28,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
   const { variables } = useCachedVariables();
 
   useEffect(() => {
-    const filtered = filterEmptyCond(cond ?? ({} as warp_controller.Condition));
+    const filtered = filterEmptyCond(cond ?? ({} as warp_resolver.Condition));
     setValid(Boolean(filtered));
   }, [cond]);
 
@@ -69,11 +69,11 @@ export const ConditionForm = (props: ConditionFormProps) => {
   );
 };
 
-export const filterEmptyCond = (input: warp_controller.Condition) => {
+export const filterEmptyCond = (input: warp_resolver.Condition) => {
   let cond = { ...input };
 
   if ('and' in cond) {
-    cond.and = cond.and.map(filterEmptyCond).filter(Boolean) as warp_controller.Condition[];
+    cond.and = cond.and.map(filterEmptyCond).filter(Boolean) as warp_resolver.Condition[];
 
     if (cond.and.length === 0) {
       return undefined;
@@ -81,7 +81,7 @@ export const filterEmptyCond = (input: warp_controller.Condition) => {
   }
 
   if ('or' in cond) {
-    cond.or = cond.or.map(filterEmptyCond).filter(Boolean) as warp_controller.Condition[];
+    cond.or = cond.or.map(filterEmptyCond).filter(Boolean) as warp_resolver.Condition[];
 
     if (cond.or.length === 0) {
       return undefined;
@@ -115,7 +115,7 @@ export const filterEmptyCond = (input: warp_controller.Condition) => {
   return isEmpty(cond) ? undefined : cond;
 };
 
-const filterExpr = (expr: warp_controller.Expr) => {
+const filterExpr = (expr: warp_resolver.Expr) => {
   if ('string' in expr) {
     if (
       (validSimple(expr.string.left) || validRef(expr.string.left)) &&
@@ -167,9 +167,9 @@ const filterExpr = (expr: warp_controller.Expr) => {
 
 const validSimple = (
   value:
-    | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
-    | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_controller.ValueFor_String
+    | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+    | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+    | warp_resolver.ValueFor_String
 ) => {
   if ('simple' in value) {
     return !isEmpty(value.simple);
@@ -178,7 +178,7 @@ const validSimple = (
   return false;
 };
 
-const validTime = (value: warp_controller.TimeExpr | warp_controller.BlockExpr) => {
+const validTime = (value: warp_resolver.TimeExpr | warp_resolver.BlockExpr) => {
   if (!isEmpty(value.comparator) && Number(value.comparator) > 0) {
     return true;
   }
@@ -188,9 +188,9 @@ const validTime = (value: warp_controller.TimeExpr | warp_controller.BlockExpr) 
 
 const validRef = (
   value:
-    | warp_controller.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
-    | warp_controller.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_controller.ValueFor_String
+    | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+    | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+    | warp_resolver.ValueFor_String
 ) => {
   if ('ref' in value) {
     return !isEmpty(value.ref);

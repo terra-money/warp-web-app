@@ -22,6 +22,10 @@ export const useCW20TokensQuery = (): UseQueryResult<CW20TokensResponse> => {
   return useQuery(
     [QUERY_KEY.CW20_TOKENS, wallet.chainId],
     () => {
+      if (wallet.chain.name !== 'terra') {
+        return {};
+      }
+
       return fetchCW20Tokens(wallet.connectedWallet?.network ?? 'mainnet');
     },
     {

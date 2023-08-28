@@ -26,7 +26,7 @@ export const JobMessagePanel = (props: JobMessagePanelProps) => {
 
   useEffect(() => {
     if (selectedTabType === 'encoded') {
-      setMsgs(job.info.msgs.map((msg) => JSON.parse(msg)));
+      setMsgs(job.info.msgs);
     }
 
     if (selectedTabType === 'decoded') {

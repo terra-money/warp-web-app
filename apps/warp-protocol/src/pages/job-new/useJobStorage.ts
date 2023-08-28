@@ -1,24 +1,24 @@
 import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
-import { warp_controller, warp_resolver } from 'types';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { useChainSuffix } from '@terra-money/apps/hooks';
 
 export const useJobStorage = () => {
-  const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(
-    '__warp_details_input',
-    {} as any
-  );
+  const detailsInputKey = useChainSuffix('__warp_details_input');
+  const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(detailsInputKey, {} as any);
 
   const nativeToken = useNativeToken();
 
-  const [cond, setCond] = useLocalStorage<warp_controller.Condition | undefined>('__warp_condition', {} as any);
+  const conditionKey = useChainSuffix('__warp_condition');
+  const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>(conditionKey, {} as any);
 
-  const { clearAll: clearAllCachedVariables } = useCachedVariables();
+  const { clearAll: clearAllCachedVariables, setVariables } = useCachedVariables();
 
   const clearJobStorage = useCallback(() => {
     setDetailsInput({} as any);
@@ -32,17 +32,18 @@ export const useJobStorage = () => {
         reward: demicrofy(job.reward, nativeToken.decimals).toString(),
         name: job.info.name,
         description: job.info.description,
-        message: JSON.stringify(job, null, 2),
+        message: JSON.stringify(job.info.msgs, null, 2),
       };
 
       setDetailsInput(details);
-      setCond(job.condition);
+      setCond(job.info.condition);
+      setVariables(job.info.vars);
     },
-    [setDetailsInput, setCond, nativeToken.decimals]
+    [setDetailsInput, setCond, nativeToken.decimals, setVariables]
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_resolver.Template) => {
+    (template: warp_templates.Template) => {
       const details: DetailsFormInput = {
         reward: '',
         description: '',
@@ -70,14 +71,14 @@ export const useJobStorage = () => {
   );
 };
 
-export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
+export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
   if ('wasm' in msg) {
     if ('execute' in msg.wasm) {
       return {
         wasm: {
           execute: {
             ...msg.wasm.execute,
-            msg: fromBase64(msg.wasm.execute.msg),
+            msg: safeFromBase64(msg.wasm.execute.msg),
           },
         },
       };
@@ -88,7 +89,7 @@ export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
         wasm: {
           instantiate: {
             ...msg.wasm.instantiate,
-            msg: fromBase64(msg.wasm.instantiate.msg),
+            msg: safeFromBase64(msg.wasm.instantiate.msg),
           },
         },
       };
@@ -99,7 +100,7 @@ export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
         wasm: {
           migrate: {
             ...msg.wasm.migrate,
-            msg: fromBase64(msg.wasm.migrate.msg),
+            msg: safeFromBase64(msg.wasm.migrate.msg),
           },
         },
       };
@@ -111,4 +112,12 @@ export const decodeMsg = (msg: warp_controller.CosmosMsgFor_Empty) => {
 
 export const fromBase64 = (value: string) => {
   return JSON.parse(Buffer.from(value, 'base64').toString());
+};
+
+export const safeFromBase64 = (value: string) => {
+  try {
+    return JSON.parse(Buffer.from(value, 'base64').toString());
+  } catch (err) {
+    return value;
+  }
 };

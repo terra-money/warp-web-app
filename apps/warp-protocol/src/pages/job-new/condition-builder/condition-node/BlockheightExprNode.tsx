@@ -1,6 +1,6 @@
 import { UIElementProps } from '@terra-money/apps/components';
 import { forwardRef, useEffect, useState } from 'react';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { isEqual } from 'lodash';
 
 import styles from './ConditionNode.module.sass';
@@ -8,16 +8,16 @@ import { OperatorInput } from './operator-input/OperatorInput';
 import { NumericInput } from 'components/primitives/numeric-input';
 
 type BlockheightExprNodeProps = UIElementProps & {
-  expr: warp_controller.BlockExpr;
-  setExpr: (expr: warp_controller.BlockExpr) => void;
+  expr: warp_resolver.BlockExpr;
+  setExpr: (expr: warp_resolver.BlockExpr) => void;
 };
 
-const numOperators: warp_controller.NumOp[] = ['eq', 'neq', 'gt', 'gte', 'lte', 'lt'];
+const numOperators: warp_resolver.NumOp[] = ['eq', 'neq', 'gt', 'gte', 'lte', 'lt'];
 
 export const BlockheightExprNode = forwardRef((props: BlockheightExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
   const { expr, setExpr } = props;
 
-  const [op, setOp] = useState<warp_controller.NumOp>(expr.op);
+  const [op, setOp] = useState<warp_resolver.NumOp>(expr.op);
   const [comparator, setComparator] = useState<string>(expr.comparator);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const BlockheightExprNode = forwardRef((props: BlockheightExprNodeProps, 
   }, [op, comparator, setExpr, expr]);
 
   const Op = (
-    <OperatorInput<warp_controller.NumOp>
+    <OperatorInput<warp_resolver.NumOp>
       operators={numOperators}
       value={op}
       onChange={setOp}

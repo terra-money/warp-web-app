@@ -9,13 +9,13 @@ import { Nav } from './nav/Nav';
 import { Details } from './details';
 import { useNewVariableDialog } from './dialogs/VariableDialog';
 import { variableName } from 'utils/variable';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type VariablesContentProps = {};
 
 const VariablesContent = (props: VariablesContentProps) => {
   const { variables, saveVariable, removeVariable, updateVariable } = useVariableStorage();
-  const [selectedVariable, setSelectedVariable] = useState<warp_controller.Variable | undefined>(undefined);
+  const [selectedVariable, setSelectedVariable] = useState<warp_resolver.Variable | undefined>(undefined);
 
   const openNewVariableDialog = useNewVariableDialog();
 

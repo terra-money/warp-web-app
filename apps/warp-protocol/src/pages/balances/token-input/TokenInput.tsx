@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FormControl } from 'components/form-control/FormControl';
 import { TokenIcon } from 'components/token-icon';
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { useTokenListDialog } from 'components/token-list';
 import styles from './TokenInput.module.sass';
 

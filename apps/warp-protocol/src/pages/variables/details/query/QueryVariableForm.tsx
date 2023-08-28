@@ -13,17 +13,17 @@ import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { isMatch } from 'lodash';
 
 import styles from './QueryVariableForm.module.sass';
-import { warp_controller } from 'types/contracts/warp_controller';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { generatePaths } from 'utils';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 
 export type QueryVariableFormProps = UIElementProps & {
-  selectedVariable?: warp_controller.QueryVariable;
+  selectedVariable?: warp_resolver.QueryVariable;
   renderActions: (formState: QueryVariableState) => JSX.Element;
 };
 
-const queryVarKinds: warp_controller.VariableKind[] = [
+const queryVarKinds: warp_resolver.VariableKind[] = [
   'string',
   'uint',
   'int',
@@ -35,7 +35,7 @@ const queryVarKinds: warp_controller.VariableKind[] = [
   'json',
 ];
 
-export const useQueryExample = (): warp_controller.QueryRequestFor_String => {
+export const useQueryExample = (): warp_resolver.QueryRequestFor_String => {
   const sdk = useWarpSdk();
 
   const contractAddress = sdk.chain.contracts.controller;

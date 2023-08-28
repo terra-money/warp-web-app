@@ -7,7 +7,7 @@ import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { useNavigate } from 'react-router';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { Footer } from '../footer/Footer';
 import styles from './DetailsForm.module.sass';
 import { DetailsFormInput, useDetailsForm } from './useDetailsForm';
@@ -21,7 +21,7 @@ import { useJobStorage } from '../useJobStorage';
 import { useNativeToken } from 'hooks/useNativeToken';
 
 type DetailsFormProps = UIElementProps & {
-  onNext: (props: DetailsFormInput & { variables: warp_controller.Variable[] }) => void;
+  onNext: (props: DetailsFormInput & { variables: warp_resolver.Variable[] }) => void;
   detailsInput?: DetailsFormInput;
   loading?: boolean;
   mode: string;
@@ -65,7 +65,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
   const { setCond } = useJobStorage();
 
   useEffect(() => {
-    setCond(template?.condition ?? ({} as any));
+    if (template?.condition) {
+      setCond(template.condition);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template]);
 

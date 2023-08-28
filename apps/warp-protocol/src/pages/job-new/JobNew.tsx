@@ -5,7 +5,7 @@ import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { warp_controller, warp_resolver } from 'types';
+import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -65,7 +65,7 @@ export const JobNew = (props: JobNewProps) => {
                               navigate('/job-new/condition');
                             } else {
                               const {
-                                template = {} as warp_resolver.Template,
+                                template = {} as warp_templates.Template,
                                 name,
                                 reward,
                                 message,
@@ -110,7 +110,9 @@ export const JobNew = (props: JobNewProps) => {
                               const { name, reward, message, description } = detailsInput;
 
                               const msgs = parseMsgs(message);
+
                               const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, cond);
+
                               const vars = hydrateQueryVariablesWithStatics(referenced);
 
                               const resp = await createJobTx({
@@ -143,26 +145,26 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-export const decodeMsgs = (msgs: string[]) => {
-  return msgs.map((m) => JSON.parse(m)).map(decodeMsg);
+export const decodeMsgs = (msgs: warp_resolver.CosmosMsgFor_Empty[]) => {
+  return msgs.map(decodeMsg);
 };
 
-export const encodeMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+export const encodeMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
   const msgs = parseMsgs(value);
 
   return msgs.map(encodeMsg);
 };
 
-export const parseMsgs = (value: string): warp_controller.CosmosMsgFor_Empty[] => {
+export const parseMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
   const parsed = JSON.parse(value);
-  const msgs: warp_controller.CosmosMsgFor_Empty[] = Array.isArray(parsed)
-    ? (parsed as warp_controller.CosmosMsgFor_Empty[])
+  const msgs: warp_resolver.CosmosMsgFor_Empty[] = Array.isArray(parsed)
+    ? (parsed as warp_resolver.CosmosMsgFor_Empty[])
     : [parsed];
 
   return msgs;
 };
 
-const encodeMsg = (input: warp_controller.CosmosMsgFor_Empty): warp_controller.CosmosMsgFor_Empty => {
+const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolver.CosmosMsgFor_Empty => {
   if (!('wasm' in input)) {
     return input;
   }

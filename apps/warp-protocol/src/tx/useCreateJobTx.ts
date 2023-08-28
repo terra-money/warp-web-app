@@ -1,18 +1,18 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
-import { warp_controller } from '../types/contracts';
 import { u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { TX_KEY } from './txKey';
 import { containsAllReferencedVarsInCosmosMsg } from 'utils/msgs';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export interface CreateJobTxProps {
   name: string;
   reward: u<Big>;
   description: string;
-  msgs: warp_controller.CosmosMsgFor_Empty[];
-  vars: warp_controller.Variable[];
-  condition: warp_controller.Condition;
+  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  vars: warp_resolver.Variable[];
+  condition: warp_resolver.Condition;
 }
 
 export const useCreateJobTx = () => {
@@ -34,10 +34,10 @@ export const useCreateJobTx = () => {
         name,
         labels: [],
         description,
-        condition: condition,
-        vars,
+        condition: JSON.stringify(condition),
+        vars: JSON.stringify(vars),
         reward: reward.toString(),
-        msgs: msgs.map((msg) => JSON.stringify(msg)),
+        msgs: JSON.stringify(msgs),
       });
     },
     {

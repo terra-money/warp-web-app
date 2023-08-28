@@ -7,14 +7,14 @@ import { FormControl } from 'components/form-control/FormControl';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { warp_resolver } from 'types';
+import { warp_templates } from '@terra-money/warp-sdk';
 
 type TemplatesInputProps = UIElementProps & {
-  value?: warp_resolver.Template | null;
+  value?: warp_templates.Template | null;
   label: string;
-  options: warp_resolver.Template[];
+  options: warp_templates.Template[];
   placeholder: string;
-  onChange: (value: warp_resolver.Template | undefined) => void;
+  onChange: (value: warp_templates.Template | undefined) => void;
 };
 
 export function TemplatesInput(props: TemplatesInputProps) {

@@ -9,14 +9,14 @@ import { variableName } from 'utils/variable';
 import { useNewVariableDialog } from '../dialogs/VariableDialog';
 import { VariablePill } from '../variable-pill/VariablePill';
 import styles from './Nav.module.sass';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 type NavProps = UIElementProps & {
-  variables: warp_controller.Variable[];
-  selectedVariable?: warp_controller.Variable;
-  saveVariable: (v: warp_controller.Variable) => void;
-  deleteVariable: (v: warp_controller.Variable) => void;
-  onVariableClick: (variable: warp_controller.Variable) => void;
+  variables: warp_resolver.Variable[];
+  selectedVariable?: warp_resolver.Variable;
+  saveVariable: (v: warp_resolver.Variable) => void;
+  deleteVariable: (v: warp_resolver.Variable) => void;
+  onVariableClick: (variable: warp_resolver.Variable) => void;
 };
 
 export const Nav = (props: NavProps) => {

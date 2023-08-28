@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 
 export const useSelectedTokens = (tokens: Token[]) => {
   const [selectedTokens, setSelectedTokens] = useState<Token[]>(tokens);

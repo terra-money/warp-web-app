@@ -1,4 +1,3 @@
-import { warp_controller } from 'types';
 import { UIElementProps } from '@terra-money/apps/components';
 import { ConditionTree } from './ConditionTree';
 import { Expression } from './Expression';
@@ -6,9 +5,10 @@ import classNames from 'classnames';
 import styles from './Condition.module.sass';
 import { Text } from 'components/primitives';
 import { Job } from 'types/job';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type ConditionProps = {
-  condition: warp_controller.Condition;
+  condition: warp_resolver.Condition;
   isRoot?: boolean;
   job: Job;
 } & UIElementProps;

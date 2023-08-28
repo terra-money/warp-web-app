@@ -1,10 +1,10 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { warp_controller } from 'types/contracts';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { Job } from 'types/job';
 import { ExpressionValue } from './ExpressionValue';
 
 export type UpdateFnValueProps = {
-  value: warp_controller.UpdateFnValue;
+  value: warp_resolver.UpdateFnValue;
   job: Job;
 } & UIElementProps;
 

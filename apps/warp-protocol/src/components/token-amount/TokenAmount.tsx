@@ -1,4 +1,4 @@
-import { Token } from 'types';
+import { Token } from '@terra-money/apps/types';
 import { Text, TextProps, Throbber } from 'components/primitives';
 import Big, { BigSource } from 'big.js';
 import { demicrofy, formatAmount } from '@terra-money/apps/libs/formatting';

@@ -10,15 +10,15 @@ import { isEmpty } from 'lodash';
 import { FormControl } from 'components/form-control/FormControl';
 import { TextInput } from 'components/primitives/text-input';
 import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
-import { warp_controller } from 'types';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { MsgInput } from 'forms/QueryExprForm/MsgInput';
 
 import styles from './TemplateVarInput.module.sass';
 
 type TemplateVarInputProps = UIElementProps & {
-  templateVar: warp_controller.StaticVariable;
-  templateVars: warp_controller.StaticVariable[];
-  setTemplateVars: (vars: warp_controller.StaticVariable[]) => void;
+  templateVar: warp_resolver.StaticVariable;
+  templateVars: warp_resolver.StaticVariable[];
+  setTemplateVars: (vars: warp_resolver.StaticVariable[]) => void;
 };
 
 export const TemplateVarInput = (props: TemplateVarInputProps) => {
@@ -26,7 +26,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
 
   const { tokens } = useTokens();
 
-  const updateTemplateVar = (name: string, updates: Partial<warp_controller.StaticVariable>) => {
+  const updateTemplateVar = (name: string, updates: Partial<warp_resolver.StaticVariable>) => {
     const updatedVars = [...templateVars];
     const idx = templateVars.findIndex((tv) => tv.name === name);
     const prev = updatedVars[idx];

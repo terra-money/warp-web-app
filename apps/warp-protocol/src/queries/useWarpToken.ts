@@ -1,6 +1,6 @@
 import { CW20Addr } from '@terra-money/warp-sdk';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { CW20Token } from 'types';
+import { CW20Token } from '@terra-money/apps/types';
 
 export const useWarpToken = (): CW20Token => {
   const sdk = useWarpSdk();
