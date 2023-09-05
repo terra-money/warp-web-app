@@ -2,6 +2,7 @@ import styles from './Home.module.sass';
 import { TopContent } from 'pages/home/top-content/TopContent';
 import { FeaturesContent } from 'pages/home/features/Features';
 import { UIElementProps } from '@terra-money/apps/components';
+import CardStack from 'card-stack/CardStack';
 
 type HomeProps = UIElementProps & {
   onDocsClick: () => void;
@@ -20,6 +21,8 @@ const Home = (props: HomeProps) => {
         className={styles.top_content}
       />
       <FeaturesContent ref={featuresRef} className={styles.features_content} />
+      <CardStack />
+
     </div>
   );
 };
