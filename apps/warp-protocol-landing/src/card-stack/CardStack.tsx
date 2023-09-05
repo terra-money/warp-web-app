@@ -8,7 +8,7 @@ const CardStack: React.FC = () => {
 
   const cards = [
     {
-      ellipseText: 'LIVE',
+      ellipseText: 'Pending',
       viewers: '123421',
       jobName: 'Job 1',
       jobStatus: 'Not executed yet',
@@ -16,15 +16,15 @@ const CardStack: React.FC = () => {
       latestBidValue: '10 Luna',
     },
     {
-      ellipseText: 'OFFLINE',
+      ellipseText: 'Pending',
       viewers: '50000',
       jobName: 'Job 2',
-      jobStatus: 'Completed',
+      jobStatus: 'In progress',
       rewardValue: '15 Luna',
       latestBidValue: '14 Luna',
     },
     {
-      ellipseText: 'LIVE',
+      ellipseText: 'Pending',
       viewers: '200000',
       jobName: 'Job 3',
       jobStatus: 'In Progress',
@@ -40,7 +40,7 @@ const CardStack: React.FC = () => {
       latestBidValue: '5 Luna',
     },
     {
-      ellipseText: 'LIVE',
+      ellipseText: 'Pending',
       viewers: '500000',
       jobName: 'Job 5',
       jobStatus: 'In Progress',
@@ -49,13 +49,22 @@ const CardStack: React.FC = () => {
     },
   ];
 
+  const [executedCardIndex, setExecutedCardIndex] = useState(0);
+  const [isInExecutionPhase, setIsInExecutionPhase] = useState(false);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
-    }, 2000);
+      if (isInExecutionPhase) {
+        setIsInExecutionPhase(false);
+        setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
+      } else {
+        setIsInExecutionPhase(true);
+        setExecutedCardIndex(currentCardIndex);
+      }
+    }, 1000); // Adjust time as needed
 
     return () => clearInterval(timer);
-  }, [cards.length]);
+  }, [cards.length, isInExecutionPhase, currentCardIndex]);
 
   return (
     <div className={transitionStyles['card-stack']}>
@@ -63,7 +72,7 @@ const CardStack: React.FC = () => {
       <TransitionGroup>
         <CSSTransition
           key={currentCardIndex}
-          timeout={400}
+          timeout={1200} // Delay exit when in execution phase
           classNames={{
             enter: transitionStyles['card-enter'],
             enterActive: transitionStyles['card-enter-active'],
@@ -72,13 +81,18 @@ const CardStack: React.FC = () => {
           }}
         >
           <div className={transitionStyles.card}>
-            <Frame {...cards[currentCardIndex]} />
+            <Frame
+              {...cards[currentCardIndex]}
+              isExecuted={currentCardIndex === executedCardIndex}
+            />
           </div>
         </CSSTransition>
       </TransitionGroup>
       {/* Thirdmost card */}
-      <div className={`${transitionStyles.card} ${transitionStyles['card-third']}`}>
-        <Frame {...cards[(currentCardIndex + 2) % cards.length]} />
+      <div
+        className={`${transitionStyles.card} ${transitionStyles['card-third']}`}
+      >
+        <Frame {...cards[(currentCardIndex + 2) % cards.length]} isExecuted={false} />
       </div>
     </div>
   );
