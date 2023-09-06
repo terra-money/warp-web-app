@@ -10,8 +10,7 @@ import styles from './WalletWidget.module.sass';
 import { useConnectWalletDialog } from 'components/dialog/connect-wallet';
 import { Menu, MenuItem } from 'components/menu/Menu';
 import { useCopy } from 'hooks/useCopy';
-import { useChainSelector, useLocalWallet } from '@terra-money/apps/hooks';
-import { useReadOnlyWarningDialog } from 'components/dialog/read-only-warning/ReadOnlyWarningDialog';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 interface NotConnectedButtonProps extends Pick<ButtonProps, 'onClick'> {}
 
@@ -59,9 +58,6 @@ export const WalletWidget = (props: UIElementProps) => {
   }, [setOpen, disconnect]);
 
   const openConnectWalletDialog = useConnectWalletDialog();
-  const openReadOnlyWarningDialog = useReadOnlyWarningDialog();
-
-  const { selectedChain } = useChainSelector();
 
   return (
     <ClickAwayListener onClickAway={() => setOpen(false)}>
@@ -69,11 +65,7 @@ export const WalletWidget = (props: UIElementProps) => {
         {localWallet.connectedWallet === undefined || localWallet.connectedWallet.walletAddress === undefined ? (
           <NotConnectedButton
             onClick={() => {
-              if (selectedChain.name === 'injective') {
-                openReadOnlyWarningDialog({});
-              } else {
-                openConnectWalletDialog({});
-              }
+              openConnectWalletDialog({});
             }}
           />
         ) : (
