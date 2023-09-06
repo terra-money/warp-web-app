@@ -84,7 +84,7 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
                 setLoading(true);
               }}
             >
-              {c.name}
+              {fixName(c.name)}
               <img src={c.icon} alt={c.name} />
             </Button>
           );
@@ -92,6 +92,14 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
       </DialogBody>
     </Dialog>
   );
+};
+
+const fixName = (name: string) => {
+  if (name.includes('Station')) {
+    return 'Station';
+  }
+
+  return name;
 };
 
 export const useConnectWalletDialog = () => {
