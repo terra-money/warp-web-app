@@ -57,8 +57,6 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
   const { network } = useWallet();
 
-  console.log({ network });
-
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
     TERRA_CHAIN
