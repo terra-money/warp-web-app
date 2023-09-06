@@ -1,5 +1,5 @@
 import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
-import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
+import { InfoResponse, useWallet } from '@terra-money/wallet-kit';
 import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
@@ -55,16 +55,7 @@ interface ChainSelectorProviderProps {
 
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
-  const { network: prevNetwork, disconnect } = useWallet();
-  const connectedWallet = useConnectedWallet();
-
-  const network = useMemo<InfoResponse>(
-    () => ({
-      ...prevNetwork,
-      ...ChainModule.lcdClientConfig([networkName(prevNetwork)], ['injective']),
-    }),
-    [prevNetwork]
-  );
+  const { network } = useWallet();
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
@@ -90,12 +81,8 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
       setSelectedChainMetadata(getChainMetadata(metadata));
       setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });
-
-      if (metadata.name === 'injective' && connectedWallet) {
-        disconnect();
-      }
     },
-    [setSelectedChainMetadata, chainModule, network, disconnect, connectedWallet, setLocalState]
+    [setSelectedChainMetadata, chainModule, network, setLocalState]
   );
 
   useEffect(() => {

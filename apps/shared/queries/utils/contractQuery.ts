@@ -10,7 +10,6 @@ export const contractQuery = async <QueryMsg extends {}, QueryResponse>(
   try {
     return await lcd.wasm.contractQuery<QueryResponse>(contractAddress, msg);
   } catch (err) {
-    //console.log(err);
     if (defaultValue !== undefined) {
       return defaultValue;
     }

@@ -4,8 +4,7 @@ import { useConnectWalletDialog } from '../dialog/connect-wallet';
 import { sleep } from 'utils';
 import { useCreateAccountDialog } from 'components/dialog/connect-wallet/CreateAccountDialog';
 import { useWarpAccount } from 'queries/useWarpAccount';
-import { useChainSelector, useLocalWallet } from '@terra-money/apps/hooks';
-import { useReadOnlyWarningDialog } from 'components/dialog/read-only-warning/ReadOnlyWarningDialog';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 export type ConnectedButtonProps = ButtonProps;
 
@@ -17,20 +16,14 @@ export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProp
   const { data: warpAccount, isFetching: accountFetching } = useWarpAccount();
 
   const openCreateAccountDialog = useCreateAccountDialog();
-  const openReadOnlyWarningDialog = useReadOnlyWarningDialog();
-
-  const { selectedChain } = useChainSelector();
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
     async (event) => {
       // let connectionType: ConnectType | undefined;
       let accountReady: boolean | undefined = Boolean(warpAccount) && !accountFetching;
 
-      if (selectedChain.name === 'injective') {
-        await openReadOnlyWarningDialog({});
-      }
       // If wallet is not connected, open connect dialog and wait for connection
-      else if (!localWallet.connectedWallet) {
+      if (!localWallet.connectedWallet) {
         await openConnectDialog({
           title: 'Hold up!',
           subtitle: 'You need to connect your terra wallet to perform this action.',
@@ -52,16 +45,7 @@ export const ConnectedButton = forwardRef<HTMLButtonElement, ConnectedButtonProp
         onClick?.(event);
       }
     },
-    [
-      onClick,
-      localWallet.connectedWallet,
-      openConnectDialog,
-      warpAccount,
-      accountFetching,
-      openCreateAccountDialog,
-      selectedChain,
-      openReadOnlyWarningDialog,
-    ]
+    [onClick, localWallet.connectedWallet, openConnectDialog, warpAccount, accountFetching, openCreateAccountDialog]
   );
 
   return <Button {...rest} onClick={handleClick} />;
