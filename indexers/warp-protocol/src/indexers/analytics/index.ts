@@ -1,5 +1,6 @@
 import { Runner, Scheduler } from '@apps-shared/indexers/indexers';
 import { StateTableInitializer } from '@apps-shared/indexers/initializers';
+import { ChainModule } from '@terra-money/warp-sdk';
 import { AnalyticsTableInitializer } from 'initializers';
 import { Environment } from 'utils';
 import { Indexer } from './Indexer';
@@ -20,4 +21,4 @@ const run = async (chainName: string) => {
     });
 };
 
-Environment.chain.supportedChains().forEach((chain) => run(chain.name));
+ChainModule.supportedChains().forEach((chain) => run(chain.name));

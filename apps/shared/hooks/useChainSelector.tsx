@@ -69,20 +69,16 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
   const { selectedChainId, lcdClientConfig } = localState;
 
-  const chainModule = useMemo(() => {
-    return new ChainModule(lcdClientConfig);
-  }, [lcdClientConfig]);
-
   const setSelectedChain = useCallback(
     (chainName: ChainName) => {
-      const metadata = chainModule.chainMetadata(chainName);
+      const metadata = ChainModule.chainMetadata(chainName);
       // check if testnet or mainnet by useWallet's network
       const chainId = networkName(network) === 'testnet' ? metadata.testnet : metadata.mainnet;
 
       setSelectedChainMetadata(getChainMetadata(metadata));
       setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });
     },
-    [setSelectedChainMetadata, chainModule, network, setLocalState]
+    [setSelectedChainMetadata, network, setLocalState]
   );
 
   useEffect(() => {
@@ -100,11 +96,11 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       lcdClientConfig,
       lcd: new LCDClient(network),
       setSelectedChain,
-      supportedChains: chainModule.supportedChains().map(getChainMetadata),
+      supportedChains: ChainModule.supportedChains().map(getChainMetadata),
     };
 
     return ret;
-  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain, network]);
+  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, setSelectedChain, network]);
 
   return <ChainSelectorContext.Provider value={value}>{children}</ChainSelectorContext.Provider>;
 };
