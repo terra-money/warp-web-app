@@ -12,10 +12,6 @@ export class Environment {
   static load() {
     dotenv.config();
     Environment.lcd = ChainModule.lcdClient({ networks: [process.env.NETWORK as NetworkName] });
-    // set to terra by default, not relevant
-    Environment.chain = new ChainModule(
-      Environment.lcd.config[process.env.NETWORK === 'mainnet' ? 'phoenix-1' : 'pisco-1']
-    );
   }
 
   static getGenesis = (chainName: string): Epoch => {
@@ -77,11 +73,11 @@ export class Environment {
   };
 
   static getContractAddress(chainName: string, contract: keyof ContractAddresses) {
-    return Environment.chain.contractAddress(contract, Environment.getChainId(chainName));
+    return ChainModule.contractAddress(contract, Environment.getChainId(chainName));
   }
 
   static getChainId(chainName: string) {
-    const chainMetadata = Environment.chain.chainMetadata(chainName as ChainName);
+    const chainMetadata = ChainModule.chainMetadata(chainName as ChainName);
     const chainId = chainMetadata[process.env.NETWORK];
 
     return chainId;
