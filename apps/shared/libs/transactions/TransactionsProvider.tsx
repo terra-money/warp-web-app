@@ -3,13 +3,14 @@ import thunk from 'redux-thunk';
 import { transactionsReducer } from './transactionsReducer';
 import { TxDispatch, trackTxAction } from './actions';
 import { TxState } from './TxState';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { LocalStorageTxStore } from './storage/LocalStorageTxStore';
 import { createTxStoreMiddleware } from './storage';
 import { pendingSubject, completedSubject, cancelledSubject, failedSubject } from './rx';
 import { CompletedTransaction, FailedTransaction, PendingTransaction, TransactionStatus } from './types';
 import { UIElementProps } from '../../components';
 import { useChainSelector } from '../../hooks';
+import { LCDClient } from '@terra-money/feather.js';
 
 const storage = new LocalStorageTxStore('__tx_store');
 
@@ -56,7 +57,7 @@ const TransactionsProvider = (props: TransactionsProviderProps) => {
 
   const [{ onPending, onCancelled, onCompleted, onFailed }, setEventHandlers] = useState<TxEventHandlers>({});
 
-  const { lcd } = useChainSelector();
+  const { lcd, selectedChainId } = useChainSelector();
 
   const value = useThunkReducer(transactionsReducer, initialState, (state) => {
     return {
@@ -66,13 +67,21 @@ const TransactionsProvider = (props: TransactionsProviderProps) => {
     };
   });
 
+  const lcdRef = useRef<LCDClient>(lcd);
+  const selectedChainIdRef = useRef<string>(selectedChainId);
+
+  useEffect(() => {
+    lcdRef.current = lcd;
+    selectedChainIdRef.current = selectedChainId;
+  }, [lcd, selectedChainId]);
+
   // update the tracking status of the outstanding txs
   useEffect(() => {
     const [state, dispatch] = value;
     if (state.initialized) {
       state.transactions.forEach((transaction) => {
         if (transaction.status === TransactionStatus.Pending) {
-          dispatch(trackTxAction(transaction.txHash, lcd));
+          dispatch(trackTxAction(transaction.txHash, lcdRef, selectedChainIdRef));
         }
       });
     }
