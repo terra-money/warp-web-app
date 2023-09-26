@@ -4,6 +4,7 @@ import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, 
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
 import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
+import { ReactComponent as NibiruIcon } from 'components/assets/Nibiru.svg';
 import {
   ChainMetadata as SdkChainMetadata,
   TERRA_CHAIN,
@@ -12,6 +13,8 @@ import {
   NetworkName,
 } from '@terra-money/warp-sdk';
 import { useLocalStorage } from 'usehooks-ts';
+
+import styles from './ChainSelector.module.sass';
 
 export type ChainMetadata = SdkChainMetadata & {
   icon: ReactNode;
@@ -29,15 +32,37 @@ type ChainSelectorContextState = {
 const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
   switch (sdkMetadata.name) {
     case 'injective':
-      return { ...sdkMetadata, icon: <InjectiveIcon /> };
+      return { ...sdkMetadata, icon: <InjectiveIcon className={styles.chain_icon} /> };
     case 'terra':
-      return { ...sdkMetadata, icon: <TerraIcon /> };
+      return { ...sdkMetadata, icon: <TerraIcon className={styles.chain_icon} /> };
     case 'neutron':
-      return { ...sdkMetadata, icon: <NeutronIcon /> };
+      return { ...sdkMetadata, icon: <NeutronIcon className={styles.chain_icon} /> };
+    case 'nibiru':
+      return { ...sdkMetadata, icon: <NibiruIcon className={styles.chain_icon} /> };
   }
 };
 
 const networkName = (networks: InfoResponse): NetworkName => ('pisco-1' in networks ? 'testnet' : 'mainnet');
+
+// TODO: required for mainnet flicker not to break app - remove when station mainnet supported is added
+const addNibiru = (networks: InfoResponse): InfoResponse => {
+  if (networkName(networks) === 'mainnet') {
+    return {
+      ...networks,
+      'nibiru-itn-2': {
+        chainID: 'nibiru-itn-2',
+        lcd: 'https://lcd.itn-2.nibiru.fi',
+        gasAdjustment: 1.75,
+        gasPrices: {
+          unibi: 0.15,
+        },
+        prefix: 'nibi',
+      },
+    };
+  }
+
+  return networks;
+};
 
 const ChainSelectorContext = createContext<ChainSelectorContextState | undefined>(undefined);
 
@@ -55,7 +80,9 @@ interface ChainSelectorProviderProps {
 
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
-  const { network } = useWallet();
+  const { network: prevNetwork } = useWallet();
+
+  const network = useMemo(() => addNibiru(prevNetwork), [prevNetwork]);
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
@@ -96,7 +123,15 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       lcdClientConfig,
       lcd: new LCDClient(network),
       setSelectedChain,
-      supportedChains: ChainModule.supportedChains().map(getChainMetadata),
+      supportedChains: ChainModule.supportedChains()
+        .map(getChainMetadata)
+        .filter((c) => {
+          if (c.name === 'nibiru' && networkName(network) === 'mainnet') {
+            return false;
+          }
+
+          return true;
+        }),
     };
 
     return ret;
