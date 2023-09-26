@@ -15,16 +15,19 @@ export class TxTimeoutError extends Error {
 }
 
 export const pollTx = async function (
-  lcd: LCDClient,
+  lcdRef: React.MutableRefObject<LCDClient>,
   txHash: string,
-  cancellationToken: CancellationToken = None
+  cancellationToken: CancellationToken = None,
+  chainIdRef: React.MutableRefObject<string>
 ): Promise<TxInfo | Error> {
   const timeout = Date.now() + 20 * 1000;
 
   while (Date.now() < timeout && cancellationToken.cancelled() === false) {
     try {
-      // TODO: temporary, updated with f(selected_chain, selected_network)
-      const resp = await lcd.tx.txInfo(txHash, 'pisco-1');
+      const lcd = lcdRef.current;
+      const chainId = chainIdRef.current;
+
+      const resp = await lcd.tx.txInfo(txHash, chainId);
 
       if (resp.code !== 0) {
         throw new TerraTxError(resp);
@@ -36,7 +39,7 @@ export const pollTx = async function (
         return error;
       }
 
-      if ([400, 404].includes(error.response.status)) {
+      if ([400, 404].includes(error?.response?.status)) {
         // the tx was not yet found so try again after a delay
         await sleep(500, cancellationToken);
         continue;

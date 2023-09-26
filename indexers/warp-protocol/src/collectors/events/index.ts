@@ -1,11 +1,12 @@
 import { EventCollector } from '@apps-shared/indexers/collectors';
 import { EventStoreTableInitializer, StateTableInitializer } from '@apps-shared/indexers/initializers';
 import { Runner } from '@apps-shared/indexers/indexers';
-import { createDynamoDBClient, createEventStore, createState, fetchAll } from '@apps-shared/indexers/utils';
+import { createDynamoDBClient, createEventStore, createState } from '@apps-shared/indexers/utils';
 import { BlockListener } from '@apps-shared/indexers/services/block-listener';
 import { Environment } from 'utils';
 import { Runnable } from '@apps-shared/indexers/services/runnable';
 import { AccountsTableInitializer } from 'initializers';
+import { ChainModule } from '@terra-money/warp-sdk';
 
 Environment.load();
 
@@ -93,4 +94,4 @@ const run = async (chainName: string) => {
     });
 };
 
-Environment.chain.supportedChains().forEach((chain) => run(chain.name));
+ChainModule.supportedChains().forEach((chain) => run(chain.name));

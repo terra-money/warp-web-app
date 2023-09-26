@@ -7,7 +7,7 @@ import { Text } from 'components/primitives/text';
 import { useSnackbar } from 'notistack';
 import { useSnackbarKey } from './SnackbarContainer';
 import { useCallback } from 'react';
-import { finderTxUrl } from 'utils/finder';
+import { useFinderTxUrl } from 'utils/finder';
 import { useTxErrorDialog } from './error/TxErrorDialog';
 import styles from './TransactionSnackbar.module.sass';
 import { LinearProgress } from '@mui/material';
@@ -41,6 +41,8 @@ export const TransactionSnackbar = (props: TransactionSnackbarProps) => {
 
   const openTxErrorDialog = useTxErrorDialog();
 
+  const finderTxUrl = useFinderTxUrl();
+
   const onDetailsClick = useCallback(() => {
     if (!localWallet.connectedWallet) {
       return;
@@ -51,8 +53,8 @@ export const TransactionSnackbar = (props: TransactionSnackbarProps) => {
       return;
     }
 
-    window.open(finderTxUrl(localWallet.connectedWallet.network!, transaction.txHash));
-  }, [localWallet, transaction, openTxErrorDialog]);
+    window.open(finderTxUrl(transaction.txHash));
+  }, [localWallet, transaction, openTxErrorDialog, finderTxUrl]);
 
   return (
     <div className={styles.root} data-variant={variant}>

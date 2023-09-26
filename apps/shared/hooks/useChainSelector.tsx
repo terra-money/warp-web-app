@@ -1,9 +1,10 @@
 import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
-import { InfoResponse, useConnectedWallet, useWallet } from '@terra-money/wallet-kit';
+import { InfoResponse, useWallet } from '@terra-money/wallet-kit';
 import { ReactNode, createContext, useContext, useMemo, useCallback, useEffect, useState } from 'react';
 import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
 import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
+import { ReactComponent as NibiruIcon } from 'components/assets/Nibiru.svg';
 import {
   ChainMetadata as SdkChainMetadata,
   TERRA_CHAIN,
@@ -12,6 +13,8 @@ import {
   NetworkName,
 } from '@terra-money/warp-sdk';
 import { useLocalStorage } from 'usehooks-ts';
+
+import styles from './ChainSelector.module.sass';
 
 export type ChainMetadata = SdkChainMetadata & {
   icon: ReactNode;
@@ -29,15 +32,37 @@ type ChainSelectorContextState = {
 const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
   switch (sdkMetadata.name) {
     case 'injective':
-      return { ...sdkMetadata, icon: <InjectiveIcon /> };
+      return { ...sdkMetadata, icon: <InjectiveIcon className={styles.chain_icon} /> };
     case 'terra':
-      return { ...sdkMetadata, icon: <TerraIcon /> };
+      return { ...sdkMetadata, icon: <TerraIcon className={styles.chain_icon} /> };
     case 'neutron':
-      return { ...sdkMetadata, icon: <NeutronIcon /> };
+      return { ...sdkMetadata, icon: <NeutronIcon className={styles.chain_icon} /> };
+    case 'nibiru':
+      return { ...sdkMetadata, icon: <NibiruIcon className={styles.chain_icon} /> };
   }
 };
 
 const networkName = (networks: InfoResponse): NetworkName => ('pisco-1' in networks ? 'testnet' : 'mainnet');
+
+// TODO: required for mainnet flicker not to break app - remove when station mainnet supported is added
+const addNibiru = (networks: InfoResponse): InfoResponse => {
+  if (networkName(networks) === 'mainnet') {
+    return {
+      ...networks,
+      'nibiru-itn-2': {
+        chainID: 'nibiru-itn-2',
+        lcd: 'https://lcd.itn-2.nibiru.fi',
+        gasAdjustment: 1.75,
+        gasPrices: {
+          unibi: 0.15,
+        },
+        prefix: 'nibi',
+      },
+    };
+  }
+
+  return networks;
+};
 
 const ChainSelectorContext = createContext<ChainSelectorContextState | undefined>(undefined);
 
@@ -55,16 +80,9 @@ interface ChainSelectorProviderProps {
 
 const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
   const { children } = props;
-  const { network: prevNetwork, disconnect } = useWallet();
-  const connectedWallet = useConnectedWallet();
+  const { network: prevNetwork } = useWallet();
 
-  const network = useMemo<InfoResponse>(
-    () => ({
-      ...prevNetwork,
-      ...ChainModule.lcdClientConfig([networkName(prevNetwork)], ['injective']),
-    }),
-    [prevNetwork]
-  );
+  const network = useMemo(() => addNibiru(prevNetwork), [prevNetwork]);
 
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
@@ -78,24 +96,16 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
   const { selectedChainId, lcdClientConfig } = localState;
 
-  const chainModule = useMemo(() => {
-    return new ChainModule(lcdClientConfig);
-  }, [lcdClientConfig]);
-
   const setSelectedChain = useCallback(
     (chainName: ChainName) => {
-      const metadata = chainModule.chainMetadata(chainName);
+      const metadata = ChainModule.chainMetadata(chainName);
       // check if testnet or mainnet by useWallet's network
       const chainId = networkName(network) === 'testnet' ? metadata.testnet : metadata.mainnet;
 
       setSelectedChainMetadata(getChainMetadata(metadata));
       setLocalState({ selectedChainId: chainId, lcdClientConfig: network[chainId] });
-
-      if (metadata.name === 'injective' && connectedWallet) {
-        disconnect();
-      }
     },
-    [setSelectedChainMetadata, chainModule, network, disconnect, connectedWallet, setLocalState]
+    [setSelectedChainMetadata, network, setLocalState]
   );
 
   useEffect(() => {
@@ -113,11 +123,19 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       lcdClientConfig,
       lcd: new LCDClient(network),
       setSelectedChain,
-      supportedChains: chainModule.supportedChains().map(getChainMetadata),
+      supportedChains: ChainModule.supportedChains()
+        .map(getChainMetadata)
+        .filter((c) => {
+          if (c.name === 'nibiru' && networkName(network) === 'mainnet') {
+            return false;
+          }
+
+          return true;
+        }),
     };
 
     return ret;
-  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, chainModule, setSelectedChain, network]);
+  }, [selectedChainId, selectedChainMetadata, lcdClientConfig, setSelectedChain, network]);
 
   return <ChainSelectorContext.Provider value={value}>{children}</ChainSelectorContext.Provider>;
 };

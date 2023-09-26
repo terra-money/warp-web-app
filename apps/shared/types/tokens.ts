@@ -36,6 +36,17 @@ export const NEUTRON: NativeToken = {
   coinGeckoId: 'neutron',
 };
 
+export const NIBIRU: NativeToken = {
+  key: 'unibi',
+  type: 'native',
+  denom: 'unibi',
+  name: 'Nibiru',
+  symbol: 'NIBI',
+  decimals: 6,
+  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+  coinGeckoId: 'nibiru',
+};
+
 export const INJ: NativeToken = {
   key: 'inj',
   type: 'native',

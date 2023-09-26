@@ -1,4 +1,4 @@
-import { CreateTxOptions } from '@terra-money/feather.js';
+import { CreateTxOptions, LCDClient } from '@terra-money/feather.js';
 import { useAsyncFn } from 'react-use';
 import { useTransactionsContext } from '.';
 import { addTxAction } from './actions';
@@ -6,6 +6,7 @@ import { PostResponse } from '@terra-money/wallet-kit';
 import { TransactionPayload, TransactionStatus } from './types';
 import { failedSubject } from './rx';
 import { LocalWallet, useLocalWallet, useRefCallback } from '../../hooks';
+import { useEffect, useRef } from 'react';
 
 type TxOrFactory<Options> =
   | CreateTxOptions
@@ -25,6 +26,16 @@ const useTx = <Options>(
   const [, dispatch] = useTransactionsContext();
 
   const wallet = useLocalWallet();
+
+  const { chainId, lcd } = wallet;
+
+  const lcdRef = useRef<LCDClient>(lcd);
+  const chainIdRef = useRef<string>(chainId);
+
+  useEffect(() => {
+    lcdRef.current = lcd;
+    chainIdRef.current = chainId;
+  }, [lcd, chainId]);
 
   const txCallback = useRefCallback(
     async (options: Options) => {
@@ -67,7 +78,7 @@ const useTx = <Options>(
       // however we are displaying a pending operation status so
       // we really want the response to complete when the tx has been
       // submitted to the mempool
-      const completion = dispatch(addTxAction(resp.txhash, payload, wallet.lcd));
+      const completion = dispatch(addTxAction(resp.txhash, payload, lcdRef, chainIdRef));
 
       if (useTxOptions.waitForCompletion) {
         await completion;

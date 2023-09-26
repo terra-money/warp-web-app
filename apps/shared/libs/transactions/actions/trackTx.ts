@@ -9,10 +9,11 @@ import { pollTx } from './pollTx';
 
 const trackTx = async (
   txHash: string,
-  lcd: LCDClient,
+  lcdRef: React.MutableRefObject<LCDClient>,
   dispatch: TxDispatch,
   getState: () => TxState,
-  args: TxThunkArgument
+  args: TxThunkArgument,
+  chainIdRef: React.MutableRefObject<string>
 ) => {
   const notify = (subject: BehaviorSubject<Transaction>) => {
     const transaction = find(getState(), txHash);
@@ -33,7 +34,7 @@ const trackTx = async (
     }
   });
 
-  const txInfoOrError = await pollTx(lcd, txHash, cancellationToken);
+  const txInfoOrError = await pollTx(lcdRef, txHash, cancellationToken, chainIdRef);
 
   unsubscribe.unsubscribe();
 
