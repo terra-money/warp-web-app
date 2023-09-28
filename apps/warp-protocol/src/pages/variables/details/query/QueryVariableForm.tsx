@@ -17,6 +17,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { generatePaths } from 'utils';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
 
 export type QueryVariableFormProps = UIElementProps & {
   selectedVariable?: warp_resolver.QueryVariable;
@@ -55,8 +56,18 @@ export const useQueryExample = (): warp_resolver.QueryRequestFor_String => {
 export const QueryVariableForm = (props: QueryVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useQueryVariableForm();
-  const { name, nameError, queryJson, queryJsonError, querySelector, querySelectorError, submitDisabled, kind } =
-    formState;
+  const {
+    name,
+    nameError,
+    queryJson,
+    queryJsonError,
+    querySelector,
+    querySelectorError,
+    submitDisabled,
+    kind,
+    onSuccess,
+    onError,
+  } = formState;
 
   const queryJsonToValidate = useValueWithDelay(queryJson);
   const { isLoading, data, isFetching, error } = useSimulateQuery(queryJsonToValidate);
@@ -108,8 +119,10 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
         queryJson,
         querySelector,
         kind,
+        onSuccess,
+        onError,
       } as QueryVariableInput),
-    [selectedVariable, name, kind, querySelector, queryJson]
+    [selectedVariable, name, kind, querySelector, queryJson, onSuccess, onError]
   );
 
   return (
@@ -171,6 +184,26 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
           error={querySelectorError}
           options={paths}
         />
+        {['decimal', 'uint', 'int'].includes(kind) && (
+          <>
+            <UpdateFnValueInput
+              className={styles.onSuccess}
+              label="On Success"
+              value={onSuccess}
+              onChange={(v) => {
+                input({ onSuccess: v });
+              }}
+            />
+            <UpdateFnValueInput
+              className={styles.onError}
+              label="On Error"
+              value={onError}
+              onChange={(v) => {
+                input({ onError: v });
+              }}
+            />
+          </>
+        )}
       </Form>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>

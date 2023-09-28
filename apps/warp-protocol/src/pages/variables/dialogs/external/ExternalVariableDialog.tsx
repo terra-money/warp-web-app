@@ -25,7 +25,7 @@ export const ExternalVariableDialog = (
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled, name, url, selector, kind, body, method } = state;
+            const { submitDisabled, name, url, selector, kind, body, method, onError, onSuccess } = state;
 
             return (
               <DialogFooter className={styles.footer}>
@@ -42,6 +42,10 @@ export const ExternalVariableDialog = (
                           selector,
                           body,
                           method,
+                        },
+                        update_fn: {
+                          on_success: onSuccess,
+                          on_error: onError,
                         },
                         kind,
                         encode: false,

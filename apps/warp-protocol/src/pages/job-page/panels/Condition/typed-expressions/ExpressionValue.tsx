@@ -24,7 +24,7 @@ export const ExpressionValue = (props: ExpressionValueProps) => {
   }
 
   if ('ref' in value) {
-    left = <VariableValue job={job} variableRef={value.ref} />;
+    left = <VariableValue variables={job.vars} variableRef={value.ref} />;
   }
 
   return left;

@@ -6,6 +6,8 @@ export interface StaticVariableInput {
   name: string;
   kind: warp_resolver.VariableKind;
   value: string;
+  onSuccess?: warp_resolver.UpdateFnValue;
+  onError?: warp_resolver.UpdateFnValue;
 }
 
 export interface StaticVariableState extends FormState<StaticVariableInput> {
@@ -19,6 +21,8 @@ export const staticVariableToInput = (variable?: warp_resolver.StaticVariable): 
     name: variable?.name ?? '',
     kind: variable?.kind ?? ('' as warp_resolver.VariableKind),
     value: variable?.value ?? '',
+    onSuccess: variable?.update_fn?.on_success ?? undefined,
+    onError: variable?.update_fn?.on_error ?? undefined,
   };
 };
 
@@ -46,8 +50,15 @@ export const useStaticVariableForm = (variable?: warp_resolver.StaticVariable) =
       state.name === undefined || state.name === null || state.name.length < 1 || nameError || kindError || valueError
     );
 
+    const isNumKind = ['decimal', 'uint', 'int'].includes(state.kind);
+
+    const onSuccess = isNumKind ? state.onSuccess : undefined;
+    const onError = isNumKind ? state.onError : undefined;
+
     dispatch({
       ...state,
+      onSuccess,
+      onError,
       nameError,
       submitDisabled,
     });

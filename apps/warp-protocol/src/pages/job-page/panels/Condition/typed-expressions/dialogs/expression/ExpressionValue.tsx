@@ -1,5 +1,4 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { Job } from 'types/job';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableValue } from '../../VariableValue';
 import { operatorLabel } from '../../../operatorLabel';
@@ -11,11 +10,11 @@ type ExprValue =
 
 export type ExpressionValueProps = {
   value: ExprValue;
-  job: Job;
+  variables: warp_resolver.Variable[];
 } & UIElementProps;
 
 export const ExpressionValue = (props: ExpressionValueProps) => {
-  const { job, value } = props;
+  const { variables, value } = props;
 
   let left = <></>;
 
@@ -26,8 +25,8 @@ export const ExpressionValue = (props: ExpressionValueProps) => {
   if ('expr' in value) {
     const operator = operatorLabel(value.expr.op);
 
-    const l = <ExpressionValue job={job} value={value.expr.left} />;
-    const r = <ExpressionValue job={job} value={value.expr.right} />;
+    const l = <ExpressionValue variables={variables} value={value.expr.left} />;
+    const r = <ExpressionValue variables={variables} value={value.expr.right} />;
 
     left = (
       <span>
@@ -41,7 +40,7 @@ export const ExpressionValue = (props: ExpressionValueProps) => {
   }
 
   if ('ref' in value) {
-    left = <VariableValue job={job} variableRef={value.ref} />;
+    left = <VariableValue variables={variables} variableRef={value.ref} />;
   }
 
   return left;

@@ -23,7 +23,7 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled, name, value, kind } = state;
+            const { submitDisabled, name, value, kind, onError, onSuccess } = state;
 
             return (
               <DialogFooter className={styles.footer}>
@@ -36,6 +36,10 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
                         name,
                         value,
                         kind,
+                        update_fn: {
+                          on_success: onSuccess,
+                          on_error: onError,
+                        },
                         encode: false,
                       });
                     }
