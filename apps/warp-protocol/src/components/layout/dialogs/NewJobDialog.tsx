@@ -22,7 +22,7 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
         <Text variant="label" className={styles.description}>
           Select an option below to create a job.
         </Text>
-        <Button
+        {/* <Button
           variant="secondary"
           className={styles.btn}
           onClick={async () => {
@@ -39,7 +39,7 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
               Create a job from a library of job templates.
             </Text>
           </Container>
-        </Button>
+        </Button> */}
         <Button
           variant="secondary"
           className={styles.btn}
@@ -51,7 +51,7 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
         >
           <Container direction="column" className={styles.txt_container}>
             <Text className={styles.text} variant="text">
-              Advanced mode
+              Basic mode
             </Text>
             <Text className={styles.label} variant="label">
               Configure a job manually step by step.
@@ -69,10 +69,10 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
         >
           <Container direction="column" className={styles.txt_container}>
             <Text className={styles.text} variant="text">
-              Developer mode
+              Advanced mode
             </Text>
             <Text className={styles.label} variant="label">
-              Submit a create job payload. Intended for developers.
+              Submit a create job JSON payload directly.
             </Text>
           </Container>
         </Button>
