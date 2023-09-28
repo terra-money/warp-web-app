@@ -33,17 +33,24 @@
 .pencil_icon
   cursor: pointer
 
+.terminal_icon
+  cursor: pointer
+
+  path
+    stroke: var(--input-color)
+
 .dropdown_toggle
   height: 100% !important
   fill-opacity: 0.6
   cursor: pointer
   border-right: 1px solid rgba(246, 247, 250, 0.1)
 
-  svg
-    path
-      fill: #F6F7FA !important
+  // svg
+  //   path
+  //     fill: #F6F7FA !important
 
 .dropdown_menu
+  z-index: 10001 !important
   margin-left: -15px
   overflow: hidden
 

@@ -2,12 +2,12 @@
   text-decoration: underline
 
 .root
-  height: 520px
+  height: 100% !important
   overflow: auto
   display: grid
   width: 100%
   grid-template-columns: 1fr 1fr
-  grid-template-rows: repeat(3, min-content)
+  grid-template-rows: repeat(4, min-content)
   row-gap: 24px !important
   column-gap: 24px !important
 
@@ -25,6 +25,9 @@
 
 .body_input
   height: 160px
+
+.body_input_inner
+  height: calc(160px - 32px)
 
 .name_input,
 .url_input,
@@ -56,6 +59,14 @@
 
 .selector_input
   grid-row: 3
+  grid-column: 2
+
+.onSuccess
+  grid-row: 4
+  grid-column: 1
+
+.onError
+  grid-row: 4
   grid-column: 2
 
 .title_container

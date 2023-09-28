@@ -21,6 +21,7 @@ import { useExternalQuery } from 'queries/useExternalQuery';
 import { usePreviewExternalDialog } from './preview-dialog/PreviewExternalDialog';
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { generatePaths } from 'utils';
+import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
 
 const httpMethods: warp_resolver.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -44,8 +45,21 @@ const externalVarKinds: warp_resolver.VariableKind[] = [
 export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useExternalVariableForm();
-  const { name, nameError, selector, kind, url, submitDisabled, urlError, selectorError, body, bodyError, method } =
-    formState;
+  const {
+    name,
+    nameError,
+    selector,
+    kind,
+    url,
+    submitDisabled,
+    urlError,
+    selectorError,
+    body,
+    bodyError,
+    method,
+    onError,
+    onSuccess,
+  } = formState;
 
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
@@ -63,8 +77,10 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
         body,
         method,
         kind,
+        onSuccess,
+        onError,
       } as ExternalVariableInput),
-    [selectedVariable, name, kind, url, selector, body, method]
+    [selectedVariable, name, kind, url, selector, body, method, onSuccess, onError]
   );
 
   const { isLoading, data, isFetching, error } = useExternalQuery(url, method!, body!);
@@ -160,6 +176,7 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
         />
         <EditorInput
           rootClassName={styles.body_input}
+          className={styles.body_input_inner}
           label="Body"
           error={bodyError}
           valid={Boolean(bodyError)}
@@ -181,6 +198,26 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
           error={selectorError}
           options={paths}
         />
+        {['decimal', 'uint', 'int'].includes(kind) && (
+          <>
+            <UpdateFnValueInput
+              className={styles.onSuccess}
+              label="On Success"
+              value={onSuccess}
+              onChange={(v) => {
+                input({ onSuccess: v });
+              }}
+            />
+            <UpdateFnValueInput
+              className={styles.onError}
+              label="On Error"
+              value={onError}
+              onChange={(v) => {
+                input({ onError: v });
+              }}
+            />
+          </>
+        )}
       </Form>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>

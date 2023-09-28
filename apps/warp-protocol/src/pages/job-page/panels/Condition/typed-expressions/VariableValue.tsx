@@ -1,5 +1,5 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { Job } from 'types/job';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { resolveVariableRef, variableName } from 'utils/variable';
 import { useVariableDisplayDialog } from './dialogs/useVariableDisplayDialog';
 
@@ -7,18 +7,18 @@ import styles from './VariableValue.module.sass';
 
 export type VariableValueProps = {
   variableRef: string;
-  job: Job;
+  variables: warp_resolver.Variable[];
 } & UIElementProps;
 
 export const VariableValue = (props: VariableValueProps) => {
-  const { job, variableRef } = props;
+  const { variables, variableRef } = props;
 
-  const variable = resolveVariableRef(variableRef, job.vars);
+  const variable = resolveVariableRef(variableRef, variables);
 
   const openVariableDisplayDialog = useVariableDisplayDialog();
 
   return (
-    <span className={styles.link} onClick={() => openVariableDisplayDialog(variable, job)}>
+    <span className={styles.link} onClick={() => openVariableDisplayDialog(variable, variables)}>
       {variableName(variable)}
     </span>
   );

@@ -12,7 +12,7 @@ export const BoolExpression = (props: BoolExpressionProps) => {
 
   return (
     <span className={className}>
-      <VariableValue job={job} variableRef={variableRef} />
+      <VariableValue variables={job.vars} variableRef={variableRef} />
     </span>
   );
 };

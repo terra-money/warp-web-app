@@ -23,13 +23,13 @@ type VariableValueInputProps = UIElementProps & {
 };
 
 export const VariableValueInput = (props: VariableValueInputProps) => {
-  const { onChange, value, kind = '', label = 'Value', placeholder = 'Type your value here' } = props;
+  const { onChange, value, kind = '', label = 'Value', placeholder = 'Type your value here', className } = props;
 
   const { tokens } = useTokens();
 
   if (['int', 'uint', 'decimal'].includes(kind)) {
     return (
-      <FormControl label={label}>
+      <FormControl label={label} className={className}>
         <NumericInput
           placeholder={placeholder}
           margin="none"
@@ -45,6 +45,7 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
   if (kind === 'amount') {
     return (
       <AmountInput
+        className={className}
         label={label}
         value={value && demicrofy(Big(value) as u<Big>, 6)}
         onChange={(value) =>
@@ -59,6 +60,7 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
 
     return (
       <DateInput
+        className={className}
         label={label}
         placeholder={`Example: "tomorrow at 15:30"`}
         value={date}
@@ -70,6 +72,7 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
   if (kind === 'asset') {
     return (
       <TokenInput
+        className={className}
         label={label}
         value={tokens[value]}
         onChange={(token) => {
@@ -81,7 +84,7 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
 
   if (kind === 'json') {
     return (
-      <FormControl label={label}>
+      <FormControl label={label} className={className}>
         <MsgInput
           placeholder={placeholder}
           value={value}
@@ -96,7 +99,7 @@ export const VariableValueInput = (props: VariableValueInputProps) => {
   }
 
   return (
-    <FormControl label={label}>
+    <FormControl label={label} className={className}>
       <TextInput
         placeholder={placeholder}
         margin="none"

@@ -3,6 +3,7 @@ import { UIElementProps } from '@terra-money/apps/components';
 import { TextInput } from 'components/primitives/text-input';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ReactComponent as LightningIcon } from 'components/assets/Lightning.svg';
+import { ReactComponent as TerminalIcon } from 'components/assets/Terminal.svg';
 import { ReactComponent as PuzzleIcon } from 'components/assets/Puzzle.svg';
 import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
 import { warp_resolver } from '@terra-money/warp-sdk';
@@ -15,6 +16,7 @@ import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 import { resolveVariableRef, variableName, variableRef } from 'utils/variable';
 import { useSelectVariableDialog } from '../select-variable/SelectVariableDialog';
+import { useEnvValueDialog } from './EnvValueDialog';
 
 type Value =
   | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
@@ -25,12 +27,14 @@ type ValueInputProps<T extends Value> = UIElementProps & {
   value: T;
   onChange: (value: T) => void;
   variant: 'number' | 'text';
+  kind: warp_resolver.VariableKind;
 };
 
 export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
-  const { value, onChange, variant } = props;
+  const { value, onChange, variant, kind } = props;
 
   const openSelectVariableDialog = useSelectVariableDialog();
+  const openEnvValueDialog = useEnvValueDialog();
 
   const onSelectVariable = async (value: T, setValue: (variable: warp_resolver.Variable) => void) => {
     const resp = await openSelectVariableDialog({
@@ -39,6 +43,14 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
 
     if (resp) {
       setValue(resp);
+    }
+  };
+
+  const onSelectEnv = async () => {
+    const envValue = await openEnvValueDialog({});
+
+    if (envValue) {
+      onChange({ env: envValue } as T);
     }
   };
 
@@ -53,8 +65,14 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
       return v.simple;
     }
 
+    if ('env' in v) {
+      return v.env;
+    }
+
     return undefined;
   };
+
+  const isNumKind = ['decimal', 'uint', 'int'].includes(kind);
 
   const inputProps = {
     startAdornment: (
@@ -63,11 +81,9 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
           menuClass={styles.dropdown_menu}
           action={
             <InputAdornment position="start" className={styles.dropdown_toggle}>
-              {'ref' in value ? (
-                <LightningIcon className={styles.lightning_icon} />
-              ) : (
-                <PuzzleIcon className={styles.puzzle_icon} />
-              )}
+              {'ref' in value && <LightningIcon className={styles.lightning_icon} />}
+              {'simple' in value && <PuzzleIcon className={styles.puzzle_icon} />}
+              {'env' in value && <TerminalIcon className={styles.terminal_icon} />}
               <KeyboardArrowDownIcon className={styles.chevron} />
             </InputAdornment>
           }
@@ -86,6 +102,15 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
             <span>Variable</span>
             <LightningIcon className={styles.lightning_icon} />
           </MenuAction>
+          {isNumKind && (
+            <MenuAction
+              className={classNames(styles.dropdown_item, 'env' in value && styles.dropdown_item_selected)}
+              onClick={onSelectEnv}
+            >
+              <span>Environment</span>
+              <TerminalIcon className={styles.terminal_icon} />
+            </MenuAction>
+          )}
         </DropdownMenu>
       </>
     ),
@@ -110,9 +135,12 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
         placeholder="Type here"
         margin="none"
         value={getText(value)}
-        disabled={'ref' in value}
+        disabled={'ref' in value || 'env' in value}
         onChange={(event) => {
-          if ('ref' in value && event.target.value === variableName(resolveVariableRef(value.ref, variables))) {
+          if (
+            'env' in value ||
+            ('ref' in value && event.target.value === variableName(resolveVariableRef(value.ref, variables)))
+          ) {
             return;
           }
 
@@ -129,9 +157,12 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
       placeholder="Type here"
       margin="none"
       value={getText(value)}
-      disabled={'ref' in value}
+      disabled={'ref' in value || 'env' in value}
       onChange={(event) => {
-        if ('ref' in value && event.target.value === variableName(resolveVariableRef(value.ref, variables))) {
+        if (
+          'env' in value ||
+          ('ref' in value && event.target.value === variableName(resolveVariableRef(value.ref, variables)))
+        ) {
           return;
         }
 

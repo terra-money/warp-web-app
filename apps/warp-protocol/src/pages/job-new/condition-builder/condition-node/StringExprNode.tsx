@@ -30,7 +30,7 @@ export const StringExprNode = forwardRef((props: StringExprNodeProps, ref: React
     }
   }, [op, left, right, setExpr, expr]);
 
-  const Left = <ValueInput variant="text" value={left} onChange={(v) => setLeft(v)} />;
+  const Left = <ValueInput kind="string" variant="text" value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
     <OperatorInput<warp_resolver.StringOp>
@@ -42,7 +42,7 @@ export const StringExprNode = forwardRef((props: StringExprNodeProps, ref: React
     />
   );
 
-  const Right = <ValueInput variant="text" value={right} onChange={(v) => setRight(v)} />;
+  const Right = <ValueInput kind="string" variant="text" value={right} onChange={(v) => setRight(v)} />;
 
   return (
     <>

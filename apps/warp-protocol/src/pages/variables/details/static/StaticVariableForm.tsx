@@ -16,6 +16,7 @@ import styles from './StaticVariableForm.module.sass';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { VariableValueInput } from './variable-value-input/VariableValueInput';
+import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
 
 export type StaticVariableFormProps = UIElementProps & {
   selectedVariable?: warp_resolver.StaticVariable;
@@ -37,7 +38,7 @@ const staticVariableKinds: warp_resolver.VariableKind[] = [
 export const StaticVariableForm = (props: StaticVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useStaticVariableForm();
-  const { name, nameError, value, kind, submitDisabled } = formState;
+  const { name, nameError, value, kind, submitDisabled, onSuccess, onError } = formState;
 
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
@@ -52,8 +53,10 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
         name,
         value,
         kind,
+        onSuccess,
+        onError,
       } as StaticVariableInput),
-    [selectedVariable, name, value, kind]
+    [selectedVariable, name, value, kind, onSuccess, onError]
   );
 
   return (
@@ -90,6 +93,7 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
           }}
         />
         <VariableValueInput
+          className={styles.value_input}
           label="Value"
           placeholder="Type value here"
           value={value}
@@ -98,6 +102,26 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
             input({ value: v });
           }}
         />
+        {['decimal', 'uint', 'int'].includes(kind) && (
+          <>
+            <UpdateFnValueInput
+              className={styles.onSuccess}
+              label="On Success"
+              value={onSuccess}
+              onChange={(v) => {
+                input({ onSuccess: v });
+              }}
+            />
+            <UpdateFnValueInput
+              className={styles.onError}
+              label="On Error"
+              value={onError}
+              onChange={(v) => {
+                input({ onError: v });
+              }}
+            />
+          </>
+        )}
       </Form>
       {renderActions({ ...formState, submitDisabled: submitDisabled || !variableModified })}
     </>

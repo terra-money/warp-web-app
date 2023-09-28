@@ -7,16 +7,15 @@ import styles from './StaticVariableDisplayDialog.module.sass';
 import { Button, Text } from 'components/primitives';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { UpdateFnValue } from '../expression/UpdateFnValue';
-import { Job } from 'types/job';
 import { FormControl } from 'components/form-control/FormControl';
 
 export type StaticVariableDisplayDialogProps = {
   variable: warp_resolver.StaticVariable;
-  job: Job;
+  variables: warp_resolver.Variable[];
 };
 
 export const StaticVariableDisplayDialog = (props: DialogProps<StaticVariableDisplayDialogProps>) => {
-  const { closeDialog, variable, job } = props;
+  const { closeDialog, variable, variables } = props;
 
   return (
     <Dialog className={styles.dialog}>
@@ -33,14 +32,14 @@ export const StaticVariableDisplayDialog = (props: DialogProps<StaticVariableDis
         </FormControl>
         <FormControl className={styles.onSuccess} labelVariant="secondary" label="On Success">
           {variable.update_fn?.on_success ? (
-            <UpdateFnValue value={variable.update_fn.on_success} job={job} />
+            <UpdateFnValue value={variable.update_fn.on_success} variables={variables} />
           ) : (
             <Text variant="text">-</Text>
           )}
         </FormControl>
         <FormControl className={styles.onError} labelVariant="secondary" label="On Error">
           {variable.update_fn?.on_error ? (
-            <UpdateFnValue value={variable.update_fn.on_error} job={job} />
+            <UpdateFnValue value={variable.update_fn.on_error} variables={variables} />
           ) : (
             <Text variant="text">-</Text>
           )}

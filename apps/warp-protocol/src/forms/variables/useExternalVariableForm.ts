@@ -8,6 +8,8 @@ export interface ExternalVariableInput {
   body?: string | null;
   headers?: object | null;
   method?: warp_resolver.Method | null;
+  onSuccess?: warp_resolver.UpdateFnValue;
+  onError?: warp_resolver.UpdateFnValue;
   selector: string;
   url: string;
 }
@@ -27,6 +29,8 @@ export const externalVariableToInput = (externalVariable?: warp_resolver.Externa
     method: externalVariable?.init_fn.method ?? null,
     selector: externalVariable?.init_fn.selector ?? '',
     url: externalVariable?.init_fn.url ?? '',
+    onSuccess: externalVariable?.update_fn?.on_success ?? undefined,
+    onError: externalVariable?.update_fn?.on_error ?? undefined,
   };
 };
 
@@ -75,8 +79,15 @@ export const useExternalVariableForm = (externalVariable?: warp_resolver.Externa
         methodError
     );
 
+    const isNumKind = ['decimal', 'uint', 'int'].includes(state.kind);
+
+    const onSuccess = isNumKind ? state.onSuccess : undefined;
+    const onError = isNumKind ? state.onError : undefined;
+
     dispatch({
       ...state,
+      onSuccess,
+      onError,
       nameError,
       submitDisabled,
       bodyError,

@@ -30,7 +30,7 @@ export const IntExprNode = forwardRef((props: IntExprNodeProps, ref: React.Ref<H
     }
   }, [op, left, right, setExpr, expr]);
 
-  const Left = <ValueInput variant="number" value={left} onChange={(v) => setLeft(v)} />;
+  const Left = <ValueInput kind="int" variant="number" value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
     <OperatorInput<warp_resolver.NumOp>
@@ -42,7 +42,7 @@ export const IntExprNode = forwardRef((props: IntExprNodeProps, ref: React.Ref<H
     />
   );
 
-  const Right = <ValueInput variant="number" value={right} onChange={(v) => setRight(v)} />;
+  const Right = <ValueInput kind="int" variant="number" value={right} onChange={(v) => setRight(v)} />;
 
   return (
     <>

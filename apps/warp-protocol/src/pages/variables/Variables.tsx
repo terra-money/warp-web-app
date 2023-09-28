@@ -1,7 +1,6 @@
 import styles from './Variables.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Text } from 'components/primitives';
-import { useVariableStorage } from './useVariableStorage';
 import { useState } from 'react';
 import { IfConnected } from 'components/if-connected';
 import { NotConnected } from 'components/not-connected';
@@ -10,11 +9,13 @@ import { Details } from './details';
 import { useNewVariableDialog } from './dialogs/VariableDialog';
 import { variableName } from 'utils/variable';
 import { warp_resolver } from '@terra-money/warp-sdk';
+import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
+import { useCachedVariables } from 'pages/job-new/useCachedVariables';
 
 type VariablesContentProps = {};
 
 const VariablesContent = (props: VariablesContentProps) => {
-  const { variables, saveVariable, removeVariable, updateVariable } = useVariableStorage();
+  const { variables, saveVariable, removeVariable, updateVariable } = useCachedVariables();
   const [selectedVariable, setSelectedVariable] = useState<warp_resolver.Variable | undefined>(undefined);
 
   const openNewVariableDialog = useNewVariableDialog();
@@ -73,9 +74,11 @@ export const Variables = (props: UIElementProps) => {
   return (
     <IfConnected
       then={
-        <Container direction="column" className={styles.root}>
-          <VariablesContent />
-        </Container>
+        <CachedVariablesSession>
+          <Container direction="column" className={styles.root}>
+            <VariablesContent />
+          </Container>
+        </CachedVariablesSession>
       }
       else={<NotConnected />}
     />

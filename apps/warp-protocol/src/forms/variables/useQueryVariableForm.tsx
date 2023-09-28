@@ -7,6 +7,8 @@ export interface QueryVariableInput {
   queryJson: string;
   kind: warp_resolver.VariableKind;
   querySelector: string;
+  onSuccess?: warp_resolver.UpdateFnValue;
+  onError?: warp_resolver.UpdateFnValue;
 }
 
 export interface QueryVariableState extends FormState<QueryVariableInput> {
@@ -23,6 +25,8 @@ export const queryVariableToInput = (queryVariable?: warp_resolver.QueryVariable
     name: queryVariable?.name ?? '',
     queryJson,
     querySelector: queryVariable?.init_fn.selector ?? '',
+    onSuccess: queryVariable?.update_fn?.on_success ?? undefined,
+    onError: queryVariable?.update_fn?.on_error ?? undefined,
   };
 };
 
@@ -70,8 +74,15 @@ export const useQueryVariableForm = (queryVariable?: warp_resolver.QueryVariable
         !querySelectorValid
     );
 
+    const isNumKind = ['decimal', 'uint', 'int'].includes(state.kind);
+
+    const onSuccess = isNumKind ? state.onSuccess : undefined;
+    const onError = isNumKind ? state.onError : undefined;
+
     dispatch({
       ...state,
+      onSuccess,
+      onError,
       nameError,
       queryJsonError,
       submitDisabled,
