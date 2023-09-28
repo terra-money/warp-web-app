@@ -22,6 +22,7 @@ export interface DetailsFormInput {
   description: string;
   reward: string;
   message: string;
+  recurring: boolean;
   template?: warp_templates.Template;
   selectedTabType?: 'template' | 'message';
 }
@@ -74,6 +75,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       tokenBalanceLoading: false,
       nativeBalance: Big(0) as u<Big>,
       nativeBalanceLoading: false,
+      recurring: input?.recurring ?? false,
     }),
     [input]
   );

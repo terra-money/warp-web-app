@@ -13,6 +13,7 @@ export interface CreateJobTxProps {
   msgs: warp_resolver.CosmosMsgFor_Empty[];
   vars: warp_resolver.Variable[];
   condition: warp_resolver.Condition;
+  recurring: boolean;
 }
 
 export const useCreateJobTx = () => {
@@ -20,7 +21,7 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     async (options) => {
-      const { wallet, reward, name, msgs, condition, vars, description } = options;
+      const { wallet, reward, name, msgs, condition, vars, description, recurring } = options;
 
       if (!containsAllReferencedVarsInCosmosMsg(vars, msgs, condition)) {
         throw Error(
@@ -29,7 +30,7 @@ export const useCreateJobTx = () => {
       }
 
       return sdk.tx.createJob(wallet.walletAddress, {
-        recurring: false,
+        recurring,
         requeue_on_evict: true,
         name,
         labels: [],

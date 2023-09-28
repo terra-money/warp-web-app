@@ -19,6 +19,7 @@ import { useCachedVariables } from '../useCachedVariables';
 import { useCallback, useEffect } from 'react';
 import { useJobStorage } from '../useJobStorage';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: warp_resolver.Variable[] }) => void;
@@ -51,6 +52,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
       submitDisabled,
       tokenBalance,
       tokenBalanceLoading,
+      recurring,
     },
   ] = useDetailsForm(detailsInput);
 
@@ -148,6 +150,15 @@ export const DetailsForm = (props: DetailsFormProps) => {
             }}
           />
         </FormControl>
+
+        <ToggleInput
+          className={styles.recurring}
+          label="Job is recurring"
+          helpText="This determines whether a job is rescheduled after being executed."
+          value={recurring}
+          onChange={(value) => input({ recurring: value })}
+        />
+
         <Container className={styles.tabs} direction="row">
           {tabTypes.map((tabType) => (
             <Button
@@ -210,7 +221,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
           loading={loading}
           onClick={async () => {
             if (name && reward && message) {
-              onNext({ name, reward, message, template, selectedTabType, variables, description });
+              onNext({ name, reward, message, template, selectedTabType, variables, description, recurring });
             }
           }}
         >
