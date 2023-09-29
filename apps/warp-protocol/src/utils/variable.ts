@@ -1,5 +1,3 @@
-import { decodeQuery } from 'forms/variables';
-import { encodeQuery } from './encodeQuery';
 import { warp_resolver, warp_templates, extractVariableName } from '@terra-money/warp-sdk';
 
 export const resolveVariableRef = (ref: string, vars: warp_resolver.Variable[]) => {
@@ -103,29 +101,4 @@ export function hasOnlyStaticVariables(formattedString: string, variables: warp_
 
   // Check if all the variable names are defined in the list of variables
   return variableNames.every((name) => variables.some((v) => 'static' in v && v.static.name === name));
-}
-
-export function hydrateQueryVariablesWithStatics(variables: warp_resolver.Variable[]): warp_resolver.Variable[] {
-  const staticVariables = variables
-    .filter((variable) => 'static' in variable)
-    .map((variable) => 'static' in variable && variable.static) as warp_resolver.StaticVariable[];
-
-  return variables.map((variable) => {
-    if ('query' in variable) {
-      const newVariable = { ...variable };
-      let queryStr = JSON.stringify(decodeQuery(newVariable.query.init_fn.query));
-
-      staticVariables.forEach((staticVariable) => {
-        const search = `"$warp.variable.${staticVariable.name}"`;
-        const replace = `"${staticVariable.value}"`;
-        queryStr = queryStr.replace(search, replace);
-      });
-
-      newVariable.query.init_fn.query = encodeQuery(queryStr);
-
-      return newVariable;
-    } else {
-      return variable;
-    }
-  });
 }

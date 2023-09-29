@@ -17,7 +17,7 @@ import { VariableDrawer } from 'pages/job-new/variable-drawer/VariableDrawer';
 import { filterEmptyCond } from 'pages/job-new/condition-form/ConditionForm';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { CachedVariablesSession } from 'pages/job-new/CachedVariablesSession';
-import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { filterUnreferencedVariables } from 'utils/msgs';
 import { parseMsgs } from 'pages/job-new/JobNew';
 
 type TemplateNewProps = UIElementProps & {};
@@ -113,7 +113,7 @@ const extractUsedVariables = (
   condition?: warp_resolver.Condition
 ) => {
   return uniqBy(
-    [...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariablesInCosmosMsg(vars, msgs, condition)],
+    [...formattedStringVariables(formattedStr, vars), ...filterUnreferencedVariables(vars, msgs, condition)],
     (v) => variableName(v)
   );
 };

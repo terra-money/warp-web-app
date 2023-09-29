@@ -1,37 +1,31 @@
-import { isObject } from 'lodash';
 import { decodeQuery } from 'forms/variables';
 import { variableName } from './variable';
 import { decodeMsg } from 'pages/job-new/useJobStorage';
-import { warp_resolver, extractVariableName } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
-export function filterUnreferencedVariablesInCosmosMsg(
+export function filterUnreferencedVariables(
   vars: warp_resolver.Variable[],
   msgs: warp_resolver.CosmosMsgFor_Empty[],
   condition?: warp_resolver.Condition
 ): warp_resolver.Variable[] {
-  const referencedVars = extractReferencedVarNamesInCosmosMsg(vars, msgs, condition);
+  const referencedVars = extractReferencedVarNames(vars, msgs, condition);
 
   return referencedVars
     .map((name) => vars.find((v) => variableName(v) === name))
     .filter(Boolean) as warp_resolver.Variable[];
 }
 
-export function containsAllReferencedVarsInCosmosMsg(
+export function containsAllReferencedVars(
   vars: warp_resolver.Variable[],
   msgs: warp_resolver.CosmosMsgFor_Empty[],
   condition?: warp_resolver.Condition
 ): boolean {
-  const referencedVars = extractReferencedVarNamesInCosmosMsg(vars, msgs, condition);
+  const referencedVars = extractReferencedVarNames(vars, msgs, condition);
 
   return !Boolean(referencedVars.some((name) => !vars.some((v) => variableName(v) === name)));
 }
 
-type NumExpr =
-  | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
-  | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-  | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-
-export function extractReferencedVarNamesInCosmosMsg(
+export function extractReferencedVarNames(
   vars: warp_resolver.Variable[],
   msgs: warp_resolver.CosmosMsgFor_Empty[],
   condition?: warp_resolver.Condition
@@ -48,53 +42,12 @@ export function extractReferencedVarNamesInCosmosMsg(
     }
   });
 
-  // Add all variables that are referenced in the `condition` param to the `referencedVars` set
-  function addReferencedVarsFromCondition(cond: warp_resolver.Condition, referencedVars: Set<string>): void {
-    if ('and' in cond) {
-      cond.and.forEach((c) => addReferencedVarsFromCondition(c, referencedVars));
-    } else if ('or' in cond) {
-      cond.or.forEach((c) => addReferencedVarsFromCondition(c, referencedVars));
-    } else if ('not' in cond) {
-      addReferencedVarsFromCondition(cond.not, referencedVars);
-    } else if ('expr' in cond) {
-      if (['uint', 'int', 'decimal'].some((t) => t in cond.expr)) {
-        const addReferencedVarsFromNumExpr = (expr: NumExpr): void => {
-          if (!isObject(expr)) {
-            return;
-          }
-
-          if ('ref' in expr) {
-            referencedVars.add(extractVariableName(expr.ref));
-          } else if ('expr' in expr) {
-            addReferencedVarsFromNumExpr(expr.expr.left);
-            addReferencedVarsFromNumExpr(expr.expr.right);
-          } else if ('fn' in expr) {
-            addReferencedVarsFromNumExpr(expr.fn.right);
-          }
-        };
-
-        const numexpr = Object.values(cond.expr)[0] as warp_resolver.NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
-        Object.values(numexpr).forEach(addReferencedVarsFromNumExpr);
-      }
-
-      if ('string' in cond.expr) {
-        if ('ref' in cond.expr.string.left) {
-          referencedVars.add(extractVariableName(cond.expr.string.left.ref));
-        }
-
-        if ('ref' in cond.expr.string.right) {
-          referencedVars.add(extractVariableName(cond.expr.string.right.ref));
-        }
-      }
-
-      if ('bool' in cond.expr) {
-        referencedVars.add(extractVariableName(cond.expr.bool));
-      }
-    }
-  }
+  vars.forEach((v) => {
+    scanForReferencesForUpdateFn(v).forEach((varName) => referencedVars.add(varName));
+  });
 
   if (condition) {
-    addReferencedVarsFromCondition(condition, referencedVars);
+    scanForReferences(condition).forEach((v) => referencedVars.add(v));
   }
 
   // Remove all referenced variables from the `unreferencedVars` set
@@ -124,3 +77,73 @@ const scanForReferencesForCosmosMsg = (msg: warp_resolver.CosmosMsgFor_Empty): s
   const obj = decodeMsg(msg);
   return scanForReferences(obj);
 };
+
+function scanForReferencesForUpdateFn(variable: warp_resolver.Variable): Set<string> {
+  const referencedVars: Set<string> = new Set();
+
+  let update_fn = updateFn(variable);
+
+  if (update_fn) {
+    ['on_success', 'on_error'].forEach((key) => {
+      const updateFnValue = update_fn![key as 'on_success' | 'on_error'];
+
+      if (updateFnValue) {
+        scanForReferences(updateFnValue).forEach((varName) => referencedVars.add(varName));
+      }
+    });
+  }
+
+  return referencedVars;
+}
+
+function updateFn(variable: warp_resolver.Variable): warp_resolver.UpdateFn | null | undefined {
+  if ('static' in variable) {
+    return variable.static.update_fn;
+  }
+
+  if ('query' in variable) {
+    return variable.query.update_fn;
+  }
+
+  if ('external' in variable) {
+    return variable.external.update_fn;
+  }
+}
+
+// Helper function to perform Depth First Search on the graph
+function dfs(graph: Map<string, Set<string>>, node: string, visited: Set<string>, result: string[]): void {
+  if (visited.has(node)) return;
+  visited.add(node);
+  const neighbors = graph.get(node) || new Set();
+  neighbors.forEach((neighbor) => dfs(graph, neighbor, visited, result));
+  result.push(node); // Post-order addition to result, ensuring dependencies are listed before dependents
+}
+
+export function orderVarsByReferencing(vars: warp_resolver.Variable[]): warp_resolver.Variable[] {
+  // Build a map where keys are variable names and values are sets of names of variables they reference
+  const graph = new Map<string, Set<string>>();
+
+  vars.forEach((variable) => {
+    const varName = variableName(variable);
+    const referencedVarNames = new Set<string>();
+
+    if ('query' in variable) {
+      const q = decodeQuery(variable.query.init_fn.query);
+      scanForReferences(q).forEach((varName) => referencedVarNames.add(varName));
+    }
+
+    scanForReferencesForUpdateFn(variable).forEach((varName) => referencedVarNames.add(varName));
+
+    graph.set(varName, referencedVarNames);
+  });
+
+  // Perform DFS to order variables
+  const visited = new Set<string>();
+  const result: string[] = [];
+  graph.forEach((_, node) => dfs(graph, node, visited, result));
+
+  // Convert ordered variable names back to variable objects
+  return result
+    .map((varName) => vars.find((v) => variableName(v) === varName))
+    .filter(Boolean) as warp_resolver.Variable[];
+}
