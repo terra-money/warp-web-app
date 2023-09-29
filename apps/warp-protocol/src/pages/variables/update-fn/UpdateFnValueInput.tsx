@@ -13,18 +13,25 @@ import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
 
 interface UpdateFnValueInputProps {
   value?: warp_resolver.UpdateFnValue;
+  kind: warp_resolver.VariableKind;
   onChange: (value: warp_resolver.UpdateFnValue) => void;
   label?: string;
   className?: string;
 }
 
-const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({ value, onChange, label = 'Update fn', className }) => {
+const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({
+  value,
+  onChange,
+  label = 'Update fn',
+  className,
+  kind,
+}) => {
   const openUpdateFnDialog = useUpdateFnDialog();
 
   const { variables } = useCachedVariables();
 
   const handleEditClick = async () => {
-    const updatedValue = await openUpdateFnDialog({ updateFn: value });
+    const updatedValue = await openUpdateFnDialog({ updateFn: value, kind });
 
     if (updatedValue) {
       onChange(updatedValue);

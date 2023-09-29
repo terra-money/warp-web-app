@@ -30,7 +30,7 @@ export const DecimalExprNode = forwardRef((props: DecimalExprNodeProps, ref: Rea
     }
   }, [op, left, right, setExpr, expr]);
 
-  const Left = <ValueInput kind="decimal" variant="number" value={left} onChange={(v) => setLeft(v)} />;
+  const Left = <ValueInput kind="decimal" value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
     <OperatorInput<warp_resolver.NumOp>
@@ -42,7 +42,7 @@ export const DecimalExprNode = forwardRef((props: DecimalExprNodeProps, ref: Rea
     />
   );
 
-  const Right = <ValueInput kind="decimal" variant="number" value={right} onChange={(v) => setRight(v)} />;
+  const Right = <ValueInput kind="decimal" value={right} onChange={(v) => setRight(v)} />;
 
   return (
     <>

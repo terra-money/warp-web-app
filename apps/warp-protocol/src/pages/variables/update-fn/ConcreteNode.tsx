@@ -34,12 +34,7 @@ export const ConcreteNode = forwardRef((props: ConcreteNodeProps, ref: React.Ref
           {type} expression
         </Text>
         <div className={styles.exprs}>
-          <NumExprNode
-            kind={type}
-            variant={type === 'int' ? 'number' : 'text'}
-            expr={expr}
-            setExpr={(expr) => setUpdateFn({ [type]: { expr } } as any)}
-          />
+          <NumExprNode kind={type} expr={expr} setExpr={(expr) => setUpdateFn({ [type]: { expr } } as any)} />
           <Button
             className={styles.delete_btn}
             icon={<TrashIcon onClick={() => setUpdateFn({} as any)} />}
@@ -57,12 +52,7 @@ export const ConcreteNode = forwardRef((props: ConcreteNodeProps, ref: React.Ref
           {type} value
         </Text>
         <div className={styles.exprs}>
-          <ValueInput<any>
-            kind={type}
-            value={value}
-            onChange={(newValue) => setUpdateFn({ [type]: newValue } as any)}
-            variant={type === 'int' ? 'number' : 'text'}
-          />
+          <ValueInput kind={type} value={value} onChange={(newValue) => setUpdateFn({ [type]: newValue } as any)} />
           <Button
             className={styles.delete_btn}
             icon={<TrashIcon onClick={() => setUpdateFn({} as any)} />}

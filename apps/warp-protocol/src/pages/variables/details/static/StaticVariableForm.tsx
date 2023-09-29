@@ -117,6 +117,7 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
               className={styles.onSuccess}
               label="On Success"
               value={onSuccess}
+              kind={kind}
               onChange={(v) => {
                 input({ onSuccess: v });
               }}
@@ -124,6 +125,7 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
             <UpdateFnValueInput
               className={styles.onError}
               label="On Error"
+              kind={kind}
               value={onError}
               onChange={(v) => {
                 input({ onError: v });

@@ -27,34 +27,6 @@ export const EmptyNode = forwardRef((props: EmptyNodeProps, ref: React.Ref<HTMLB
           onClick={() =>
             setCond({
               expr: {
-                block_height: {
-                  comparator: '',
-                  op: 'eq',
-                },
-              },
-            })
-          }
-        >
-          Blockheight
-        </MenuAction>
-        <MenuAction
-          onClick={() =>
-            setCond({
-              expr: {
-                timestamp: {
-                  comparator: '',
-                  op: 'gt',
-                },
-              },
-            })
-          }
-        >
-          Timestamp
-        </MenuAction>
-        <MenuAction
-          onClick={() =>
-            setCond({
-              expr: {
                 bool: '',
               },
             })
@@ -84,6 +56,21 @@ export const EmptyNode = forwardRef((props: EmptyNodeProps, ref: React.Ref<HTMLB
                 uint: {
                   left: { simple: '' },
                   right: { simple: '' },
+                  op: 'eq',
+                },
+              },
+            })
+          }
+        >
+          Uint
+        </MenuAction>
+        <MenuAction
+          onClick={() =>
+            setCond({
+              expr: {
+                int: {
+                  left: { simple: '' as any },
+                  right: { simple: '' as any },
                   op: 'eq',
                 },
               },

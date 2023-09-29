@@ -3,13 +3,12 @@ import { ReactComponent as TrashIcon } from 'components/assets/Trash.svg';
 import { Button, Text } from 'components/primitives';
 import { forwardRef } from 'react';
 import { warp_resolver } from '@terra-money/warp-sdk';
-import { BlockheightExprNode } from './BlockheightExprNode';
 import { BoolExprNode } from './BoolExprNode';
 import styles from './ConditionNode.module.sass';
 import { DecimalExprNode } from './DecimalExprNode';
-import { IntExprNode } from './IntExprNode';
+import { UIntExprNode } from './UIntExprNode';
 import { StringExprNode } from './StringExprNode';
-import { TimestampExprNode } from './TimestampExprNode';
+import { IntExprNode } from './IntExprNode';
 
 type ExprNodeProps = UIElementProps & {
   expr: warp_resolver.Expr;
@@ -41,10 +40,28 @@ export const ExprNode = forwardRef((props: ExprNodeProps, ref: React.Ref<HTMLDiv
     return (
       <div ref={ref} className={styles.expr_node}>
         <Text className={styles.label} variant="label">
-          Integer expression
+          Uint expression
         </Text>
         <div className={styles.exprs}>
-          <IntExprNode expr={expr.uint} setExpr={(expr) => setCond({ expr: { uint: expr } })} />
+          <UIntExprNode expr={expr.uint} setExpr={(expr) => setCond({ expr: { uint: expr } })} />
+          <Button
+            className={styles.delete_btn}
+            icon={<TrashIcon onClick={() => setCond({} as any)} />}
+            iconGap="none"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if ('int' in expr) {
+    return (
+      <div ref={ref} className={styles.expr_node}>
+        <Text className={styles.label} variant="label">
+          Int expression
+        </Text>
+        <div className={styles.exprs}>
+          <IntExprNode expr={expr.int} setExpr={(expr) => setCond({ expr: { int: expr } })} />
           <Button
             className={styles.delete_btn}
             icon={<TrashIcon onClick={() => setCond({} as any)} />}
@@ -63,42 +80,6 @@ export const ExprNode = forwardRef((props: ExprNodeProps, ref: React.Ref<HTMLDiv
         </Text>
         <div className={styles.exprs}>
           <DecimalExprNode expr={expr.decimal} setExpr={(expr) => setCond({ expr: { decimal: expr } })} />
-          <Button
-            className={styles.delete_btn}
-            icon={<TrashIcon onClick={() => setCond({} as any)} />}
-            iconGap="none"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if ('timestamp' in expr) {
-    return (
-      <div ref={ref} className={styles.expr_node}>
-        <Text className={styles.label} variant="label">
-          Timestamp expression
-        </Text>
-        <div className={styles.exprs}>
-          <TimestampExprNode expr={expr.timestamp} setExpr={(expr) => setCond({ expr: { timestamp: expr } })} />
-          <Button
-            className={styles.delete_btn}
-            icon={<TrashIcon onClick={() => setCond({} as any)} />}
-            iconGap="none"
-          />
-        </div>
-      </div>
-    );
-  }
-
-  if ('block_height' in expr) {
-    return (
-      <div ref={ref} className={styles.expr_node}>
-        <Text className={styles.label} variant="label">
-          Blockheight expression
-        </Text>
-        <div className={styles.exprs}>
-          <BlockheightExprNode expr={expr.block_height} setExpr={(expr) => setCond({ expr: { block_height: expr } })} />
           <Button
             className={styles.delete_btn}
             icon={<TrashIcon onClick={() => setCond({} as any)} />}

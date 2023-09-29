@@ -21,17 +21,17 @@ import { useEnvValueDialog } from './EnvValueDialog';
 type Value =
   | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
   | warp_resolver.ValueFor_String
+  | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
   | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
 
 type ValueInputProps<T extends Value> = UIElementProps & {
   value: T;
   onChange: (value: T) => void;
-  variant: 'number' | 'text';
   kind: warp_resolver.VariableKind;
 };
 
 export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
-  const { value, onChange, variant, kind } = props;
+  const { value, onChange, kind } = props;
 
   const openSelectVariableDialog = useSelectVariableDialog();
   const openEnvValueDialog = useEnvValueDialog();
@@ -128,6 +128,8 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
     ),
   };
 
+  const variant = isNumKind ? 'number' : 'text';
+
   if (variant === 'number') {
     return (
       <NumericInput
@@ -144,7 +146,7 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
             return;
           }
 
-          onChange({ simple: event.target.value } as T);
+          onChange({ simple: castValue(kind, event.target.value) } as T);
         }}
         InputProps={inputProps}
       />
@@ -166,9 +168,17 @@ export function ValueInput<T extends Value>(props: ValueInputProps<T>) {
           return;
         }
 
-        onChange({ simple: event.target.value } as T);
+        onChange({ simple: castValue(kind, event.target.value) } as T);
       }}
       InputProps={inputProps}
     />
   );
 }
+
+const castValue = (kind: warp_resolver.VariableKind, value: string) => {
+  if (kind === 'int') {
+    return Number(value);
+  }
+
+  return value;
+};
