@@ -5,7 +5,7 @@
   height: 100%
   overflow: auto
   display: grid
-  width: 820px !important
+  width: 100%
   grid-template-columns: 1fr 1fr
   grid-template-rows: repeat(3, min-content)
   row-gap: 24px !important
@@ -38,7 +38,11 @@
 
 .value_input
   grid-row: 2
-  grid-column: 1 / span 2
+  grid-column: 1
+
+.encode
+  grid-row: 2
+  grid-column: 2
 
 .onSuccess
   grid-row: 3

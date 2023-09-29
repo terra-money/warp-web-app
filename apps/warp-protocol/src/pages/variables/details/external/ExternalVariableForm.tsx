@@ -22,6 +22,7 @@ import { usePreviewExternalDialog } from './preview-dialog/PreviewExternalDialog
 import { QuerySelectorInput } from 'forms/QueryExprForm/QuerySelectorInput';
 import { generatePaths } from 'utils';
 import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
+import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 
 const httpMethods: warp_resolver.Method[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -59,6 +60,8 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
     method,
     onError,
     onSuccess,
+    encode,
+    reinitialize,
   } = formState;
 
   useEffect(() => {
@@ -79,8 +82,10 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
         kind,
         onSuccess,
         onError,
+        encode,
+        reinitialize,
       } as ExternalVariableInput),
-    [selectedVariable, name, kind, url, selector, body, method, onSuccess, onError]
+    [selectedVariable, name, kind, url, selector, body, method, onSuccess, onError, encode, reinitialize]
   );
 
   const { isLoading, data, isFetching, error } = useExternalQuery(url, method!, body!);
@@ -198,6 +203,21 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
           error={selectorError}
           options={paths}
         />
+        <ToggleInput
+          className={styles.encode}
+          label="Encode"
+          helpText="This determines whether a variable is base64 encoded when referenced in job messages, condition or other variables."
+          value={encode}
+          onChange={(value) => input({ encode: value })}
+        />
+        <ToggleInput
+          className={styles.reinitialize}
+          label="Reinitialize"
+          helpText="This determines whether a variable is reinitialized with a fresh value after recurring job execution."
+          value={reinitialize}
+          onChange={(value) => input({ reinitialize: value })}
+        />
+
         {['decimal', 'uint', 'int'].includes(kind) && (
           <>
             <UpdateFnValueInput

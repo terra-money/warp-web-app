@@ -12,6 +12,8 @@ export interface ExternalVariableInput {
   onError?: warp_resolver.UpdateFnValue;
   selector: string;
   url: string;
+  encode: boolean;
+  reinitialize: boolean;
 }
 
 export interface ExternalVariableState extends FormState<ExternalVariableInput> {
@@ -31,6 +33,8 @@ export const externalVariableToInput = (externalVariable?: warp_resolver.Externa
     url: externalVariable?.init_fn.url ?? '',
     onSuccess: externalVariable?.update_fn?.on_success ?? undefined,
     onError: externalVariable?.update_fn?.on_error ?? undefined,
+    encode: externalVariable?.encode ?? false,
+    reinitialize: externalVariable?.reinitialize ?? false,
   };
 };
 

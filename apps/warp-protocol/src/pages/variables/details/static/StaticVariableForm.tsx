@@ -17,6 +17,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableKindInput';
 import { VariableValueInput } from './variable-value-input/VariableValueInput';
 import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
+import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 
 export type StaticVariableFormProps = UIElementProps & {
   selectedVariable?: warp_resolver.StaticVariable;
@@ -38,7 +39,7 @@ const staticVariableKinds: warp_resolver.VariableKind[] = [
 export const StaticVariableForm = (props: StaticVariableFormProps) => {
   const { className, selectedVariable, renderActions } = props;
   const [input, formState] = useStaticVariableForm();
-  const { name, nameError, value, kind, submitDisabled, onSuccess, onError } = formState;
+  const { name, nameError, value, kind, submitDisabled, onSuccess, onError, encode } = formState;
 
   useEffect(() => {
     if (selectedVariable && selectedVariable.name !== name) {
@@ -55,8 +56,9 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
         kind,
         onSuccess,
         onError,
+        encode,
       } as StaticVariableInput),
-    [selectedVariable, name, value, kind, onSuccess, onError]
+    [selectedVariable, name, value, kind, onSuccess, onError, encode]
   );
 
   return (
@@ -101,6 +103,13 @@ export const StaticVariableForm = (props: StaticVariableFormProps) => {
           onChange={(v) => {
             input({ value: v });
           }}
+        />
+        <ToggleInput
+          className={styles.encode}
+          label="Encode"
+          helpText="This determines whether a variable is base64 encoded when referenced in job messages, condition or other variables."
+          value={encode}
+          onChange={(value) => input({ encode: value })}
         />
         {['decimal', 'uint', 'int'].includes(kind) && (
           <>
