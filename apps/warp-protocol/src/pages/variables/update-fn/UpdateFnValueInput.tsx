@@ -33,13 +33,13 @@ const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({ value, onChange
 
   return (
     <FormControl className={classNames(styles.root, className)} labelVariant="primary" label={label}>
-      <Container className={styles.update_fn} direction="row" onClick={handleEditClick}>
+      <Container className={styles.update_fn} direction="row">
         {value ? (
           <UpdateFnValue value={value} variables={variables} />
         ) : (
           <Text variant="label">Update function not defined.</Text>
         )}
-        <PencilIcon className={styles.edit} />
+        <PencilIcon className={styles.edit} onClick={handleEditClick} />
       </Container>
     </FormControl>
   );
