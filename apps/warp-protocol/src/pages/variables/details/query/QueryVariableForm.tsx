@@ -209,6 +209,7 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
               className={styles.onSuccess}
               label="On Success"
               value={onSuccess}
+              kind={kind}
               onChange={(v) => {
                 input({ onSuccess: v });
               }}
@@ -217,6 +218,7 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
               className={styles.onError}
               label="On Error"
               value={onError}
+              kind={kind}
               onChange={(v) => {
                 input({ onError: v });
               }}

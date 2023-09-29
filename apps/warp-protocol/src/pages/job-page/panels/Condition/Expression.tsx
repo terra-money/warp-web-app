@@ -1,7 +1,5 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { BlockHeightExpression } from './typed-expressions/BlockHeightExpression';
 import { StringExpression } from './typed-expressions/StringExpression';
-import { TimestampExpression } from './typed-expressions/TimestampExpression';
 import { BoolExpression } from './typed-expressions/BoolExpression';
 import { DecimalExpression } from './typed-expressions/DecimalExpression';
 import { IntExpression } from './typed-expressions/IntExpression';
@@ -19,14 +17,6 @@ export const Expression = (props: ExpressionProps) => {
 
   if ('string' in expression) {
     return <StringExpression className={className} expression={expression.string} job={job} />;
-  }
-
-  if ('block_height' in expression) {
-    return <BlockHeightExpression className={className} expression={expression.block_height} job={job} />;
-  }
-
-  if ('timestamp' in expression) {
-    return <TimestampExpression className={className} expression={expression.timestamp} job={job} />;
   }
 
   if ('bool' in expression) {

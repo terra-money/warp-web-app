@@ -2,7 +2,7 @@ import { useTx } from '@terra-money/apps/libs/transactions';
 import { u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { TX_KEY } from './txKey';
-import { containsAllReferencedVarsInCosmosMsg } from 'utils/msgs';
+import { containsAllReferencedVars, orderVarsByReferencing } from 'utils/msgs';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 import { warp_resolver } from '@terra-money/warp-sdk';
 
@@ -23,11 +23,13 @@ export const useCreateJobTx = () => {
     async (options) => {
       const { wallet, reward, name, msgs, condition, vars, description, recurring } = options;
 
-      if (!containsAllReferencedVarsInCosmosMsg(vars, msgs, condition)) {
+      if (!containsAllReferencedVars(vars, msgs, condition)) {
         throw Error(
           'Unexpected error occurred - unknown variable found in create job transaction payload. Refreshing the page and recreating the job should mitigate the issue.'
         );
       }
+
+      const orderedVars = orderVarsByReferencing(vars);
 
       return sdk.tx.createJob(wallet.walletAddress, {
         recurring,
@@ -36,7 +38,7 @@ export const useCreateJobTx = () => {
         labels: [],
         description,
         condition: JSON.stringify(condition),
-        vars: JSON.stringify(vars),
+        vars: JSON.stringify(orderedVars),
         reward: reward.toString(),
         msgs: JSON.stringify(msgs),
       });

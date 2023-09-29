@@ -7,17 +7,17 @@ import styles from './ConditionNode.module.sass';
 import { OperatorInput } from './operator-input/OperatorInput';
 import { ValueInput } from './value-input/ValueInput';
 
-type Expr = warp_resolver.GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp;
-type Value = warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+type Expr = warp_resolver.GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp;
+type Value = warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
 
-type IntExprNodeProps = UIElementProps & {
+type UIntExprNodeProps = UIElementProps & {
   expr: Expr;
   setExpr: (expr: Expr) => void;
 };
 
 const numOperators: warp_resolver.NumOp[] = ['eq', 'neq', 'gt', 'gte', 'lte', 'lt'];
 
-export const IntExprNode = forwardRef((props: IntExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
+export const UIntExprNode = forwardRef((props: UIntExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
   const { expr, setExpr } = props;
 
   const [op, setOp] = useState<warp_resolver.NumOp>(expr.op);
@@ -30,7 +30,7 @@ export const IntExprNode = forwardRef((props: IntExprNodeProps, ref: React.Ref<H
     }
   }, [op, left, right, setExpr, expr]);
 
-  const Left = <ValueInput kind="int" value={left} onChange={(v) => setLeft(v)} />;
+  const Left = <ValueInput kind="uint" value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
     <OperatorInput<warp_resolver.NumOp>
@@ -42,7 +42,7 @@ export const IntExprNode = forwardRef((props: IntExprNodeProps, ref: React.Ref<H
     />
   );
 
-  const Right = <ValueInput kind="int" value={right} onChange={(v) => setRight(v)} />;
+  const Right = <ValueInput kind="uint" value={right} onChange={(v) => setRight(v)} />;
 
   return (
     <>

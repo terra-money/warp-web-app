@@ -1,7 +1,7 @@
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import styles from './ConditionForm.module.sass';
 import { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { Form } from 'components/form/Form';
 import { ConditionBuilder } from '../condition-builder/ConditionBuilder';
@@ -117,40 +117,25 @@ export const filterEmptyCond = (input: warp_resolver.Condition) => {
 
 const filterExpr = (expr: warp_resolver.Expr) => {
   if ('string' in expr) {
-    if (
-      (validSimple(expr.string.left) || validRef(expr.string.left)) &&
-      (validSimple(expr.string.right) || validRef(expr.string.right))
-    ) {
+    if (validValue(expr.string.left) && validValue(expr.string.right)) {
       return expr;
     }
   }
 
   if ('uint' in expr) {
-    if (
-      (validSimple(expr.uint.left) || validRef(expr.uint.left)) &&
-      (validSimple(expr.uint.right) || validRef(expr.uint.right))
-    ) {
+    if (validValue(expr.uint.left) && validValue(expr.uint.right)) {
+      return expr;
+    }
+  }
+
+  if ('int' in expr) {
+    if (validValue(expr.int.left) && validValue(expr.int.right)) {
       return expr;
     }
   }
 
   if ('decimal' in expr) {
-    if (
-      (validSimple(expr.decimal.left) || validRef(expr.decimal.left)) &&
-      (validSimple(expr.decimal.right) || validRef(expr.decimal.right))
-    ) {
-      return expr;
-    }
-  }
-
-  if ('timestamp' in expr) {
-    if (validTime(expr.timestamp)) {
-      return expr;
-    }
-  }
-
-  if ('block_height' in expr) {
-    if (validTime(expr.block_height)) {
+    if (validValue(expr.decimal.left) && validValue(expr.decimal.right)) {
       return expr;
     }
   }
@@ -165,22 +150,29 @@ const filterExpr = (expr: warp_resolver.Expr) => {
   return undefined;
 };
 
-const validSimple = (
+const validValue = (
   value:
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
     | warp_resolver.ValueFor_String
+    | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
-  if ('simple' in value) {
-    return !isEmpty(value.simple);
+  if (validSimple(value) || validRef(value) || validEnv(value)) {
+    return true;
   }
 
   return false;
 };
 
-const validTime = (value: warp_resolver.TimeExpr | warp_resolver.BlockExpr) => {
-  if (!isEmpty(value.comparator) && Number(value.comparator) > 0) {
-    return true;
+const validSimple = (
+  value:
+    | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+    | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+    | warp_resolver.ValueFor_String
+    | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
+) => {
+  if ('simple' in value) {
+    return !isEmpty(value.simple) || isNumber(value.simple);
   }
 
   return false;
@@ -191,9 +183,24 @@ const validRef = (
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
     | warp_resolver.ValueFor_String
+    | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
   if ('ref' in value) {
     return !isEmpty(value.ref);
+  }
+
+  return false;
+};
+
+const validEnv = (
+  value:
+    | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
+    | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
+    | warp_resolver.ValueFor_String
+    | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
+) => {
+  if ('env' in value) {
+    return !isEmpty(value.env);
   }
 
   return false;

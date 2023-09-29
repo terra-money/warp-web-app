@@ -21,13 +21,12 @@ type NumExprNodeProps = UIElementProps & {
   expr: Expr;
   kind: warp_resolver.VariableKind;
   setExpr: (expr: Expr) => void;
-  variant: 'number' | 'text';
 };
 
 const numOperators: warp_resolver.NumExprOp[] = ['add', 'sub', 'div', 'mul', 'mod'];
 
 export const NumExprNode = forwardRef((props: NumExprNodeProps, ref: React.Ref<HTMLDivElement>) => {
-  const { expr, setExpr, variant, kind } = props;
+  const { expr, setExpr, kind } = props;
 
   const [op, setOp] = useState<warp_resolver.NumExprOp>(expr.op);
   const [left, setLeft] = useState<Value>(expr.left);
@@ -39,7 +38,7 @@ export const NumExprNode = forwardRef((props: NumExprNodeProps, ref: React.Ref<H
     }
   }, [op, left, right, setExpr, expr]);
 
-  const Left = <ValueInput<any> kind={kind} variant={variant} value={left} onChange={(v) => setLeft(v)} />;
+  const Left = <ValueInput kind={kind} value={left} onChange={(v) => setLeft(v)} />;
 
   const Op = (
     <OperatorInput<warp_resolver.NumExprOp>
@@ -51,7 +50,7 @@ export const NumExprNode = forwardRef((props: NumExprNodeProps, ref: React.Ref<H
     />
   );
 
-  const Right = <ValueInput<any> kind={kind} variant={variant} value={right} onChange={(v) => setRight(v)} />;
+  const Right = <ValueInput kind={kind} value={right} onChange={(v) => setRight(v)} />;
 
   return (
     <>

@@ -10,13 +10,12 @@ import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
 import { decodeMsg, useJobStorage } from './useJobStorage';
-import { hydrateQueryVariablesWithStatics } from 'utils/variable';
 import { VariableDrawer } from './variable-drawer/VariableDrawer';
 import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
-import { filterUnreferencedVariablesInCosmosMsg } from 'utils/msgs';
+import { filterUnreferencedVariables } from 'utils/msgs';
 import { useNativeToken } from 'hooks/useNativeToken';
 
 type JobNewProps = UIElementProps & {};
@@ -76,8 +75,7 @@ export const JobNew = (props: JobNewProps) => {
                               const { condition } = template;
 
                               const msgs = parseMsgs(message);
-                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, condition!);
-                              const vars = hydrateQueryVariablesWithStatics(referenced);
+                              const vars = filterUnreferencedVariables(variables, msgs, condition!);
 
                               const resp = await createJobTx({
                                 name,
@@ -113,9 +111,7 @@ export const JobNew = (props: JobNewProps) => {
 
                               const msgs = parseMsgs(message);
 
-                              const referenced = filterUnreferencedVariablesInCosmosMsg(variables, msgs, cond);
-
-                              const vars = hydrateQueryVariablesWithStatics(referenced);
+                              const vars = filterUnreferencedVariables(variables, msgs, cond);
 
                               const resp = await createJobTx({
                                 name,

@@ -13,18 +13,25 @@ import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
 
 interface UpdateFnValueInputProps {
   value?: warp_resolver.UpdateFnValue;
+  kind: warp_resolver.VariableKind;
   onChange: (value: warp_resolver.UpdateFnValue) => void;
   label?: string;
   className?: string;
 }
 
-const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({ value, onChange, label = 'Update fn', className }) => {
+const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({
+  value,
+  onChange,
+  label = 'Update fn',
+  className,
+  kind,
+}) => {
   const openUpdateFnDialog = useUpdateFnDialog();
 
   const { variables } = useCachedVariables();
 
   const handleEditClick = async () => {
-    const updatedValue = await openUpdateFnDialog({ updateFn: value });
+    const updatedValue = await openUpdateFnDialog({ updateFn: value, kind });
 
     if (updatedValue) {
       onChange(updatedValue);
@@ -33,13 +40,13 @@ const UpdateFnValueInput: React.FC<UpdateFnValueInputProps> = ({ value, onChange
 
   return (
     <FormControl className={classNames(styles.root, className)} labelVariant="primary" label={label}>
-      <Container className={styles.update_fn} direction="row" onClick={handleEditClick}>
+      <Container className={styles.update_fn} direction="row">
         {value ? (
           <UpdateFnValue value={value} variables={variables} />
         ) : (
           <Text variant="label">Update function not defined.</Text>
         )}
-        <PencilIcon className={styles.edit} />
+        <PencilIcon className={styles.edit} onClick={handleEditClick} />
       </Container>
     </FormControl>
   );

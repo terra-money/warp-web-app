@@ -8,12 +8,13 @@ import { useRef } from 'react';
 import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type UpdateFnNodeProps = UIElementProps & {
+  kind: warp_resolver.VariableKind;
   updateFn?: warp_resolver.UpdateFnValue;
   setUpdateFn: (updateFn: warp_resolver.UpdateFnValue) => void;
 };
 
 export const UpdateFnNode = (props: UpdateFnNodeProps) => {
-  const { updateFn, setUpdateFn } = props;
+  const { updateFn, setUpdateFn, kind } = props;
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -22,7 +23,7 @@ export const UpdateFnNode = (props: UpdateFnNodeProps) => {
       {!isEmpty(updateFn) ? (
         <ConcreteNode updateFn={updateFn} setUpdateFn={setUpdateFn} />
       ) : (
-        <EmptyNode setUpdateFn={setUpdateFn} />
+        <EmptyNode setUpdateFn={setUpdateFn} kind={kind} />
       )}
     </div>
   );

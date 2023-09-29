@@ -223,6 +223,7 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
             <UpdateFnValueInput
               className={styles.onSuccess}
               label="On Success"
+              kind={kind}
               value={onSuccess}
               onChange={(v) => {
                 input({ onSuccess: v });
@@ -231,6 +232,7 @@ export const ExternalVariableForm = (props: ExternalVariableFormProps) => {
             <UpdateFnValueInput
               className={styles.onError}
               label="On Error"
+              kind={kind}
               value={onError}
               onChange={(v) => {
                 input({ onError: v });
