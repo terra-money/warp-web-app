@@ -25,7 +25,19 @@ export const ExternalVariableDialog = (
           className={styles.form}
           selectedVariable={variable}
           renderActions={(state) => {
-            const { submitDisabled, name, url, selector, kind, body, method, onError, onSuccess } = state;
+            const {
+              submitDisabled,
+              name,
+              url,
+              selector,
+              kind,
+              body,
+              method,
+              onError,
+              onSuccess,
+              encode,
+              reinitialize,
+            } = state;
 
             return (
               <DialogFooter className={styles.footer}>
@@ -36,7 +48,7 @@ export const ExternalVariableDialog = (
                     if (!submitDisabled) {
                       closeDialog({
                         name,
-                        reinitialize: false,
+                        reinitialize,
                         init_fn: {
                           url,
                           selector,
@@ -48,7 +60,7 @@ export const ExternalVariableDialog = (
                           on_error: onError,
                         },
                         kind,
-                        encode: false,
+                        encode,
                       });
                     }
                   }}

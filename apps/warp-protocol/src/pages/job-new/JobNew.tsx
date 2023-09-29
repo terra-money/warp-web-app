@@ -71,6 +71,7 @@ export const JobNew = (props: JobNewProps) => {
                                 message,
                                 description,
                                 variables,
+                                recurring,
                               } = props;
                               const { condition } = template;
 
@@ -82,6 +83,7 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
+                                recurring,
                                 reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: condition!,
@@ -107,7 +109,7 @@ export const JobNew = (props: JobNewProps) => {
                           onNext={async (props) => {
                             if (detailsInput) {
                               const { cond, variables } = props;
-                              const { name, reward, message, description } = detailsInput;
+                              const { name, reward, message, description, recurring } = detailsInput;
 
                               const msgs = parseMsgs(message);
 
@@ -121,6 +123,7 @@ export const JobNew = (props: JobNewProps) => {
                                 description,
                                 reward: microfy(reward, nativeToken.decimals),
                                 msgs,
+                                recurring,
                                 condition: cond,
                               });
 

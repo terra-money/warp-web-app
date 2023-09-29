@@ -18,6 +18,7 @@ import { VariableKindInput } from 'pages/variables/variable-kind-input/VariableK
 import { generatePaths } from 'utils';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 import { UpdateFnValueInput } from 'pages/variables/update-fn/UpdateFnValueInput';
+import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 
 export type QueryVariableFormProps = UIElementProps & {
   selectedVariable?: warp_resolver.QueryVariable;
@@ -67,6 +68,8 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
     kind,
     onSuccess,
     onError,
+    encode,
+    reinitialize,
   } = formState;
 
   const queryJsonToValidate = useValueWithDelay(queryJson);
@@ -121,8 +124,10 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
         kind,
         onSuccess,
         onError,
+        encode,
+        reinitialize,
       } as QueryVariableInput),
-    [selectedVariable, name, kind, querySelector, queryJson, onSuccess, onError]
+    [selectedVariable, name, kind, querySelector, queryJson, onSuccess, onError, encode, reinitialize]
   );
 
   return (
@@ -183,6 +188,20 @@ export const QueryVariableForm = (props: QueryVariableFormProps) => {
           value={querySelector}
           error={querySelectorError}
           options={paths}
+        />
+        <ToggleInput
+          className={styles.encode}
+          label="Encode"
+          helpText="This determines whether a variable is base64 encoded when referenced in job messages, condition or other variables."
+          value={encode}
+          onChange={(value) => input({ encode: value })}
+        />
+        <ToggleInput
+          className={styles.reinitialize}
+          label="Reinitialize"
+          helpText="This determines whether a variable is reinitialized with a fresh value after recurring job execution."
+          value={reinitialize}
+          onChange={(value) => input({ reinitialize: value })}
         />
         {['decimal', 'uint', 'int'].includes(kind) && (
           <>

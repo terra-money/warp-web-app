@@ -8,6 +8,7 @@ export interface StaticVariableInput {
   value: string;
   onSuccess?: warp_resolver.UpdateFnValue;
   onError?: warp_resolver.UpdateFnValue;
+  encode: boolean;
 }
 
 export interface StaticVariableState extends FormState<StaticVariableInput> {
@@ -23,6 +24,7 @@ export const staticVariableToInput = (variable?: warp_resolver.StaticVariable): 
     value: variable?.value ?? '',
     onSuccess: variable?.update_fn?.on_success ?? undefined,
     onError: variable?.update_fn?.on_error ?? undefined,
+    encode: variable?.encode ?? false,
   };
 };
 

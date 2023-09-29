@@ -35,7 +35,7 @@ export const MobileBottomBar = (props: MobileBottomBarProps) => {
       </Container>
       <div className={styles.divider} />
       <Container direction="row" className={styles.bottom}>
-        <Text variant="text">2022 warp protocol. All rights reserved.</Text>
+        <Text variant="text">2023 warp protocol. All rights reserved.</Text>
       </Container>
     </div>
   );

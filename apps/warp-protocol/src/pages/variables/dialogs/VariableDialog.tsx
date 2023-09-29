@@ -29,6 +29,25 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_reso
           variant="secondary"
           className={styles.btn}
           onClick={async () => {
+            const v = await openStaticVariableDialog({});
+            if (v) {
+              closeDialog({ static: v });
+            }
+          }}
+        >
+          <Container direction="column" className={styles.txt_container}>
+            <Text className={styles.text} variant="text">
+              Static
+            </Text>
+            <Text className={styles.label} variant="label">
+              Hardcoded information provided by user.
+            </Text>
+          </Container>
+        </Button>
+        <Button
+          variant="secondary"
+          className={styles.btn}
+          onClick={async () => {
             const v = await openQueryVariableDialog({});
             if (v) {
               closeDialog({ query: v });
@@ -60,25 +79,6 @@ export const VariableDialog = (props: DialogProps<VariableDialogProps, warp_reso
             </Text>
             <Text className={styles.label} variant="label">
               Fetch data from a HTTP endpoint. Executed off-chain, via keepers.
-            </Text>
-          </Container>
-        </Button>
-        <Button
-          variant="secondary"
-          className={styles.btn}
-          onClick={async () => {
-            const v = await openStaticVariableDialog({});
-            if (v) {
-              closeDialog({ static: v });
-            }
-          }}
-        >
-          <Container direction="column" className={styles.txt_container}>
-            <Text className={styles.text} variant="text">
-              Static
-            </Text>
-            <Text className={styles.label} variant="label">
-              Hardcoded information provided by user.
             </Text>
           </Container>
         </Button>

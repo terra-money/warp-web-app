@@ -33,6 +33,7 @@ export const useJobStorage = () => {
         name: job.info.name,
         description: job.info.description,
         message: JSON.stringify(job.info.msgs, null, 2),
+        recurring: job.info.recurring,
       };
 
       setDetailsInput(details);
@@ -50,6 +51,7 @@ export const useJobStorage = () => {
         name: '',
         message: JSON.stringify(template.msg, null, 2),
         template,
+        recurring: false,
       };
 
       setDetailsInput(details);

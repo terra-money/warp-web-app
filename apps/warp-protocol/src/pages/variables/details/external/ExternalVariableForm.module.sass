@@ -6,7 +6,7 @@
   overflow: auto
   display: grid
   width: 100%
-  grid-template-columns: 1fr 1fr
+  grid-template-columns: 1fr 1fr 1fr 1fr
   grid-template-rows: repeat(4, min-content)
   row-gap: 24px !important
   column-gap: 24px !important
@@ -39,35 +39,43 @@
 
 .name_input
   grid-row: 1
-  grid-column: 1
+  grid-column: 1 / span 2
 
 .kind_input
   grid-row: 1
-  grid-column: 2
+  grid-column: 3 / span 2
 
 .url_input
   grid-row: 2
-  grid-column: 1
+  grid-column: 1 / span 2
 
 .method_input
   grid-row: 2
-  grid-column: 2
+  grid-column: 3 / span 2
 
 .body_input
-  grid-row: 3
-  grid-column: 1
+  grid-row: 3 / span 2
+  grid-column: 1 / span 2
 
 .selector_input
   grid-row: 3
-  grid-column: 2
+  grid-column: 3 / span 2
+
+.encode
+  grid-row: 4
+  grid-column: 3
+
+.reinitialize
+  grid-row: 4
+  grid-column: 4
 
 .onSuccess
-  grid-row: 4
-  grid-column: 1
+  grid-row: 5
+  grid-column: 1 / span 2
 
 .onError
-  grid-row: 4
-  grid-column: 2
+  grid-row: 5
+  grid-column: 3 / span 2
 
 .title_container
   position: relative

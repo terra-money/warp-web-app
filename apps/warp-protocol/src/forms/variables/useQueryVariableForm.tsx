@@ -9,6 +9,8 @@ export interface QueryVariableInput {
   querySelector: string;
   onSuccess?: warp_resolver.UpdateFnValue;
   onError?: warp_resolver.UpdateFnValue;
+  encode: boolean;
+  reinitialize: boolean;
 }
 
 export interface QueryVariableState extends FormState<QueryVariableInput> {
@@ -27,6 +29,8 @@ export const queryVariableToInput = (queryVariable?: warp_resolver.QueryVariable
     querySelector: queryVariable?.init_fn.selector ?? '',
     onSuccess: queryVariable?.update_fn?.on_success ?? undefined,
     onError: queryVariable?.update_fn?.on_error ?? undefined,
+    encode: queryVariable?.encode ?? false,
+    reinitialize: queryVariable?.reinitialize ?? false,
   };
 };
 
