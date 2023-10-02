@@ -3,46 +3,62 @@ import classNames from 'classnames';
 import { UIElementProps } from '@terra-money/apps/components';
 import React, { forwardRef, useState } from 'react';
 import styles from './MobileFeatures.module.sass';
+import { Link } from '../../../link';
 
 type Feature = {
   id: number;
   imageUrl: string;
   heading: string;
   description: string;
-  footer: string;
+  footer: string | JSX.Element;
 };
 
 const features: Feature[] = [
   {
     id: 0,
-    imageUrl: 'images/DashboardSlide.png',
-    heading: 'Asynchronous',
-    description: 'On-chain programming',
+    imageUrl: 'images/QuerySlide.png',
+    heading: 'Generic',
+    description: 'Logic composition',
     footer:
-      'Bringing the async keyword to the world of smart contracts. Execute whatever, whenever.',
+      'Define logic using executable payloads, contract queries, and custom messages to create attractive, automated platform features and experiences.',
   },
   {
     id: 1,
-    imageUrl: 'images/QuerySlide.png',
-    heading: 'Generic way of',
-    description: 'Composing logic',
+    imageUrl: 'images/ConditionSlide.png',
+    heading: 'Define execution with',
+    description: 'Custom conditions',
     footer:
-      'Define logic as you would in a programming language by supplying executable payloads. Arbitrary messages and contract queries.',
+      'Create jobs based on any available on-chain data using boolean logic and math operators. No smart contract changes necessary.',
   },
   {
     id: 2,
-    imageUrl: 'images/ConditionSlide.png',
-    heading: 'Define execution with',
-    description: 'Arbitrary condition',
-    footer: 'Complete boolean logic support.',
+    imageUrl: 'images/DashboardSlide.png',
+    heading: 'Create customizable',
+    description: 'Recurring jobs',
+    footer:
+      'Compose jobs made up of multiple transactions organized in an atomic list-form. These can be simple in nature, such as sending a transaction, or complex and recursive, whereby a job message is made up of multiple transactions.',
   },
   {
-    id: 4,
+    id: 3,
     imageUrl: 'images/SdkSlide2.png',
-    heading: 'For builders',
-    description: 'Warp SDK',
-    footer:
-      'Build entire keeper bots and interact with warp contracts with ease.',
+    heading: 'Start building with',
+    description: 'Seamless integration',
+    footer: (
+      <>
+        <span>
+          Using Warp's advanced SDK, developers can experiment and seamlessly
+          integrate Warp functionality right into their front or backend in just
+          a few minutes.
+        </span>
+        <Link
+          onClick={() => {
+            window.open('https://github.com/terra-money/warp-sdk');
+          }}
+        >
+          Warp SDK
+        </Link>
+      </>
+    ),
   },
 ];
 

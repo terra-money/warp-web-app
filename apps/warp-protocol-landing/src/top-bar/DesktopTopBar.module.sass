@@ -4,7 +4,18 @@
   padding: 32px 64px
 
 .btn_gray
+  min-width: 0
+  padding: 0
   color: rgba(223, 226, 225, 0.4) !important
+
+  &:not(&:last-child)
+    margin-right: 20px !important
+
+  &:not(&:first-child)
+    margin-left: 20px !important
+
+.menu
+  width: 120px
 
 .left
   margin-right: auto
