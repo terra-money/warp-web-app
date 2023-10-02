@@ -53,6 +53,8 @@ export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
     return (
       <DesktopTopBar
         ref={ref}
+        onTelegramClick={onTelegramClick}
+        onDiscordClick={onDiscordClick}
         onHomeClick={onHomeClick}
         onDocsClick={onDocsClick}
         onFeaturesClick={onFeaturesClick}
