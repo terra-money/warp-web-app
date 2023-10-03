@@ -79,7 +79,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
               const msgs = parseMsgs(msg);
               const res = await createTemplateTx({
                 formatted_str: formattedStr,
-                msg,
+                msgs,
                 condition,
                 vars: extractUsedVariables(formattedStr, msgs, vars, condition),
                 name,
