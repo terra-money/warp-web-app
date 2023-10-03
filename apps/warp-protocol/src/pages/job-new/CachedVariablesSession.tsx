@@ -8,13 +8,14 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 
 interface CachedVariablesSessionProps {
   children: ReactNode;
+  persist?: boolean;
   input?: warp_resolver.Variable[];
 }
 
 export const CachedVariablesSession = (props: CachedVariablesSessionProps) => {
-  const { children, input } = props;
+  const { children, input, persist } = props;
 
-  const { variables: storageVars } = useVariableStorage();
+  const { variables: storageVars, saveAll } = useVariableStorage();
   const { setVariables: setCachedVariables, variables: cachedVariables, clearAll } = useCachedVariables();
 
   const refreshingPageRef = useRef<boolean>(false);
@@ -42,6 +43,12 @@ export const CachedVariablesSession = (props: CachedVariablesSessionProps) => {
     setCachedVariables(newVars);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
+
+  useEffect(() => {
+    if (persist) {
+      saveAll(cachedVariables);
+    }
+  }, [cachedVariables, persist, saveAll]);
 
   return <>{children}</>;
 };
