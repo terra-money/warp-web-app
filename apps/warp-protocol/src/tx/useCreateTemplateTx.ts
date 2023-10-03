@@ -1,23 +1,29 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 import { TX_KEY } from './txKey';
-import { warp_templates } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 
-export type CreateTemplateTxProps = warp_templates.SubmitTemplateMsg;
+export type CreateTemplateTxProps = {
+  condition?: warp_resolver.Condition | null;
+  formatted_str: string;
+  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  name: string;
+  vars: warp_resolver.Variable[];
+};
 
 export const useCreateTemplateTx = () => {
   const sdk = useWarpSdk();
 
   return useTx<CreateTemplateTxProps>(
     async (options) => {
-      const { wallet, formatted_str, vars, name, msg, condition } = options;
+      const { wallet, formatted_str, vars, name, msgs, condition } = options;
 
       return sdk.tx.submitTemplate(wallet.walletAddress, {
         formatted_str,
         condition,
         vars,
         name,
-        msg,
+        msg: JSON.stringify(msgs),
       });
     },
     {

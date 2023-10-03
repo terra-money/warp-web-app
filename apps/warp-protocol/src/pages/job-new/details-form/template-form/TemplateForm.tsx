@@ -7,24 +7,32 @@ import { TemplatesInput } from '../templates-input/TemplatesInput';
 import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
 import { findVariablePath, templateVariables } from 'utils/variable';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
+import { decodeMsgs, encodeMsg, parseMsgs } from 'pages/job-new/JobNew';
 
 const composeMsgFromTemplate = (template: warp_templates.Template): string => {
   const vars = templateVariables(template);
-  let json = JSON.parse(template.msg);
 
-  vars.forEach((v) => {
-    try {
-      const path = findVariablePath(json, v.name);
+  let msgs = decodeMsgs(parseMsgs(template.msg));
 
-      if (path) {
-        jsonpath.value(json, path, v.value);
+  msgs = msgs.map((msg) => {
+    let json = JSON.stringify(msg);
+
+    vars.forEach((v) => {
+      try {
+        const path = findVariablePath(json, v.name);
+
+        if (path) {
+          jsonpath.value(json, path, v.value);
+        }
+      } catch (err) {
+        // consume the error
       }
-    } catch (err) {
-      // consume the error
-    }
+    });
+
+    return encodeMsg(parseMsgs(json)[0]);
   });
 
-  return JSON.stringify(json, null, 2);
+  return JSON.stringify(msgs, null, 2);
 };
 
 type TemplateFormProps = {

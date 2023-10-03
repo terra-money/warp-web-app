@@ -163,7 +163,7 @@ export const parseMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => 
   return msgs;
 };
 
-const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolver.CosmosMsgFor_Empty => {
+export const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolver.CosmosMsgFor_Empty => {
   if (!('wasm' in input)) {
     return input;
   }
