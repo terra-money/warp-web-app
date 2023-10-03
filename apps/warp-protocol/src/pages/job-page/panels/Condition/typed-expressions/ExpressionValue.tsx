@@ -27,5 +27,9 @@ export const ExpressionValue = (props: ExpressionValueProps) => {
     left = <VariableValue variables={job.vars} variableRef={value.ref} />;
   }
 
+  if ('env' in value) {
+    left = <>{value.env}</>;
+  }
+
   return left;
 };

@@ -74,7 +74,7 @@ export const Variables = (props: UIElementProps) => {
   return (
     <IfConnected
       then={
-        <CachedVariablesSession>
+        <CachedVariablesSession persist={true}>
           <Container direction="column" className={styles.root}>
             <VariablesContent />
           </Container>
