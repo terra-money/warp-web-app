@@ -32,7 +32,7 @@ export const NEUTRON: NativeToken = {
   name: 'Neutron',
   symbol: 'NTRN',
   decimals: 6,
-  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+  icon: 'https://assets.terra.dev/icon/svg/ibc/NTRN.svg',
   coinGeckoId: 'neutron',
 };
 
@@ -54,7 +54,7 @@ export const INJ: NativeToken = {
   name: 'Injective',
   symbol: 'INJ',
   decimals: 18,
-  icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+  icon: 'https://assets.terra.dev/icon/svg/ibc/INJ.svg',
   coinGeckoId: 'injective-protocol',
 };
 
