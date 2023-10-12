@@ -22,6 +22,23 @@ export const useIBCTokensQuery = (): UseQueryResult<IBCTokensResponse> => {
   return useQuery(
     [QUERY_KEY.IBC_TOKENS, wallet.chainId],
     () => {
+      if (wallet.chain.name === 'neutron') {
+        return {
+          'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9': {
+            path: 'transfer/channel-0',
+            base_denom: 'uatom',
+            key: 'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9',
+            type: 'ibc',
+            denom: 'ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9',
+            name: 'Cosmos',
+            symbol: 'ATOM',
+            decimals: 6,
+            icon: 'https://assets.terra.dev/icon/svg/ibc/ATOM.svg',
+            coinGeckoId: 'cosmos',
+          },
+        } as IBCTokensResponse;
+      }
+
       if (wallet.chain.name !== 'terra') {
         return {};
       }
