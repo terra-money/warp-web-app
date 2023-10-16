@@ -52,6 +52,7 @@ const features: Feature[] = [
           a few minutes.
         </span>
         <Link
+          className={styles.sdk_link}
           onClick={() => {
             window.open('https://github.com/terra-money/warp-sdk');
           }}
