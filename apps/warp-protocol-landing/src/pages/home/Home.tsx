@@ -44,9 +44,9 @@ const Home = (props: HomeProps) => {
         onWebAppClick={onWebAppClick}
         className={styles.top_content}
       />
-      <FeaturesContent ref={featuresRef} className={styles.features_content} />
       <CardContent />
       <AnimatedDisplay className={styles.animated_display} />
+      <FeaturesContent ref={featuresRef} className={styles.features_content} />
     </div>
   );
 };
