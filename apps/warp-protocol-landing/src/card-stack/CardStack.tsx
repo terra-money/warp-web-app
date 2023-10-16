@@ -22,7 +22,7 @@ const CardStack: React.FC<CardStackProps> = (props) => {
     },
     {
       ellipseText: 'Pending',
-      viewers: '50000',
+      viewers: '598832',
       jobName: 'LionDAO distribute rewards',
       jobStatus: 'Waiting on condition...',
       rewardValue: '15 Luna',
@@ -30,7 +30,7 @@ const CardStack: React.FC<CardStackProps> = (props) => {
     },
     {
       ellipseText: 'Pending',
-      viewers: '200000',
+      viewers: '202301',
       jobName: 'Eris harvest',
       jobStatus: 'Waiting on condition...',
       rewardValue: '25 Luna',
@@ -38,7 +38,7 @@ const CardStack: React.FC<CardStackProps> = (props) => {
     },
     {
       ellipseText: 'Pending',
-      viewers: '1000',
+      viewers: '101221',
       jobName: 'PixeLions distribute rewards',
       jobStatus: 'Waiting on condition...',
       rewardValue: '10 Luna',
@@ -46,7 +46,7 @@ const CardStack: React.FC<CardStackProps> = (props) => {
     },
     {
       ellipseText: 'Pending',
-      viewers: '500000',
+      viewers: '18979',
       jobName: 'Luna burn',
       jobStatus: 'Waiting on condition...',
       rewardValue: '30 Luna',

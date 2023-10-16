@@ -50,7 +50,6 @@ const Frame: React.FC<FrameProps> = ({
   jobName,
   jobStatus,
   rewardValue,
-  latestBidValue,
   isExecuted,
 }) => (
   <div className={styles.frame}>
@@ -81,7 +80,6 @@ const Frame: React.FC<FrameProps> = ({
     </div>
     <div className={styles.flexRow}>
       <TextRow label="Reward:" value={rewardValue} />
-      <TextRow label="Latest bid:" value={latestBidValue} />
     </div>
   </div>
 );
