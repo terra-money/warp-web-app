@@ -1,15 +1,22 @@
 .root
   display: flex
   justify-content: center
-  align-items: center
+  align-items: flex-start
   flex-direction: column
   color: #DFE2E1
+  position: relative
+
+.left
+  margin-left: 220px
+  display: flex
+  flex-direction: column
+  align-items: flex-start
 
 .title
   width: 600px
   display: flex
   font-weight: 600
-  text-align: center
+  text-align: left
   font-size: 48px
   line-height: 64px
 
@@ -18,7 +25,7 @@
   font-weight: 400
   font-size: 16px !important
   line-height: 24px
-  text-align: center
+  text-align: left
   width: 540px
 
 .buttons
@@ -30,8 +37,41 @@
   > *
     margin-right: 16px
 
+.big_background
+  top: -400px
+  opacity: 0.6
+  position: absolute
+  z-index: -1
+  height: 800px
+  right: -200px
 
-@media (max-width: 768px) 
+.frames
+  margin: auto
+  width: 1400px
+  position: relative
+  margin-top: 200px
+  display: flex
+  align-items: center
+  justify-content: center
+
+.frame1
+  z-index: 1
+  height: 400px
+  width: 532px
+  margin-right: auto
+
+.frame2
+  z-index: 1
+  height: 400px
+  width: 532px
+
+.frame3
+  position: absolute
+  z-index: 2
+  height: 500px
+  width: 665px
+
+@media (max-width: 768px)
   .title
     width: 100%
     font-size: 32px !important
@@ -39,4 +79,3 @@
 
   .description
     width: 100%
-  

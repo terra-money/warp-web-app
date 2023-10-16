@@ -5,6 +5,7 @@ import { Button } from '../button/Button';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
 import { DropdownMenu } from 'dropdown-menu/DropdownMenu';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { MenuAction } from 'menu-button/MenuAction';
 
 type DesktopTopBarProps = UIElementProps & {
@@ -66,9 +67,16 @@ export const DesktopTopBar = forwardRef<
           className={styles.btn_gray}
           action={
             <Button
-              className={classNames(styles.button, styles.btn_gray)}
+              className={classNames(
+                styles.button,
+                styles.btn_gray,
+                styles.btn_white
+              )}
               variant="primary"
               fill="none"
+              iconGap='small'
+              iconAlignment='end'
+              icon={<KeyboardArrowDownIcon className={styles.chevron} />}
             >
               Community
             </Button>

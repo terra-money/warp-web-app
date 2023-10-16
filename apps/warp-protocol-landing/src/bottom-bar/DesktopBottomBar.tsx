@@ -1,7 +1,6 @@
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { ReactComponent as TwitterIcon } from '../assets/Twitter.svg';
 import { ReactComponent as TelegramIcon } from '../assets/Telegram.svg';
-import { ReactComponent as WarpTokenIcon } from '../assets/WarpToken.svg';
 import { ReactComponent as DiscordIcon } from '../assets/Discord.svg';
 
 import styles from './DesktopBottomBar.module.sass';
@@ -41,7 +40,7 @@ export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
       <div className={styles.divider} />
       <div className={classNames(styles.root, className)}>
         <Container direction="row" className={styles.left}>
-          <WarpTokenIcon className={styles.logo} />
+          <div className={styles.logo}>warp.</div>
           <Button
             className={classNames(styles.button, styles.btn_gray)}
             variant="primary"

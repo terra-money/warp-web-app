@@ -38,7 +38,7 @@ const Home = (props: HomeProps) => {
   const { onDocsClick, onWebAppClick, featuresRef } = props;
 
   return (
-    <div className={styles.middle}>
+    <div>
       <TopContent
         onDocsClick={onDocsClick}
         onWebAppClick={onWebAppClick}
