@@ -1,7 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
 import styles from './Frame.module.sass';
-import classNames from 'classnames';
 import { format } from 'date-fns';
 import { ReactComponent as CheckIcon } from '../assets/Check.svg';
 

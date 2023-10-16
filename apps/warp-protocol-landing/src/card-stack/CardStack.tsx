@@ -66,7 +66,7 @@ const CardStack: React.FC<CardStackProps> = (props) => {
         setIsInExecutionPhase(true);
         setExecutedCardIndex(currentCardIndex);
       }
-    }, 1000); // Adjust time as needed
+    }, 800); // Adjust time as needed
 
     return () => clearInterval(timer);
   }, [cards.length, isInExecutionPhase, currentCardIndex]);
