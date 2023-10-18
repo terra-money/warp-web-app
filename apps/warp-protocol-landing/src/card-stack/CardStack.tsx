@@ -94,10 +94,11 @@ const CardStack: React.FC<CardStackProps> = (props) => {
         </CSSTransition>
       </TransitionGroup>
       {/* Thirdmost card */}
-      <div
-        className={`${styles.card} ${styles['card-third']}`}
-      >
-        <Frame {...cards[(currentCardIndex + 2) % cards.length]} isExecuted={false} />
+      <div className={`${styles.card} ${styles['card-third']}`}>
+        <Frame
+          {...cards[(currentCardIndex + 2) % cards.length]}
+          isExecuted={false}
+        />
       </div>
     </div>
   );

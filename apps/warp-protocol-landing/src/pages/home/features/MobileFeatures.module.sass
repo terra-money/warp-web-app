@@ -1,24 +1,23 @@
 .root
-  // position: relative
   display: flex
-  height: auto
   flex-direction: column
-  justify-content: center
-  align-items: flex-start
-  padding-top: 100px
-
-.watch
-  margin-bottom: 32px
+  padding: 20px
+  width: 100%
+  align-items: center
 
 .feature
   background: rgba(47, 51, 57, 0.6)
   backdrop-filter: blur(50px)
   border-radius: 16px
   padding: 20px
-  width: 300px
+  width: 100%
   cursor: pointer
+  position: relative
+  transition: height 0.3s ease-out, padding 0.3s ease-in-out
+  overflow: hidden
+  height: 70px
 
-  &:not(&:last-child)
+  &:not(&:first-child)
     margin-top: 16px
 
   > .description
@@ -32,41 +31,90 @@
     margin-bottom: 8px
 
 .selected_feature
+  height: 160px
   background: #D1E3FB
 
   > .description
     color: #292C2E !important
 
   > .heading
-    color: #292C2E !important
+    color: rgba(41, 44, 46, 0.40) !important
 
-.nav
-  margin-left: 32px
+  > .toggle
+    background: #B4C6DD
+
+    .chevron
+      transform: rotate(180deg)
+
+      path
+        fill: #292C2E !important
 
 .footer
-  margin-top: 40px
-  width: 300px
+  color: #292C2E
+  margin-top: 12px
 
   > .label
     margin-bottom: 8px
 
   > .description
     line-height: 20px
-    height: 100px
     display: flex
     flex-direction: column
     align-items: flex-end
 
 .slide
-  height: auto
-  margin-top: 20px
-  width: 600px
-  margin-left: 16px
+  height: 100%
+  width: 925px
   z-index: 1 !important
 
 .big_background
   position: absolute
   z-index: -1
   top: 380px
-  height: 600px
+  height: 1000px
   left: 35%
+
+.toggle
+  height: 32px
+  width: 32px
+  position: absolute
+  right: 20px
+  top: 14px
+  display: flex
+  padding: 20px 32px
+  justify-content: center
+  align-items: center
+  border-radius: 72px
+  background: #40454D
+
+  .chevron
+    width: 20px !important
+    height: 20px !important
+
+    path
+      fill: #DFE2E1 !important
+
+.title
+  display: flex
+  font-weight: 600
+  text-align: center
+  font-size: 28px
+  color: #DFE2E1
+
+.description_title
+  font-size: 14px
+  margin-top: 32px
+  margin-bottom: 32px
+  width: 100%
+  text-align: center
+  color: rgba(223, 226, 225, 0.40)
+
+.bold
+  color: var(--text-color-primary)
+
+.sdk_link
+  color: rgba(41, 44, 46, 0.40) !important
+
+@media (max-width: 768px)
+  .slide
+    z-index: 0 !important

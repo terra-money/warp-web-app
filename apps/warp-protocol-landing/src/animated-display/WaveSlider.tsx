@@ -19,7 +19,7 @@ const WaveSlider: React.FC<Props> = ({ currentTick, setCurrentTick }) => {
             key={idx}
             className={`${styles.tick} ${
               idx === currentTick ? styles.active : ''
-            }`}
+            } ${idx > 2 ? styles.disabled : ''}`}
           ></div>
         ))}
       <TickIcon className={styles.tickIcon} style={{ left: tickPosition }} />
