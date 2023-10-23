@@ -15,6 +15,7 @@ type DesktopTopBarProps = UIElementProps & {
   onWebAppClick: () => void;
   onTelegramClick: () => void;
   onDiscordClick: () => void;
+  onTwitterClick: () => void;
 };
 
 export const DesktopTopBar = forwardRef<
@@ -28,6 +29,7 @@ export const DesktopTopBar = forwardRef<
     onWebAppClick,
     onTelegramClick,
     onDiscordClick,
+    onTwitterClick
   } = props;
 
   return (
@@ -74,8 +76,8 @@ export const DesktopTopBar = forwardRef<
               )}
               variant="primary"
               fill="none"
-              iconGap='small'
-              iconAlignment='end'
+              iconGap="small"
+              iconAlignment="end"
               icon={<KeyboardArrowDownIcon className={styles.chevron} />}
             >
               Community
@@ -84,14 +86,14 @@ export const DesktopTopBar = forwardRef<
         >
           <MenuAction onClick={onTelegramClick}>Telegram</MenuAction>
           <MenuAction onClick={onDiscordClick}>Discord</MenuAction>
+          <MenuAction onClick={onTwitterClick}>X</MenuAction>
         </DropdownMenu>
         <Button
-          className={classNames(styles.button, styles.btn_gray)}
+          className={classNames(styles.button)}
           variant="primary"
-          fill="none"
           onClick={onWebAppClick}
         >
-          App
+          Launch App
         </Button>
       </Container>
     </div>

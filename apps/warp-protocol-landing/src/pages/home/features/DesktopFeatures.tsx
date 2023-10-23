@@ -77,13 +77,14 @@ export const DesktopFeaturesContent = forwardRef(
 
     return (
       <div className={classNames(styles.root, className)} ref={ref}>
-        <div className={styles.title}>Generic way of composing logic</div>
+        <div className={styles.title}>Key features</div>
         <div className={styles.description_title}>
-          Using Warp, developers (and their users) can queue{' '}
+          Designed with flexibility in mind, Warp offers developers an{' '}
+          <span className={styles.bold}>adaptable toolkit</span> to automate
+          application functionality and attract new users.{' '}
           <span className={styles.bold}>
-            any transaction to be executed automatically in the future
-          </span>{' '}
-          based on any available on-chain data.
+            No smart contract changes necessary.
+          </span>
         </div>
         {features.map((feature) => (
           <div

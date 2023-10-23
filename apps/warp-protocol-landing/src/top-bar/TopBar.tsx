@@ -59,6 +59,7 @@ export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
         onDocsClick={onDocsClick}
         onFeaturesClick={onFeaturesClick}
         onWebAppClick={onWebAppClick}
+        onTwitterClick={onTwitterClick}
       />
     );
   }

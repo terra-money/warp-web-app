@@ -16,6 +16,11 @@ const WaveSlider: React.FC<Props> = ({ currentTick, setCurrentTick }) => {
         .fill(0)
         .map((_, idx) => (
           <div
+            onClick={() => {
+              if (idx <= 2) {
+                setCurrentTick(idx);
+              }
+            }}
             key={idx}
             className={`${styles.tick} ${
               idx === currentTick ? styles.active : ''

@@ -14,13 +14,11 @@ type HomeProps = UIElementProps & {
 const CardContent = () => {
   return (
     <div className={styles.cards}>
-      <div className={styles.title}>How it works?</div>
+      <div className={styles.title}>How it works</div>
       <div className={styles.description_top}>
-        Using Warp, developers (and their users) can queue{' '}
-        <span className={styles.bold}>
-          any transaction to be executed automatically in the future
-        </span>{' '}
-        based on any available on-chain data.
+        Using Warp, developers (and, by default, their users) can{' '}
+        <span className={styles.bold}>schedule</span> transactions to execute
+        automatically in the future based on any available on-chain data.
       </div>
       <CardStack className={styles.card_stack} />
       <div className={styles.description_below}>

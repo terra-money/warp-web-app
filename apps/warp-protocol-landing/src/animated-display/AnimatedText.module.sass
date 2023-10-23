@@ -1,7 +1,12 @@
 .container
-  animation: fadeInOut 3s infinite
   width: 600px
   height: 200px
+
+.not_animated
+  opacity: 0
+
+.animate
+  animation: fadeInOut 5s
 
 .label
   color: rgba(223, 226, 225, 0.40)
@@ -25,7 +30,9 @@
 @keyframes fadeInOut
   0%
     opacity: 0
-  50%
+  25%
+    opacity: 1
+  75%
     opacity: 1
   100%
     opacity: 0

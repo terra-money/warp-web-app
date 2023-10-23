@@ -41,9 +41,9 @@ const App = () => {
     window.open(APP_URL);
   }, []);
 
-  const onContactClick = useCallback(() => {
-    window.open('mailto:contact@warp.money');
-  }, []);
+  // const onContactClick = useCallback(() => {
+  //   window.open('mailto:contact@warp.money');
+  // }, []);
 
   const onTwitterClick = useCallback(() => {
     window.open('https://twitter.com/warp_protocol');
@@ -103,7 +103,7 @@ const App = () => {
         onTwitterClick={onTwitterClick}
         onTelegramClick={onTelegramClick}
         onDiscordClick={onDiscordClick}
-        onContactClick={onContactClick}
+        onContactClick={onTelegramClick}
         onBrandClick={onBrandClick}
         className={styles.bottom_bar}
       />
