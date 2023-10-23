@@ -10,7 +10,6 @@
   background: radial-gradient(50% 21.32% at 50% 0%, #2F3136 0%, #121314 100%)
   z-index: 0 !important
 
-
 .top_content
   margin-top: 100px
 
@@ -18,3 +17,72 @@
 
 .warp_token_content
   margin-top: 300px
+
+.cards
+  margin-top: 200px
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+
+  .title
+    display: flex
+    font-weight: 600
+    text-align: center
+    font-size: 40px
+    line-height: 64px
+    color: #DFE2E1
+
+  .description_top
+    font-size: 16px
+    margin-top: 24px
+    width: 680px
+    text-align: center
+    color: rgba(223, 226, 225, 0.40)
+
+  .description_below
+    font-size: 16px
+    width: 640px
+    text-align: center
+    color: rgba(223, 226, 225, 0.40)
+
+.card_stack
+  margin: 72px auto
+  width: 653px !important
+  height: 250px !important
+
+.bold
+  color: var(--text-color-primary)
+
+.animated_display
+  margin: 200px 240px
+
+@media (max-width: 768px)
+  .cards
+    margin-top: 140px
+
+    .title
+      width: 100%
+      font-size: 32px !important
+      line-height: 40px !important
+      justify-content: center
+
+    .description_top
+      width: 100% !important
+      padding: 0 20px !important
+      font-size: 14px !important
+
+    .description_below
+      width: 100% !important
+      padding: 0 20px !important
+      font-size: 14px !important
+
+    .card_stack
+      margin: 72px auto
+      width: 80% !important
+      height: 200px !important
+
+  .animated_display
+    height: 400px
+    flex-direction: column
+    margin: 120px 20px !important

@@ -1,0 +1,30 @@
+.slider
+  display: flex
+  align-items: flex-end // align bars to the bottom
+  position: relative
+
+.tick
+  height: 180px
+  width: 8px
+  background: linear-gradient(180deg, #535353 0%, #D1E3FB 100%)
+  margin: 0 8px
+  cursor: pointer
+  transition: transform 0.5s ease-in-out
+
+.active
+  transform: translateY(-20px) // Move bar up when active
+
+.tickIcon
+  position: absolute
+  bottom: -10px
+  height: 20px
+  width: 24px
+  transition: left 0.5s ease-in-out
+
+.disabled
+  cursor: none
+  opacity: 0.6
+
+@media (max-width: 768px)
+  .tick
+    height: 120px

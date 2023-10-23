@@ -5,6 +5,7 @@ import { Button } from '../button/Button';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
 import { DropdownMenu } from 'dropdown-menu/DropdownMenu';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { MenuAction } from 'menu-button/MenuAction';
 
 type DesktopTopBarProps = UIElementProps & {
@@ -14,6 +15,7 @@ type DesktopTopBarProps = UIElementProps & {
   onWebAppClick: () => void;
   onTelegramClick: () => void;
   onDiscordClick: () => void;
+  onTwitterClick: () => void;
 };
 
 export const DesktopTopBar = forwardRef<
@@ -27,6 +29,7 @@ export const DesktopTopBar = forwardRef<
     onWebAppClick,
     onTelegramClick,
     onDiscordClick,
+    onTwitterClick
   } = props;
 
   return (
@@ -66,9 +69,16 @@ export const DesktopTopBar = forwardRef<
           className={styles.btn_gray}
           action={
             <Button
-              className={classNames(styles.button, styles.btn_gray)}
+              className={classNames(
+                styles.button,
+                styles.btn_gray,
+                styles.btn_white
+              )}
               variant="primary"
               fill="none"
+              iconGap="small"
+              iconAlignment="end"
+              icon={<KeyboardArrowDownIcon className={styles.chevron} />}
             >
               Community
             </Button>
@@ -76,14 +86,14 @@ export const DesktopTopBar = forwardRef<
         >
           <MenuAction onClick={onTelegramClick}>Telegram</MenuAction>
           <MenuAction onClick={onDiscordClick}>Discord</MenuAction>
+          <MenuAction onClick={onTwitterClick}>X</MenuAction>
         </DropdownMenu>
         <Button
-          className={classNames(styles.button, styles.btn_gray)}
+          className={classNames(styles.button)}
           variant="primary"
-          fill="none"
           onClick={onWebAppClick}
         >
-          App
+          Launch App
         </Button>
       </Container>
     </div>

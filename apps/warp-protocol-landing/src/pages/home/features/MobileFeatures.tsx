@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { UIElementProps } from '@terra-money/apps/components';
 import React, { forwardRef, useState } from 'react';
 import styles from './MobileFeatures.module.sass';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from '../../../link';
 
 type Feature = {
@@ -51,6 +52,7 @@ const features: Feature[] = [
           a few minutes.
         </span>
         <Link
+          className={styles.sdk_link}
           onClick={() => {
             window.open('https://github.com/terra-money/warp-sdk');
           }}
@@ -67,49 +69,51 @@ type MobileFeaturesContentProps = UIElementProps & {};
 export const MobileFeaturesContent = forwardRef(
   (props: MobileFeaturesContentProps, ref: React.Ref<HTMLDivElement>) => {
     const { className } = props;
-    const [selectedFeature, setSelectedFeature] = useState<Feature>(
-      features[0]
+    const [expandedFeatureId, setExpandedFeatureId] = useState<number | null>(
+      0
     );
+
+    const isExpanded = (id: number) => id === expandedFeatureId;
 
     return (
       <div className={classNames(styles.root, className)} ref={ref}>
-        <img
-          alt=""
-          src="images/BackgroundBigBall.png"
-          className={styles.big_background}
-        />
-        <div className={styles.nav}>
-          <Text variant="label" className={styles.watch}>
-            Features to watch
-          </Text>
-          {features.map((feature) => (
-            <div
-              className={classNames(
-                styles.feature,
-                feature.id === selectedFeature.id && styles.selected_feature
-              )}
-              onClick={() => setSelectedFeature(feature)}
-            >
-              <Text variant="label" className={styles.heading}>
-                {feature.heading}
-              </Text>
-              <Text variant="text" className={styles.description}>
-                {feature.description}
-              </Text>
+        <div className={styles.title}>Key features</div>
+        <div className={styles.description_title}>
+          Designed with flexibility in mind, Warp offers developers an{' '}
+          <span className={styles.bold}>adaptable toolkit</span> to automate
+          application functionality and attract new users.{' '}
+          <span className={styles.bold}>
+            No smart contract changes necessary.
+          </span>
+        </div>
+        {features.map((feature) => (
+          <div
+            key={feature.id}
+            className={classNames(
+              styles.feature,
+              isExpanded(feature.id) && styles.selected_feature
+            )}
+            onClick={() =>
+              setExpandedFeatureId(isExpanded(feature.id) ? null : feature.id)
+            }
+          >
+            <div className={styles.toggle}>
+              <KeyboardArrowDownIcon className={styles.chevron} />
             </div>
-          ))}
-          <div className={styles.footer}>
-            <Text variant="text" className={styles.label}>
-              {selectedFeature.description}
+
+            <Text variant="label" className={styles.heading}>
+              {feature.heading}
             </Text>
-            <Text variant="label" className={styles.description}>
-              {selectedFeature.footer}
+            <Text variant="text" className={styles.description}>
+              {feature.description}
             </Text>
+            {isExpanded(feature.id) && (
+              <Text variant="label" className={styles.footer}>
+                {feature.footer}
+              </Text>
+            )}
           </div>
-        </div>
-        <div className={styles.slide}>
-          <img alt="" className={styles.slide} src={selectedFeature.imageUrl} />
-        </div>
+        ))}
       </div>
     );
   }
