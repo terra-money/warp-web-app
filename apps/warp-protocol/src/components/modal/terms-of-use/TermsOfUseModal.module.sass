@@ -1,0 +1,29 @@
+.container__override
+  display: inline
+
+.text__override
+  display: inline
+
+.link
+  text-decoration: none
+  display: inline-block
+
+.checkbox__override
+  padding: 0px !important
+  svg
+    fill: var(--button-color-secondary)
+
+.modal__root
+  display: flex
+
+.content
+  background: var(--dialog-background-color)
+  position: relative
+  width: 520px
+  z-index: 10000
+  margin: auto
+  min-width: 520px
+  &:focus-visible
+    outline: none
+  &.hide
+    opacity: 0

@@ -20,6 +20,7 @@ import { TemplateNew } from 'pages/template-new/TemplateNew';
 import { TemplatesPage } from 'pages/templates';
 import { useWalletDefaultNetworks } from 'hooks/useWalletDefaultNetworks';
 import { ChainSelectorProvider } from '@terra-money/apps/hooks';
+import { TermsOfUseModal } from 'components/modal/terms-of-use/TermsOfUseModal';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const Main = () => {
         <Route path="/jobs/:jobId" element={<JobPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <TermsOfUseModal />
     </Layout>
   );
 };
