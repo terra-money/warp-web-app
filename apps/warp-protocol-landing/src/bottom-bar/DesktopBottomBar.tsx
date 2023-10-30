@@ -23,7 +23,6 @@ type DesktopBottomBarProps = UIElementProps & {
 export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
   const {
     onHomeClick,
-    onFeaturesClick,
     className,
     onDocsClick,
     onContactClick,
@@ -48,14 +47,6 @@ export const DesktopBottomBar = (props: DesktopBottomBarProps) => {
             onClick={onHomeClick}
           >
             Home
-          </Button>
-          <Button
-            className={classNames(styles.button, styles.btn_gray)}
-            variant="primary"
-            fill="none"
-            onClick={onFeaturesClick}
-          >
-            Features
           </Button>
           <Button
             className={classNames(styles.button, styles.btn_gray)}
