@@ -8,6 +8,12 @@ import Brand from 'pages/brand/Brand';
 
 export const APP_URL = 'https://app.warp.money';
 
+function baseUrl(url: string) {
+  const parsedUrl = new URL(url);
+  let baseUrl = parsedUrl.origin;
+  return baseUrl;
+}
+
 const App = () => {
   const topBarRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -58,11 +64,11 @@ const App = () => {
   }, []);
 
   const onPrivacyPolicyClick = useCallback(() => {
-    window.open(`${document.location.href}pdfs/privacy_policy.pdf`);
+    window.open(`${baseUrl(document.location.href)}/pdfs/privacy_policy.pdf`);
   }, []);
 
   const onTermsClick = useCallback(() => {
-    window.open(`${document.location.href}pdfs/terms_of_use.pdf`);
+    window.open(`${baseUrl(document.location.href)}/pdfs/terms_of_use.pdf`);
   }, []);
 
   return (
