@@ -8,8 +8,8 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 import { ValueInput } from 'pages/job-new/condition-builder/condition-node/value-input/ValueInput';
 
 type ConcreteNodeProps = UIElementProps & {
-  updateFn: warp_resolver.UpdateFnValue;
-  setUpdateFn: (updateFn: warp_resolver.UpdateFnValue) => void;
+  updateFn: warp_resolver.FnValue;
+  setUpdateFn: (updateFn: warp_resolver.FnValue) => void;
 };
 
 type Expr =

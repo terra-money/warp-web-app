@@ -20,7 +20,7 @@ import { useEnvValueDialog } from './EnvValueDialog';
 
 type Value =
   | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-  | warp_resolver.ValueFor_String
+  | warp_resolver.StringValueFor_String
   | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
   | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
 

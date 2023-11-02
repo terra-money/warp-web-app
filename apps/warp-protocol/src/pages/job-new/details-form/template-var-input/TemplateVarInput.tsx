@@ -109,7 +109,7 @@ export const TemplateVarInput = (props: TemplateVarInputProps) => {
       <FormControl label={templateVar.name}>
         <MsgInput
           placeholder="Type JSON payload here"
-          value={templateVar.value}
+          value={templateVar.value ?? ''}
           rootClassName={styles.wasm_msg}
           mode="json"
           onChange={(value) => {

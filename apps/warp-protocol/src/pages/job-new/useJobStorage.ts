@@ -32,12 +32,12 @@ export const useJobStorage = () => {
         reward: demicrofy(job.reward, nativeToken.decimals).toString(),
         name: job.info.name,
         description: job.info.description,
-        message: JSON.stringify(job.info.msgs, null, 2),
+        message: JSON.stringify(job.msgs, null, 2),
         recurring: job.info.recurring,
       };
 
       setDetailsInput(details);
-      setCond(job.info.condition);
+      setCond(job.condition);
       setVariables(job.info.vars);
     },
     [setDetailsInput, setCond, nativeToken.decimals, setVariables]

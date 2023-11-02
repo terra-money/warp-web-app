@@ -9,8 +9,8 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 
 export type UpdateFnNodeProps = UIElementProps & {
   kind: warp_resolver.VariableKind;
-  updateFn?: warp_resolver.UpdateFnValue;
-  setUpdateFn: (updateFn: warp_resolver.UpdateFnValue) => void;
+  updateFn?: warp_resolver.FnValue;
+  setUpdateFn: (updateFn: warp_resolver.FnValue) => void;
 };
 
 export const UpdateFnNode = (props: UpdateFnNodeProps) => {

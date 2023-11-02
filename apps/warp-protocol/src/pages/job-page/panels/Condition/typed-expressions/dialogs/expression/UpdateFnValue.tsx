@@ -3,7 +3,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 import { ExpressionValue } from './ExpressionValue';
 
 export type UpdateFnValueProps = {
-  value: warp_resolver.UpdateFnValue;
+  value: warp_resolver.FnValue;
   variables: warp_resolver.Variable[];
 } & UIElementProps;
 

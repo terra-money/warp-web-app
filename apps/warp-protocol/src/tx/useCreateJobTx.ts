@@ -37,10 +37,11 @@ export const useCreateJobTx = () => {
         name,
         labels: [],
         description,
-        condition: JSON.stringify(condition),
         vars: JSON.stringify(orderedVars),
         reward: reward.toString(),
-        msgs: JSON.stringify(msgs),
+        // TODO: add duration_days input field
+        duration_days: '30',
+        executions: [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }],
       });
     },
     {

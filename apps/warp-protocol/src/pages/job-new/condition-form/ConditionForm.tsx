@@ -154,7 +154,7 @@ const validValue = (
   value:
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_resolver.ValueFor_String
+    | warp_resolver.StringValueFor_String
     | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
   if (validSimple(value) || validRef(value) || validEnv(value)) {
@@ -168,7 +168,7 @@ const validSimple = (
   value:
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_resolver.ValueFor_String
+    | warp_resolver.StringValueFor_String
     | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
   if ('simple' in value) {
@@ -182,7 +182,7 @@ const validRef = (
   value:
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_resolver.ValueFor_String
+    | warp_resolver.StringValueFor_String
     | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
   if ('ref' in value) {
@@ -196,7 +196,7 @@ const validEnv = (
   value:
     | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
     | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-    | warp_resolver.ValueFor_String
+    | warp_resolver.StringValueFor_String
     | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
 ) => {
   if ('env' in value) {
