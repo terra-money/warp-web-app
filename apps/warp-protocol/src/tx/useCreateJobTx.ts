@@ -31,18 +31,40 @@ export const useCreateJobTx = () => {
 
       const orderedVars = orderVarsByReferencing(vars);
 
-      return sdk.tx.createJob(wallet.walletAddress, {
-        recurring,
-        requeue_on_evict: true,
-        name,
-        labels: [],
-        description,
+      const nativeTokenDenom = await sdk.nativeTokenDenom();
+      const duration_days = '30';
+      const executions = [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }];
+      const jobFeeEstimate = await sdk.estimateJobFee(wallet.walletAddress, {
         vars: JSON.stringify(orderedVars),
-        reward: reward.toString(),
-        // TODO: add duration_days input field
-        duration_days: '30',
-        executions: [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }],
+        recurring: recurring,
+        executions,
+        duration_days,
       });
+
+      return sdk.tx.createJob(
+        wallet.walletAddress,
+        {
+          recurring,
+          requeue_on_evict: true,
+          name,
+          labels: [],
+          description,
+          vars: JSON.stringify(orderedVars),
+          // TODO: add reward estimate
+          reward: reward.toString(),
+          // TODO: add duration_days input field
+          duration_days,
+          executions,
+        },
+        [
+          {
+            native: {
+              denom: nativeTokenDenom,
+              amount: jobFeeEstimate.toString(),
+            },
+          },
+        ]
+      );
     },
     {
       txKey: TX_KEY.CREATE_JOB,
