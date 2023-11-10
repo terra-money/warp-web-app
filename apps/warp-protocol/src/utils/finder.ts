@@ -24,6 +24,7 @@ export const useFinderTxUrl = () => {
           return neutronFinderTxUrl(chainId, txHash);
         case 'injective':
           return injectiveFinderTxUrl(connectedWallet.network!, txHash);
+        // TODO: add nibiru and whale when supported
       }
     },
     [connectedWallet, chainId, chain]
