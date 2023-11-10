@@ -5,6 +5,7 @@ import { ReactComponent as TerraIcon } from 'components/assets/Terra.svg';
 import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg';
 import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
 import { ReactComponent as NibiruIcon } from 'components/assets/Nibiru.svg';
+import { ReactComponent as MigalooIcon } from 'components/assets/Migaloo.svg';
 import {
   ChainMetadata as SdkChainMetadata,
   TERRA_CHAIN,
@@ -39,6 +40,8 @@ const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
       return { ...sdkMetadata, icon: <NeutronIcon className={styles.chain_icon} /> };
     case 'nibiru':
       return { ...sdkMetadata, icon: <NibiruIcon className={styles.chain_icon} /> };
+    case 'migaloo':
+      return { ...sdkMetadata, icon: <MigalooIcon className={styles.chain_icon} /> };
   }
 };
 
@@ -126,7 +129,10 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
       supportedChains: ChainModule.supportedChains()
         .map(getChainMetadata)
         .filter((c) => {
-          if (c.name === 'nibiru' && networkName(network) === 'mainnet') {
+          if (
+            (c.name === 'nibiru' && networkName(network) === 'mainnet') ||
+            (c.name === 'migaloo' && networkName(network) === 'mainnet')
+          ) {
             return false;
           }
 
