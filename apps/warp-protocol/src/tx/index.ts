@@ -4,7 +4,6 @@ export * from './useEditJobTx';
 export * from './useExecuteJobTx';
 export * from './useAddFundsTx';
 export * from './useWithdrawFundsTx';
-export * from './useCreateAccountTx';
 export * from './useCreateTemplateTx';
 export * from './useDeleteTemplateTx';
 export * from './useEditTemplateTx';

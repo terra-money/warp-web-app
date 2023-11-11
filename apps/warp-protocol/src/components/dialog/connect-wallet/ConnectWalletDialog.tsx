@@ -1,12 +1,9 @@
 import { useWallet } from '@terra-money/wallet-kit';
 import { Button, Text } from 'components/primitives';
-import { useEffect, useRef, useState } from 'react';
-import { useDialog, DialogProps, useLocalWallet } from '@terra-money/apps/hooks';
+import { useState } from 'react';
+import { useDialog, DialogProps } from '@terra-money/apps/hooks';
 import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import styles from './ConnectWalletDialog.module.sass';
-import { useWarpAccount } from 'queries/useWarpAccount';
-import { useCreateAccountDialog } from './CreateAccountDialog';
-import { warp_controller } from '@terra-money/warp-sdk';
 
 type ConnectWalletDialogProps = {
   title?: string;
@@ -14,55 +11,13 @@ type ConnectWalletDialogProps = {
 };
 
 // TODO: filter for supported available wallets
+// TODO: add wallet connect
 
 export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps, boolean>) => {
   const { closeDialog, title, subtitle } = props;
   const { connect, availableWallets } = useWallet();
 
-  const warpAccountQuery = useWarpAccount();
-  const { data: warpAccount } = warpAccountQuery;
-  const openCreateAccountDialog = useCreateAccountDialog();
-
-  const [executed, setExecuted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const localWallet = useLocalWallet();
-
-  const warpAccountRef = useRef<warp_controller.Account>();
-
-  warpAccountRef.current = warpAccount;
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    const cb = async () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-
-      if (localWallet.connectedWallet) {
-        timeoutId = setTimeout(async () => {
-          if (!warpAccountRef.current && !executed) {
-            setExecuted(true);
-            const resp = await openCreateAccountDialog({});
-
-            if (resp) {
-              closeDialog(true, { closeAll: true });
-            }
-          }
-
-          if (warpAccountRef.current) {
-            closeDialog(true, { closeAll: true });
-          }
-        }, 400);
-      }
-    };
-
-    cb();
-
-    // Clear the timeout if the component re-renders or unmounts
-    return () => clearTimeout(timeoutId);
-  }, [warpAccountRef, localWallet.connectedWallet, closeDialog, openCreateAccountDialog, setExecuted, executed]);
 
   return (
     <Dialog className={styles.root}>

@@ -13,14 +13,14 @@ interface AddFundsTxProps {
 }
 
 export const useAddFundsTx = () => {
-  const { data: account = {} as warp_controller.Account } = useWarpAccount();
+  const { data: account = {} as warp_controller.LegacyAccount } = useWarpAccount();
   const sdk = useWarpSdk();
 
   return useTx<AddFundsTxProps>(
     async (options) => {
       const { token, amount } = options;
 
-      return sdk.tx.depositToAccount(account.owner, account.account, token, amount.toString());
+      return sdk.tx.legacyDepositToAccount(account.owner, account.account, token, amount.toString());
     },
     {
       txKey: TX_KEY.ADD_FUNDS,

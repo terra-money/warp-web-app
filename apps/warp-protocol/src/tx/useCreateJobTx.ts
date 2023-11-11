@@ -31,7 +31,6 @@ export const useCreateJobTx = () => {
 
       const orderedVars = orderVarsByReferencing(vars);
 
-      const nativeTokenDenom = await sdk.nativeTokenDenom();
       const duration_days = '30';
       const executions = [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }];
       const jobFeeEstimate = await sdk.estimateJobFee(wallet.walletAddress, {
@@ -41,11 +40,15 @@ export const useCreateJobTx = () => {
         duration_days,
       });
 
+      // TODO:
+      // - add ui for depositing assets
+      // - extend useCreateJobTx with deposits
+      // - add estimate fee options + UI
+
       return sdk.tx.createJob(
         wallet.walletAddress,
         {
           recurring,
-          requeue_on_evict: true,
           name,
           labels: [],
           description,
@@ -57,12 +60,8 @@ export const useCreateJobTx = () => {
           executions,
         },
         [
-          {
-            native: {
-              denom: nativeTokenDenom,
-              amount: jobFeeEstimate.toString(),
-            },
-          },
+          jobFeeEstimate,
+          // TODO: add deposits
         ]
       );
     },

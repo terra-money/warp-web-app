@@ -4,7 +4,7 @@ import { warp_controller } from '@terra-money/warp-sdk';
 import { QUERY_KEY } from './queryKey';
 import { useWarpSdk } from '@terra-money/apps/hooks';
 
-export const useWarpAccount = (): UseQueryResult<warp_controller.Account | undefined> => {
+export const useWarpAccount = (): UseQueryResult<warp_controller.LegacyAccount | undefined> => {
   const { connectedWallet, chainId } = useLocalWallet();
   const sdk = useWarpSdk();
 
@@ -15,7 +15,7 @@ export const useWarpAccount = (): UseQueryResult<warp_controller.Account | undef
         return undefined;
       }
 
-      const account = await sdk.account(connectedWallet.walletAddress);
+      const account = await sdk.legacyAccount(connectedWallet.walletAddress);
 
       return account;
     },
@@ -26,5 +26,5 @@ export const useWarpAccount = (): UseQueryResult<warp_controller.Account | undef
     }
   );
 
-  return query as UseQueryResult<warp_controller.Account | undefined>;
+  return query as UseQueryResult<warp_controller.LegacyAccount | undefined>;
 };
