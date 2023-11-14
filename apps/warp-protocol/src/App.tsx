@@ -20,7 +20,8 @@ import { TemplateNew } from 'pages/template-new/TemplateNew';
 import { TemplatesPage } from 'pages/templates';
 import { useWalletDefaultNetworks } from 'hooks/useWalletDefaultNetworks';
 import { ChainSelectorProvider } from '@terra-money/apps/hooks';
-import { TermsOfUseModal } from 'components/modal/terms-of-use/TermsOfUseModal';
+import { useTermsOfUseDialog } from 'components/dialog/terms-of-use/TermsOfUseDialog';
+import { useEffect } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -41,14 +42,22 @@ const Main = () => {
         <Route path="/jobs/:jobId" element={<JobPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <TermsOfUseModal />
     </Layout>
   );
 };
 
 const Inner = () => {
+  const openTermsOfUseDialog = useTermsOfUseDialog();
   const [theme] = useTheme();
   const walletDefaultNetworks = useWalletDefaultNetworks();
+
+  useEffect(() => {
+    const accepted = localStorage.getItem('TermsOfUseAccepted_Oct-3-2023');
+    if (!accepted) {
+      openTermsOfUseDialog({ noBackgroundClick: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // TODO: check later if chainOptions would cause a flicker due to being null for first couple of calls
   return walletDefaultNetworks ? (
