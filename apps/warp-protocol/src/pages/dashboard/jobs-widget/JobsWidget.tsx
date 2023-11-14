@@ -25,7 +25,7 @@ type PageIndexMap = {
 };
 
 export const JobsWidget = (props: JobsWidgetProps) => {
-  const { className, limit = 50, showExpand } = props;
+  const { className, limit = 20, showExpand } = props;
 
   const [sort, setSort] = useState<Sort<SortBy>>();
   const [queryOpts, setQueryOpts] = useState<warp_controller.QueryJobsMsg>({ job_status: 'Pending' });
