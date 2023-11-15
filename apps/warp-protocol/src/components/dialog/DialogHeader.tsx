@@ -8,10 +8,11 @@ import { useDialogContext } from '@terra-money/apps/dialog';
 interface DialogHeaderProps extends UIElementProps {
   title: string;
   onClose: () => void;
+  hideCloseIcon?: boolean;
 }
 
 export const DialogHeader = (props: DialogHeaderProps) => {
-  const { className, title, children, onClose } = props;
+  const { className, title, children, onClose, hideCloseIcon } = props;
 
   const { dialogs, popDialog } = useDialogContext();
 
@@ -22,9 +23,11 @@ export const DialogHeader = (props: DialogHeaderProps) => {
           Back
         </Link>
       )}
-      <div className={styles.close} onClick={onClose}>
-        <CloseIcon className={styles.close_icon} />
-      </div>
+      {!hideCloseIcon && (
+        <div className={styles.close} onClick={onClose}>
+          <CloseIcon className={styles.close_icon} />
+        </div>
+      )}
       <Text className={styles.title} variant="heading1">
         {title}
       </Text>

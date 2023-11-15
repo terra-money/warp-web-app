@@ -7,6 +7,7 @@ type CloseDialog<Return> = (returnValue: Return | undefined, opts?: Partial<{ cl
 
 export type DialogProps<Param = void, Return = void> = Param & {
   closeDialog: CloseDialog<Return>;
+  noBackgroundClick?: boolean;
 };
 
 export type OpenDialog<Param = void, Return = void> = (p: Param) => Promise<Return>;
@@ -18,6 +19,11 @@ export function useDialog<Param = void, Return = void>(
 
   const openDialog: OpenDialog<any, Return | undefined> = useCallback(
     async (props: Param) => {
+      const overrideProps: { noBackgroundClick?: boolean } = {};
+      if (props && typeof props === 'object' && 'noBackgroundClick' in props) {
+        overrideProps.noBackgroundClick = props.noBackgroundClick as boolean;
+      }
+
       const { pushDialog, popDialog, popAllDialogs } = context;
 
       return new Promise<Return | undefined>((resolve) => {
@@ -40,6 +46,7 @@ export function useDialog<Param = void, Return = void>(
               ...props,
               closeDialog,
             }),
+            ...overrideProps,
           });
           return component;
         });
