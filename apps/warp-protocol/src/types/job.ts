@@ -5,7 +5,7 @@ import Big from 'big.js';
 export class Job {
   info: WarpJob;
   condition: warp_resolver.Condition;
-  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  msgs: warp_resolver.WarpMsg[];
   vars: warp_resolver.Variable[];
   reward: u<Big>;
 

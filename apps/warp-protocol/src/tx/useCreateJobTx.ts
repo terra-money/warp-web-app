@@ -1,16 +1,13 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
-import { u } from '@terra-money/apps/types';
-import Big from 'big.js';
 import { TX_KEY } from './txKey';
 import { containsAllReferencedVars, orderVarsByReferencing } from 'utils/msgs';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { warp_resolver } from '@terra-money/warp-sdk';
+import { composers, warp_resolver } from '@terra-money/warp-sdk';
 
 export interface CreateJobTxProps {
   name: string;
-  reward: u<Big>;
   description: string;
-  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  msgs: warp_resolver.WarpMsg[];
   vars: warp_resolver.Variable[];
   condition: warp_resolver.Condition;
   recurring: boolean;
@@ -21,7 +18,7 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     async (options) => {
-      const { wallet, reward, name, msgs, condition, vars, description, recurring } = options;
+      const { wallet, name, msgs, condition, vars, description, recurring } = options;
 
       if (!containsAllReferencedVars(vars, msgs, condition)) {
         throw Error(
@@ -29,41 +26,48 @@ export const useCreateJobTx = () => {
         );
       }
 
-      const orderedVars = orderVarsByReferencing(vars);
-
-      const duration_days = '30';
-      const executions = [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }];
-      const jobFeeEstimate = await sdk.estimateJobFee(wallet.walletAddress, {
-        vars: JSON.stringify(orderedVars),
-        recurring: recurring,
-        executions,
-        duration_days,
-      });
-
       // TODO:
       // - add ui for depositing assets
       // - extend useCreateJobTx with deposits
       // - add estimate fee options + UI
 
-      return sdk.tx.createJob(
+      const orderedVars = orderVarsByReferencing(vars);
+      const durationDays = '30';
+      const executions = [{ condition, msgs }];
+
+      const estimateJobRewardMsg = composers.job
+        .estimate()
+        .recurring(recurring)
+        .durationDays(durationDays)
+        .vars(orderedVars)
+        .executions(executions)
+        .compose();
+
+      const reward = await sdk.estimateJobReward(wallet.walletAddress, estimateJobRewardMsg);
+
+      const operationalAmount = await sdk.estimateJobFee(
         wallet.walletAddress,
-        {
-          recurring,
-          name,
-          labels: [],
-          description,
-          vars: JSON.stringify(orderedVars),
-          // TODO: add reward estimate
-          reward: reward.toString(),
-          // TODO: add duration_days input field
-          duration_days,
-          executions,
-        },
-        [
-          jobFeeEstimate,
-          // TODO: add deposits
-        ]
+        estimateJobRewardMsg,
+        reward.amount.toString()
       );
+
+      const createJobMsg = composers.job
+        .create()
+        .name(name)
+        .reward(reward.amount.toString())
+        .operationalAmount(operationalAmount.amount.toString())
+        .recurring(recurring)
+        .description(description)
+        .labels([])
+        .vars(orderedVars)
+        .durationDays(durationDays)
+        .executions(executions)
+        .compose();
+
+      return sdk.tx.createJob(wallet.walletAddress, createJobMsg, [
+        operationalAmount,
+        // TODO: add deposits
+      ]);
     },
     {
       txKey: TX_KEY.CREATE_JOB,
