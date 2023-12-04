@@ -6,7 +6,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 export type CreateTemplateTxProps = {
   condition?: warp_resolver.Condition | null;
   formatted_str: string;
-  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  msgs: warp_resolver.WarpMsg[];
   name: string;
   vars: warp_resolver.Variable[];
 };

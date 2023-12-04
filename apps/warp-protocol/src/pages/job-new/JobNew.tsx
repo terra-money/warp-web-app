@@ -1,5 +1,4 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { microfy } from '@terra-money/apps/libs/formatting';
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
@@ -16,7 +15,6 @@ import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
 import { filterUnreferencedVariables } from 'utils/msgs';
-import { useNativeToken } from 'hooks/useNativeToken';
 
 type JobNewProps = UIElementProps & {};
 
@@ -33,8 +31,6 @@ export const JobNew = (props: JobNewProps) => {
   const [searchParams] = useSearchParams();
 
   const mode = searchParams.get('mode') ?? 'advanced';
-
-  const nativeToken = useNativeToken();
 
   return (
     <CachedVariablesSession input={varsInput}>
@@ -66,7 +62,6 @@ export const JobNew = (props: JobNewProps) => {
                               const {
                                 template = {} as warp_templates.Template,
                                 name,
-                                reward,
                                 message,
                                 description,
                                 variables,
@@ -82,7 +77,6 @@ export const JobNew = (props: JobNewProps) => {
                                 vars,
                                 description,
                                 recurring,
-                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 condition: condition!,
                               });
@@ -107,7 +101,7 @@ export const JobNew = (props: JobNewProps) => {
                           onNext={async (props) => {
                             if (detailsInput) {
                               const { cond, variables } = props;
-                              const { name, reward, message, description, recurring } = detailsInput;
+                              const { name, message, description, recurring } = detailsInput;
 
                               const msgs = parseMsgs(message);
 
@@ -117,7 +111,6 @@ export const JobNew = (props: JobNewProps) => {
                                 name,
                                 vars,
                                 description,
-                                reward: microfy(reward, nativeToken.decimals),
                                 msgs,
                                 recurring,
                                 condition: cond,
@@ -144,28 +137,32 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-export const decodeMsgs = (msgs: warp_resolver.CosmosMsgFor_Empty[]) => {
+export const decodeMsgs = (msgs: warp_resolver.WarpMsg[]) => {
   return msgs.map(decodeMsg);
 };
 
-export const encodeMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
+export const encodeMsgs = (value: string): warp_resolver.WarpMsg[] => {
   const msgs = parseMsgs(value);
 
   return msgs.map(encodeMsg);
 };
 
-export const parseMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
+export const parseMsgs = (value: string): warp_resolver.WarpMsg[] => {
   const parsed = JSON.parse(value);
-  const msgs: warp_resolver.CosmosMsgFor_Empty[] = Array.isArray(parsed)
-    ? (parsed as warp_resolver.CosmosMsgFor_Empty[])
-    : [parsed];
+  const msgs: warp_resolver.WarpMsg[] = Array.isArray(parsed) ? (parsed as warp_resolver.WarpMsg[]) : [parsed];
 
   return msgs;
 };
 
-export const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolver.CosmosMsgFor_Empty => {
+export const encodeMsg = (inputMsg: warp_resolver.WarpMsg): warp_resolver.WarpMsg => {
+  if (!('generic' in inputMsg)) {
+    return inputMsg;
+  }
+
+  const input = inputMsg.generic;
+
   if (!('wasm' in input)) {
-    return input;
+    return inputMsg;
   }
 
   let msg = input.wasm;
@@ -182,7 +179,7 @@ export const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolve
     msg.migrate.msg = base64encode(msg.migrate.msg);
   }
 
-  return { wasm: msg };
+  return { generic: { wasm: msg } };
 };
 
 const base64encode = (input: string): string => {

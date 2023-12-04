@@ -73,14 +73,22 @@ export const useJobStorage = () => {
   );
 };
 
-export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
+export const decodeMsg = (inputMsg: warp_resolver.WarpMsg) => {
+  if (!('generic' in inputMsg)) {
+    return inputMsg;
+  }
+
+  const msg = inputMsg.generic;
+
   if ('wasm' in msg) {
     if ('execute' in msg.wasm) {
       return {
-        wasm: {
-          execute: {
-            ...msg.wasm.execute,
-            msg: safeFromBase64(msg.wasm.execute.msg),
+        generic: {
+          wasm: {
+            execute: {
+              ...msg.wasm.execute,
+              msg: safeFromBase64(msg.wasm.execute.msg),
+            },
           },
         },
       };
@@ -88,10 +96,12 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
 
     if ('instantiate' in msg.wasm) {
       return {
-        wasm: {
-          instantiate: {
-            ...msg.wasm.instantiate,
-            msg: safeFromBase64(msg.wasm.instantiate.msg),
+        generic: {
+          wasm: {
+            instantiate: {
+              ...msg.wasm.instantiate,
+              msg: safeFromBase64(msg.wasm.instantiate.msg),
+            },
           },
         },
       };
@@ -99,17 +109,19 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
 
     if ('migrate' in msg.wasm) {
       return {
-        wasm: {
-          migrate: {
-            ...msg.wasm.migrate,
-            msg: safeFromBase64(msg.wasm.migrate.msg),
+        generic: {
+          wasm: {
+            migrate: {
+              ...msg.wasm.migrate,
+              msg: safeFromBase64(msg.wasm.migrate.msg),
+            },
           },
         },
       };
     }
   }
 
-  return msg;
+  return inputMsg;
 };
 
 export const fromBase64 = (value: string) => {
