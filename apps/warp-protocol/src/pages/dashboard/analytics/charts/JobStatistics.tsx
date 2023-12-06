@@ -7,6 +7,8 @@ import Big from 'big.js';
 import styles from './JobStatistics.module.sass';
 import { ChartContainer } from 'components/chart-container';
 
+const JOB_COUNT_OFFSET = 4823;
+
 export const JobsStatistics = (props: UIElementProps) => {
   const { className } = props;
 
@@ -27,7 +29,7 @@ export const JobsStatistics = (props: UIElementProps) => {
               })
             }
           >
-            {total}
+            {total.add(JOB_COUNT_OFFSET)}
           </AnimateNumber>
         }
       />

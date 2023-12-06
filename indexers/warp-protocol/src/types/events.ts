@@ -8,7 +8,8 @@ export type WarpControllerActions =
   | 'delete_job'
   | 'update_job'
   | 'execute_job'
-  | 'prioritize_job';
+  | 'prioritize_job'
+  | 'execute_reply';
 
 export class WarpPK {
   static controller(action: WarpControllerActions): PK {
@@ -106,12 +107,23 @@ export interface PrioritizeJobEvent extends Event {
   };
 }
 
+export interface ExecuteReplyEvent extends Event {
+  contract: 'warp-controller';
+  action: 'execute_reply';
+  payload: {
+    _contract_address: string;
+    action: string;
+    sub_action: string;
+  };
+}
+
 export type WarpControllerJobEvents =
   | CreateJobEvent
   | DeleteJobEvent
   | UpdateJobEvent
   | ExecuteJobEvent
-  | PrioritizeJobEvent;
+  | PrioritizeJobEvent
+  | ExecuteReplyEvent;
 
 export type WarpControllerEvents = CreateAccountEvent | InstantiateEvent | SaveAccountEvent | WarpControllerJobEvents;
 
