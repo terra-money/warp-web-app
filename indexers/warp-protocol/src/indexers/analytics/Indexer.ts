@@ -118,18 +118,29 @@ export class Indexer extends EventIndexer<Entity> {
     );
 
     // Count execute_reply events with specific recur_job sub_action
-    const executeReplyAggregates = await eventAggregator<ExecuteReplyEvent>(
+    const executeReplyAggregates = await eventAggregator<ExecuteReplyEvent, string>(
       this.events,
       WarpPK.controller('execute_reply'),
       minHeight,
       maxHeight,
-      (events) => events.filter((event) => event.payload.sub_action === 'recur_job').length
+      (events) => events.filter((event) => event.payload.sub_action === 'recur_job').length.toString()
     );
 
-    // Combine the counts
-    const combinedAggregates = createJobAggregates.map((aggregate, index) => ({
-      timestamp: aggregate.timestamp,
-      value: (parseInt(aggregate.value) + parseInt(executeReplyAggregates[index]?.value || '0')).toString(),
+    // combine the counts
+    const combinedCounts = new Map<number, number>();
+
+    createJobAggregates.forEach((aggregate) => {
+      combinedCounts.set(aggregate.timestamp, parseInt(aggregate.value));
+    });
+
+    executeReplyAggregates.forEach((aggregate) => {
+      const currentCount = combinedCounts.get(aggregate.timestamp) || 0;
+      combinedCounts.set(aggregate.timestamp, currentCount + parseInt(aggregate.value));
+    });
+
+    const combinedAggregates = Array.from(combinedCounts).map(([timestamp, value]) => ({
+      timestamp,
+      value: value.toString(),
     }));
 
     // Save combined counts
@@ -148,12 +159,7 @@ export class Indexer extends EventIndexer<Entity> {
   };
 
   private updateEventCounts = async (minHeight: number, maxHeight: number) => {
-    const events: WarpControllerActions[] = [
-      'execute_job',
-      'update_job',
-      'execute_job',
-      'prioritize_job',
-    ];
+    const events: WarpControllerActions[] = ['execute_job', 'update_job', 'execute_job', 'prioritize_job'];
 
     // Handle create_job (and relevant execute_reply) separately
     await this.handleCreateJobEvents(minHeight, maxHeight);
