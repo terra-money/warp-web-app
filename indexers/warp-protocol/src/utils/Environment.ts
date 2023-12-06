@@ -71,15 +71,15 @@ export class Environment {
       }
     }
 
-    if (chainName === 'migaloo') {
-      if (process.env.NETWORK === 'testnet') {
-        // testnet
-        return {
-          height: 4415456,
-          timestamp: 1699648200,
-        };
-      }
-    }
+    // if (chainName === 'migaloo') {
+    //   if (process.env.NETWORK === 'testnet') {
+    //     // testnet
+    //     return {
+    //       height: 4415456,
+    //       timestamp: 1699648200,
+    //     };
+    //   }
+    // }
   };
 
   static getContractAddress(chainName: string, contract: keyof ContractAddresses) {
