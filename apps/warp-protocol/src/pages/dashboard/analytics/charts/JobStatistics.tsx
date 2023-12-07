@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import Big from 'big.js';
 import styles from './JobStatistics.module.sass';
 import { ChartContainer } from 'components/chart-container';
+import { useMemo } from 'react';
+import { useChainSelector } from '@terra-money/apps/hooks';
 
 const JOB_COUNT_OFFSET = 4823;
 
@@ -15,6 +17,16 @@ export const JobsStatistics = (props: UIElementProps) => {
   const { isLoading, values, total } = useAnalyticsData('create_job_count', 'monthly', 1000000, false);
 
   const average = values.length === 0 ? 0 : Big(total).div(values.length);
+
+  const { selectedChain } = useChainSelector();
+
+  const jobCountOffset = useMemo(() => {
+    if (selectedChain.name === 'terra') {
+      return JOB_COUNT_OFFSET;
+    }
+
+    return 0;
+  }, [selectedChain]);
 
   return (
     <Container className={classNames(styles.root, className)} direction="column">
@@ -29,7 +41,7 @@ export const JobsStatistics = (props: UIElementProps) => {
               })
             }
           >
-            {total.add(JOB_COUNT_OFFSET)}
+            {total.add(jobCountOffset)}
           </AnimateNumber>
         }
       />
