@@ -11,7 +11,15 @@ export class Environment {
 
   static load() {
     dotenv.config();
-    Environment.lcd = ChainModule.lcdClient({ networks: [process.env.NETWORK as NetworkName] });
+
+    let lcdClientConfig = ChainModule.lcdClientConfig([process.env.NETWORK as NetworkName]);
+
+    // override to private lcd with uncapped rate limiting
+    if (process.env.NETWORK === 'mainnet') {
+      lcdClientConfig['phoenix-1'].lcd = 'http://rpc-lcd.phoenix-1.internal';
+    }
+
+    Environment.lcd = new LCDClient(lcdClientConfig);
   }
 
   static getGenesis = (chainName: string): Epoch => {
