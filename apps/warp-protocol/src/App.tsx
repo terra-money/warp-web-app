@@ -21,7 +21,8 @@ import { TemplatesPage } from 'pages/templates';
 import { useWalletDefaultNetworks } from 'hooks/useWalletDefaultNetworks';
 import { ChainSelectorProvider } from '@terra-money/apps/hooks';
 import { useTermsOfUseDialog } from 'components/dialog/terms-of-use/TermsOfUseDialog';
-import { useEffect } from 'react';
+import TerraStationMobileWallet from '@terra-money/terra-station-mobile';
+import { useEffect, useMemo } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,10 @@ const Inner = () => {
   const [theme] = useTheme();
   const walletDefaultNetworks = useWalletDefaultNetworks();
 
+  const extraWallets = useMemo(() => {
+    return [new TerraStationMobileWallet()];
+  }, []);
+
   useEffect(() => {
     const accepted = localStorage.getItem('TermsOfUseAccepted_Oct-3-2023');
     if (!accepted) {
@@ -61,7 +66,7 @@ const Inner = () => {
 
   // TODO: check later if chainOptions would cause a flicker due to being null for first couple of calls
   return walletDefaultNetworks ? (
-    <WalletProvider defaultNetworks={walletDefaultNetworks}>
+    <WalletProvider defaultNetworks={walletDefaultNetworks} extraWallets={extraWallets}>
       <main className={styles.root} data-theme={theme}>
         {/* <NetworkGuard> */}
         <ChainSelectorProvider>
