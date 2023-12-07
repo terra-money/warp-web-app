@@ -28,7 +28,7 @@ export const useAnalyticsData = (
 
     const values = d.map((v) => Big(v.value ?? 0).toNumber());
 
-    const labels = Array.from({ length: d.length }, (_, idx) => format(subDays(new Date(), idx), 'E'));
+    const labels = Array.from({ length: d.length }, (_, idx) => format(subDays(new Date(), idx), 'E')).reverse();
 
     return {
       values,
