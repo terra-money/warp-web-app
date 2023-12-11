@@ -15,7 +15,7 @@ import { variableName } from 'utils/variable';
 import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 import { IAceEditor } from 'react-ace/lib/types';
 import { warp_resolver } from '@terra-money/warp-sdk';
-import { useWarpSdk } from '@terra-money/apps/hooks';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 export interface EditorInputProps {
   className?: string;
@@ -41,20 +41,19 @@ export interface EditorInputProps {
   onEditorCursorChange?: (editor: IAceEditor) => void;
 }
 
-const defaultExample = (contractAddr: string): warp_resolver.CosmosMsgFor_Empty => ({
-  wasm: {
-    execute: {
-      contract_addr: contractAddr,
-      msg: 'eyJ0ZXN0X21zZyI6eyJpZCI6IjEyMyJ9fQ==',
-      funds: [],
+const defaultExample = (walletAddr: string): warp_resolver.WarpMsg => ({
+  generic: {
+    bank: {
+      send: {
+        amount: [{ amount: '1000000', denom: 'uluna' }],
+        to_address: walletAddr,
+      },
     },
   },
 });
 
 const EditorInput = (props: EditorInputProps) => {
-  const sdk = useWarpSdk();
-
-  const contractAddr = sdk.chain.contracts.controller;
+  const { walletAddress } = useLocalWallet();
 
   const {
     endLabel,
@@ -68,7 +67,7 @@ const EditorInput = (props: EditorInputProps) => {
     mode = 'json',
     onChange,
     readOnly,
-    example = defaultExample(contractAddr),
+    example = defaultExample(walletAddress),
     onEditorCursorChange,
     suggestItems,
   } = props;
