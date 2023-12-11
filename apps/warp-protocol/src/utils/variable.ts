@@ -1,4 +1,5 @@
-import { warp_resolver, warp_templates, extractVariableName } from '@terra-money/warp-sdk';
+import { warp_resolver, extractVariableName } from '@terra-money/warp-sdk';
+import { Template } from 'types';
 
 export const resolveVariableRef = (ref: string, vars: warp_resolver.Variable[]) => {
   const name = extractVariableName(ref);
@@ -52,7 +53,7 @@ export const variableKind = (v: warp_resolver.Variable): warp_resolver.VariableK
   return v.query.kind;
 };
 
-export const templateVariables = (template: warp_templates.Template) => {
+export const templateVariables = (template: Template) => {
   const staticVariables = template.vars.filter((v) => 'static' in v) as Extract<
     warp_resolver.Variable,
     { static: {} }

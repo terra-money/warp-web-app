@@ -8,8 +8,9 @@ import { TemplateVarInput } from '../template-var-input/TemplateVarInput';
 import { findVariablePath, templateVariables } from 'utils/variable';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { decodeMsgs, encodeMsg, parseMsgs } from 'pages/job-new/JobNew';
+import { Template } from 'types';
 
-const composeMsgFromTemplate = (template: warp_templates.Template): string => {
+const composeMsgFromTemplate = (template: Template): string => {
   const vars = templateVariables(template);
 
   let msgs = decodeMsgs(parseMsgs(template.msg));
@@ -37,10 +38,10 @@ const composeMsgFromTemplate = (template: warp_templates.Template): string => {
 
 type TemplateFormProps = {
   onMessageComposed: (message: string) => void;
-  template?: warp_templates.Template;
-  setTemplate: (template: warp_templates.Template | undefined) => void;
+  template?: Template;
+  setTemplate: (template: Template | undefined) => void;
   setTemplateVars: (vars: warp_templates.StaticVariable[]) => void;
-  options: warp_templates.Template[];
+  options: Template[];
 };
 
 export const TemplateForm = (props: TemplateFormProps) => {

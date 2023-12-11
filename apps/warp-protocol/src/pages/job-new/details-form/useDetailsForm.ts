@@ -13,9 +13,9 @@ import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useMemo } from 'react';
 import { isEmpty } from 'lodash';
-import { warp_templates } from '@terra-money/warp-sdk';
 import { templateVariables } from 'utils/variable';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { Template } from 'types';
 
 export interface DetailsFormInput {
   name: string;
@@ -23,7 +23,7 @@ export interface DetailsFormInput {
   reward: string;
   message: string;
   recurring: boolean;
-  template?: warp_templates.Template;
+  template?: Template;
   selectedTabType?: 'template' | 'message';
 }
 

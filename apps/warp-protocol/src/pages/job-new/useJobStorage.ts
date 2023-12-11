@@ -6,8 +6,9 @@ import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
 import { useNativeToken } from 'hooks/useNativeToken';
-import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { useChainSuffix } from '@terra-money/apps/hooks';
+import { Template } from 'types';
 
 export const useJobStorage = () => {
   const detailsInputKey = useChainSuffix('__warp_details_input');
@@ -44,7 +45,7 @@ export const useJobStorage = () => {
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_templates.Template) => {
+    (template: Template) => {
       const details: DetailsFormInput = {
         reward: '',
         description: '',

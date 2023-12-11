@@ -4,7 +4,7 @@ import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -15,6 +15,7 @@ import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
 import { filterUnreferencedVariables } from 'utils/msgs';
+import { Template } from 'types';
 
 type JobNewProps = UIElementProps & {};
 
@@ -60,7 +61,7 @@ export const JobNew = (props: JobNewProps) => {
                               navigate('/job-new/condition');
                             } else {
                               const {
-                                template = {} as warp_templates.Template,
+                                template = {} as Template,
                                 name,
                                 message,
                                 description,

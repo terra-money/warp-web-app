@@ -1,6 +1,6 @@
 import { FormFunction, FormState, useForm } from '@terra-money/apps/hooks';
 import { useMemo } from 'react';
-import { warp_templates } from '@terra-money/warp-sdk';
+import { Template } from 'types';
 
 export interface EditTemplateInput {
   name: string;
@@ -10,7 +10,7 @@ export interface EditTemplateState extends FormState<EditTemplateInput> {
   submitDisabled: boolean;
 }
 
-export const useEditTemplateForm = (template: warp_templates.Template) => {
+export const useEditTemplateForm = (template: Template) => {
   const initialValue = useMemo<EditTemplateState>(
     () => ({
       name: template.name,
