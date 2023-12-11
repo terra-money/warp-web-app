@@ -15,8 +15,15 @@ export const useWithdrawFundsTx = () => {
   return useTx<WithdrawFundsTxProps>(
     async (options) => {
       const { token, amount, wallet } = options;
+      // TODO: implement
 
-      return sdk.tx.legacyWithdrawFromAccount(wallet.walletAddress, wallet.walletAddress, token, amount.toString());
+      return sdk.tx.withdrawFromAccount(
+        wallet.walletAddress,
+        wallet.walletAddress,
+        wallet.walletAddress,
+        token,
+        amount.toString()
+      );
     },
     {
       txKey: TX_KEY.WITHDRAW_FUNDS,

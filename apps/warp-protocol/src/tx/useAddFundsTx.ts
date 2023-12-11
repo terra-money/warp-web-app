@@ -5,7 +5,7 @@ import Big from 'big.js';
 import { u } from '@terra-money/apps/types';
 import { useWarpAccount } from 'queries/useWarpAccount';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { warp_controller } from '@terra-money/warp-sdk';
+import { warp_account_tracker } from '@terra-money/warp-sdk';
 
 interface AddFundsTxProps {
   token: Token;
@@ -13,14 +13,16 @@ interface AddFundsTxProps {
 }
 
 export const useAddFundsTx = () => {
-  const { data: account = {} as warp_controller.LegacyAccount } = useWarpAccount();
+  const { data: account = {} as warp_account_tracker.Account } = useWarpAccount();
   const sdk = useWarpSdk();
 
   return useTx<AddFundsTxProps>(
     async (options) => {
       const { token, amount } = options;
 
-      return sdk.tx.legacyDepositToAccount(account.owner, account.account, token, amount.toString());
+      // TODO: implement
+
+      return sdk.tx.depositToAccount(account.addr, account.addr, token, amount.toString());
     },
     {
       txKey: TX_KEY.ADD_FUNDS,

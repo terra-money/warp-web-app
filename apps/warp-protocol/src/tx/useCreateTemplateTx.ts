@@ -18,12 +18,12 @@ export const useCreateTemplateTx = () => {
     async (options) => {
       const { wallet, formatted_str, vars, name, msgs, condition } = options;
 
+      // TODO: implement
       return sdk.tx.submitTemplate(wallet.walletAddress, {
         formatted_str,
-        condition,
+        executions: [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }],
         vars,
         name,
-        msg: JSON.stringify(msgs),
       });
     },
     {
