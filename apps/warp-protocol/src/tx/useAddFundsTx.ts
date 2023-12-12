@@ -13,7 +13,7 @@ interface AddFundsTxProps {
 }
 
 export const useAddFundsTx = () => {
-  const { data: account = {} as warp_account_tracker.Account } = useWarpAccount();
+  const { data: account = {} as warp_account_tracker.FundingAccount } = useWarpAccount();
   const sdk = useWarpSdk();
 
   return useTx<AddFundsTxProps>(
@@ -22,7 +22,7 @@ export const useAddFundsTx = () => {
 
       // TODO: implement
 
-      return sdk.tx.depositToAccount(account.addr, account.addr, token, amount.toString());
+      return sdk.tx.depositToAccount(account.account_addr, account.account_addr, token, amount.toString());
     },
     {
       txKey: TX_KEY.ADD_FUNDS,

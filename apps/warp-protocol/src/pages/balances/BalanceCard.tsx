@@ -26,11 +26,11 @@ export const BalanceCard = (props: BalanceCardProps) => {
     balance
   );
 
-  const { data: warpAccount = { addr: walletAddr }, isLoading: isWarpAccountLoading } = useWarpAccount();
+  const { data: warpAccount = { account_addr: walletAddr }, isLoading: isWarpAccountLoading } = useWarpAccount();
 
   // TODO: implement
   const { data: warpBalance = Big(0) as u<Big>, isLoading: isWarpBalanceLoading } = useTokenBalanceQuery(
-    warpAccount.addr,
+    warpAccount.account_addr,
     balance
   );
 

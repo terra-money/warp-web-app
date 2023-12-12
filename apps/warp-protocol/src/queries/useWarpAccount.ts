@@ -3,7 +3,7 @@ import { useQuery, UseQueryResult } from 'react-query';
 import { warp_account_tracker } from '@terra-money/warp-sdk';
 import { QUERY_KEY } from './queryKey';
 
-export const useWarpAccount = (): UseQueryResult<warp_account_tracker.Account | undefined> => {
+export const useWarpAccount = (): UseQueryResult<warp_account_tracker.FundingAccount | undefined> => {
   const { connectedWallet, chainId } = useLocalWallet();
 
   const query = useQuery(
@@ -25,5 +25,5 @@ export const useWarpAccount = (): UseQueryResult<warp_account_tracker.Account | 
     }
   );
 
-  return query as UseQueryResult<warp_account_tracker.Account | undefined>;
+  return query as UseQueryResult<warp_account_tracker.FundingAccount | undefined>;
 };
