@@ -16,7 +16,7 @@ export class Environment {
 
     // override to private lcd with uncapped rate limiting
     if (process.env.NETWORK === 'mainnet') {
-      // lcdClientConfig['phoenix-1'].lcd = 'http://rpc-lcd.phoenix-1.internal:1317';
+      lcdClientConfig['phoenix-1'].lcd = 'http://rpc-lcd.phoenix-1.internal:1317';
     }
 
     Environment.lcd = new LCDClient(lcdClientConfig);
