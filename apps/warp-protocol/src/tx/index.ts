@@ -8,3 +8,4 @@ export * from './useCreateTemplateTx';
 export * from './useDeleteTemplateTx';
 export * from './useEditTemplateTx';
 export * from './useCreateDevJobTx';
+export * from './useCreateFundingAccountTx';

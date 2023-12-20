@@ -1,0 +1,61 @@
+.root
+  display: flex
+  flex-direction: column
+  height: 100%
+
+.empty
+  color: var(--text-color-primary)
+  height: 100%
+  justify-content: center
+  align-items: center
+  display: flex
+
+.container
+  display: flex
+  flex-direction: column
+  height: 100%
+  justify-content: center
+  align-items: center
+
+.throbber
+  flex-grow: 1
+  margin-left: auto
+  margin-right: auto
+
+.title
+  font-weight: 600
+  font-size: 40px
+  margin-bottom: 40px
+
+.header
+  margin-bottom: 40px
+  display: flex
+  padding-right: 16px
+  margin-bottom: 32px
+  justify-content: space-between
+
+.fundingAccounts
+  display: grid
+  grid-template-columns: 1fr 1fr
+  column-gap: 16px !important
+  row-gap: 16px !important
+  padding-bottom: 32px
+  overflow: auto
+  padding-right: 16px
+
+.new_icon
+  margin-right: 8px
+
+.top
+  width: 100%
+
+.tabs
+  margin-right: auto
+
+.tab
+  border-radius: 16px
+  text-transform: capitalize
+  margin-right: 12px
+
+  &:not(.selected_tab)
+    opacity: 0.4

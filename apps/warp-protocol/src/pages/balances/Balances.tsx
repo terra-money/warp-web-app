@@ -4,16 +4,15 @@ import { BalanceCard } from './BalanceCard';
 import styles from './Balances.module.sass';
 import { useBalances } from './useBalances';
 import { useTokenListDialog } from './token-list';
-import { LocalWallet } from '@terra-money/apps/hooks';
 
 interface BalancesProps {
-  connectedWallet: LocalWallet;
+  walletAddress: string;
 }
 
 export const Balances = (props: BalancesProps) => {
-  const { connectedWallet } = props;
+  const { walletAddress } = props;
 
-  const { balances, saveAll } = useBalances();
+  const { balances, saveAll } = useBalances(walletAddress);
 
   const openTokenListDialog = useTokenListDialog();
 
@@ -38,14 +37,7 @@ export const Balances = (props: BalancesProps) => {
       </Container>
       <Container className={styles.balances}>
         {balances.map((balance) => {
-          return (
-            <BalanceCard
-              key={balance.key}
-              balance={balance}
-              walletAddr={connectedWallet.walletAddress}
-              displayAsFiat={false}
-            />
-          );
+          return <BalanceCard key={balance.key} balance={balance} walletAddr={walletAddress} displayAsFiat={false} />;
         })}
       </Container>
     </Container>
