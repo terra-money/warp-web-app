@@ -22,6 +22,7 @@ const QUERY_REFETCH_MAP: QueryRefetchMap = {
   [TX_KEY.CREATE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.EDIT_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.DELETE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
+  [TX_KEY.CREATE_FUNDING_ACCOUNT]: [QUERY_KEY.FUNDING_ACCOUNTS],
 };
 
 const runRefetch = (queryRefetch: string | QueryRefetch): Promise<string> => {
