@@ -20,7 +20,7 @@ const CompletedSnackbarMessages: TxMessages = {
   [TX_KEY.CANCEL_JOB]: 'Job canceled successfully',
   [TX_KEY.EXECUTE_JOB]: 'Job executed successfully',
   [TX_KEY.ADD_FUNDS]: 'Funds added successfully',
-  [TX_KEY.WITHDRAW_FUNDS]: 'Funds withdrawed successfully',
+  [TX_KEY.WITHDRAW_FUNDS]: 'Funds withdrawn successfully',
   [TX_KEY.CREATE_ACCOUNT]: 'Account created successfully',
   [TX_KEY.CREATE_TEMPLATE]: 'Template created successfully',
   [TX_KEY.EDIT_TEMPLATE]: 'Template edited successfully',
