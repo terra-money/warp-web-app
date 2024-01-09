@@ -14,10 +14,10 @@ import classNames from 'classnames';
 
 interface FundingAccountsProps {}
 
-const accountStatuses = ['free', 'taken'] as warp_account_tracker.AccountStatus[];
+const accountStatuses = ['taken', 'free'] as warp_account_tracker.AccountStatus[];
 
 export const FundingAccounts = (props: FundingAccountsProps) => {
-  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('free');
+  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('taken');
 
   const { walletAddress } = useLocalWallet();
 
@@ -32,7 +32,7 @@ export const FundingAccounts = (props: FundingAccountsProps) => {
     <Container className={styles.root} direction="column">
       <Container className={styles.header} direction="column">
         <Text variant="heading1" className={styles.title}>
-          FundingAccounts
+          Funding Accounts
         </Text>
         <Container className={styles.top}>
           <Container className={styles.tabs} direction="row">
@@ -65,7 +65,7 @@ export const FundingAccounts = (props: FundingAccountsProps) => {
           return <FundingAccountCard key={acc.account_addr} fundingAccount={acc} />;
         })}
       </Container>
-      {!isLoading && fundingAccounts.length === 0 && <EmptyView />}
+      {!isLoading && fundingAccounts.length === 0 && <EmptyView status={selectedAccountStatus} />}
     </Container>
   );
 };
