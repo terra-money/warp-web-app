@@ -5,8 +5,13 @@ import styles from './Pill.module.sass';
 type PillProps = PropsWithChildren & {
   color: 'green' | 'blue' | 'purple' | 'yellow';
   className?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
-export const Pill = ({ color, children, className }: PillProps) => {
-  return <div className={classNames(styles.pill, styles[`pill_${color}`], className)}>{children}</div>;
+export const Pill = ({ color, children, className, onClick }: PillProps) => {
+  return (
+    <div onClick={onClick} className={classNames(styles.pill, styles[`pill_${color}`], className)}>
+      {children}
+    </div>
+  );
 };
