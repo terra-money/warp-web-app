@@ -4,5 +4,5 @@ import { Balances } from './Balances';
 export const BalancesPage = () => {
   const { fundingAccountAddress } = useParams();
 
-  return <Balances walletAddress={fundingAccountAddress ?? ''} />;
+  return <Balances fundingAccountAddress={fundingAccountAddress ?? ''} />;
 };

@@ -6,13 +6,13 @@ import { useBalances } from './useBalances';
 import { useTokenListDialog } from './token-list';
 
 interface BalancesProps {
-  walletAddress: string;
+  fundingAccountAddress: string;
 }
 
 export const Balances = (props: BalancesProps) => {
-  const { walletAddress } = props;
+  const { fundingAccountAddress } = props;
 
-  const { balances, saveAll } = useBalances(walletAddress);
+  const { balances, saveAll } = useBalances(fundingAccountAddress);
 
   const openTokenListDialog = useTokenListDialog();
 
@@ -21,6 +21,9 @@ export const Balances = (props: BalancesProps) => {
       <Container className={styles.header}>
         <Text variant="heading1" className={styles.title}>
           Balances
+          <Text variant="label" className={styles.wallet}>
+            {fundingAccountAddress}
+          </Text>
         </Text>
         <Button
           variant="primary"
@@ -37,7 +40,14 @@ export const Balances = (props: BalancesProps) => {
       </Container>
       <Container className={styles.balances}>
         {balances.map((balance) => {
-          return <BalanceCard key={balance.key} balance={balance} walletAddr={walletAddress} displayAsFiat={false} />;
+          return (
+            <BalanceCard
+              key={balance.key}
+              balance={balance}
+              fundingAccountAddress={fundingAccountAddress}
+              displayAsFiat={false}
+            />
+          );
         })}
       </Container>
     </Container>

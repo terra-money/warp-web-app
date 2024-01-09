@@ -8,29 +8,28 @@ import { Token, u } from '@terra-money/apps/types';
 import { AnimatedTokenIcon } from './AnimatedTokenIcon';
 import styles from './BalanceCard.module.sass';
 import { useTokenBalanceQuery } from 'queries/useTokenBalanceQuery';
-import { useWarpAccount } from 'queries/useWarpAccount';
 import { Panel } from 'components/panel';
 import { TokenAmount } from 'components/token-amount';
+import { useLocalWallet } from '@terra-money/apps/hooks';
 
 interface BalanceCardProps extends UIElementProps {
   balance: Token;
-  walletAddr: string;
+  fundingAccountAddress: string;
   displayAsFiat: boolean;
 }
 
 export const BalanceCard = (props: BalanceCardProps) => {
-  const { className, balance, walletAddr } = props;
+  const { className, balance, fundingAccountAddress } = props;
+
+  const { walletAddress } = useLocalWallet();
 
   const { data: walletBalance = Big(0) as u<Big>, isLoading: isWalletBalanceLoading } = useTokenBalanceQuery(
-    walletAddr,
+    walletAddress,
     balance
   );
 
-  const { data: warpAccount = { account_addr: walletAddr }, isLoading: isWarpAccountLoading } = useWarpAccount();
-
-  // TODO: implement
   const { data: warpBalance = Big(0) as u<Big>, isLoading: isWarpBalanceLoading } = useTokenBalanceQuery(
-    warpAccount.account_addr,
+    fundingAccountAddress,
     balance
   );
 
@@ -48,7 +47,7 @@ export const BalanceCard = (props: BalanceCardProps) => {
         <Container direction="column">
           <Text variant="label">Account</Text>
           <TokenAmount
-            loading={isWarpAccountLoading || isWarpBalanceLoading}
+            loading={isWarpBalanceLoading}
             token={balance}
             variant="text"
             decimals={2}
@@ -74,6 +73,7 @@ export const BalanceCard = (props: BalanceCardProps) => {
           onClick={() =>
             openAddFundsDialog({
               token: balance,
+              fundingAccountAddress,
             })
           }
         >
@@ -86,6 +86,7 @@ export const BalanceCard = (props: BalanceCardProps) => {
             openWithdrawFundsDialog({
               token: balance,
               balance: warpBalance,
+              fundingAccountAddress,
             })
           }
         >

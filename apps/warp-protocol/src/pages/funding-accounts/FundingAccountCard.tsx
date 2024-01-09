@@ -16,8 +16,11 @@ export const FundingAccountCard = (props: FundingAccountCardProps) => {
   const navigate = useNavigate();
 
   return (
-    <Panel className={classNames(className, styles.root)}>
-      <Container className={styles.top} onClick={() => navigate(`/funding-accounts/${fundingAccount.account_addr}`)}>
+    <Panel
+      className={classNames(className, styles.root)}
+      onClick={() => navigate(`/funding-accounts/${fundingAccount.account_addr}`)}
+    >
+      <Container className={styles.top}>
         <Container className={styles.left} direction="column">
           <Text variant="text" className={styles.name}>
             {fundingAccount.account_addr}

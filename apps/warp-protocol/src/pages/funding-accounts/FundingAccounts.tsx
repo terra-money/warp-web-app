@@ -17,7 +17,7 @@ interface FundingAccountsProps {}
 const accountStatuses = ['free', 'taken'] as warp_account_tracker.AccountStatus[];
 
 export const FundingAccounts = (props: FundingAccountsProps) => {
-  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('taken');
+  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('free');
 
   const { walletAddress } = useLocalWallet();
 

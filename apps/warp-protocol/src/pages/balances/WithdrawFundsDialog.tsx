@@ -12,14 +12,15 @@ import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 interface WithdrawFundsProps {
   token: Token;
   balance: u<Big>;
+  fundingAccountAddress: string;
 }
 
 const WithdrawFundsDialog = (props: DialogProps<WithdrawFundsProps>) => {
-  const { token, balance, closeDialog } = props;
+  const { token, balance, closeDialog, fundingAccountAddress } = props;
 
   const [input, { amount, amountValid, amountError, submitDisabled }] = useWithdrawFundsForm(token, balance);
 
-  const [txResult, tx] = useWithdrawFundsTx();
+  const [txResult, tx] = useWithdrawFundsTx(fundingAccountAddress);
 
   return (
     <Dialog>

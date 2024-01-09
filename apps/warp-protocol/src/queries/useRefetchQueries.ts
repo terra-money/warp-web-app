@@ -30,7 +30,7 @@ const runRefetch = (queryRefetch: string | QueryRefetch): Promise<string> => {
     if (typeof queryRefetch === 'string') {
       // we cant query right away because we need to give the nodes
       // time to sync before the data is available to requery
-      sleep(300).then(() => resolve(queryRefetch));
+      sleep(600).then(() => resolve(queryRefetch));
     } else if (typeof queryRefetch.wait === 'number') {
       sleep(queryRefetch.wait).then(() => resolve(queryRefetch.queryKey));
     } else {

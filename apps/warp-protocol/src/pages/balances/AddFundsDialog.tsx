@@ -11,15 +11,16 @@ import { TokenInput } from './token-input/TokenInput';
 
 interface AddFundsProps {
   token?: Token;
+  fundingAccountAddress: string;
 }
 
 const AddFundsDialog = (props: DialogProps<AddFundsProps>) => {
-  const { token: selectedToken, closeDialog } = props;
+  const { token: selectedToken, closeDialog, fundingAccountAddress } = props;
 
   const [input, { token, balance, balanceLoading, amount, amountValid, amountError, submitDisabled }] =
     useAddFundsForm(selectedToken);
 
-  const [txResult, tx] = useAddFundsTx();
+  const [txResult, tx] = useAddFundsTx(fundingAccountAddress);
 
   return (
     <Dialog>
