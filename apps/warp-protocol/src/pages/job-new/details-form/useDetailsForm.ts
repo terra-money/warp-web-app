@@ -7,7 +7,6 @@ import {
   useForm,
   useLocalWallet,
 } from '@terra-money/apps/hooks';
-import { microfy } from '@terra-money/apps/libs/formatting';
 import { fetchTokenBalance } from '@terra-money/apps/queries';
 import { Token, u } from '@terra-money/apps/types';
 import Big from 'big.js';
@@ -20,7 +19,7 @@ import { Template } from 'types';
 export interface DetailsFormInput {
   name: string;
   description: string;
-  reward: string;
+  durationDays: string;
   message: string;
   recurring: boolean;
   template?: Template;
@@ -65,7 +64,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
   const initialValue = useMemo<DetailsFormState>(
     () => ({
       name: input?.name ?? '',
-      reward: input?.reward ?? '',
+      durationDays: input?.durationDays ?? '',
       message: input?.message ?? '',
       description: input?.description ?? '',
       template: input?.template ?? undefined,
@@ -113,12 +112,6 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     const descriptionError =
       state.description.length > 200 ? 'The description can not exceed the maximum of 200 characters' : undefined;
 
-    const uReward = state.reward ? microfy(state.reward, nativeToken.decimals) : Big(0);
-
-    const rewardError = uReward.gt(state.tokenBalance) ? 'The amount can not exceed the maximum balance' : undefined;
-
-    const rewardValid = uReward.gt(0) && rewardError === undefined;
-
     const messageValid = Boolean(state.message) && messageError === undefined;
 
     const templateError = Boolean(state.template && templateVariables(state.template).find((v) => isEmpty(v.value)))
@@ -133,16 +126,12 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
         descriptionError ||
         state.message === undefined ||
         messageError ||
-        rewardError ||
-        !rewardValid ||
         !messageValid ||
         templateError
     );
 
     dispatch({
       ...state,
-      rewardValid,
-      rewardError,
       nameError,
       messageValid,
       messageError,

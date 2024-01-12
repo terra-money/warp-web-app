@@ -5,7 +5,6 @@ import { FormControl } from 'components/form-control/FormControl';
 import { Form } from 'components/form/Form';
 import { Button, Link, Text } from 'components/primitives';
 import { TextInput } from 'components/primitives/text-input';
-import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
 import { useNavigate } from 'react-router';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { Footer } from '../footer/Footer';
@@ -18,8 +17,8 @@ import { variableName } from 'utils/variable';
 import { useCachedVariables } from '../useCachedVariables';
 import { useCallback, useEffect } from 'react';
 import { useJobStorage } from '../useJobStorage';
-import { useNativeToken } from 'hooks/useNativeToken';
 import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
+import { NumericInput } from 'components/primitives/numeric-input';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: warp_resolver.Variable[] }) => void;
@@ -40,9 +39,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
     {
       name,
       nameError,
-      reward,
-      rewardError,
-      rewardValid,
+      durationDays,
       message,
       selectedTabType,
       template,
@@ -50,13 +47,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
       descriptionError,
       messageError,
       submitDisabled,
-      tokenBalance,
-      tokenBalanceLoading,
       recurring,
     },
   ] = useDetailsForm(detailsInput);
-
-  const nativeToken = useNativeToken();
 
   const navigate = useNavigate();
 
@@ -112,21 +105,17 @@ export const DetailsForm = (props: DetailsFormProps) => {
             }}
           />
         </FormControl>
-        <AmountInput
-          className={styles.amount_input}
-          label="Reward"
-          value={reward}
-          onChange={(value) =>
-            input({
-              reward: value.target.value,
-            })
-          }
-          balance={tokenBalance}
-          balanceLoading={tokenBalanceLoading}
-          error={rewardError}
-          token={nativeToken}
-          valid={rewardValid}
-        />
+        <FormControl className={styles.amount_input} label="Duration (in days)">
+          <NumericInput
+            placeholder="Type number of days"
+            value={durationDays}
+            onChange={(value) =>
+              input({
+                durationDays: value.target.value,
+              })
+            }
+          />
+        </FormControl>
         <FormControl label="Description" className={styles.description_input}>
           <TextInput
             placeholder="Type a comprehensive description of the job. Your precise details will help us tailor AI assistance."
@@ -220,8 +209,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
           disabled={submitDisabled}
           loading={loading}
           onClick={async () => {
-            if (name && reward && message) {
-              onNext({ name, reward, message, template, selectedTabType, variables, description, recurring });
+            if (name && durationDays && message) {
+              onNext({ name, durationDays, message, template, selectedTabType, variables, description, recurring });
             }
           }}
         >

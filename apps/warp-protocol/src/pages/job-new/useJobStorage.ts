@@ -1,11 +1,9 @@
-import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
-import { useNativeToken } from 'hooks/useNativeToken';
 import { warp_resolver } from '@terra-money/warp-sdk';
 import { useChainSuffix } from '@terra-money/apps/hooks';
 import { Template } from 'types';
@@ -13,8 +11,6 @@ import { Template } from 'types';
 export const useJobStorage = () => {
   const detailsInputKey = useChainSuffix('__warp_details_input');
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(detailsInputKey, {} as any);
-
-  const nativeToken = useNativeToken();
 
   const conditionKey = useChainSuffix('__warp_condition');
   const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>(conditionKey, {} as any);
@@ -30,7 +26,7 @@ export const useJobStorage = () => {
   const saveJob = useCallback(
     (job: Job) => {
       const details: DetailsFormInput = {
-        reward: demicrofy(job.reward, nativeToken.decimals).toString(),
+        durationDays: job.info.duration_days.toString(),
         name: job.info.name,
         description: job.info.description,
         message: JSON.stringify(job.msgs, null, 2),
@@ -41,13 +37,13 @@ export const useJobStorage = () => {
       setCond(job.condition);
       setVariables(job.info.vars);
     },
-    [setDetailsInput, setCond, nativeToken.decimals, setVariables]
+    [setDetailsInput, setCond, setVariables]
   );
 
   const setJobTemplate = useCallback(
     (template: Template) => {
       const details: DetailsFormInput = {
-        reward: '',
+        durationDays: '',
         description: '',
         name: '',
         message: JSON.stringify(template.msg, null, 2),
