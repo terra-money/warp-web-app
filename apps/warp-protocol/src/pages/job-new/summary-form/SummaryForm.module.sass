@@ -1,1 +1,91 @@
 .root
+  width: 100%
+  overflow: auto
+
+.title_container
+  position: relative
+  display: flex
+  width: 640px
+  flex-direction: column
+  align-items: flex-start
+  margin-bottom: 40px
+
+.title
+  font-weight: 600
+  font-size: 40px
+
+.jobs
+  height: 100%
+
+.back
+  min-height: 0
+  margin-top: 24px
+
+.content
+  height: 100%
+  width: 100%
+
+.bottom
+  flex-direction: row
+  height: 100%
+  width: 100%
+
+.description
+  margin-top: 24px
+  line-height: 22px
+
+.middle
+  position: relative
+  height: auto
+  display: grid
+  width: 1000px
+  grid-template-columns: 1fr 1fr 1fr 1fr
+  grid-template-rows: repeat(5, min-content)
+  row-gap: 24px !important
+  column-gap: 24px !important
+
+.name,
+.description,
+.durationDays,
+.recurring,
+.reward,
+.operational_amount,
+.message,
+.condition
+  width: 100%
+
+.name
+  grid-row: 1
+  grid-column: 1
+
+.description
+  grid-row: 2
+  grid-column: 1
+
+.durationDays
+  grid-row: 3
+  grid-column: 1
+
+.recurring
+  grid-row: 4
+  grid-column: 1
+
+.reward
+  grid-row: 5
+  grid-column: 1
+
+.operational_amount
+  grid-row: 6
+  grid-column: 1
+
+.message
+  grid-row: 1 / span 4
+  grid-column: 2 / span 3
+
+.condition
+  grid-row: 5 / span 3
+  grid-column: 2 / span 3
+
+
+.text
+  color: #FFF !important

@@ -3,9 +3,7 @@ import { Button, Link, Text } from 'components/primitives';
 import classNames from 'classnames';
 import styles from './SummaryForm.module.sass';
 import { FormControl } from 'components/form-control/FormControl';
-import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import { useCachedVariables } from '../useCachedVariables';
-import { Condition } from 'pages/job-page/panels/Condition/Conditon';
 import { Job } from 'types/job';
 import { Footer } from '../footer/Footer';
 import { useNavigate } from 'react-router';
@@ -16,6 +14,12 @@ import { filterUnreferencedVariables, orderVarsByReferencing } from 'utils/msgs'
 import { useLocalWallet, useWarpSdk } from '@terra-money/apps/hooks';
 import { useEffect, useState } from 'react';
 import { composers } from '@terra-money/warp-sdk';
+import { JobMessagePanel } from 'pages/job-page/panels/JobMessagePanel';
+import { JobConditionsPanel } from 'pages/job-page/panels/JobConditionsPanel';
+import { TokenAmount } from 'components/token-amount';
+import { u } from '@terra-money/apps/types';
+import Big from 'big.js';
+import { useNativeToken } from 'hooks/useNativeToken';
 
 type SummaryFormProps = UIElementProps & {};
 
@@ -34,8 +38,10 @@ export const SummaryForm = (props: SummaryFormProps) => {
 
   const { walletAddress } = useLocalWallet();
 
-  const [reward, setReward] = useState<string>('');
-  const [operationalAmount, setOperationalAmount] = useState<string>('');
+  const [reward, setReward] = useState<string>();
+  const [operationalAmount, setOperationalAmount] = useState<string>();
+
+  const nativeToken = useNativeToken();
 
   useEffect(() => {
     const cb = async () => {
@@ -75,34 +81,64 @@ export const SummaryForm = (props: SummaryFormProps) => {
         <Link className={styles.back} to={-1}>
           Back
         </Link>
-        <Text className={styles.description} variant="label">
-          Below you can overview information related to your Warp job.
-        </Text>
       </Container>
       <Container className={styles.middle} direction="column">
-        <FormControl label="Name" className={styles.form_control}>
-          <Text variant="text">{detailsInput?.name}</Text>
+        <FormControl label="Name" className={styles.name}>
+          <Text variant="text" className={styles.text}>
+            {detailsInput?.name}
+          </Text>
         </FormControl>
-        <FormControl label="Description" className={styles.form_control}>
-          <Text variant="text">{detailsInput?.description}</Text>
+        <FormControl label="Description" className={styles.description}>
+          <Text variant="text" className={styles.text}>
+            {!detailsInput?.description ? '--' : detailsInput.description}
+          </Text>
         </FormControl>
-        <FormControl label="Duration (in days)" className={styles.form_control}>
-          <Text variant="text">{detailsInput?.durationDays}</Text>
+        <FormControl label="Duration (in days)" className={styles.durationDays}>
+          <Text variant="text" className={styles.text}>
+            {detailsInput?.durationDays}
+          </Text>
         </FormControl>
-        <FormControl label="Message" className={styles.form_control}>
-          <EditorInput
-            rootClassName={styles.msg}
-            className={styles.msg_editor}
-            value={JSON.stringify(detailsInput?.message, null, 2)}
-            readOnly={true}
-          />
+        <FormControl label="Recurring" className={styles.recurring}>
+          <Text variant="text" className={styles.text}>
+            {detailsInput?.recurring ? 'Yes' : 'No'}
+          </Text>
         </FormControl>
-        <FormControl label="Recurring" className={styles.form_control}>
-          <Text variant="text">{detailsInput?.recurring ? 'Yes' : 'No'}</Text>
+        <FormControl label="Reward" className={styles.reward}>
+          {reward ? (
+            <TokenAmount
+              className={styles.text}
+              variant="text"
+              decimals={2}
+              token={nativeToken}
+              amount={Big(reward) as u<Big>}
+              showSymbol={true}
+              showUsdAmount={true}
+            />
+          ) : (
+            'Estimating...'
+          )}
         </FormControl>
-        <FormControl label="Condition" className={styles.form_control}>
-          <Condition isRoot job={{ vars: variables } as Job} condition={cond!} />
+        <FormControl label="Operational amount" className={styles.operational_amount}>
+          {operationalAmount ? (
+            <TokenAmount
+              className={styles.text}
+              variant="text"
+              decimals={2}
+              token={nativeToken}
+              amount={Big(operationalAmount) as u<Big>}
+              showSymbol={true}
+              showUsdAmount={true}
+            />
+          ) : (
+            'Estimating...'
+          )}
         </FormControl>
+
+        <JobMessagePanel
+          className={styles.message}
+          job={{ msgs: parseMsgs(detailsInput?.message!) } as unknown as Job}
+        />
+        <JobConditionsPanel className={styles.condition} job={{ condition: cond! } as unknown as Job} />
       </Container>
 
       <Footer>
@@ -111,7 +147,7 @@ export const SummaryForm = (props: SummaryFormProps) => {
           loading={txResult.loading}
           disabled={!reward || !operationalAmount}
           onClick={async () => {
-            if (detailsInput) {
+            if (detailsInput && operationalAmount && reward) {
               const { name, message, description, recurring, durationDays } = detailsInput;
 
               const msgs = parseMsgs(message);

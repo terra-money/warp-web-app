@@ -59,7 +59,7 @@ export const ConditionForm = (props: ConditionFormProps) => {
             }
           }}
         >
-          Save
+          Next
         </Button>
         <Button variant="secondary" onClick={() => navigate(-1)}>
           Back
