@@ -29,7 +29,7 @@ type DetailsFormProps = UIElementProps & {
 
 type TabType = 'template' | 'message';
 
-const tabTypes = ['template', 'message'] as TabType[];
+const tabTypes = ['message', 'template'] as TabType[];
 
 export const DetailsForm = (props: DetailsFormProps) => {
   const { onNext, className, detailsInput, mode, loading } = props;

@@ -34,7 +34,7 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const onCancelJob = useCallback(() => openCancelJobDialog({ job }), [openCancelJobDialog, job]);
   const onCloneJob = useCallback(() => {
     saveJob(job);
-    navigate(`/job-new/details?mode=advanced`);
+    navigate(`/job-new/details`);
   }, [navigate, job, saveJob]);
 
   return (

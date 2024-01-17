@@ -22,30 +22,12 @@ export const NewJobDialog = (props: DialogProps<NewJobDialogProps>) => {
         <Text variant="label" className={styles.description}>
           Select an option below to create a job.
         </Text>
-        {/* <Button
-          variant="secondary"
-          className={styles.btn}
-          onClick={async () => {
-            clearJobStorage();
-            navigate('/job-new/details?mode=basic');
-            closeDialog(undefined, { closeAll: true });
-          }}
-        >
-          <Container direction="column" className={styles.txt_container}>
-            <Text className={styles.text} variant="text">
-              Basic mode
-            </Text>
-            <Text className={styles.label} variant="label">
-              Create a job from a library of job templates.
-            </Text>
-          </Container>
-        </Button> */}
         <Button
           variant="secondary"
           className={styles.btn}
           onClick={async () => {
             clearJobStorage();
-            navigate('/job-new/details?mode=advanced');
+            navigate('/job-new/details');
             closeDialog(undefined, { closeAll: true });
           }}
         >

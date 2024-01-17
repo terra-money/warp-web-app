@@ -14,15 +14,14 @@ import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
-import { filterUnreferencedVariables } from 'utils/msgs';
-import { Template } from 'types';
+import { SummaryForm } from './summary-form/SummaryForm';
 
 type JobNewProps = UIElementProps & {};
 
 export const JobNew = (props: JobNewProps) => {
-  const { detailsInput, setDetailsInput } = useJobStorage();
+  const { detailsInput, setDetailsInput, setCond } = useJobStorage();
 
-  const [txResult, createJobTx] = useCreateJobTx();
+  const [txResult] = useCreateJobTx();
 
   const localWallet = useLocalWallet();
   const navigate = useNavigate();
@@ -54,38 +53,8 @@ export const JobNew = (props: JobNewProps) => {
                           loading={txResult.loading}
                           detailsInput={detailsInput}
                           onNext={async (props) => {
-                            const { template } = props;
-
-                            if (mode === 'advanced' || !template?.condition) {
-                              setDetailsInput(props);
-                              navigate('/job-new/condition');
-                            } else {
-                              const {
-                                template = {} as Template,
-                                name,
-                                message,
-                                description,
-                                variables,
-                                recurring,
-                              } = props;
-                              const { condition } = template;
-
-                              const msgs = parseMsgs(message);
-                              const vars = filterUnreferencedVariables(variables, msgs, condition!);
-
-                              const resp = await createJobTx({
-                                name,
-                                vars,
-                                description,
-                                recurring,
-                                msgs,
-                                condition: condition!,
-                              });
-
-                              if (resp.code !== 0) {
-                                navigate('/jobs');
-                              }
-                            }
+                            setDetailsInput(props);
+                            navigate('/job-new/condition');
                           }}
                         />
                       </>
@@ -100,34 +69,24 @@ export const JobNew = (props: JobNewProps) => {
                           className={styles.condition}
                           loading={txResult.loading}
                           onNext={async (props) => {
-                            if (detailsInput) {
-                              const { cond, variables } = props;
-                              const { name, message, description, recurring } = detailsInput;
-
-                              const msgs = parseMsgs(message);
-
-                              const vars = filterUnreferencedVariables(variables, msgs, cond);
-
-                              const resp = await createJobTx({
-                                name,
-                                vars,
-                                description,
-                                msgs,
-                                recurring,
-                                condition: cond,
-                              });
-
-                              if (resp.code !== 0) {
-                                navigate('/jobs');
-                              }
-                            }
+                            setCond(props.cond);
+                            navigate('/job-new/summary');
                           }}
                         />
                       </>
                     }
                   />
+                  <Route
+                    path="/summary"
+                    element={
+                      <>
+                        <VariableDrawer />
+                        <SummaryForm className={styles.summary} />
+                      </>
+                    }
+                  />
                   <Route path="/developer" element={<DeveloperForm className={styles.developer} />} />
-                  <Route path="*" element={<Navigate to="/job-new/details?mode=basic" replace />} />
+                  <Route path="*" element={<Navigate to="/job-new/details" replace />} />
                 </Routes>
               </>
             )

@@ -68,7 +68,7 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       message: input?.message ?? '',
       description: input?.description ?? '',
       template: input?.template ?? undefined,
-      selectedTabType: input?.selectedTabType ?? 'template',
+      selectedTabType: input?.selectedTabType ?? 'message',
       submitDisabled: input ? false : true,
       tokenBalance: Big(0) as u<Big>,
       tokenBalanceLoading: false,
