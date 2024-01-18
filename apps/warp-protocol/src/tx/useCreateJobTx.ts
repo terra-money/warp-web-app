@@ -39,6 +39,7 @@ export const useCreateJobTx = () => {
       const createJobMsg = composers.job
         .create()
         .name(name)
+        .labels([])
         .reward(reward.toString())
         .operationalAmount(operationalAmount.toString())
         .recurring(recurring)

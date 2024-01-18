@@ -46,8 +46,12 @@ export const SummaryForm = (props: SummaryFormProps) => {
   useEffect(() => {
     const cb = async () => {
       const { durationDays, recurring, message } = detailsInput!;
-      const executions = [{ condition: cond!, msgs: parseMsgs(message) }];
-      const orderedVars = orderVarsByReferencing(variables);
+      const msgs = parseMsgs(message);
+      const condition = cond!;
+      const executions = [{ condition, msgs }];
+      const vars = filterUnreferencedVariables(variables, msgs, condition);
+
+      const orderedVars = orderVarsByReferencing(vars);
 
       const estimateJobRewardMsg = composers.job
         .estimate()
@@ -83,27 +87,27 @@ export const SummaryForm = (props: SummaryFormProps) => {
         </Link>
       </Container>
       <Container className={styles.middle} direction="column">
-        <FormControl label="Name" className={styles.name}>
+        <FormControl labelVariant="secondary" label="Name" className={styles.name}>
           <Text variant="text" className={styles.text}>
             {detailsInput?.name}
           </Text>
         </FormControl>
-        <FormControl label="Description" className={styles.description}>
+        <FormControl labelVariant="secondary" label="Description" className={styles.description}>
           <Text variant="text" className={styles.text}>
             {!detailsInput?.description ? '--' : detailsInput.description}
           </Text>
         </FormControl>
-        <FormControl label="Duration (in days)" className={styles.durationDays}>
+        <FormControl labelVariant="secondary" label="Duration (in days)" className={styles.durationDays}>
           <Text variant="text" className={styles.text}>
             {detailsInput?.durationDays}
           </Text>
         </FormControl>
-        <FormControl label="Recurring" className={styles.recurring}>
+        <FormControl labelVariant="secondary" label="Recurring" className={styles.recurring}>
           <Text variant="text" className={styles.text}>
             {detailsInput?.recurring ? 'Yes' : 'No'}
           </Text>
         </FormControl>
-        <FormControl label="Reward" className={styles.reward}>
+        <FormControl labelVariant="secondary" label="Reward" className={styles.reward}>
           {reward ? (
             <TokenAmount
               className={styles.text}
@@ -115,10 +119,12 @@ export const SummaryForm = (props: SummaryFormProps) => {
               showUsdAmount={true}
             />
           ) : (
-            'Estimating...'
+            <Text variant="text" className={styles.text}>
+              Estimating...
+            </Text>
           )}
         </FormControl>
-        <FormControl label="Operational amount" className={styles.operational_amount}>
+        <FormControl labelVariant="secondary" label="Total cost (fees + reward)" className={styles.operational_amount}>
           {operationalAmount ? (
             <TokenAmount
               className={styles.text}
@@ -130,7 +136,9 @@ export const SummaryForm = (props: SummaryFormProps) => {
               showUsdAmount={true}
             />
           ) : (
-            'Estimating...'
+            <Text variant="text" className={styles.text}>
+              Estimating...
+            </Text>
           )}
         </FormControl>
 
@@ -138,7 +146,10 @@ export const SummaryForm = (props: SummaryFormProps) => {
           className={styles.message}
           job={{ msgs: parseMsgs(detailsInput?.message!) } as unknown as Job}
         />
-        <JobConditionsPanel className={styles.condition} job={{ condition: cond! } as unknown as Job} />
+        <JobConditionsPanel
+          className={styles.condition}
+          job={{ condition: cond!, vars: variables } as unknown as Job}
+        />
       </Container>
 
       <Footer>
