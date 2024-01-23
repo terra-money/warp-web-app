@@ -19,6 +19,7 @@ import { useCallback, useEffect } from 'react';
 import { useJobStorage } from '../useJobStorage';
 import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 import { NumericInput } from 'components/primitives/numeric-input';
+import { FundingAccountInput } from './funding-account-input/FundingAccountInput';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: warp_resolver.Variable[] }) => void;
@@ -80,9 +81,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
           Back
         </Link>
         <Text className={styles.description} variant="label">
-          Below you may enter job information including the Cosmos message payload, along with the reward provided to
-          the keeper for successfully executing the job. Any tokens sent as part of the job's message must be present in
-          your Warp account balance at the moment of execution.
+          Below you may enter job information including the Cosmos message payload, duration of stay in job queue and an
+          optional funding account (used for fees and keeper reward).
         </Text>
       </Container>
       <Form className={styles.form}>
@@ -146,6 +146,13 @@ export const DetailsForm = (props: DetailsFormProps) => {
           helpText="This determines whether a job is rescheduled after being executed."
           value={recurring}
           onChange={(value) => input({ recurring: value })}
+        />
+
+        <FundingAccountInput
+          className={styles.funding_account}
+          label="Funding account"
+          value={undefined}
+          onChange={(token) => {}}
         />
 
         <Container className={styles.tabs} direction="row">
