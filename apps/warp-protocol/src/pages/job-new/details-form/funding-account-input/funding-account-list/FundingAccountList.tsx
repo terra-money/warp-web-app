@@ -78,7 +78,7 @@ const FundingAccountListDialog = (props: DialogProps<void, string>) => {
           direction="row"
         >
           <Text variant="label">{`Displaying ${listData.fundingAccounts.length} ${pluralize(
-            'funding accounts',
+            'funding account',
             listData.fundingAccounts.length
           )}`}</Text>
           <Text variant="label">Balance</Text>

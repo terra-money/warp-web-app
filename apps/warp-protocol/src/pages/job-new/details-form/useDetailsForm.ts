@@ -123,6 +123,9 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       state.name === undefined ||
         state.name === null ||
         state.name.length < 1 ||
+        state.durationDays === undefined ||
+        state.durationDays === null ||
+        state.durationDays.length < 1 ||
         nameError ||
         descriptionError ||
         state.message === undefined ||
