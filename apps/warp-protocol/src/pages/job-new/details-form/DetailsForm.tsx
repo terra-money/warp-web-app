@@ -48,6 +48,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
       descriptionError,
       messageError,
       submitDisabled,
+      fundingAccount,
       recurring,
     },
   ] = useDetailsForm(detailsInput);
@@ -151,8 +152,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
         <FundingAccountInput
           className={styles.funding_account}
           label="Funding account"
-          value={undefined}
-          onChange={(token) => {}}
+          value={fundingAccount}
+          onChange={(acc) => input({ fundingAccount: acc })}
         />
 
         <Container className={styles.tabs} direction="row">
@@ -217,7 +218,17 @@ export const DetailsForm = (props: DetailsFormProps) => {
           loading={loading}
           onClick={async () => {
             if (name && durationDays && message) {
-              onNext({ name, durationDays, message, template, selectedTabType, variables, description, recurring });
+              onNext({
+                name,
+                durationDays,
+                message,
+                template,
+                selectedTabType,
+                variables,
+                description,
+                recurring,
+                fundingAccount,
+              });
             }
           }}
         >

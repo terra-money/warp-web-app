@@ -2,15 +2,14 @@ import { Container, UIElementProps } from '@terra-money/apps/components';
 import classNames from 'classnames';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FormControl } from 'components/form-control/FormControl';
-import { TokenIcon } from 'components/token-icon';
-import { Token } from '@terra-money/apps/types';
 import styles from './FundingAccountInput.module.sass';
 import { useFundingAccountListDialog } from './funding-account-list';
+import { truncateAddress } from '@terra-money/apps/utils';
 
 interface FundingAccountInputProps extends UIElementProps {
   label: string;
   placeholder?: string;
-  value?: Token;
+  value?: string;
   onChange: (value: string) => void;
 }
 
@@ -22,13 +21,8 @@ const FundingAccountInput = (props: FundingAccountInputProps) => {
   const component =
     value === undefined ? (
       <span className={styles.placeholder}>{placeholder}</span>
-    ) : typeof value === 'string' ? (
-      <span className={styles.text}>{value}</span>
     ) : (
-      <>
-        <TokenIcon className={styles.icon} symbol={value.icon} path={value.icon} />
-        <span className={styles.text}>{value.name ?? value.symbol}</span>
-      </>
+      <span className={styles.text}>{truncateAddress(value, [8, 6])}</span>
     );
 
   return (

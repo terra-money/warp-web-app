@@ -1,10 +1,13 @@
 import { Text } from 'components/primitives';
 import { ListChildComponentProps } from 'react-window';
-import { TokenBalance } from './TokenBalance';
 import { ListData } from './ListData';
 import styles from './ListItem.module.sass';
 import { useTokenBalanceQuery } from 'queries/useTokenBalanceQuery';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { truncateAddress } from '@terra-money/apps/utils';
+import { TokenAmount } from 'components/token-amount';
+import Big from 'big.js';
+import { u } from '@terra-money/apps/types';
 
 export const ListItem = (props: ListChildComponentProps<ListData>) => {
   const {
@@ -17,7 +20,7 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
 
   const token = useNativeToken();
 
-  const { data: balance } = useTokenBalanceQuery(fundingAccount.account_addr, token);
+  const { data: balance, isLoading } = useTokenBalanceQuery(fundingAccount.account_addr, token);
 
   return (
     <div
@@ -26,10 +29,18 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
       style={style}
       onClick={() => onSelectionChanged(fundingAccount)}
     >
-      <Text className={styles.symbol} variant="text" weight="bold">
-        {fundingAccount.account_addr}
+      <Text className={styles.account_addr} variant="text" weight="bold">
+        {truncateAddress(fundingAccount.account_addr, [8, 6])}
       </Text>
-      {balance && <TokenBalance className={styles.balance} balance={balance} decimals={token.decimals} />}
+      <TokenAmount
+        containerClassName={styles.balance}
+        loading={isLoading}
+        token={token}
+        variant="text"
+        decimals={2}
+        amount={balance ?? (Big(0) as u<Big>)}
+        showSymbol={true}
+      />
     </div>
   );
 };

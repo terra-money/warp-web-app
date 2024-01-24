@@ -10,14 +10,17 @@ import styles from './FundingAccountList.module.sass';
 import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { warp_account_tracker } from '@terra-money/warp-sdk';
+import { ReactComponent as PlusIcon } from 'components/assets/Plus.svg';
 import { useFundingAccountsQuery } from 'queries';
+import { ActionButton } from 'components/action-button/ActionButton';
+import { useCreateFundingAccountTx } from 'tx';
 
-const accountStatuses = ['taken', 'free'] as warp_account_tracker.AccountStatus[];
+const accountStatuses = ['free', 'taken'] as warp_account_tracker.AccountStatus[];
 
 const FundingAccountListDialog = (props: DialogProps<void, string>) => {
   const { closeDialog } = props;
 
-  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('taken');
+  const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('free');
 
   const { walletAddress } = useLocalWallet();
 
@@ -37,20 +40,34 @@ const FundingAccountListDialog = (props: DialogProps<void, string>) => {
     };
   }, [fundingAccounts, closeDialog]);
 
+  const [txResult, createFundingAccountTx] = useCreateFundingAccountTx();
+
   return (
     <Dialog>
-      <DialogHeader title="Select fundingAccount" onClose={() => closeDialog(undefined)}>
-        <Container className={styles.tabs} direction="row">
-          {accountStatuses.map((curr) => (
-            <Button
-              key={curr}
-              className={classNames(styles.tab, curr === selectedAccountStatus && styles.selected_tab)}
-              onClick={() => setSelectedAccountStatus(curr)}
-              variant="secondary"
-            >
-              {curr}
-            </Button>
-          ))}
+      <DialogHeader title="Select Funding Account" onClose={() => closeDialog(undefined)}>
+        <Container className={styles.header}>
+          <Container className={styles.tabs} direction="row">
+            {accountStatuses.map((curr) => (
+              <Button
+                key={curr}
+                className={classNames(styles.tab, curr === selectedAccountStatus && styles.selected_tab)}
+                onClick={() => setSelectedAccountStatus(curr)}
+                variant="secondary"
+              >
+                {curr}
+              </Button>
+            ))}
+          </Container>
+          <ActionButton
+            className={styles.new}
+            icon={<PlusIcon className={styles.new_icon} />}
+            iconGap="none"
+            variant="primary"
+            loading={txResult.loading}
+            onClick={() => createFundingAccountTx({})}
+          >
+            New
+          </ActionButton>
         </Container>
       </DialogHeader>
       <DialogBody className={styles.container}>

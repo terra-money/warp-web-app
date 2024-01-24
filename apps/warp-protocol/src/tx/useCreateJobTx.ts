@@ -15,6 +15,7 @@ export interface CreateJobTxProps {
   operationalAmount: string;
   reward: string;
   recurring: boolean;
+  fundingAccount?: string;
 }
 
 export const useCreateJobTx = () => {
@@ -22,8 +23,19 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     async (options) => {
-      const { wallet, name, msgs, condition, vars, description, recurring, durationDays, operationalAmount, reward } =
-        options;
+      const {
+        wallet,
+        name,
+        msgs,
+        condition,
+        vars,
+        description,
+        recurring,
+        durationDays,
+        operationalAmount,
+        reward,
+        fundingAccount,
+      } = options;
 
       if (!containsAllReferencedVars(vars, msgs, condition)) {
         throw Error(
@@ -45,6 +57,7 @@ export const useCreateJobTx = () => {
         .recurring(recurring)
         .description(description)
         .vars(orderedVars)
+        .fundingAccount(fundingAccount)
         .durationDays(durationDays)
         .executions(executions)
         .compose();

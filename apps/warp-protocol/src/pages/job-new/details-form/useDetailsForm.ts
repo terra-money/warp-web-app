@@ -22,6 +22,7 @@ export interface DetailsFormInput {
   durationDays: string;
   message: string;
   recurring: boolean;
+  fundingAccount?: string;
   template?: Template;
   selectedTabType?: 'template' | 'message';
 }

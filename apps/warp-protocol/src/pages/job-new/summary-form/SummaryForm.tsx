@@ -159,7 +159,7 @@ export const SummaryForm = (props: SummaryFormProps) => {
           disabled={!reward || !operationalAmount}
           onClick={async () => {
             if (detailsInput && operationalAmount && reward) {
-              const { name, message, description, recurring, durationDays } = detailsInput;
+              const { name, message, description, recurring, durationDays, fundingAccount } = detailsInput;
 
               const msgs = parseMsgs(message);
 
@@ -175,6 +175,7 @@ export const SummaryForm = (props: SummaryFormProps) => {
                 operationalAmount,
                 reward,
                 durationDays,
+                fundingAccount,
               });
 
               if (resp.code !== 0) {
