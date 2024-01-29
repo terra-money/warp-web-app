@@ -4497,6 +4497,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terra-money/warp-sdk-v2@npm:@terra-money/warp-sdk@0.1.70-rc1":
+  version: 0.1.70-rc1
+  resolution: "@terra-money/warp-sdk@npm:0.1.70-rc1"
+  dependencies:
+    "@terra-money/feather.js": ^1.0.11
+    "@types/node": ^16.11.56
+    axios: ^1.1.2
+    big.js: ^6.2.1
+    date-fns: ^2.29.3
+    dotenv: ^16.0.1
+    jsonpath: ^1.1.1
+    jsonpath-plus: ^7.2.0
+    lodash: ^4.17.21
+    pino: ^8.4.2
+    typescript: ^4.8.2
+  checksum: 21bd2f242c16ed19e515874bb84d716e2b170114f1c40284fe69685ce5836621999a65d90ea080cc1cf1313c9de932a62f26b4506d90345c3bdc096e23574e30
+  languageName: node
+  linkType: hard
+
 "@terra-money/warp-sdk@npm:^0.1.65":
   version: 0.1.65
   resolution: "@terra-money/warp-sdk@npm:0.1.65"
@@ -5623,6 +5642,7 @@ __metadata:
     "@terra-money/terra-station-mobile": 1.0.8
     "@terra-money/wallet-kit": ^1.0.11
     "@terra-money/warp-sdk": ^0.1.66
+    "@terra-money/warp-sdk-v2": "npm:@terra-money/warp-sdk@0.1.70-rc1"
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0

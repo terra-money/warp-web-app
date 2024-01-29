@@ -43,6 +43,7 @@
     "@terra-money/terra-station-mobile": "1.0.8",
     "@terra-money/wallet-kit": "^1.0.11",
     "@terra-money/warp-sdk": "^0.1.66",
+    "@terra-money/warp-sdk-v2": "npm:@terra-money/warp-sdk@0.1.70-rc1",
     "assert": "^2.0.0",
     "big.js": "^6.2.1",
     "brace": "^0.11.1",
