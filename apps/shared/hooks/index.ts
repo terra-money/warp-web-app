@@ -12,4 +12,5 @@ export * from './useBoolean';
 export * from './useLocalWallet';
 export * from './useChainSelector';
 export * from './useWarpSdk';
+export * from './useWarpSdkv2';
 export * from './useChainSuffix';

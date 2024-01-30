@@ -7,6 +7,7 @@ import { useChainSelector } from '@terra-money/apps/hooks';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useChainSelectorDialog } from 'components/dialog/chain-selector/ChainSelectorDialog';
 import { useMediaQuery } from 'usehooks-ts';
+import { useMigrateJobsDialog } from './migrate-jobs';
 
 interface LayoutProps extends PropsWithChildren {}
 
@@ -32,6 +33,8 @@ export const Layout = ({ children }: LayoutProps) => {
 
   const isMobile = useMediaQuery('(max-width: 768px)');
 
+  const openMigrateJobsDialog = useMigrateJobsDialog();
+
   return (
     <>
       {!isMobile && (
@@ -39,7 +42,7 @@ export const Layout = ({ children }: LayoutProps) => {
           <Text variant="text" className={styles.migrate_text}>
             Warp v2 is out, proceed with creating new jobs on latest version - v1 will sunset its support by 01.04.2024
           </Text>
-          <Button variant="secondary" className={styles.migrate_button}>
+          <Button variant="secondary" className={styles.migrate_button} onClick={() => openMigrateJobsDialog()}>
             Migrate
           </Button>
         </div>

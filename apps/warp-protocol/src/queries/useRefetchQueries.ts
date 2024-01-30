@@ -22,6 +22,7 @@ const QUERY_REFETCH_MAP: QueryRefetchMap = {
   [TX_KEY.CREATE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.EDIT_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.DELETE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
+  [TX_KEY.MIGRATE_JOB]: [QUERY_KEY.JOBS, QUERY_KEY.JOBS_V2],
 };
 
 const runRefetch = (queryRefetch: string | QueryRefetch): Promise<string> => {
