@@ -37,7 +37,7 @@ const mapExecutions = (job: Job): Execution[] => {
   ];
 };
 
-export const useMigrateJobTx = () => {
+export const useMigrateJobTx = (waitForCompletion?: boolean) => {
   const sdk = useWarpSdkv2();
 
   return useTx<MigrateJobTxProps>(
@@ -91,6 +91,9 @@ export const useMigrateJobTx = () => {
     },
     {
       txKey: TX_KEY.MIGRATE_JOB,
+    },
+    {
+      waitForCompletion,
     }
   );
 };

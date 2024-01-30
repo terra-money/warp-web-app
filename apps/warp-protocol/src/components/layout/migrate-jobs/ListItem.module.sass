@@ -1,27 +1,22 @@
 .listItem
   padding: 8px 32px
   height: 60px
-  display: grid
-  grid-template-rows: 1fr 1fr
-  grid-template-columns: auto 1fr auto
+  display: flex
   align-items: center
+  justify-content: space-between
   &:hover
     cursor: pointer
     background-color: var(--list-item-hover)
-  .icon
-    width: 32px
-    height: 32px
-    grid-row: 1 / span 2
-    grid-column: 1
-    margin-right: 16px
-  .account_addr
-    grid-row: 1 / span 2
-    grid-column: 2
+
+  .name
     font-weight: 400 !important
     color: var(--text-color-title)
-  .name
-    grid-row: 2
-    grid-column: 2
-  .balance
-    grid-row: 1 / span 2
-    grid-column: 3      
+
+  .id
+    font-weight: 400 !important
+    color: var(--text-color-secondary)
+
+.throbber
+  flex-grow: 1
+  margin-left: auto
+  margin-right: auto

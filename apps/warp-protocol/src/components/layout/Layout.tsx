@@ -3,7 +3,7 @@ import { Sidebar } from './Sidebar';
 import styles from './Layout.module.sass';
 import { ReactComponent as BackgroundWrap } from 'components/assets/BackgroundWrap.svg';
 import { Button, Text } from 'components/primitives';
-import { useChainSelector } from '@terra-money/apps/hooks';
+import { useChainSelector, useLocalWallet } from '@terra-money/apps/hooks';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useChainSelectorDialog } from 'components/dialog/chain-selector/ChainSelectorDialog';
 import { useMediaQuery } from 'usehooks-ts';
@@ -35,6 +35,8 @@ export const Layout = ({ children }: LayoutProps) => {
 
   const openMigrateJobsDialog = useMigrateJobsDialog();
 
+  const { connectedWallet } = useLocalWallet();
+
   return (
     <>
       {!isMobile && (
@@ -42,9 +44,11 @@ export const Layout = ({ children }: LayoutProps) => {
           <Text variant="text" className={styles.migrate_text}>
             Warp v2 is out, proceed with creating new jobs on latest version - v1 will sunset its support by 01.04.2024
           </Text>
-          <Button variant="secondary" className={styles.migrate_button} onClick={() => openMigrateJobsDialog()}>
-            Migrate
-          </Button>
+          {connectedWallet && (
+            <Button variant="secondary" className={styles.migrate_button} onClick={() => openMigrateJobsDialog()}>
+              Migrate
+            </Button>
+          )}
         </div>
       )}
       <div className={styles.root}>

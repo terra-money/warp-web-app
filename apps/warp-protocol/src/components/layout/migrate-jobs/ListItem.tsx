@@ -1,4 +1,4 @@
-import { Text } from 'components/primitives';
+import { Text, Throbber } from 'components/primitives';
 import { ListChildComponentProps } from 'react-window';
 import { ListData } from './ListData';
 import styles from './ListItem.module.sass';
@@ -13,7 +13,7 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
 
   const job = jobs[index];
 
-  const [, migrateJobTx] = useMigrateJobTx();
+  const [txResult, migrateJobTx] = useMigrateJobTx();
 
   return (
     <div
@@ -21,12 +21,21 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
       className={styles.listItem}
       style={style}
       onClick={() => {
-        migrateJobTx({ job });
+        if (!txResult.loading) {
+          migrateJobTx({ job });
+        }
       }}
     >
       <Text className={styles.name} variant="text" weight="bold">
         {job.info.name}
       </Text>
+      {txResult.loading ? (
+        <Throbber dotClassName={styles.throbber} variant="secondary" size="small" />
+      ) : (
+        <Text className={styles.id} variant="text" weight="bold">
+          ID#{job.info.id}
+        </Text>
+      )}
     </div>
   );
 };

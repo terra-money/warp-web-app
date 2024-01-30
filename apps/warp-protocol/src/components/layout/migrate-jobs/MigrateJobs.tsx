@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Text, Throbber } from 'components/primitives';
+import { Button, Text, Throbber } from 'components/primitives';
 import { FixedSizeList } from 'react-window';
 import { DialogProps, useDialog, useLocalWallet } from '@terra-money/apps/hooks';
 import classNames from 'classnames';
@@ -11,6 +11,7 @@ import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { useJobsQuery } from 'queries';
 import { useJobsQueryv2 } from 'queries/useJobsQueryv2';
+import { useMigrateFundsDialog } from './migrate-funds/MigrateFundsDialog';
 
 const MigrateJobsDialog = (props: DialogProps<void, string>) => {
   const { closeDialog } = props;
@@ -44,6 +45,8 @@ const MigrateJobsDialog = (props: DialogProps<void, string>) => {
 
   const isLoading = isJobsv1sLoading || isJobsv2Loading;
 
+  const openMigrateFundsDialog = useMigrateFundsDialog();
+
   return (
     <Dialog>
       <DialogHeader title="Migrate jobs" onClose={() => closeDialog(undefined)} />
@@ -55,6 +58,14 @@ const MigrateJobsDialog = (props: DialogProps<void, string>) => {
           direction="row"
         >
           <Text variant="label">{`Displaying ${listData.jobs.length} ${pluralize('job', listData.jobs.length)}`}</Text>
+          <Button
+            className={styles.migrate_funds}
+            iconGap="none"
+            variant="primary"
+            onClick={() => openMigrateFundsDialog({})}
+          >
+            Migrate funds
+          </Button>
         </Container>
         {isLoading && <Throbber className={styles.throbber} />}
         {isLoading === false && (
