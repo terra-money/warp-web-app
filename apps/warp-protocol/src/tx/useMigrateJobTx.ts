@@ -1,6 +1,6 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
-import { useWarpSdkv2 } from '@terra-money/apps/hooks';
+import { useWarpSdk, useWarpSdkv2 } from '@terra-money/apps/hooks';
 import { Job } from 'types';
 import { composers, warp_resolver as warp_resolver_v2, Execution } from '@terra-money/warp-sdk-v2';
 import { warp_resolver } from '@terra-money/warp-sdk';
@@ -38,7 +38,8 @@ const mapExecutions = (job: Job): Execution[] => {
 };
 
 export const useMigrateJobTx = (waitForCompletion?: boolean) => {
-  const sdk = useWarpSdkv2();
+  const sdkv2 = useWarpSdkv2();
+  const sdkv1 = useWarpSdk();
 
   return useTx<MigrateJobTxProps>(
     async (options) => {
@@ -60,13 +61,13 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .executions(executions)
         .compose();
 
-      const nativeTokenDenom = await sdk.nativeTokenDenom();
+      const nativeTokenDenom = await sdkv2.nativeTokenDenom();
 
-      const rewardEstimate = await sdk.estimateJobReward(walletAddress, estimateJobRewardMsg);
+      const rewardEstimate = await sdkv2.estimateJobReward(walletAddress, estimateJobRewardMsg);
 
       const reward = rewardEstimate.amount.toString();
 
-      const operationalAmountEstimate = await sdk.estimateJobFee(
+      const operationalAmountEstimate = await sdkv2.estimateJobFee(
         walletAddress,
         estimateJobRewardMsg,
         rewardEstimate.amount.toString()
@@ -87,7 +88,17 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .executions(executions)
         .compose();
 
-      return sdk.tx.createJob(wallet.walletAddress, createJobMsg, [new Coin(nativeTokenDenom, operationalAmount)]);
+      const createJobV2Tx = await sdkv2.tx.createJob(wallet.walletAddress, createJobMsg, [
+        new Coin(nativeTokenDenom, operationalAmount),
+      ]);
+      const deleteJobV1Tx = await sdkv1.tx.deleteJob(wallet.walletAddress, job.info.id);
+
+      const msgs = [...createJobV2Tx.msgs, ...deleteJobV1Tx.msgs];
+
+      return {
+        msgs,
+        chainID: sdkv2.chain.config.chainID,
+      };
     },
     {
       txKey: TX_KEY.MIGRATE_JOB,
