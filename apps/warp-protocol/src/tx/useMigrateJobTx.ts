@@ -81,7 +81,7 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .reward(reward.toString())
         .operationalAmount(operationalAmount.toString())
         .recurring(job.info.recurring)
-        .description(job.info.description)
+        .description(`Migrated from v1 jobId: ${job.info.id}`)
         .vars(vars)
         .durationDays(durationDays)
         .executions(executions)
