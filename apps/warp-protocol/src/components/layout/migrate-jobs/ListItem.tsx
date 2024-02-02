@@ -13,7 +13,7 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
 
   const job = jobs[index];
 
-  const [txResult, migrateJobTx] = useMigrateJobTx();
+  const [txResult, migrateJobTx] = useMigrateJobTx(true);
 
   return (
     <div
