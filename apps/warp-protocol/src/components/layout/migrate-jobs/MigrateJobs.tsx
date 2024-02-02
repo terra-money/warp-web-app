@@ -36,7 +36,7 @@ const MigrateJobsDialog = (props: DialogProps<void, string>) => {
       })
       .filter((jobId) => jobId !== null); // Filter out null values
 
-    const jobs = jobsv1.filter((job) => migratedIds.includes(job.info.id));
+    const jobs = jobsv1.filter((job) => !migratedIds.includes(job.info.id));
 
     return {
       jobs,
