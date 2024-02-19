@@ -55,12 +55,20 @@ const App = () => {
     window.open('https://twitter.com/warp_protocol');
   }, []);
 
+  const onGetInTouchClick = useCallback(() => {
+    window.open('https://forms.gle/AVfrfDStd95qjnGQ9');
+  }, []);
+
   const onTelegramClick = useCallback(() => {
     window.open('https://t.me/warp_protocol');
   }, []);
 
   const onDiscordClick = useCallback(() => {
     window.open('https://terra.sc/warpdiscord');
+  }, []);
+
+  const onSdkClick = useCallback(() => {
+    window.open('https://github.com/terra-money/warp-sdk');
   }, []);
 
   const onPrivacyPolicyClick = useCallback(() => {
@@ -84,6 +92,8 @@ const App = () => {
         onTwitterClick={onTwitterClick}
         onTelegramClick={onTelegramClick}
         onDiscordClick={onDiscordClick}
+        onSdkClick={onSdkClick}
+        onGetInTouchClick={onGetInTouchClick}
       />
       <Routes>
         <Route
@@ -92,6 +102,7 @@ const App = () => {
             <Home
               onDocsClick={onDocsClick}
               onWebAppClick={onWebAppClick}
+              onGetInTouchClick={onGetInTouchClick}
               featuresRef={featuresRef}
             />
           }
@@ -103,6 +114,7 @@ const App = () => {
       <BottomBar
         onDocsClick={onDocsClick}
         onFeaturesClick={onFeaturesClick}
+        onSdkClick={onSdkClick}
         onHomeClick={onHomeClick}
         onPrivacyPolicyClick={onPrivacyPolicyClick}
         onTermsClick={onTermsClick}

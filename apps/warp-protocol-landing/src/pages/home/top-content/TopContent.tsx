@@ -8,10 +8,11 @@ import { Text } from 'text';
 type TopContentProps = UIElementProps & {
   onWebAppClick: () => void;
   onDocsClick: () => void;
+  onGetInTouchClick: () => void;
 };
 
 export const TopContent = (props: TopContentProps) => {
-  const { onWebAppClick, onDocsClick, className } = props;
+  const { onWebAppClick, onGetInTouchClick, className } = props;
 
   return (
     <div className={classNames(styles.root, className)}>
@@ -31,16 +32,16 @@ export const TopContent = (props: TopContentProps) => {
           <Button
             className={styles.button}
             variant="primary"
-            onClick={onWebAppClick}
+            onClick={onGetInTouchClick}
           >
-            Launch app
+            Get in Touch
           </Button>
           <Button
             className={styles.button}
             variant="secondary"
-            onClick={onDocsClick}
+            onClick={onWebAppClick}
           >
-            Read the docs
+            Launch App
           </Button>
         </div>
       </div>

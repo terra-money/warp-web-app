@@ -8,6 +8,7 @@ import AnimatedDisplay from 'animated-display/AnimatedDisplay';
 type HomeProps = UIElementProps & {
   onDocsClick: () => void;
   onWebAppClick: () => void;
+  onGetInTouchClick: () => void;
   featuresRef: any;
 };
 
@@ -33,13 +34,14 @@ const CardContent = () => {
 };
 
 const Home = (props: HomeProps) => {
-  const { onDocsClick, onWebAppClick, featuresRef } = props;
+  const { onDocsClick, onWebAppClick, onGetInTouchClick, featuresRef } = props;
 
   return (
     <div>
       <TopContent
         onDocsClick={onDocsClick}
         onWebAppClick={onWebAppClick}
+        onGetInTouchClick={onGetInTouchClick}
         className={styles.top_content}
       />
       <CardContent />

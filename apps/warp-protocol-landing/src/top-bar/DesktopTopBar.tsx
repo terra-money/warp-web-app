@@ -16,6 +16,8 @@ type DesktopTopBarProps = UIElementProps & {
   onTelegramClick: () => void;
   onDiscordClick: () => void;
   onTwitterClick: () => void;
+  onSdkClick: () => void;
+  onGetInTouchClick: () => void;
 };
 
 export const DesktopTopBar = forwardRef<
@@ -26,10 +28,11 @@ export const DesktopTopBar = forwardRef<
     onHomeClick,
     onFeaturesClick,
     onDocsClick,
-    onWebAppClick,
     onTelegramClick,
     onDiscordClick,
-    onTwitterClick
+    onTwitterClick,
+    onSdkClick,
+    onGetInTouchClick,
   } = props;
 
   return (
@@ -64,6 +67,14 @@ export const DesktopTopBar = forwardRef<
         >
           Features
         </Button>
+        <Button
+          className={classNames(styles.button, styles.btn_gray)}
+          variant="primary"
+          fill="none"
+          onClick={onSdkClick}
+        >
+          SDK
+        </Button>
         <DropdownMenu
           menuClass={styles.menu}
           className={styles.btn_gray}
@@ -91,9 +102,9 @@ export const DesktopTopBar = forwardRef<
         <Button
           className={classNames(styles.button)}
           variant="primary"
-          onClick={onWebAppClick}
+          onClick={onGetInTouchClick}
         >
-          Launch App
+          Get in Touch
         </Button>
       </Container>
     </div>
