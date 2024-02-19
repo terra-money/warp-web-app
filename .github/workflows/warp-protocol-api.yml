@@ -7,7 +7,7 @@ on:
       - main
       - test
       - beta
-      
+
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
@@ -130,7 +130,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      
+
       - name: Set tags
         run: |
           if [ ${GITHUB_REF} == "refs/heads/main" ]; then
