@@ -7,7 +7,7 @@ on:
       - main
       - test
       - beta
-      
+
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
