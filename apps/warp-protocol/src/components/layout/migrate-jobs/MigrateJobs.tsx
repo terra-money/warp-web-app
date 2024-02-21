@@ -10,7 +10,6 @@ import styles from './MigrateJobs.module.sass';
 import { pluralize } from '@terra-money/apps/utils';
 import { Container } from '@terra-money/apps/components';
 import { useJobsQuery } from 'queries';
-import { useJobsQueryv2 } from 'queries/useJobsQueryv2';
 import { useMigrateFundsDialog } from './migrate-funds/MigrateFundsDialog';
 
 const MigrateJobsDialog = (props: DialogProps<void, string>) => {
@@ -22,28 +21,13 @@ const MigrateJobsDialog = (props: DialogProps<void, string>) => {
     owner: walletAddress,
   });
 
-  const { data: jobsv2 = [], isLoading: isJobsv2Loading } = useJobsQueryv2({
-    owner: walletAddress,
-  });
-
   const listData = useMemo<ListData>(() => {
-    const jobIdRegex = /^Migrated from v1 jobId: (\d+)$/;
-
-    const migratedIds = jobsv2
-      .map((job) => {
-        const match = job.description.match(jobIdRegex);
-        return match ? match[1] : null;
-      })
-      .filter((jobId) => jobId !== null); // Filter out null values
-
-    const jobs = jobsv1.filter((job) => !migratedIds.includes(job.info.id));
-
     return {
-      jobs,
+      jobs: jobsv1,
     };
-  }, [jobsv1, jobsv2]);
+  }, [jobsv1]);
 
-  const isLoading = isJobsv1sLoading || isJobsv2Loading;
+  const isLoading = isJobsv1sLoading;
 
   const openMigrateFundsDialog = useMigrateFundsDialog();
 

@@ -1,8 +1,8 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import { Sidebar } from './Sidebar';
 import styles from './Layout.module.sass';
 import { ReactComponent as BackgroundWrap } from 'components/assets/BackgroundWrap.svg';
-import { Button, Text } from 'components/primitives';
+import { Button, Link, Text } from 'components/primitives';
 import { useChainSelector, useLocalWallet } from '@terra-money/apps/hooks';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useChainSelectorDialog } from 'components/dialog/chain-selector/ChainSelectorDialog';
@@ -37,12 +37,20 @@ export const Layout = ({ children }: LayoutProps) => {
 
   const { connectedWallet } = useLocalWallet();
 
+  const onLinkClick = useCallback(() => {
+    window.open('https://app.warp.money');
+  }, []);
+
   return (
     <>
       {!isMobile && (
         <div className={styles.topBanner}>
           <Text variant="text" className={styles.migrate_text}>
-            Warp v2 is out, proceed with creating new jobs on latest version - v1 will sunset its support by 01.04.2024
+            Warp v2 is out! Proceed with creating new jobs on the latest version at{' '}
+            <Link className={styles.link} onClick={onLinkClick}>
+              app.warp.money
+            </Link>
+            . v1 will sunset its support by April 1st, 2024.
           </Text>
           {connectedWallet && (
             <Button variant="secondary" className={styles.migrate_button} onClick={() => openMigrateJobsDialog()}>
