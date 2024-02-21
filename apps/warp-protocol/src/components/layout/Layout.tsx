@@ -43,7 +43,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <>
-      {!isMobile && (
+      {!isMobile && selectedChain.name !== 'injective' && (
         <div className={styles.topBanner}>
           <Text variant="text" className={styles.migrate_text}>
             Warp v2 is out! Proceed with creating new jobs on the latest version at{' '}
