@@ -94,4 +94,6 @@ const run = async (chainName: string) => {
     });
 };
 
-ChainModule.supportedChains().forEach((chain) => run(chain.name));
+ChainModule.supportedChains()
+  .filter((c) => c.name !== 'nibiru' && c.name !== 'migaloo')
+  .forEach((chain) => run(chain.name));

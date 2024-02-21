@@ -50,8 +50,12 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
 };
 
 const fixName = (name: string) => {
-  if (name.includes('Station')) {
+  if (name.includes('Station (Extension)')) {
     return 'Station';
+  }
+
+  if (name.includes('Terra Station (Mobile)')) {
+    return 'Wallet Connect';
   }
 
   return name;

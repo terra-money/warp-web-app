@@ -2,7 +2,7 @@ import { EventIndexer, IndexFnOptions } from 'indexers/EventIndexer';
 import { TableNames, ANALYTICS_PK_NAME, ANALYTICS_SK_NAME } from 'initializers';
 import { Entity } from './types';
 import { KeySelector } from '@apps-shared/indexers/services/persistence';
-import { WarpPK, WarpControllerActions, ExecuteJobEvent } from 'types/events';
+import { WarpPK, WarpControllerActions, ExecuteJobEvent, CreateJobEvent, ExecuteReplyEvent } from 'types/events';
 import { eventAggregator, eventCounter } from '@apps-shared/indexers/indexers/utils';
 import Big from 'big.js';
 import { createDynamoDBClient, fetchAll } from '@apps-shared/indexers/utils';
@@ -108,14 +108,61 @@ export class Indexer extends EventIndexer<Entity> {
     return this.cascade(fromPK, toPK, timestampRanges);
   };
 
+  private handleCreateJobEvents = async (minHeight: number, maxHeight: number) => {
+    // Count create_job events
+    const createJobAggregates = await eventCounter<CreateJobEvent>(
+      this.events,
+      WarpPK.controller('create_job'),
+      minHeight,
+      maxHeight
+    );
+
+    // Count execute_reply events with specific recur_job sub_action
+    const executeReplyAggregates = await eventAggregator<ExecuteReplyEvent, string>(
+      this.events,
+      WarpPK.controller('execute_reply'),
+      minHeight,
+      maxHeight,
+      (events) => events.filter((event) => event.payload.sub_action === 'recur_job').length.toString()
+    );
+
+    // combine the counts
+    const combinedCounts = new Map<number, number>();
+
+    createJobAggregates.forEach((aggregate) => {
+      combinedCounts.set(aggregate.timestamp, parseInt(aggregate.value));
+    });
+
+    executeReplyAggregates.forEach((aggregate) => {
+      const currentCount = combinedCounts.get(aggregate.timestamp) || 0;
+      combinedCounts.set(aggregate.timestamp, currentCount + parseInt(aggregate.value));
+    });
+
+    const combinedAggregates = Array.from(combinedCounts).map(([timestamp, value]) => ({
+      timestamp,
+      value: value.toString(),
+    }));
+
+    // Save combined counts
+    const key = 'create_job_count';
+    await this.save(makePK(key, 'hourly'), combinedAggregates);
+    await this.cascadeDaily(
+      makePK(key, 'hourly'),
+      makePK(key, 'daily'),
+      combinedAggregates.map((t) => t.timestamp)
+    );
+    await this.cascadeMonthly(
+      makePK(key, 'daily'),
+      makePK(key, 'monthly'),
+      combinedAggregates.map((t) => t.timestamp)
+    );
+  };
+
   private updateEventCounts = async (minHeight: number, maxHeight: number) => {
-    const events: WarpControllerActions[] = [
-      'create_job',
-      'execute_job',
-      'update_job',
-      'execute_job',
-      'prioritize_job',
-    ];
+    const events: WarpControllerActions[] = ['execute_job', 'update_job', 'execute_job', 'prioritize_job'];
+
+    // Handle create_job (and relevant execute_reply) separately
+    await this.handleCreateJobEvents(minHeight, maxHeight);
 
     // aggregate the event counts
     for (let event of events) {

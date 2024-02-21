@@ -47,6 +47,17 @@ export const NIBIRU: NativeToken = {
   coinGeckoId: 'nibiru',
 };
 
+export const WHALE: NativeToken = {
+  key: 'uwhale',
+  type: 'native',
+  denom: 'uwhale',
+  name: 'White Whale',
+  symbol: 'WHALE',
+  decimals: 6,
+  icon: 'https://station-assets.terra.dev/img/chains/Migaloo.svg',
+  coinGeckoId: 'white-whale',
+};
+
 export const INJ: NativeToken = {
   key: 'inj',
   type: 'native',

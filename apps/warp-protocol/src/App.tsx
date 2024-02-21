@@ -21,6 +21,9 @@ import { useWalletDefaultNetworks } from 'hooks/useWalletDefaultNetworks';
 import { ChainSelectorProvider } from '@terra-money/apps/hooks';
 import { BalancesPage } from 'pages/balances';
 import { FundingAccounts } from 'pages/funding-accounts';
+import { useTermsOfUseDialog } from 'components/dialog/terms-of-use/TermsOfUseDialog';
+import TerraStationMobileWallet from '@terra-money/terra-station-mobile';
+import { useEffect, useMemo } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -47,12 +50,25 @@ const Main = () => {
 };
 
 const Inner = () => {
+  const openTermsOfUseDialog = useTermsOfUseDialog();
   const [theme] = useTheme();
   const walletDefaultNetworks = useWalletDefaultNetworks();
 
+  const extraWallets = useMemo(() => {
+    return [new TerraStationMobileWallet()];
+  }, []);
+
+  useEffect(() => {
+    const accepted = localStorage.getItem('TermsOfUseAccepted_Oct-3-2023');
+    if (!accepted) {
+      openTermsOfUseDialog({ noBackgroundClick: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // TODO: check later if chainOptions would cause a flicker due to being null for first couple of calls
   return walletDefaultNetworks ? (
-    <WalletProvider defaultNetworks={walletDefaultNetworks}>
+    <WalletProvider defaultNetworks={walletDefaultNetworks} extraWallets={extraWallets}>
       <main className={styles.root} data-theme={theme}>
         {/* <NetworkGuard> */}
         <ChainSelectorProvider>

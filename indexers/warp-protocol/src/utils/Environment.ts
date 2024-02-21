@@ -11,7 +11,15 @@ export class Environment {
 
   static load() {
     dotenv.config();
-    Environment.lcd = ChainModule.lcdClient({ networks: [process.env.NETWORK as NetworkName] });
+
+    let lcdClientConfig = ChainModule.lcdClientConfig([process.env.NETWORK as NetworkName]);
+
+    // override to private lcd with uncapped rate limiting
+    if (process.env.NETWORK === 'mainnet') {
+      lcdClientConfig['phoenix-1'].lcd = 'http://rpc-lcd.phoenix-1.internal:1317';
+    }
+
+    Environment.lcd = new LCDClient(lcdClientConfig);
   }
 
   static getGenesis = (chainName: string): Epoch => {
@@ -70,6 +78,16 @@ export class Environment {
         };
       }
     }
+
+    // if (chainName === 'migaloo') {
+    //   if (process.env.NETWORK === 'testnet') {
+    //     // testnet
+    //     return {
+    //       height: 4415456,
+    //       timestamp: 1699648200,
+    //     };
+    //   }
+    // }
   };
 
   static getContractAddress(chainName: string, contract: keyof ContractAddresses) {
