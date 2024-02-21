@@ -131,8 +131,7 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
         .filter((c) => {
           if (
             (c.name === 'nibiru' && networkName(network) === 'mainnet') ||
-            (c.name === 'migaloo' && networkName(network) === 'mainnet') ||
-            (c.name === 'injective' && networkName(network) === 'mainnet')
+            (c.name === 'migaloo' && networkName(network) === 'mainnet')
           ) {
             return false;
           }
