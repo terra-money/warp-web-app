@@ -14,12 +14,13 @@ import { Dashboard } from 'pages/dashboard/Dashboard';
 import { Jobs } from 'pages/jobs/Jobs';
 import { JobPage } from 'pages/job-page/JobPage';
 import { JobNew } from 'pages/job-new/JobNew';
-import { BalancesPage } from 'pages/balances';
 import { Variables } from 'pages/variables/Variables';
 import { TemplateNew } from 'pages/template-new/TemplateNew';
 import { TemplatesPage } from 'pages/templates';
 import { useWalletDefaultNetworks } from 'hooks/useWalletDefaultNetworks';
 import { ChainSelectorProvider } from '@terra-money/apps/hooks';
+import { BalancesPage } from 'pages/balances';
+import { FundingAccounts } from 'pages/funding-accounts';
 import { useTermsOfUseDialog } from 'components/dialog/terms-of-use/TermsOfUseDialog';
 import TerraStationMobileWallet from '@terra-money/terra-station-mobile';
 import { useEffect, useMemo } from 'react';
@@ -34,7 +35,8 @@ const Main = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/balances" element={<BalancesPage />} />
+        <Route path="/funding-accounts/*" element={<FundingAccounts />} />
+        <Route path="/funding-accounts/:fundingAccountAddress" element={<BalancesPage />} />
         <Route path="/variables" element={<Variables />} />
         <Route path="/templates" element={<TemplatesPage />} />
         <Route path="/template-new/*" element={<TemplateNew />} />

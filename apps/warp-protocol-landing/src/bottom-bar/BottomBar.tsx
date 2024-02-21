@@ -13,6 +13,7 @@ type BottomBarProps = UIElementProps & {
   onDiscordClick: () => void;
   onTelegramClick: () => void;
   onTwitterClick: () => void;
+  onSdkClick: () => void;
   onBrandClick: () => void;
 };
 
@@ -28,6 +29,7 @@ export const BottomBar = (props: BottomBarProps) => {
     onTelegramClick,
     onTwitterClick,
     onBrandClick,
+    onSdkClick,
   } = props;
 
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -53,6 +55,7 @@ export const BottomBar = (props: BottomBarProps) => {
       onTelegramClick={onTelegramClick}
       onTwitterClick={onTwitterClick}
       onBrandClick={onBrandClick}
+      onSdkClick={onSdkClick}
     />
   );
 };

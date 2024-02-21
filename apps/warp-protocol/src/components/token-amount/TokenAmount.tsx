@@ -11,6 +11,7 @@ import styles from './TokenAmount.module.sass';
 
 interface TokenAmountProps extends Pick<TextProps, 'variant' | 'component'> {
   className?: string;
+  containerClassName?: string;
   token: Token;
   amount: u<BigSource>;
   decimals?: number;
@@ -32,6 +33,7 @@ export const TokenAmount = (props: TokenAmountProps) => {
     showSymbol = true,
     showIcon = false,
     showUsdAmount = false,
+    containerClassName,
   } = props;
 
   const formattingOptions = {
@@ -48,14 +50,14 @@ export const TokenAmount = (props: TokenAmountProps) => {
 
   if (loading) {
     return (
-      <Container className={styles.container} direction="row">
+      <Container className={classNames(styles.container, containerClassName)} direction="row">
         <Throbber className={styles.throbber} size="small" />
       </Container>
     );
   }
 
   return (
-    <Container className={styles.container} direction="row">
+    <Container className={classNames(styles.container, containerClassName)} direction="row">
       <Text className={classNames(className, styles.root)} variant={variant} component={component}>
         {formattedAmount}
         {showIcon === false && showSymbol && token.symbol && <sub>{token.symbol}</sub>}

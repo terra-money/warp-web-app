@@ -5,7 +5,7 @@ import { Job } from 'types/job';
 import { ExpressionValue } from './ExpressionValue';
 
 export type StringExpressionProps = {
-  expression: warp_resolver.GenExprFor_ValueFor_StringAnd_StringOp;
+  expression: warp_resolver.GenExprFor_StringValueFor_StringAnd_StringOp;
   job: Job;
 } & UIElementProps;
 

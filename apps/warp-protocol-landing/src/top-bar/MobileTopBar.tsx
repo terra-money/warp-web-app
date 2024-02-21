@@ -20,6 +20,8 @@ type MobileTopBarProps = UIElementProps & {
   onTelegramClick: () => void;
   onTwitterClick: () => void;
   onToggleDrawer: () => void;
+  onSdkClick: () => void;
+  onGetInTouchClick: () => void;
   drawerOpen: boolean;
 };
 
@@ -36,6 +38,8 @@ export const MobileTopBar = forwardRef<
     onTelegramClick,
     onTwitterClick,
     onToggleDrawer,
+    onGetInTouchClick,
+    onSdkClick,
     drawerOpen,
   } = props;
 
@@ -92,6 +96,13 @@ export const MobileTopBar = forwardRef<
             </Text>
             <Text
               variant="heading2"
+              onClick={onSdkClick}
+              className={styles.menu_heading}
+            >
+              SDK
+            </Text>
+            <Text
+              variant="heading2"
               onClick={onDocsClick}
               className={styles.menu_heading}
             >
@@ -103,6 +114,13 @@ export const MobileTopBar = forwardRef<
               className={styles.menu_heading}
             >
               App
+            </Text>
+            <Text
+              variant="heading2"
+              onClick={onGetInTouchClick}
+              className={styles.menu_heading}
+            >
+              Get in Touch
             </Text>
           </Container>
           <Container className={styles.bottom} direction="column">

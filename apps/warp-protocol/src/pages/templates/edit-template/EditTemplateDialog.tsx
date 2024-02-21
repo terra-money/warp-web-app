@@ -8,11 +8,11 @@ import { FormControl } from 'components/form-control/FormControl';
 import { Form } from 'components/form/Form';
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
 import { useEditTemplateTx } from 'tx';
-import { warp_templates } from '@terra-money/warp-sdk';
 import { useEditTemplateForm } from './useEditTemplateForm';
+import { Template } from 'types';
 
 export type EditTemplateDialogProps = {
-  template: warp_templates.Template;
+  template: Template;
 };
 
 export const EditTemplateDialog = (props: DialogProps<EditTemplateDialogProps>) => {

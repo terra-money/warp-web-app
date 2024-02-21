@@ -4,7 +4,6 @@ import { Text } from 'components/primitives';
 import styles from './TemplateCard.module.sass';
 import { Panel } from 'components/panel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { warp_templates } from '@terra-money/warp-sdk';
 import { useDeleteTemplateTx } from 'tx';
 import { MenuAction } from 'components/menu-button/MenuAction';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
@@ -15,9 +14,10 @@ import { useLocalWallet } from '@terra-money/apps/hooks';
 import { useEditTemplateDialog } from './edit-template';
 import { useCopy } from 'hooks';
 import { ActionButton } from 'components/action-button/ActionButton';
+import { Template } from 'types';
 
 interface TemplateCardProps extends UIElementProps {
-  template: warp_templates.Template;
+  template: Template;
 }
 
 type FormattedDisplayProps = UIElementProps & {

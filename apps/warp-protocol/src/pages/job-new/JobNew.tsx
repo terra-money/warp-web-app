@@ -1,11 +1,10 @@
 import { UIElementProps } from '@terra-money/apps/components';
-import { microfy } from '@terra-money/apps/libs/formatting';
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import { IfConnected } from 'components/if-connected';
 import { Throbber } from 'components/primitives';
 import { Navigate, Route, Routes, useNavigate } from 'react-router';
 import { useCreateJobTx } from 'tx/useCreateJobTx';
-import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { ConditionForm } from './condition-form/ConditionForm';
 import { DetailsForm } from './details-form/DetailsForm';
 import styles from './JobNew.module.sass';
@@ -15,15 +14,14 @@ import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import { CachedVariablesSession } from './CachedVariablesSession';
 import { DeveloperForm } from './developer-form/DeveloperForm';
-import { filterUnreferencedVariables } from 'utils/msgs';
-import { useNativeToken } from 'hooks/useNativeToken';
+import { SummaryForm } from './summary-form/SummaryForm';
 
 type JobNewProps = UIElementProps & {};
 
 export const JobNew = (props: JobNewProps) => {
-  const { detailsInput, setDetailsInput } = useJobStorage();
+  const { detailsInput, setDetailsInput, setCond } = useJobStorage();
 
-  const [txResult, createJobTx] = useCreateJobTx();
+  const [txResult] = useCreateJobTx();
 
   const localWallet = useLocalWallet();
   const navigate = useNavigate();
@@ -33,8 +31,6 @@ export const JobNew = (props: JobNewProps) => {
   const [searchParams] = useSearchParams();
 
   const mode = searchParams.get('mode') ?? 'advanced';
-
-  const nativeToken = useNativeToken();
 
   return (
     <CachedVariablesSession input={varsInput}>
@@ -57,40 +53,8 @@ export const JobNew = (props: JobNewProps) => {
                           loading={txResult.loading}
                           detailsInput={detailsInput}
                           onNext={async (props) => {
-                            const { template } = props;
-
-                            if (mode === 'advanced' || !template?.condition) {
-                              setDetailsInput(props);
-                              navigate('/job-new/condition');
-                            } else {
-                              const {
-                                template = {} as warp_templates.Template,
-                                name,
-                                reward,
-                                message,
-                                description,
-                                variables,
-                                recurring,
-                              } = props;
-                              const { condition } = template;
-
-                              const msgs = parseMsgs(message);
-                              const vars = filterUnreferencedVariables(variables, msgs, condition!);
-
-                              const resp = await createJobTx({
-                                name,
-                                vars,
-                                description,
-                                recurring,
-                                reward: microfy(reward, nativeToken.decimals),
-                                msgs,
-                                condition: condition!,
-                              });
-
-                              if (resp.code !== 0) {
-                                navigate('/jobs');
-                              }
-                            }
+                            setDetailsInput(props);
+                            navigate('/job-new/condition');
                           }}
                         />
                       </>
@@ -105,35 +69,24 @@ export const JobNew = (props: JobNewProps) => {
                           className={styles.condition}
                           loading={txResult.loading}
                           onNext={async (props) => {
-                            if (detailsInput) {
-                              const { cond, variables } = props;
-                              const { name, reward, message, description, recurring } = detailsInput;
-
-                              const msgs = parseMsgs(message);
-
-                              const vars = filterUnreferencedVariables(variables, msgs, cond);
-
-                              const resp = await createJobTx({
-                                name,
-                                vars,
-                                description,
-                                reward: microfy(reward, nativeToken.decimals),
-                                msgs,
-                                recurring,
-                                condition: cond,
-                              });
-
-                              if (resp.code !== 0) {
-                                navigate('/jobs');
-                              }
-                            }
+                            setCond(props.cond);
+                            navigate('/job-new/summary');
                           }}
                         />
                       </>
                     }
                   />
+                  <Route
+                    path="/summary"
+                    element={
+                      <>
+                        <VariableDrawer />
+                        <SummaryForm className={styles.summary} />
+                      </>
+                    }
+                  />
                   <Route path="/developer" element={<DeveloperForm className={styles.developer} />} />
-                  <Route path="*" element={<Navigate to="/job-new/details?mode=basic" replace />} />
+                  <Route path="*" element={<Navigate to="/job-new/details" replace />} />
                 </Routes>
               </>
             )
@@ -144,28 +97,32 @@ export const JobNew = (props: JobNewProps) => {
   );
 };
 
-export const decodeMsgs = (msgs: warp_resolver.CosmosMsgFor_Empty[]) => {
+export const decodeMsgs = (msgs: warp_resolver.WarpMsg[]) => {
   return msgs.map(decodeMsg);
 };
 
-export const encodeMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
+export const encodeMsgs = (value: string): warp_resolver.WarpMsg[] => {
   const msgs = parseMsgs(value);
 
   return msgs.map(encodeMsg);
 };
 
-export const parseMsgs = (value: string): warp_resolver.CosmosMsgFor_Empty[] => {
+export const parseMsgs = (value: string): warp_resolver.WarpMsg[] => {
   const parsed = JSON.parse(value);
-  const msgs: warp_resolver.CosmosMsgFor_Empty[] = Array.isArray(parsed)
-    ? (parsed as warp_resolver.CosmosMsgFor_Empty[])
-    : [parsed];
+  const msgs: warp_resolver.WarpMsg[] = Array.isArray(parsed) ? (parsed as warp_resolver.WarpMsg[]) : [parsed];
 
   return msgs;
 };
 
-export const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolver.CosmosMsgFor_Empty => {
+export const encodeMsg = (inputMsg: warp_resolver.WarpMsg): warp_resolver.WarpMsg => {
+  if (!('generic' in inputMsg)) {
+    return inputMsg;
+  }
+
+  const input = inputMsg.generic;
+
   if (!('wasm' in input)) {
-    return input;
+    return inputMsg;
   }
 
   let msg = input.wasm;
@@ -182,7 +139,7 @@ export const encodeMsg = (input: warp_resolver.CosmosMsgFor_Empty): warp_resolve
     msg.migrate.msg = base64encode(msg.migrate.msg);
   }
 
-  return { wasm: msg };
+  return { generic: { wasm: msg } };
 };
 
 const base64encode = (input: string): string => {

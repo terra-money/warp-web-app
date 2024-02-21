@@ -108,7 +108,7 @@ export const TemplateNew = (props: TemplateNewProps) => {
 
 const extractUsedVariables = (
   formattedStr: string,
-  msgs: warp_resolver.CosmosMsgFor_Empty[],
+  msgs: warp_resolver.WarpMsg[],
   vars: warp_resolver.Variable[],
   condition?: warp_resolver.Condition
 ) => {

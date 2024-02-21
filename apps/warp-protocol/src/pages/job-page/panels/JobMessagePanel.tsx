@@ -21,18 +21,18 @@ export const JobMessagePanel = (props: JobMessagePanelProps) => {
   const { job, className } = props;
   const [selectedTabType, setSelectedTabType] = useState<TabType>('encoded');
 
-  const [msgs, setMsgs] = useState<any[]>(job.info.msgs);
+  const [msgs, setMsgs] = useState<any[]>(job.msgs);
   const copy = useCopy('message', JSON.stringify(msgs, null, 2));
 
   useEffect(() => {
     if (selectedTabType === 'encoded') {
-      setMsgs(job.info.msgs);
+      setMsgs(job.msgs);
     }
 
     if (selectedTabType === 'decoded') {
-      setMsgs(decodeMsgs(job.info.msgs));
+      setMsgs(decodeMsgs(job.msgs));
     }
-  }, [job.info.msgs, selectedTabType]);
+  }, [job.msgs, selectedTabType]);
 
   return (
     <Panel className={classNames(styles.root, className)}>

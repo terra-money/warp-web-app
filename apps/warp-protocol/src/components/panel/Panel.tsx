@@ -7,13 +7,14 @@ interface PanelProps extends UIElementProps {
   title?: string;
   isLoading?: boolean;
   ThrobberProps?: UIElementProps & {};
+  onClick?: () => void;
 }
 
 export const Panel = (props: PanelProps) => {
-  const { ThrobberProps, className, title, children, isLoading } = props;
+  const { ThrobberProps, className, title, children, isLoading, onClick } = props;
 
   return (
-    <Container className={classNames(className, styles.root)} component="section" direction="column">
+    <Container className={classNames(className, styles.root)} component="section" direction="column" onClick={onClick}>
       {title && (
         <Text variant="label" className={styles.title}>
           {title}

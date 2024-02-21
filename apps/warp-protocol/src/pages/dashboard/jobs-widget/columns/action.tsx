@@ -13,7 +13,6 @@ import { useLocalWallet } from '@terra-money/apps/hooks';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useJobStorage } from 'pages/job-new/useJobStorage';
 import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
-import { useWarpAccount } from 'queries/useWarpAccount';
 
 export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const job = cellProps.rowData as Job;
@@ -22,8 +21,6 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const openExecuteJobDialog = useExecuteJobDialog();
   const openCancelJobDialog = useCancelJobDialog();
   const navigate = useNavigate();
-
-  const { data: warpAccount } = useWarpAccount();
 
   const localWallet = useLocalWallet();
   const { saveJob } = useJobStorage();
@@ -37,7 +34,7 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
   const onCancelJob = useCallback(() => openCancelJobDialog({ job }), [openCancelJobDialog, job]);
   const onCloneJob = useCallback(() => {
     saveJob(job);
-    navigate(`/job-new/details?mode=advanced`);
+    navigate(`/job-new/details`);
   }, [navigate, job, saveJob]);
 
   return (
@@ -50,7 +47,7 @@ export const ActionCellRenderer = (cellProps: TableCellProps) => {
       {isCreator && job.info.status === 'Pending' && <MenuAction onClick={onEditJob}>Edit job</MenuAction>}
       {job.info.status === 'Pending' && connectedWallet && <MenuAction onClick={onExecuteJob}>Execute job</MenuAction>}
       {isCreator && job.info.status === 'Pending' && <MenuAction onClick={onCancelJob}>Cancel job</MenuAction>}
-      {connectedWallet && warpAccount && <MenuAction onClick={onCloneJob}>Clone job</MenuAction>}
+      {connectedWallet && <MenuAction onClick={onCloneJob}>Clone job</MenuAction>}
     </DropdownMenu>
   );
 };

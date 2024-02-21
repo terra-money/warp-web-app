@@ -14,8 +14,9 @@ import { SuggestItemsMenu } from './SuggestItemsMenu';
 import { variableName } from 'utils/variable';
 import CustomJsonSyntaxMode from './CustomJsonSyntaxMode';
 import { IAceEditor } from 'react-ace/lib/types';
-import { warp_resolver } from '@terra-money/warp-sdk';
+import { base64encode, warp_resolver } from '@terra-money/warp-sdk';
 import { useWarpSdk } from '@terra-money/apps/hooks';
+import { useQueryExample } from 'pages/variables/details/query/QueryVariableForm';
 
 export interface EditorInputProps {
   className?: string;
@@ -41,12 +42,21 @@ export interface EditorInputProps {
   onEditorCursorChange?: (editor: IAceEditor) => void;
 }
 
-const defaultExample = (contractAddr: string): warp_resolver.CosmosMsgFor_Empty => ({
-  wasm: {
-    execute: {
-      contract_addr: contractAddr,
-      msg: 'eyJ0ZXN0X21zZyI6eyJpZCI6IjEyMyJ9fQ==',
-      funds: [],
+const defaultExample = (
+  contractAddress: string,
+  query: warp_resolver.QueryRequestFor_String
+): warp_resolver.WarpMsg => ({
+  generic: {
+    wasm: {
+      execute: {
+        msg: base64encode({
+          execute_simulate_query: {
+            query,
+          },
+        }),
+        funds: [],
+        contract_addr: contractAddress,
+      },
     },
   },
 });
@@ -54,7 +64,9 @@ const defaultExample = (contractAddr: string): warp_resolver.CosmosMsgFor_Empty 
 const EditorInput = (props: EditorInputProps) => {
   const sdk = useWarpSdk();
 
-  const contractAddr = sdk.chain.contracts.controller;
+  const queryExample = useQueryExample();
+
+  console.log({ contracts: sdk.chain.contracts });
 
   const {
     endLabel,
@@ -68,7 +80,7 @@ const EditorInput = (props: EditorInputProps) => {
     mode = 'json',
     onChange,
     readOnly,
-    example = defaultExample(contractAddr),
+    example = defaultExample(sdk.chain.contracts.resolver, queryExample),
     onEditorCursorChange,
     suggestItems,
   } = props;

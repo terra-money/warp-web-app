@@ -8,8 +8,8 @@ export interface ExternalVariableInput {
   body?: string | null;
   headers?: object | null;
   method?: warp_resolver.Method | null;
-  onSuccess?: warp_resolver.UpdateFnValue;
-  onError?: warp_resolver.UpdateFnValue;
+  onSuccess?: warp_resolver.FnValue;
+  onError?: warp_resolver.FnValue;
   selector: string;
   url: string;
   encode: boolean;

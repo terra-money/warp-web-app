@@ -1,19 +1,16 @@
-import { demicrofy } from '@terra-money/apps/libs/formatting';
 import { useCallback, useMemo } from 'react';
 import { useLocalStorage } from 'react-use';
 import { isEmpty } from 'lodash';
 import { Job } from 'types/job';
 import { DetailsFormInput } from './details-form/useDetailsForm';
 import { useCachedVariables } from './useCachedVariables';
-import { useNativeToken } from 'hooks/useNativeToken';
-import { warp_resolver, warp_templates } from '@terra-money/warp-sdk';
+import { warp_resolver } from '@terra-money/warp-sdk';
 import { useChainSuffix } from '@terra-money/apps/hooks';
+import { Template } from 'types';
 
 export const useJobStorage = () => {
   const detailsInputKey = useChainSuffix('__warp_details_input');
   const [detailsInput, setDetailsInput] = useLocalStorage<DetailsFormInput | undefined>(detailsInputKey, {} as any);
-
-  const nativeToken = useNativeToken();
 
   const conditionKey = useChainSuffix('__warp_condition');
   const [cond, setCond] = useLocalStorage<warp_resolver.Condition | undefined>(conditionKey, {} as any);
@@ -29,24 +26,25 @@ export const useJobStorage = () => {
   const saveJob = useCallback(
     (job: Job) => {
       const details: DetailsFormInput = {
-        reward: demicrofy(job.reward, nativeToken.decimals).toString(),
+        durationDays: job.info.duration_days.toString(),
         name: job.info.name,
         description: job.info.description,
-        message: JSON.stringify(job.info.msgs, null, 2),
+        message: JSON.stringify(job.msgs, null, 2),
         recurring: job.info.recurring,
+        fundingAccount: job.info.funding_account ?? undefined,
       };
 
       setDetailsInput(details);
-      setCond(job.info.condition);
+      setCond(job.condition);
       setVariables(job.info.vars);
     },
-    [setDetailsInput, setCond, nativeToken.decimals, setVariables]
+    [setDetailsInput, setCond, setVariables]
   );
 
   const setJobTemplate = useCallback(
-    (template: warp_templates.Template) => {
+    (template: Template) => {
       const details: DetailsFormInput = {
-        reward: '',
+        durationDays: '',
         description: '',
         name: '',
         message: JSON.stringify(template.msg, null, 2),
@@ -73,14 +71,22 @@ export const useJobStorage = () => {
   );
 };
 
-export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
+export const decodeMsg = (inputMsg: warp_resolver.WarpMsg) => {
+  if (!('generic' in inputMsg)) {
+    return inputMsg;
+  }
+
+  const msg = inputMsg.generic;
+
   if ('wasm' in msg) {
     if ('execute' in msg.wasm) {
       return {
-        wasm: {
-          execute: {
-            ...msg.wasm.execute,
-            msg: safeFromBase64(msg.wasm.execute.msg),
+        generic: {
+          wasm: {
+            execute: {
+              ...msg.wasm.execute,
+              msg: safeFromBase64(msg.wasm.execute.msg),
+            },
           },
         },
       };
@@ -88,10 +94,12 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
 
     if ('instantiate' in msg.wasm) {
       return {
-        wasm: {
-          instantiate: {
-            ...msg.wasm.instantiate,
-            msg: safeFromBase64(msg.wasm.instantiate.msg),
+        generic: {
+          wasm: {
+            instantiate: {
+              ...msg.wasm.instantiate,
+              msg: safeFromBase64(msg.wasm.instantiate.msg),
+            },
           },
         },
       };
@@ -99,17 +107,19 @@ export const decodeMsg = (msg: warp_resolver.CosmosMsgFor_Empty) => {
 
     if ('migrate' in msg.wasm) {
       return {
-        wasm: {
-          migrate: {
-            ...msg.wasm.migrate,
-            msg: safeFromBase64(msg.wasm.migrate.msg),
+        generic: {
+          wasm: {
+            migrate: {
+              ...msg.wasm.migrate,
+              msg: safeFromBase64(msg.wasm.migrate.msg),
+            },
           },
         },
       };
     }
   }
 
-  return msg;
+  return inputMsg;
 };
 
 export const fromBase64 = (value: string) => {

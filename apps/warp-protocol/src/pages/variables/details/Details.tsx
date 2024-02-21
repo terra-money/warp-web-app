@@ -83,6 +83,13 @@ export const Details = (props: DetailsProps) => {
                       name,
                       value,
                       kind,
+                      // TODO: add init_fn and reinitialize to statics
+                      init_fn: {
+                        string: {
+                          simple: value,
+                        },
+                      },
+                      reinitialize: false,
                       encode: false,
                     },
                   });

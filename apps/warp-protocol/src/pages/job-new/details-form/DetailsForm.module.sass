@@ -9,7 +9,7 @@
   height: auto
   display: grid
   width: 1000px
-  grid-template-columns: 1fr 1fr
+  grid-template-columns: 1fr 1fr 1fr 1fr
   grid-template-rows: repeat(3, min-content)
   row-gap: 24px !important
   column-gap: 24px !important
@@ -25,6 +25,7 @@
 .template_msg_input
   height: 166px
 
+.recurring,
 .name_input,
 .amount_input,
 .tabs,
@@ -37,15 +38,15 @@
 
 .name_input
   grid-row: 1
-  grid-column: 1
+  grid-column: 1 / span 2
 
 .amount_input
   grid-row: 2
-  grid-column: 1
+  grid-column: 1 / span 2
 
 .description_input
   grid-row: 1 / span 2
-  grid-column: 2
+  grid-column: 3 / span 2
 
 .textarea_label
   margin-top: 40px
@@ -59,25 +60,33 @@
     align-items: flex-start !important
     padding: 0 !important
 
-.tabs
+.recurring
   grid-row: 3
   grid-column: 1
 
-.msg_input
+.funding_account
   grid-row: 4
   grid-column: 1 / span 2
 
+.tabs
+  grid-row: 3
+  grid-column: 3
+
+.msg_input
+  grid-row: 4
+  grid-column: 3 / span 2
+
 .template_input
   grid-row: 4
-  grid-column: 1
+  grid-column: 3 / span 2
 
 .template_vars
   grid-row: 5
-  grid-column: 1
+  grid-column: 1 / span 2
 
 .template_msg_input
   grid-row: 4 / span 2
-  grid-column: 2
+  grid-column: 2 / span 4
 
 .title_container
   position: relative

@@ -9,14 +9,20 @@ interface WithdrawFundsTxProps {
   amount: u<Big>;
 }
 
-export const useWithdrawFundsTx = () => {
+export const useWithdrawFundsTx = (fundingAccountAddress: string) => {
   const sdk = useWarpSdk();
 
   return useTx<WithdrawFundsTxProps>(
     async (options) => {
       const { token, amount, wallet } = options;
 
-      return sdk.tx.withdrawFromAccount(wallet.walletAddress, wallet.walletAddress, token, amount.toString());
+      return sdk.tx.withdrawFromAccount(
+        wallet.walletAddress,
+        fundingAccountAddress,
+        wallet.walletAddress,
+        token,
+        amount.toString()
+      );
     },
     {
       txKey: TX_KEY.WITHDRAW_FUNDS,

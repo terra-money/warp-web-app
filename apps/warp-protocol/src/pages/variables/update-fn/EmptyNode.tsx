@@ -9,7 +9,7 @@ import { DropdownMenu } from 'components/dropdown-menu/DropdownMenu';
 import { warp_resolver } from '@terra-money/warp-sdk';
 
 type EmptyNodeProps = UIElementProps & {
-  setUpdateFn: (updateFn: warp_resolver.UpdateFnValue) => void;
+  setUpdateFn: (updateFn: warp_resolver.FnValue) => void;
   kind: warp_resolver.VariableKind;
 };
 
@@ -24,7 +24,7 @@ export const EmptyNode = forwardRef((props: EmptyNodeProps, ref: React.Ref<HTMLB
     >
       <MenuAction
         onClick={() => {
-          setUpdateFn({ [kind]: { simple: '' } } as warp_resolver.UpdateFnValue);
+          setUpdateFn({ [kind]: { simple: '' } } as warp_resolver.FnValue);
         }}
         key="value"
       >
@@ -35,7 +35,7 @@ export const EmptyNode = forwardRef((props: EmptyNodeProps, ref: React.Ref<HTMLB
         onClick={() => {
           setUpdateFn({
             [kind]: { expr: { left: { simple: '' }, op: 'add', right: { simple: '' } } },
-          } as warp_resolver.UpdateFnValue);
+          } as warp_resolver.FnValue);
         }}
         key="expr"
       >

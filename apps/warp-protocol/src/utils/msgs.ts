@@ -5,7 +5,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 
 export function filterUnreferencedVariables(
   vars: warp_resolver.Variable[],
-  msgs: warp_resolver.CosmosMsgFor_Empty[],
+  msgs: warp_resolver.WarpMsg[],
   condition?: warp_resolver.Condition
 ): warp_resolver.Variable[] {
   const referencedVars = extractReferencedVarNames(vars, msgs, condition);
@@ -17,7 +17,7 @@ export function filterUnreferencedVariables(
 
 export function containsAllReferencedVars(
   vars: warp_resolver.Variable[],
-  msgs: warp_resolver.CosmosMsgFor_Empty[],
+  msgs: warp_resolver.WarpMsg[],
   condition?: warp_resolver.Condition
 ): boolean {
   const referencedVars = extractReferencedVarNames(vars, msgs, condition);
@@ -27,13 +27,13 @@ export function containsAllReferencedVars(
 
 export function extractReferencedVarNames(
   vars: warp_resolver.Variable[],
-  msgs: warp_resolver.CosmosMsgFor_Empty[],
+  msgs: warp_resolver.WarpMsg[],
   condition?: warp_resolver.Condition
 ): string[] {
   const referencedVars: Set<string> = new Set();
   const unreferencedVars: Set<string> = new Set(vars.map((v) => variableName(v)));
 
-  msgs.forEach((msg) => scanForReferencesForCosmosMsg(msg).forEach((varName) => referencedVars.add(varName)));
+  msgs.forEach((msg) => scanForReferencesForWarpMsg(msg).forEach((varName) => referencedVars.add(varName)));
 
   vars.forEach((v) => {
     if ('query' in v) {
@@ -73,7 +73,7 @@ export const scanForReferences = (obj: any): string[] => {
   return res;
 };
 
-const scanForReferencesForCosmosMsg = (msg: warp_resolver.CosmosMsgFor_Empty): string[] => {
+const scanForReferencesForWarpMsg = (msg: warp_resolver.WarpMsg): string[] => {
   const obj = decodeMsg(msg);
   return scanForReferences(obj);
 };

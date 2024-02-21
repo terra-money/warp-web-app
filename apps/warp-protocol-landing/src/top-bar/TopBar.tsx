@@ -15,6 +15,8 @@ type TopBarProps = UIElementProps & {
   onDiscordClick: () => void;
   onTwitterClick: () => void;
   onTelegramClick: () => void;
+  onSdkClick: () => void;
+  onGetInTouchClick: () => void;
 };
 
 export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
@@ -29,6 +31,8 @@ export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
       onDiscordClick,
       onTelegramClick,
       onTwitterClick,
+      onSdkClick,
+      onGetInTouchClick
     } = props;
 
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -46,6 +50,8 @@ export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
           onDocsClick={onDocsClick}
           onFeaturesClick={onFeaturesClick}
           onWebAppClick={onWebAppClick}
+          onSdkClick={onSdkClick}
+          onGetInTouchClick={onGetInTouchClick}
         />
       );
     }
@@ -60,6 +66,8 @@ export const TopBar = forwardRef<HTMLDivElement | null, TopBarProps>(
         onFeaturesClick={onFeaturesClick}
         onWebAppClick={onWebAppClick}
         onTwitterClick={onTwitterClick}
+        onSdkClick={onSdkClick}
+        onGetInTouchClick={onGetInTouchClick}
       />
     );
   }

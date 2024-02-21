@@ -7,8 +7,8 @@ export interface QueryVariableInput {
   queryJson: string;
   kind: warp_resolver.VariableKind;
   querySelector: string;
-  onSuccess?: warp_resolver.UpdateFnValue;
-  onError?: warp_resolver.UpdateFnValue;
+  onSuccess?: warp_resolver.FnValue;
+  onError?: warp_resolver.FnValue;
   encode: boolean;
   reinitialize: boolean;
 }

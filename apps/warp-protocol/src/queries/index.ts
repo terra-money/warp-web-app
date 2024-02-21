@@ -5,3 +5,4 @@ export * from './useAnalyticsQuery';
 export * from './useJobsQuery';
 export * from './useTemplateQuery';
 export * from './useTemplatesQuery';
+export * from './useFundingAccountsQuery';

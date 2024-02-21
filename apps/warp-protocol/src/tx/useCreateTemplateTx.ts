@@ -6,7 +6,7 @@ import { warp_resolver } from '@terra-money/warp-sdk';
 export type CreateTemplateTxProps = {
   condition?: warp_resolver.Condition | null;
   formatted_str: string;
-  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  msgs: warp_resolver.WarpMsg[];
   name: string;
   vars: warp_resolver.Variable[];
 };
@@ -18,12 +18,12 @@ export const useCreateTemplateTx = () => {
     async (options) => {
       const { wallet, formatted_str, vars, name, msgs, condition } = options;
 
+      // TODO: implement
       return sdk.tx.submitTemplate(wallet.walletAddress, {
         formatted_str,
-        condition,
+        executions: [{ condition: JSON.stringify(condition), msgs: JSON.stringify(msgs) }],
         vars,
         name,
-        msg: JSON.stringify(msgs),
       });
     },
     {

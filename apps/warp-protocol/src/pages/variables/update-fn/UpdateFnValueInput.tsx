@@ -12,9 +12,9 @@ import { Container } from '@terra-money/apps/components';
 import { ReactComponent as PencilIcon } from 'components/assets/Pencil.svg';
 
 interface UpdateFnValueInputProps {
-  value?: warp_resolver.UpdateFnValue;
+  value?: warp_resolver.FnValue;
   kind: warp_resolver.VariableKind;
-  onChange: (value: warp_resolver.UpdateFnValue) => void;
+  onChange: (value: warp_resolver.FnValue) => void;
   label?: string;
   className?: string;
 }

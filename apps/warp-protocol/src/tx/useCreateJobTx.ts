@@ -1,19 +1,21 @@
 import { useTx } from '@terra-money/apps/libs/transactions';
-import { u } from '@terra-money/apps/types';
-import Big from 'big.js';
 import { TX_KEY } from './txKey';
 import { containsAllReferencedVars, orderVarsByReferencing } from 'utils/msgs';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { warp_resolver } from '@terra-money/warp-sdk';
+import { composers, warp_resolver } from '@terra-money/warp-sdk';
+import { Coin } from '@terra-money/feather.js';
 
 export interface CreateJobTxProps {
   name: string;
-  reward: u<Big>;
   description: string;
-  msgs: warp_resolver.CosmosMsgFor_Empty[];
+  msgs: warp_resolver.WarpMsg[];
   vars: warp_resolver.Variable[];
+  durationDays: string;
   condition: warp_resolver.Condition;
+  operationalAmount: string;
+  reward: string;
   recurring: boolean;
+  fundingAccount?: string;
 }
 
 export const useCreateJobTx = () => {
@@ -21,7 +23,19 @@ export const useCreateJobTx = () => {
 
   return useTx<CreateJobTxProps>(
     async (options) => {
-      const { wallet, reward, name, msgs, condition, vars, description, recurring } = options;
+      const {
+        wallet,
+        name,
+        msgs,
+        condition,
+        vars,
+        description,
+        recurring,
+        durationDays,
+        operationalAmount,
+        reward,
+        fundingAccount,
+      } = options;
 
       if (!containsAllReferencedVars(vars, msgs, condition)) {
         throw Error(
@@ -30,18 +44,25 @@ export const useCreateJobTx = () => {
       }
 
       const orderedVars = orderVarsByReferencing(vars);
+      const executions = [{ condition, msgs }];
 
-      return sdk.tx.createJob(wallet.walletAddress, {
-        recurring,
-        requeue_on_evict: true,
-        name,
-        labels: [],
-        description,
-        condition: JSON.stringify(condition),
-        vars: JSON.stringify(orderedVars),
-        reward: reward.toString(),
-        msgs: JSON.stringify(msgs),
-      });
+      const nativeTokenDenom = await sdk.nativeTokenDenom();
+
+      const createJobMsg = composers.job
+        .create()
+        .name(name)
+        .labels([])
+        .reward(reward.toString())
+        .operationalAmount(operationalAmount.toString())
+        .recurring(recurring)
+        .description(description)
+        .vars(orderedVars)
+        .fundingAccount(fundingAccount)
+        .durationDays(durationDays)
+        .executions(executions)
+        .compose();
+
+      return sdk.tx.createJob(wallet.walletAddress, createJobMsg, [new Coin(nativeTokenDenom, operationalAmount)]);
     },
     {
       txKey: TX_KEY.CREATE_JOB,

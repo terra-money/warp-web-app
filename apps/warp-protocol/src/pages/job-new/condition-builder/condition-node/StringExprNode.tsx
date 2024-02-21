@@ -7,8 +7,8 @@ import styles from './ConditionNode.module.sass';
 import { OperatorInput } from './operator-input/OperatorInput';
 import { ValueInput } from './value-input/ValueInput';
 
-type Expr = warp_resolver.GenExprFor_ValueFor_StringAnd_StringOp;
-type Value = warp_resolver.ValueFor_String;
+type Expr = warp_resolver.GenExprFor_StringValueFor_StringAnd_StringOp;
+type Value = warp_resolver.StringValueFor_String;
 
 type StringExprNodeProps = UIElementProps & {
   expr: Expr;

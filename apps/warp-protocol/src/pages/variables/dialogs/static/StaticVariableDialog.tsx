@@ -36,6 +36,13 @@ export const StaticVariableDialog = (props: DialogProps<StaticVariableDialogProp
                         name,
                         value,
                         kind,
+                        // TODO: add init_fn and reinitialize to statics
+                        init_fn: {
+                          string: {
+                            simple: value,
+                          },
+                        },
+                        reinitialize: false,
                         update_fn: {
                           on_success: onSuccess,
                           on_error: onError,

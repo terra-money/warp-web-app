@@ -9,13 +9,13 @@ import { useState } from 'react';
 
 export type UpdateFnDialogProps = {
   kind: warp_resolver.VariableKind;
-  updateFn?: warp_resolver.UpdateFnValue;
+  updateFn?: warp_resolver.FnValue;
 };
 
-export const UpdateFnDialog = (props: DialogProps<UpdateFnDialogProps, warp_resolver.UpdateFnValue>) => {
+export const UpdateFnDialog = (props: DialogProps<UpdateFnDialogProps, warp_resolver.FnValue>) => {
   const { closeDialog, updateFn, kind } = props;
 
-  const [updateFnState, setUpdateFnState] = useState<warp_resolver.UpdateFnValue | undefined>(updateFn);
+  const [updateFnState, setUpdateFnState] = useState<warp_resolver.FnValue | undefined>(updateFn);
 
   return (
     <Dialog className={styles.dialog}>
@@ -50,5 +50,5 @@ export const UpdateFnDialog = (props: DialogProps<UpdateFnDialogProps, warp_reso
 };
 
 export const useUpdateFnDialog = () => {
-  return useDialog<UpdateFnDialogProps, warp_resolver.UpdateFnValue>(UpdateFnDialog);
+  return useDialog<UpdateFnDialogProps, warp_resolver.FnValue>(UpdateFnDialog);
 };

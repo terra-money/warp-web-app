@@ -22,6 +22,7 @@ const QUERY_REFETCH_MAP: QueryRefetchMap = {
   [TX_KEY.CREATE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.EDIT_TEMPLATE]: [QUERY_KEY.TEMPLATES],
   [TX_KEY.DELETE_TEMPLATE]: [QUERY_KEY.TEMPLATES],
+  [TX_KEY.CREATE_FUNDING_ACCOUNT]: [QUERY_KEY.FUNDING_ACCOUNTS],
 };
 
 const runRefetch = (queryRefetch: string | QueryRefetch): Promise<string> => {
@@ -29,7 +30,7 @@ const runRefetch = (queryRefetch: string | QueryRefetch): Promise<string> => {
     if (typeof queryRefetch === 'string') {
       // we cant query right away because we need to give the nodes
       // time to sync before the data is available to requery
-      sleep(300).then(() => resolve(queryRefetch));
+      sleep(600).then(() => resolve(queryRefetch));
     } else if (typeof queryRefetch.wait === 'number') {
       sleep(queryRefetch.wait).then(() => resolve(queryRefetch.queryKey));
     } else {

@@ -20,7 +20,7 @@ interface RouteProps {
 const routes: RouteProps[] = [
   { to: '/dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
   { to: '/jobs', label: 'Jobs', icon: <JobsIcon /> },
-  { to: '/balances', label: 'Balances', icon: <DotsCircleIcon /> },
+  { to: '/funding-accounts', label: 'Funding Accounts', icon: <DotsCircleIcon /> },
   { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
   { to: '/templates', label: 'Templates', icon: <TerminalIcon /> },
 ];

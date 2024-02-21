@@ -1,4 +1,4 @@
-import { LocalWallet, useChainSuffix, useLocalWallet } from '@terra-money/apps/hooks';
+import { useChainSelector, useChainSuffix } from '@terra-money/apps/hooks';
 import { useNativeToken } from 'hooks/useNativeToken';
 import { useCallback, useMemo } from 'react';
 import { Token } from '@terra-money/apps/types';
@@ -8,40 +8,32 @@ type BalancesStorage = {
   [key: string]: Token[];
 };
 
-const storageKey = (connectedWallet: LocalWallet) => `${connectedWallet.chainId}--${connectedWallet.walletAddress}`;
+const storageKey = (chainId: string, walletAddress: string) => `${chainId}--${walletAddress}`;
 
-export const useBalances = () => {
-  const localWallet = useLocalWallet();
+export const useBalances = (walletAddress: string) => {
+  const { selectedChainId } = useChainSelector();
   const nativeToken = useNativeToken();
 
   const defaultTokens = useMemo(() => [nativeToken], [nativeToken]);
 
-  const storedBalancesKey = useChainSuffix('__warp_stored_balances');
+  const storedBalancesKey = useChainSuffix('__warp_stored_funding_account_balances');
   const [storedBalances, setStoredBalances] = useLocalStorage<BalancesStorage>(storedBalancesKey, {});
 
   const setBalances = useCallback(
     (tokens: Token[]) => {
-      if (!localWallet.connectedWallet) {
-        return;
-      }
-
       setStoredBalances((storedBalances) => {
         return {
           ...storedBalances,
-          [storageKey(localWallet)]: tokens,
+          [storageKey(selectedChainId, walletAddress)]: tokens,
         };
       });
     },
-    [localWallet, setStoredBalances]
+    [walletAddress, setStoredBalances, selectedChainId]
   );
 
   const balances = useMemo(() => {
-    if (!localWallet.connectedWallet) {
-      return [];
-    }
-
-    return storedBalances[storageKey(localWallet)] ?? defaultTokens;
-  }, [storedBalances, localWallet, defaultTokens]);
+    return storedBalances[storageKey(selectedChainId, walletAddress)] ?? defaultTokens;
+  }, [storedBalances, walletAddress, selectedChainId, defaultTokens]);
 
   const saveAll = useCallback(
     (tokens: Token[]) => {
