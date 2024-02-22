@@ -24,6 +24,7 @@ export const useMigrateFundsTx = (waitForCompletion?: boolean) => {
         token,
         amount.toString()
       );
+
       const createFundingAccountTx = await sdkv2.tx.createFundingAccount(wallet.walletAddress, [
         new Coin(token.denom, amount.toString()),
       ]);

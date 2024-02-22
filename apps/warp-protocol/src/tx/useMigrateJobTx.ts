@@ -8,6 +8,8 @@ import { Coin } from '@terra-money/feather.js';
 
 interface MigrateJobTxProps {
   job: Job;
+  durationDays: string;
+  fundingAccount?: string;
 }
 
 const mapVars = (vars: warp_resolver.Variable[]): warp_resolver_v2.Variable[] => {
@@ -43,11 +45,9 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
 
   return useTx<MigrateJobTxProps>(
     async (options) => {
-      const { wallet, job } = options;
+      const { wallet, job, durationDays, fundingAccount } = options;
 
       const walletAddress = wallet.walletAddress;
-
-      const durationDays = '30';
 
       const vars = mapVars(job.info.vars);
 
@@ -80,6 +80,7 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .name(job.info.name)
         .labels(job.info.labels)
         .reward(reward.toString())
+        .fundingAccount(fundingAccount)
         .operationalAmount(operationalAmount.toString())
         .recurring(job.info.recurring)
         .description(`Migrated from v1 jobId: ${job.info.id}`)

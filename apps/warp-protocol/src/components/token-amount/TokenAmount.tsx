@@ -17,6 +17,7 @@ interface TokenAmountProps extends Pick<TextProps, 'variant' | 'component'> {
   showSymbol?: boolean;
   showIcon?: boolean;
   loading?: boolean;
+  containerClassName?: string;
   showUsdAmount?: boolean;
 }
 
@@ -32,6 +33,7 @@ export const TokenAmount = (props: TokenAmountProps) => {
     showSymbol = true,
     showIcon = false,
     showUsdAmount = false,
+    containerClassName,
   } = props;
 
   const formattingOptions = {
@@ -55,7 +57,7 @@ export const TokenAmount = (props: TokenAmountProps) => {
   }
 
   return (
-    <Container className={styles.container} direction="row">
+    <Container className={classNames(styles.container, containerClassName)} direction="row">
       <Text className={classNames(className, styles.root)} variant={variant} component={component}>
         {formattedAmount}
         {showIcon === false && showSymbol && token.symbol && <sub>{token.symbol}</sub>}
