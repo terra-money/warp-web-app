@@ -36,6 +36,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.10.2",
     "@mui/material": "^5.10.2",
     "@popperjs/core": "^2.11.6",
@@ -109,6 +110,7 @@
     "jest-watch-typeahead": "2.1.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
+    "raw-loader": "^4.0.2",
     "react-app-rewired": "^2.2.1",
     "ts-node": "^10.9.1"
   },

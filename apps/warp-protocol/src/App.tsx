@@ -24,6 +24,7 @@ import { FundingAccounts } from 'pages/funding-accounts';
 import { useTermsOfUseDialog } from 'components/dialog/terms-of-use/TermsOfUseDialog';
 import TerraStationMobileWallet from '@terra-money/terra-station-mobile';
 import { useEffect, useMemo } from 'react';
+import { Playground } from 'pages/playground/Playground';
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const Main = () => {
         <Route path="/job-new/*" element={<JobNew />} />
         <Route path="/jobs/*" element={<Jobs />} />
         <Route path="/jobs/:jobId" element={<JobPage />} />
+        <Route path="/playground" element={<Playground />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>

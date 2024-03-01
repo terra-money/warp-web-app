@@ -23,6 +23,7 @@ const routes: RouteProps[] = [
   { to: '/funding-accounts', label: 'Funding Accounts', icon: <DotsCircleIcon /> },
   { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
   { to: '/templates', label: 'Templates', icon: <TerminalIcon /> },
+  { to: '/playground', label: 'Playground', icon: <TerminalIcon /> },
 ];
 
 interface RouteTooltipProps {

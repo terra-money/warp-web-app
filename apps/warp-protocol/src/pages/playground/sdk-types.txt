@@ -1,0 +1,2481 @@
+declare module "events" {
+    export enum TerraEventKind {
+        TxSubmitted = 0
+    }
+    export type TxSubmittedEvent = {
+        kind: TerraEventKind.TxSubmitted;
+        payload: {
+            txHash: string;
+        };
+    };
+    export type TerraEventHandler = (event: TerraEvent) => void;
+    export type TerraEvent = TxSubmittedEvent;
+}
+declare module "types/contracts/warp_account" {
+    export module warp_account {
+        type Addr = string;
+        interface Config {
+            creator_addr: Addr;
+            owner: Addr;
+        }
+        type ExecuteMsg = {
+            warp_msgs: WarpMsgs;
+        };
+        type Uint64 = string;
+        type WarpMsg = {
+            generic: CosmosMsgFor_Empty;
+        } | {
+            ibc_transfer: IbcTransferMsg;
+        } | {
+            withdraw_assets: WithdrawAssetsMsg;
+        };
+        type CosmosMsgFor_Empty = {
+            bank: BankMsg;
+        } | {
+            custom: Empty;
+        } | {
+            staking: StakingMsg;
+        } | {
+            distribution: DistributionMsg;
+        } | {
+            stargate: {
+                type_url: string;
+                value: Binary;
+            };
+        } | {
+            ibc: IbcMsg;
+        } | {
+            wasm: WasmMsg;
+        } | {
+            gov: GovMsg;
+        };
+        type BankMsg = {
+            send: {
+                amount: Coin[];
+                to_address: string;
+            };
+        } | {
+            burn: {
+                amount: Coin[];
+            };
+        };
+        type Uint128 = string;
+        type StakingMsg = {
+            delegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            undelegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            redelegate: {
+                amount: Coin;
+                dst_validator: string;
+                src_validator: string;
+            };
+        };
+        type DistributionMsg = {
+            set_withdraw_address: {
+                /**
+                 * The `withdraw_address`
+                 */
+                address: string;
+            };
+        } | {
+            withdraw_delegator_reward: {
+                /**
+                 * The `validator_address`
+                 */
+                validator: string;
+            };
+        };
+        type Binary = string;
+        type IbcMsg = {
+            transfer: {
+                /**
+                 * packet data only supports one coin https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/ibc/applications/transfer/v1/transfer.proto#L11-L20
+                 */
+                amount: Coin;
+                /**
+                 * exisiting channel to send the tokens over
+                 */
+                channel_id: string;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+                /**
+                 * address on the remote chain to receive these tokens
+                 */
+                to_address: string;
+            };
+        } | {
+            send_packet: {
+                channel_id: string;
+                data: Binary;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+            };
+        } | {
+            close_channel: {
+                channel_id: string;
+            };
+        };
+        type Timestamp = Uint64;
+        type WasmMsg = {
+            execute: {
+                contract_addr: string;
+                funds: Coin[];
+                /**
+                 * msg is the json-encoded ExecuteMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            instantiate: {
+                admin?: string | null;
+                code_id: number;
+                funds: Coin[];
+                /**
+                 * A human-readbale label for the contract
+                 */
+                label: string;
+                /**
+                 * msg is the JSON-encoded InstantiateMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            migrate: {
+                contract_addr: string;
+                /**
+                 * msg is the json-encoded MigrateMsg struct that will be passed to the new code
+                 */
+                msg: Binary;
+                /**
+                 * the code_id of the new logic to place in the given contract
+                 */
+                new_code_id: number;
+            };
+        } | {
+            update_admin: {
+                admin: string;
+                contract_addr: string;
+            };
+        } | {
+            clear_admin: {
+                contract_addr: string;
+            };
+        };
+        type GovMsg = {
+            vote: {
+                proposal_id: number;
+                /**
+                 * The vote option.
+                 *
+                 * This should be called "option" for consistency with Cosmos SDK. Sorry for that. See <https://github.com/CosmWasm/cosmwasm/issues/1571>.
+                 */
+                vote: VoteOption;
+            };
+        };
+        type VoteOption = 'yes' | 'no' | 'abstain' | 'no_with_veto';
+        type AssetInfo = {
+            native: string;
+        } | {
+            cw20: Addr;
+        } | {
+            /**
+             * @minItems 2
+             * @maxItems 2
+             */
+            cw721: [Addr, string];
+        };
+        interface WarpMsgs {
+            job_id?: Uint64 | null;
+            msgs: WarpMsg[];
+        }
+        interface Coin {
+            amount: Uint128;
+            denom: string;
+        }
+        interface Empty {
+        }
+        interface IbcTimeout {
+            block?: IbcTimeoutBlock | null;
+            timestamp?: Timestamp | null;
+        }
+        interface IbcTimeoutBlock {
+            /**
+             * block height after which the packet times out. the height within the given revision
+             */
+            height: number;
+            /**
+             * the version that the client is currently on (eg. after reseting the chain this could increment 1 as height drops to 0)
+             */
+            revision: number;
+        }
+        interface IbcTransferMsg {
+            timeout_block_delta?: number | null;
+            timeout_timestamp_seconds_delta?: number | null;
+            transfer_msg: TransferMsg;
+        }
+        interface TransferMsg {
+            memo: string;
+            receiver: string;
+            sender: string;
+            source_channel: string;
+            source_port: string;
+            timeout_block?: TimeoutBlock | null;
+            timeout_timestamp?: number | null;
+            token?: Coin | null;
+        }
+        interface TimeoutBlock {
+            revision_height?: number | null;
+            revision_number?: number | null;
+        }
+        interface WithdrawAssetsMsg {
+            asset_infos: AssetInfo[];
+        }
+        type CwFund = {
+            cw20: Cw20Fund;
+        } | {
+            cw721: Cw721Fund;
+        };
+        interface InstantiateMsg {
+            cw_funds: CwFund[];
+            job_id: Uint64;
+            msgs: WarpMsg[];
+            native_funds: Coin[];
+            owner: string;
+        }
+        interface Cw20Fund {
+            amount: Uint128;
+            contract_addr: string;
+        }
+        interface Cw721Fund {
+            contract_addr: string;
+            token_id: string;
+        }
+        type QueryMsg = {
+            query_config: QueryConfigMsg;
+        };
+        interface QueryConfigMsg {
+        }
+    }
+}
+declare module "types/contracts/warp_account_tracker" {
+    export module warp_account_tracker {
+        type Addr = string;
+        type AccountType = 'funding' | 'job';
+        interface Account {
+            account_addr: Addr;
+            account_type: AccountType;
+            owner_addr: Addr;
+        }
+        interface AccountsResponse {
+            accounts: Account[];
+        }
+        interface Config {
+            admin: Addr;
+            warp_addr: Addr;
+        }
+        interface ConfigResponse {
+            config: Config;
+        }
+        type ExecuteMsg = {
+            take_job_account: TakeJobAccountMsg;
+        } | {
+            free_job_account: FreeJobAccountMsg;
+        } | {
+            take_funding_account: TakeFundingAccountMsg;
+        } | {
+            free_funding_account: FreeFundingAccountMsg;
+        } | {
+            update_config: UpdateConfigMsg;
+        };
+        type Uint64 = string;
+        interface TakeJobAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+            job_id: Uint64;
+        }
+        interface FreeJobAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+            last_job_id: Uint64;
+        }
+        interface TakeFundingAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+            job_id: Uint64;
+        }
+        interface FreeFundingAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+            job_id: Uint64;
+        }
+        interface UpdateConfigMsg {
+            admin?: string | null;
+        }
+        type AccountStatus = 'free' | 'taken';
+        interface FundingAccountResponse {
+            funding_account?: FundingAccount | null;
+        }
+        interface FundingAccount {
+            account_addr: Addr;
+            account_status: AccountStatus;
+            taken_by_job_ids: Uint64[];
+        }
+        interface FundingAccountsResponse {
+            funding_accounts: FundingAccount[];
+            total_count: number;
+        }
+        interface InstantiateMsg {
+            admin: string;
+            warp_addr: string;
+        }
+        interface JobAccountResponse {
+            job_account?: JobAccount | null;
+        }
+        interface JobAccount {
+            account_addr: Addr;
+            account_status: AccountStatus;
+            taken_by_job_id: Uint64;
+        }
+        interface JobAccountsResponse {
+            job_accounts: JobAccount[];
+            total_count: number;
+        }
+        type QueryMsg = {
+            query_config: QueryConfigMsg;
+        } | {
+            query_accounts: QueryAccountsMsg;
+        } | {
+            query_job_accounts: QueryJobAccountsMsg;
+        } | {
+            query_job_account: QueryJobAccountMsg;
+        } | {
+            query_first_free_job_account: QueryFirstFreeJobAccountMsg;
+        } | {
+            query_funding_accounts: QueryFundingAccountsMsg;
+        } | {
+            query_funding_account: QueryFundingAccountMsg;
+        } | {
+            query_first_free_funding_account: QueryFirstFreeFundingAccountMsg;
+        };
+        interface QueryConfigMsg {
+        }
+        interface QueryAccountsMsg {
+            account_owner_addr: string;
+            limit?: number | null;
+            start_after?: string | null;
+        }
+        interface QueryJobAccountsMsg {
+            account_owner_addr: string;
+            account_status: AccountStatus;
+            limit?: number | null;
+            start_after?: string | null;
+        }
+        interface QueryJobAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+        }
+        interface QueryFirstFreeJobAccountMsg {
+            account_owner_addr: string;
+        }
+        interface QueryFundingAccountsMsg {
+            account_owner_addr: string;
+            account_status: AccountStatus;
+            limit?: number | null;
+            start_after?: string | null;
+        }
+        interface QueryFundingAccountMsg {
+            account_addr: string;
+            account_owner_addr: string;
+        }
+        interface QueryFirstFreeFundingAccountMsg {
+            account_owner_addr: string;
+        }
+    }
+}
+declare module "types/contracts/warp_controller" {
+    export module warp_controller {
+        type Addr = string;
+        type Uint128 = string;
+        type Uint64 = string;
+        interface Config {
+            account_tracker_address: Addr;
+            burn_fee_min: Uint128;
+            burn_fee_rate: Uint128;
+            cancellation_fee_rate: Uint64;
+            creation_fee_max: Uint128;
+            creation_fee_min: Uint128;
+            duration_days_limit: Uint64;
+            duration_days_max: Uint64;
+            duration_days_min: Uint64;
+            fee_collector: Addr;
+            fee_denom: string;
+            maintenance_fee_max: Uint128;
+            maintenance_fee_min: Uint128;
+            minimum_reward: Uint128;
+            owner: Addr;
+            queue_size_left: Uint64;
+            queue_size_right: Uint64;
+            resolver_address: Addr;
+            warp_account_code_id: Uint64;
+        }
+        interface ConfigResponse {
+            config: Config;
+        }
+        type ExecuteMsg = {
+            create_job: CreateJobMsg;
+        } | {
+            delete_job: DeleteJobMsg;
+        } | {
+            update_job: UpdateJobMsg;
+        } | {
+            execute_job: ExecuteJobMsg;
+        } | {
+            evict_job: EvictJobMsg;
+        } | {
+            update_config: UpdateConfigMsg;
+        } | {
+            migrate_accounts: MigrateAccountsMsg;
+        } | {
+            migrate_pending_jobs: MigrateJobsMsg;
+        } | {
+            migrate_finished_jobs: MigrateJobsMsg;
+        } | {
+            create_funding_account: CreateFundingAccountMsg;
+        };
+        type WarpMsg = {
+            generic: CosmosMsgFor_Empty;
+        } | {
+            ibc_transfer: IbcTransferMsg;
+        } | {
+            withdraw_assets: WithdrawAssetsMsg;
+        };
+        type CosmosMsgFor_Empty = {
+            bank: BankMsg;
+        } | {
+            custom: Empty;
+        } | {
+            staking: StakingMsg;
+        } | {
+            distribution: DistributionMsg;
+        } | {
+            stargate: {
+                type_url: string;
+                value: Binary;
+            };
+        } | {
+            ibc: IbcMsg;
+        } | {
+            wasm: WasmMsg;
+        } | {
+            gov: GovMsg;
+        };
+        type BankMsg = {
+            send: {
+                amount: Coin[];
+                to_address: string;
+            };
+        } | {
+            burn: {
+                amount: Coin[];
+            };
+        };
+        type StakingMsg = {
+            delegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            undelegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            redelegate: {
+                amount: Coin;
+                dst_validator: string;
+                src_validator: string;
+            };
+        };
+        type DistributionMsg = {
+            set_withdraw_address: {
+                /**
+                 * The `withdraw_address`
+                 */
+                address: string;
+            };
+        } | {
+            withdraw_delegator_reward: {
+                /**
+                 * The `validator_address`
+                 */
+                validator: string;
+            };
+        };
+        type Binary = string;
+        type IbcMsg = {
+            transfer: {
+                /**
+                 * packet data only supports one coin https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/ibc/applications/transfer/v1/transfer.proto#L11-L20
+                 */
+                amount: Coin;
+                /**
+                 * exisiting channel to send the tokens over
+                 */
+                channel_id: string;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+                /**
+                 * address on the remote chain to receive these tokens
+                 */
+                to_address: string;
+            };
+        } | {
+            send_packet: {
+                channel_id: string;
+                data: Binary;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+            };
+        } | {
+            close_channel: {
+                channel_id: string;
+            };
+        };
+        type Timestamp = Uint64;
+        type WasmMsg = {
+            execute: {
+                contract_addr: string;
+                funds: Coin[];
+                /**
+                 * msg is the json-encoded ExecuteMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            instantiate: {
+                admin?: string | null;
+                code_id: number;
+                funds: Coin[];
+                /**
+                 * A human-readbale label for the contract
+                 */
+                label: string;
+                /**
+                 * msg is the JSON-encoded InstantiateMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            migrate: {
+                contract_addr: string;
+                /**
+                 * msg is the json-encoded MigrateMsg struct that will be passed to the new code
+                 */
+                msg: Binary;
+                /**
+                 * the code_id of the new logic to place in the given contract
+                 */
+                new_code_id: number;
+            };
+        } | {
+            update_admin: {
+                admin: string;
+                contract_addr: string;
+            };
+        } | {
+            clear_admin: {
+                contract_addr: string;
+            };
+        };
+        type GovMsg = {
+            vote: {
+                proposal_id: number;
+                /**
+                 * The vote option.
+                 *
+                 * This should be called "option" for consistency with Cosmos SDK. Sorry for that. See <https://github.com/CosmWasm/cosmwasm/issues/1571>.
+                 */
+                vote: VoteOption;
+            };
+        };
+        type VoteOption = 'yes' | 'no' | 'abstain' | 'no_with_veto';
+        type AssetInfo = {
+            native: string;
+        } | {
+            cw20: Addr;
+        } | {
+            /**
+             * @minItems 2
+             * @maxItems 2
+             */
+            cw721: [Addr, string];
+        };
+        type CwFund = {
+            cw20: Cw20Fund;
+        } | {
+            cw721: Cw721Fund;
+        };
+        interface CreateJobMsg {
+            account_msgs?: WarpMsg[] | null;
+            assets_to_withdraw?: AssetInfo[] | null;
+            cw_funds?: CwFund[] | null;
+            description: string;
+            duration_days: Uint64;
+            executions: Execution[];
+            funding_account?: Addr | null;
+            labels: string[];
+            name: string;
+            operational_amount: Uint128;
+            recurring: boolean;
+            reward: Uint128;
+            terminate_condition?: string | null;
+            vars: string;
+        }
+        interface Coin {
+            amount: Uint128;
+            denom: string;
+        }
+        interface Empty {
+        }
+        interface IbcTimeout {
+            block?: IbcTimeoutBlock | null;
+            timestamp?: Timestamp | null;
+        }
+        interface IbcTimeoutBlock {
+            /**
+             * block height after which the packet times out. the height within the given revision
+             */
+            height: number;
+            /**
+             * the version that the client is currently on (eg. after reseting the chain this could increment 1 as height drops to 0)
+             */
+            revision: number;
+        }
+        interface IbcTransferMsg {
+            timeout_block_delta?: number | null;
+            timeout_timestamp_seconds_delta?: number | null;
+            transfer_msg: TransferMsg;
+        }
+        interface TransferMsg {
+            memo: string;
+            receiver: string;
+            sender: string;
+            source_channel: string;
+            source_port: string;
+            timeout_block?: TimeoutBlock | null;
+            timeout_timestamp?: number | null;
+            token?: Coin | null;
+        }
+        interface TimeoutBlock {
+            revision_height?: number | null;
+            revision_number?: number | null;
+        }
+        interface WithdrawAssetsMsg {
+            asset_infos: AssetInfo[];
+        }
+        interface Cw20Fund {
+            amount: Uint128;
+            contract_addr: string;
+        }
+        interface Cw721Fund {
+            contract_addr: string;
+            token_id: string;
+        }
+        interface Execution {
+            condition: string;
+            msgs: string;
+        }
+        interface DeleteJobMsg {
+            id: Uint64;
+        }
+        interface UpdateJobMsg {
+            description?: string | null;
+            id: Uint64;
+            labels?: string[] | null;
+            name?: string | null;
+        }
+        interface ExecuteJobMsg {
+            external_inputs?: ExternalInput[] | null;
+            id: Uint64;
+        }
+        interface ExternalInput {
+            input: string;
+            name: string;
+        }
+        interface EvictJobMsg {
+            id: Uint64;
+        }
+        interface UpdateConfigMsg {
+            burn_fee_min?: Uint128 | null;
+            burn_fee_rate?: Uint128 | null;
+            cancellation_fee_rate?: Uint64 | null;
+            creation_fee_max?: Uint128 | null;
+            creation_fee_min?: Uint128 | null;
+            duration_days_limit?: Uint64 | null;
+            duration_days_max?: Uint64 | null;
+            duration_days_min?: Uint64 | null;
+            fee_collector?: string | null;
+            maintenance_fee_max?: Uint128 | null;
+            maintenance_fee_min?: Uint128 | null;
+            minimum_reward?: Uint128 | null;
+            owner?: string | null;
+            queue_size_left?: Uint64 | null;
+            queue_size_right?: Uint64 | null;
+        }
+        interface MigrateAccountsMsg {
+            account_owner_addr: string;
+            limit: number;
+            start_after?: string | null;
+            warp_account_code_id: Uint64;
+        }
+        interface MigrateJobsMsg {
+            limit: number;
+            start_after?: Uint64 | null;
+        }
+        interface CreateFundingAccountMsg {
+        }
+        interface InstantiateMsg {
+            account_tracker_code_id: Uint64;
+            burn_fee_min: Uint128;
+            burn_fee_rate: Uint128;
+            cancellation_fee_rate: Uint64;
+            creation_fee_max: Uint128;
+            creation_fee_min: Uint128;
+            duration_days_limit: Uint64;
+            duration_days_max: Uint64;
+            duration_days_min: Uint64;
+            fee_collector?: string | null;
+            fee_denom: string;
+            maintenance_fee_max: Uint128;
+            maintenance_fee_min: Uint128;
+            minimum_reward: Uint128;
+            owner?: string | null;
+            queue_size_left: Uint64;
+            queue_size_right: Uint64;
+            resolver_address: string;
+            warp_account_code_id: Uint64;
+        }
+        type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled' | 'Evicted';
+        interface JobResponse {
+            job: Job;
+        }
+        interface Job {
+            account: Addr;
+            assets_to_withdraw: AssetInfo[];
+            created_at_time: Uint64;
+            description: string;
+            duration_days: Uint64;
+            executions: Execution[];
+            funding_account?: Addr | null;
+            id: Uint64;
+            labels: string[];
+            last_update_time: Uint64;
+            name: string;
+            owner: Addr;
+            prev_id?: Uint64 | null;
+            recurring: boolean;
+            reward: Uint128;
+            status: JobStatus;
+            terminate_condition?: string | null;
+            vars: string;
+        }
+        interface JobsResponse {
+            jobs: Job[];
+            total_count: number;
+        }
+        type QueryMsg = {
+            query_job: QueryJobMsg;
+        } | {
+            query_jobs: QueryJobsMsg;
+        } | {
+            query_config: QueryConfigMsg;
+        } | {
+            query_state: QueryStateMsg;
+        };
+        interface QueryJobMsg {
+            id: Uint64;
+        }
+        interface QueryJobsMsg {
+            active?: boolean | null;
+            condition_status?: boolean | null;
+            ids?: Uint64[] | null;
+            job_status?: JobStatus | null;
+            limit?: number | null;
+            name?: string | null;
+            owner?: Addr | null;
+            start_after?: JobIndex | null;
+        }
+        interface JobIndex {
+            _0: Uint128;
+            _1: Uint64;
+        }
+        interface QueryConfigMsg {
+        }
+        interface QueryStateMsg {
+        }
+        interface State {
+            current_job_id: Uint64;
+            q: Uint64;
+        }
+        interface StateResponse {
+            state: State;
+        }
+    }
+}
+declare module "types/contracts/warp_resolver" {
+    export module warp_resolver {
+        type Condition = {
+            and: Condition1[];
+        } | {
+            or: Condition1[];
+        } | {
+            not: Condition1;
+        } | {
+            expr: Expr;
+        };
+        type Condition1 = {
+            and: Condition1[];
+        } | {
+            or: Condition1[];
+        } | {
+            not: Condition1;
+        } | {
+            expr: Expr;
+        };
+        type Expr = {
+            string: GenExprFor_StringValueFor_StringAnd_StringOp;
+        } | {
+            uint: GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp;
+        } | {
+            int: GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp;
+        } | {
+            decimal: GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp;
+        } | {
+            timestamp: TimeExpr;
+        } | {
+            block_height: BlockExpr;
+        } | {
+            bool: string;
+        };
+        type StringValueFor_String = {
+            simple: string;
+        } | {
+            ref: string;
+        } | {
+            env: StringEnvValue;
+        };
+        type StringEnvValue = 'warp_account_addr';
+        type StringOp = 'starts_with' | 'ends_with' | 'contains' | 'eq' | 'neq';
+        type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp = {
+            simple: Uint256;
+        } | {
+            expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type Uint256 = string;
+        type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
+        type IntFnOp = 'abs' | 'neg';
+        type NumEnvValue = 'time' | 'block_height';
+        type NumOp = 'eq' | 'neq' | 'lt' | 'gt' | 'gte' | 'lte';
+        type NumValueForInt128And_NumExprOpAnd_IntFnOp = {
+            simple: number;
+        } | {
+            expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp = {
+            simple: Decimal256;
+        } | {
+            expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type Decimal256 = string;
+        type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+        type Uint64 = string;
+        type TimeOp = 'lt' | 'gt';
+        interface GenExprFor_StringValueFor_StringAnd_StringOp {
+            left: StringValueFor_String;
+            op: StringOp;
+            right: StringValueFor_String;
+        }
+        interface GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp {
+            left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+            op: NumOp;
+            right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+            left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+            op: NumExprOp;
+            right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+            op: IntFnOp;
+            right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        }
+        interface GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp {
+            left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+            op: NumOp;
+            right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumExprValueForInt128And_NumExprOpAnd_IntFnOp {
+            left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+            op: NumExprOp;
+            right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumFnValueForInt128And_NumExprOpAnd_IntFnOp {
+            op: IntFnOp;
+            right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        }
+        interface GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp {
+            left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+            op: NumOp;
+            right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        }
+        interface NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+            left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+            op: NumExprOp;
+            right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        }
+        interface NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+            op: DecimalFnOp;
+            right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        }
+        interface TimeExpr {
+            comparator: Uint64;
+            op: TimeOp;
+        }
+        interface BlockExpr {
+            comparator: Uint64;
+            op: NumOp;
+        }
+        type CosmosMsgFor_Empty = {
+            bank: BankMsg;
+        } | {
+            custom: Empty;
+        } | {
+            staking: StakingMsg;
+        } | {
+            distribution: DistributionMsg;
+        } | {
+            stargate: {
+                type_url: string;
+                value: Binary;
+            };
+        } | {
+            ibc: IbcMsg;
+        } | {
+            wasm: WasmMsg;
+        } | {
+            gov: GovMsg;
+        };
+        type BankMsg = {
+            send: {
+                amount: Coin[];
+                to_address: string;
+            };
+        } | {
+            burn: {
+                amount: Coin[];
+            };
+        };
+        type Uint128 = string;
+        type StakingMsg = {
+            delegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            undelegate: {
+                amount: Coin;
+                validator: string;
+            };
+        } | {
+            redelegate: {
+                amount: Coin;
+                dst_validator: string;
+                src_validator: string;
+            };
+        };
+        type DistributionMsg = {
+            set_withdraw_address: {
+                /**
+                 * The `withdraw_address`
+                 */
+                address: string;
+            };
+        } | {
+            withdraw_delegator_reward: {
+                /**
+                 * The `validator_address`
+                 */
+                validator: string;
+            };
+        };
+        type Binary = string;
+        type IbcMsg = {
+            transfer: {
+                /**
+                 * packet data only supports one coin https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/ibc/applications/transfer/v1/transfer.proto#L11-L20
+                 */
+                amount: Coin;
+                /**
+                 * exisiting channel to send the tokens over
+                 */
+                channel_id: string;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+                /**
+                 * address on the remote chain to receive these tokens
+                 */
+                to_address: string;
+            };
+        } | {
+            send_packet: {
+                channel_id: string;
+                data: Binary;
+                /**
+                 * when packet times out, measured on remote chain
+                 */
+                timeout: IbcTimeout;
+            };
+        } | {
+            close_channel: {
+                channel_id: string;
+            };
+        };
+        type Timestamp = Uint64;
+        type WasmMsg = {
+            execute: {
+                contract_addr: string;
+                funds: Coin[];
+                /**
+                 * msg is the json-encoded ExecuteMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            instantiate: {
+                admin?: string | null;
+                code_id: number;
+                funds: Coin[];
+                /**
+                 * A human-readbale label for the contract
+                 */
+                label: string;
+                /**
+                 * msg is the JSON-encoded InstantiateMsg struct (as raw Binary)
+                 */
+                msg: Binary;
+            };
+        } | {
+            migrate: {
+                contract_addr: string;
+                /**
+                 * msg is the json-encoded MigrateMsg struct that will be passed to the new code
+                 */
+                msg: Binary;
+                /**
+                 * the code_id of the new logic to place in the given contract
+                 */
+                new_code_id: number;
+            };
+        } | {
+            update_admin: {
+                admin: string;
+                contract_addr: string;
+            };
+        } | {
+            clear_admin: {
+                contract_addr: string;
+            };
+        };
+        type GovMsg = {
+            vote: {
+                proposal_id: number;
+                /**
+                 * The vote option.
+                 *
+                 * This should be called "option" for consistency with Cosmos SDK. Sorry for that. See <https://github.com/CosmWasm/cosmwasm/issues/1571>.
+                 */
+                vote: VoteOption;
+            };
+        };
+        type VoteOption = 'yes' | 'no' | 'abstain' | 'no_with_veto';
+        interface Coin {
+            amount: Uint128;
+            denom: string;
+        }
+        interface Empty {
+        }
+        interface IbcTimeout {
+            block?: IbcTimeoutBlock | null;
+            timestamp?: Timestamp | null;
+        }
+        interface IbcTimeoutBlock {
+            /**
+             * block height after which the packet times out. the height within the given revision
+             */
+            height: number;
+            /**
+             * the version that the client is currently on (eg. after reseting the chain this could increment 1 as height drops to 0)
+             */
+            revision: number;
+        }
+        type ExecuteMsg = {
+            execute_simulate_query: ExecuteSimulateQueryMsg;
+        } | {
+            execute_validate_job_creation: ExecuteValidateJobCreationMsg;
+        } | {
+            execute_hydrate_vars: ExecuteHydrateVarsMsg;
+        } | {
+            execute_resolve_condition: ExecuteResolveConditionMsg;
+        } | {
+            execute_apply_var_fn: ExecuteApplyVarFnMsg;
+        } | {
+            execute_hydrate_msgs: ExecuteHydrateMsgsMsg;
+        } | {
+            warp_msgs_to_cosmos_msgs: WarpMsgsToCosmosMsgsMsg;
+        };
+        type QueryRequestFor_String = {
+            bank: BankQuery;
+        } | {
+            custom: string;
+        } | {
+            staking: StakingQuery;
+        } | {
+            stargate: {
+                /**
+                 * this is the expected protobuf message type (not any), binary encoded
+                 */
+                data: Binary;
+                /**
+                 * this is the fully qualified service path used for routing, eg. custom/cosmos_sdk.x.bank.v1.Query/QueryBalance
+                 */
+                path: string;
+            };
+        } | {
+            ibc: IbcQuery;
+        } | {
+            wasm: WasmQuery;
+        };
+        type BankQuery = {
+            balance: {
+                address: string;
+                denom: string;
+            };
+        } | {
+            all_balances: {
+                address: string;
+            };
+        };
+        type StakingQuery = {
+            bonded_denom: {};
+        } | {
+            all_delegations: {
+                delegator: string;
+            };
+        } | {
+            delegation: {
+                delegator: string;
+                validator: string;
+            };
+        } | {
+            all_validators: {};
+        } | {
+            validator: {
+                /**
+                 * The validator's address (e.g. (e.g. cosmosvaloper1...))
+                 */
+                address: string;
+            };
+        };
+        type IbcQuery = {
+            port_id: {};
+        } | {
+            list_channels: {
+                port_id?: string | null;
+            };
+        } | {
+            channel: {
+                channel_id: string;
+                port_id?: string | null;
+            };
+        };
+        type WasmQuery = {
+            smart: {
+                contract_addr: string;
+                /**
+                 * msg is the json-encoded QueryMsg struct
+                 */
+                msg: Binary;
+            };
+        } | {
+            raw: {
+                contract_addr: string;
+                /**
+                 * Key is the raw key used in the contracts Storage
+                 */
+                key: Binary;
+            };
+        } | {
+            contract_info: {
+                contract_addr: string;
+            };
+        };
+        type JobStatus = 'Pending' | 'Executed' | 'Failed' | 'Cancelled' | 'Evicted';
+        type WarpMsg = {
+            generic: CosmosMsgFor_Empty;
+        } | {
+            ibc_transfer: IbcTransferMsg;
+        } | {
+            withdraw_assets: WithdrawAssetsMsg;
+        };
+        type AssetInfo = {
+            native: string;
+        } | {
+            cw20: Addr;
+        } | {
+            /**
+             * @minItems 2
+             * @maxItems 2
+             */
+            cw721: [Addr, string];
+        };
+        type Addr = string;
+        interface ExecuteSimulateQueryMsg {
+            query: QueryRequestFor_String;
+        }
+        interface ExecuteValidateJobCreationMsg {
+            executions: Execution[];
+            terminate_condition?: string | null;
+            vars: string;
+        }
+        interface Execution {
+            condition: string;
+            msgs: string;
+        }
+        interface ExecuteHydrateVarsMsg {
+            external_inputs?: ExternalInput[] | null;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface ExternalInput {
+            input: string;
+            name: string;
+        }
+        interface ExecuteResolveConditionMsg {
+            condition: string;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface ExecuteApplyVarFnMsg {
+            status: JobStatus;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface ExecuteHydrateMsgsMsg {
+            msgs: string;
+            vars: string;
+        }
+        interface WarpMsgsToCosmosMsgsMsg {
+            msgs: WarpMsg[];
+            owner: Addr;
+        }
+        interface IbcTransferMsg {
+            timeout_block_delta?: number | null;
+            timeout_timestamp_seconds_delta?: number | null;
+            transfer_msg: TransferMsg;
+        }
+        interface TransferMsg {
+            memo: string;
+            receiver: string;
+            sender: string;
+            source_channel: string;
+            source_port: string;
+            timeout_block?: TimeoutBlock | null;
+            timeout_timestamp?: number | null;
+            token?: Coin | null;
+        }
+        interface TimeoutBlock {
+            revision_height?: number | null;
+            revision_number?: number | null;
+        }
+        interface WithdrawAssetsMsg {
+            asset_infos: AssetInfo[];
+        }
+        interface InstantiateMsg {
+        }
+        type QueryMsg = {
+            simulate_query: SimulateQueryMsg;
+        } | {
+            query_validate_job_creation: QueryValidateJobCreationMsg;
+        } | {
+            query_hydrate_vars: QueryHydrateVarsMsg;
+        } | {
+            query_resolve_condition: QueryResolveConditionMsg;
+        } | {
+            query_apply_var_fn: QueryApplyVarFnMsg;
+        } | {
+            query_hydrate_msgs: QueryHydrateMsgsMsg;
+        };
+        interface SimulateQueryMsg {
+            query: QueryRequestFor_String;
+        }
+        interface QueryValidateJobCreationMsg {
+            executions: Execution[];
+            terminate_condition?: string | null;
+            vars: string;
+        }
+        interface QueryHydrateVarsMsg {
+            external_inputs?: ExternalInput[] | null;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface QueryResolveConditionMsg {
+            condition: string;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface QueryApplyVarFnMsg {
+            status: JobStatus;
+            vars: string;
+            warp_account_addr?: string | null;
+        }
+        interface QueryHydrateMsgsMsg {
+            msgs: string;
+            vars: string;
+        }
+        interface SimulateResponse {
+            response: string;
+        }
+        type Variable = {
+            static: StaticVariable;
+        } | {
+            external: ExternalVariable;
+        } | {
+            query: QueryVariable;
+        };
+        type FnValue = {
+            uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            int: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            decimal: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            timestamp: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            block_height: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            bool: string;
+        } | {
+            string: StringValueFor_String;
+        };
+        type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset' | 'json';
+        type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
+        interface StaticVariable {
+            encode: boolean;
+            init_fn: FnValue;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface UpdateFn {
+            on_error?: FnValue | null;
+            on_success?: FnValue | null;
+        }
+        interface ExternalVariable {
+            encode: boolean;
+            init_fn: ExternalExpr;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface ExternalExpr {
+            body?: string | null;
+            headers?: {
+                [k: string]: string;
+            } | null;
+            method?: Method | null;
+            selector: string;
+            url: string;
+        }
+        interface QueryVariable {
+            encode: boolean;
+            init_fn: QueryExpr;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface QueryExpr {
+            query: QueryRequestFor_String;
+            selector: string;
+        }
+    }
+}
+declare module "types/contracts/warp_templates" {
+    export module warp_templates {
+        type Addr = string;
+        type Uint128 = string;
+        interface Config {
+            fee_collector: Addr;
+            fee_denom: string;
+            owner: Addr;
+            template_fee: Uint128;
+        }
+        interface ConfigResponse {
+            config: Config;
+        }
+        type ExecuteMsg = {
+            submit_template: SubmitTemplateMsg;
+        } | {
+            edit_template: EditTemplateMsg;
+        } | {
+            delete_template: DeleteTemplateMsg;
+        } | {
+            update_config: UpdateConfigMsg;
+        };
+        type Variable = {
+            static: StaticVariable;
+        } | {
+            external: ExternalVariable;
+        } | {
+            query: QueryVariable;
+        };
+        type FnValue = {
+            uint: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            int: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            decimal: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            timestamp: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            block_height: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            bool: string;
+        } | {
+            string: StringValueFor_String;
+        };
+        type NumValueFor_Uint256And_NumExprOpAnd_IntFnOp = {
+            simple: Uint256;
+        } | {
+            expr: NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type Uint256 = string;
+        type NumExprOp = 'add' | 'sub' | 'div' | 'mul' | 'mod';
+        type IntFnOp = 'abs' | 'neg';
+        type NumEnvValue = 'time' | 'block_height';
+        type NumValueForInt128And_NumExprOpAnd_IntFnOp = {
+            simple: number;
+        } | {
+            expr: NumExprValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueForInt128And_NumExprOpAnd_IntFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp = {
+            simple: Decimal256;
+        } | {
+            expr: NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            ref: string;
+        } | {
+            fn: NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        } | {
+            env: NumEnvValue;
+        };
+        type Decimal256 = string;
+        type DecimalFnOp = 'abs' | 'neg' | 'floor' | 'sqrt' | 'ceil';
+        type StringValueFor_String = {
+            simple: string;
+        } | {
+            ref: string;
+        } | {
+            env: StringEnvValue;
+        };
+        type StringEnvValue = 'warp_account_addr';
+        type VariableKind = 'string' | 'uint' | 'int' | 'decimal' | 'timestamp' | 'bool' | 'amount' | 'asset' | 'json';
+        type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
+        type QueryRequestFor_String = {
+            bank: BankQuery;
+        } | {
+            custom: string;
+        } | {
+            staking: StakingQuery;
+        } | {
+            stargate: {
+                /**
+                 * this is the expected protobuf message type (not any), binary encoded
+                 */
+                data: Binary;
+                /**
+                 * this is the fully qualified service path used for routing, eg. custom/cosmos_sdk.x.bank.v1.Query/QueryBalance
+                 */
+                path: string;
+            };
+        } | {
+            ibc: IbcQuery;
+        } | {
+            wasm: WasmQuery;
+        };
+        type BankQuery = {
+            balance: {
+                address: string;
+                denom: string;
+            };
+        } | {
+            all_balances: {
+                address: string;
+            };
+        };
+        type StakingQuery = {
+            bonded_denom: {};
+        } | {
+            all_delegations: {
+                delegator: string;
+            };
+        } | {
+            delegation: {
+                delegator: string;
+                validator: string;
+            };
+        } | {
+            all_validators: {};
+        } | {
+            validator: {
+                /**
+                 * The validator's address (e.g. (e.g. cosmosvaloper1...))
+                 */
+                address: string;
+            };
+        };
+        type Binary = string;
+        type IbcQuery = {
+            port_id: {};
+        } | {
+            list_channels: {
+                port_id?: string | null;
+            };
+        } | {
+            channel: {
+                channel_id: string;
+                port_id?: string | null;
+            };
+        };
+        type WasmQuery = {
+            smart: {
+                contract_addr: string;
+                /**
+                 * msg is the json-encoded QueryMsg struct
+                 */
+                msg: Binary;
+            };
+        } | {
+            raw: {
+                contract_addr: string;
+                /**
+                 * Key is the raw key used in the contracts Storage
+                 */
+                key: Binary;
+            };
+        } | {
+            contract_info: {
+                contract_addr: string;
+            };
+        };
+        type Uint64 = string;
+        interface SubmitTemplateMsg {
+            executions: Execution[];
+            formatted_str: string;
+            name: string;
+            vars: Variable[];
+        }
+        interface Execution {
+            condition: string;
+            msgs: string;
+        }
+        interface StaticVariable {
+            encode: boolean;
+            init_fn: FnValue;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+            left: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+            op: NumExprOp;
+            right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp {
+            op: IntFnOp;
+            right: NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumExprValueForInt128And_NumExprOpAnd_IntFnOp {
+            left: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+            op: NumExprOp;
+            right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumFnValueForInt128And_NumExprOpAnd_IntFnOp {
+            op: IntFnOp;
+            right: NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        }
+        interface NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+            left: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+            op: NumExprOp;
+            right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        }
+        interface NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp {
+            op: DecimalFnOp;
+            right: NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        }
+        interface UpdateFn {
+            on_error?: FnValue | null;
+            on_success?: FnValue | null;
+        }
+        interface ExternalVariable {
+            encode: boolean;
+            init_fn: ExternalExpr;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface ExternalExpr {
+            body?: string | null;
+            headers?: {
+                [k: string]: string;
+            } | null;
+            method?: Method | null;
+            selector: string;
+            url: string;
+        }
+        interface QueryVariable {
+            encode: boolean;
+            init_fn: QueryExpr;
+            kind: VariableKind;
+            name: string;
+            reinitialize: boolean;
+            update_fn?: UpdateFn | null;
+            value?: string | null;
+        }
+        interface QueryExpr {
+            query: QueryRequestFor_String;
+            selector: string;
+        }
+        interface EditTemplateMsg {
+            id: Uint64;
+            name?: string | null;
+        }
+        interface DeleteTemplateMsg {
+            id: Uint64;
+        }
+        interface UpdateConfigMsg {
+            fee_collector?: string | null;
+            fee_denom?: string | null;
+            owner?: string | null;
+            template_fee?: Uint128 | null;
+        }
+        interface InstantiateMsg {
+            fee_collector: string;
+            fee_denom: string;
+            owner: string;
+            templates: Template[];
+        }
+        interface Template {
+            executions: Execution[];
+            formatted_str: string;
+            id: Uint64;
+            name: string;
+            owner: Addr;
+            vars: Variable[];
+        }
+        type QueryMsg = {
+            query_template: QueryTemplateMsg;
+        } | {
+            query_templates: QueryTemplatesMsg;
+        } | {
+            query_config: QueryConfigMsg;
+        };
+        interface QueryTemplateMsg {
+            id: Uint64;
+        }
+        interface QueryTemplatesMsg {
+            ids?: Uint64[] | null;
+            limit?: number | null;
+            name?: string | null;
+            owner?: Addr | null;
+            start_after?: Uint64 | null;
+        }
+        interface QueryConfigMsg {
+        }
+        interface TemplateResponse {
+            template: Template;
+        }
+        interface TemplatesResponse {
+            templates: Template[];
+        }
+    }
+}
+declare module "types/contracts/index" {
+    export * from "types/contracts/warp_account";
+    export * from "types/contracts/warp_account_tracker";
+    export * from "types/contracts/warp_controller";
+    export * from "types/contracts/warp_resolver";
+    export * from "types/contracts/warp_templates";
+}
+declare module "wallet/utils" {
+    import { TxInfo } from '@terra-money/feather.js';
+    export class TerraTxError extends Error {
+        txInfo: TxInfo;
+        constructor(txInfo: TxInfo);
+    }
+    export type PostResponse = {
+        height: string | number;
+        raw_log: string;
+        txhash: string;
+        code?: number | string;
+        codespace?: string;
+    };
+}
+declare module "wallet/base" {
+    import { CreateTxOptions, LCDClient, TxInfo } from '@terra-money/feather.js';
+    import { TerraEventHandler } from "events";
+    import { LCDClientConfig } from '@terra-money/feather.js';
+    export abstract class Wallet {
+        lcd: LCDClient;
+        chainConfig: LCDClientConfig;
+        constructor(lcd: LCDClient, chainConfig: LCDClientConfig);
+        abstract submitTx(txOpts: CreateTxOptions, handleEvent: TerraEventHandler): Promise<string>;
+        finalizeTx(txHash: string): Promise<TxInfo>;
+        tx(txOpts: CreateTxOptions, handleEvent?: TerraEventHandler): Promise<TxInfo>;
+    }
+}
+declare module "wallet/connected" {
+    import { CreateTxOptions, LCDClient, LCDClientConfig } from '@terra-money/feather.js';
+    import { Wallet } from "wallet/base";
+    import { PostResponse } from "wallet/utils";
+    export type ConnectedWalletInput = {
+        wallet?: ConnectedWalletPayload;
+        lcd: LCDClient;
+    };
+    export type ConnectedWalletPayload = {
+        post: (tx: CreateTxOptions) => Promise<PostResponse>;
+    };
+    export class ConnectedWallet extends Wallet {
+        private wallet?;
+        constructor(input: ConnectedWalletInput, chainConfig: LCDClientConfig);
+        submitTx(txOpts: CreateTxOptions): Promise<string>;
+    }
+}
+declare module "wallet/native" {
+    import { CreateTxOptions, Wallet as TerraWallet, LCDClientConfig } from '@terra-money/feather.js';
+    import { Wallet } from "wallet/base";
+    export class NativeWallet extends Wallet {
+        private wallet;
+        constructor(wallet: TerraWallet, chainConfig: LCDClientConfig);
+        submitTx(txOpts: CreateTxOptions): Promise<string>;
+    }
+}
+declare module "wallet/index" {
+    import { Wallet as TerraWallet, LCDClientConfig } from '@terra-money/feather.js';
+    import { ConnectedWalletInput, ConnectedWallet } from "wallet/connected";
+    import { NativeWallet } from "wallet/native";
+    export type WalletLike = {
+        connectedWallet: ConnectedWalletInput;
+    } | TerraWallet;
+    export const wallet: (walletLike: WalletLike, chainConfig: LCDClientConfig) => ConnectedWallet | NativeWallet;
+    export * from "wallet/base";
+    export * from "wallet/utils";
+    export * from "wallet/connected";
+    export * from "wallet/native";
+}
+declare module "utils/contract" {
+    import { LCDClient } from '@terra-money/feather.js';
+    export const contractQuery: <QueryMsg extends {}, QueryResponse>(lcd: LCDClient, contractAddress: string, msg: QueryMsg) => Promise<QueryResponse>;
+    export type TransferMsg = {
+        transfer: {
+            recipient: string;
+            amount: string;
+        };
+    };
+    export type TransferNftMsg = {
+        transfer_nft: {
+            recipient: string;
+            token_id: string;
+        };
+    };
+    export const base64encode: (input: any) => string;
+    export function base64decode<T>(value: string): T;
+}
+declare module "tx" {
+    import { Coins, LCDClientConfig, CreateTxOptions } from '@terra-money/feather.js';
+    export enum VoteOption {
+        /** VOTE_OPTION_UNSPECIFIED - VOTE_OPTION_UNSPECIFIED defines a no-op vote option. */
+        VOTE_OPTION_UNSPECIFIED = 0,
+        /** VOTE_OPTION_YES - VOTE_OPTION_YES defines a yes vote option. */
+        VOTE_OPTION_YES = 1,
+        /** VOTE_OPTION_ABSTAIN - VOTE_OPTION_ABSTAIN defines an abstain vote option. */
+        VOTE_OPTION_ABSTAIN = 2,
+        /** VOTE_OPTION_NO - VOTE_OPTION_NO defines a no vote option. */
+        VOTE_OPTION_NO = 3,
+        /** VOTE_OPTION_NO_WITH_VETO - VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option. */
+        VOTE_OPTION_NO_WITH_VETO = 4,
+        UNRECOGNIZED = -1
+    }
+    export class TxBuilder {
+        private msgs;
+        private chainConfig;
+        static new(chainConfig: LCDClientConfig): TxBuilder;
+        constructor(chainConfig: LCDClientConfig);
+        tx(createTx: CreateTxOptions): this;
+        execute<T extends {}>(sender: string, contract: string, msg: T, coins?: Coins.Input): this;
+        submitProposal<T extends {}>(sender: string, proposal: {
+            title: string;
+            description: string;
+            run_as: string;
+            contract: string;
+            msg: T;
+            coins?: Coins.Input;
+        }, proposalDepositCoins: Coins.Input): this;
+        hook<T extends {}>(sender: string, contract: string, token: string, amount: string, msg: T): this;
+        send(sender: string, contract: string, coins: Coins.Input): this;
+        sendNft<T extends {}>(sender: string, token: string, contract: string, tokenId: string, msg: T): this;
+        vote(sender: string, proposalId: number, option: VoteOption): this;
+        build(): CreateTxOptions;
+    }
+    export const hookMsg: (msg: object) => string;
+}
+declare module "types/job" {
+    import { warp_controller, warp_resolver } from "types/contracts/index";
+    export type Execution = {
+        condition: warp_resolver.Condition;
+        msgs: warp_resolver.WarpMsg[];
+    };
+    export type Job = Omit<warp_controller.Job, 'executions' | 'vars'> & {
+        executions: Execution[];
+        vars: warp_resolver.Variable[];
+    };
+    export type JobResponse = {
+        job: Job;
+    };
+    export type JobsResponse = {
+        total_count: number;
+        jobs: Job[];
+    };
+    export const parseExecution: (execution: warp_controller.Execution) => Execution;
+    export const parseJob: (job: warp_controller.Job) => Job;
+    export const parseJobResponse: (resp: warp_controller.JobResponse) => JobResponse;
+    export const parseJobsResponse: (resp: warp_controller.JobsResponse) => JobsResponse;
+}
+declare module "types/index" {
+    export * from "types/contracts/index";
+    export * from "types/job";
+}
+declare module "variables" {
+    import { warp_controller, warp_resolver } from "types/index";
+    export const extractVariableName: (str: string) => string;
+    export const isVariableRef: (input: any) => boolean;
+    export const variableName: (v: warp_resolver.Variable) => string;
+    export const resolveExternalVariable: (external: warp_resolver.ExternalVariable) => Promise<string>;
+    export const resolveExternalInputs: (variables: warp_resolver.Variable[]) => Promise<warp_controller.ExternalInput[]>;
+}
+declare module "composers/condition" {
+    import { warp_resolver } from "types/index";
+    export class ConditionComposer {
+        and(...conditions: warp_resolver.Condition[]): warp_resolver.Condition;
+        or(...conditions: warp_resolver.Condition[]): warp_resolver.Condition;
+        not(condition: warp_resolver.Condition): warp_resolver.Condition;
+        expr(expression: warp_resolver.Expr): warp_resolver.Condition;
+        string(left: warp_resolver.StringValueFor_String, op: warp_resolver.StringOp, right: warp_resolver.StringValueFor_String): warp_resolver.Condition;
+        uint(left: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp, op: warp_resolver.NumOp, right: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp): warp_resolver.Condition;
+        int(left: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp, op: warp_resolver.NumOp, right: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.Condition;
+        decimal(left: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp, op: warp_resolver.NumOp, right: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp): warp_resolver.Condition;
+        timestamp(comparator: warp_resolver.Uint64, op: warp_resolver.TimeOp): warp_resolver.Condition;
+        block_height(comparator: warp_resolver.Uint64, op: warp_resolver.NumOp): warp_resolver.Condition;
+        bool(value: warp_resolver.Variable): warp_resolver.Condition;
+    }
+    export class UintValueComposer {
+        simple(value: string): warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        expr(left: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp, op: warp_resolver.NumExprOp, right: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp): warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        ref(ref: warp_resolver.Variable): warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        fn(op: warp_resolver.IntFnOp, right: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp): warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+        env(env: warp_resolver.NumEnvValue): warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp;
+    }
+    export class IntValueComposer {
+        simple(value: number): warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        expr(left: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp, op: warp_resolver.NumExprOp, right: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        ref(ref: warp_resolver.Variable): warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        fn(op: warp_resolver.IntFnOp, right: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+        env(env: warp_resolver.NumEnvValue): warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+    }
+    export class DecimalValueComposer {
+        simple(value: string): warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        expr(left: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp, op: warp_resolver.NumExprOp, right: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp): warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        ref(ref: warp_resolver.Variable): warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        fn(op: warp_resolver.IntFnOp, right: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp): warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+        env(env: warp_resolver.NumEnvValue): warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp;
+    }
+    export class StringValueComposer {
+        simple(value: string): warp_resolver.StringValueFor_String;
+        ref(ref: warp_resolver.Variable): warp_resolver.StringValueFor_String;
+    }
+    export class UpdateFnComposer {
+        uint(value: warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp): warp_resolver.FnValue;
+        int(value: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.FnValue;
+        decimal(value: warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp): warp_resolver.FnValue;
+        timestamp(value: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.FnValue;
+        block_height(value: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp): warp_resolver.FnValue;
+        bool(value: warp_resolver.Variable): warp_resolver.FnValue;
+    }
+}
+declare module "composers/job" {
+    import { EstimateJobMsg } from "sdk";
+    import { Execution } from "types/index";
+    import { warp_controller, warp_resolver } from "types/contracts/index";
+    export class JobSequenceMsgComposer {
+        static new(): JobSequenceMsgComposer;
+        sequence: any[];
+        chainSequence: (idx: number) => warp_controller.CreateJobMsg;
+        chain(msg: warp_controller.CreateJobMsg): JobSequenceMsgComposer;
+        compose(): warp_controller.CreateJobMsg;
+    }
+    export class CreateJobMsgComposer {
+        private _name;
+        private _recurring;
+        private _reward;
+        private _description;
+        private _labels;
+        private _assetsToWithdraw;
+        private _vars;
+        private _executions;
+        private _durationDays;
+        private _fundingAccount;
+        private _operationalAmount;
+        static new(): CreateJobMsgComposer;
+        name(name: string): CreateJobMsgComposer;
+        recurring(recurring: boolean): CreateJobMsgComposer;
+        reward(reward: warp_controller.Uint128): CreateJobMsgComposer;
+        description(description: string): CreateJobMsgComposer;
+        labels(labels: string[]): CreateJobMsgComposer;
+        durationDays(durationDays: string): CreateJobMsgComposer;
+        fundingAccount(fundingAccount?: string): CreateJobMsgComposer;
+        operationalAmount(operationalAmount: warp_controller.Uint128): CreateJobMsgComposer;
+        assetsToWithdraw(assetsToWithdraw: warp_controller.AssetInfo[]): CreateJobMsgComposer;
+        executions(executions: Execution[]): CreateJobMsgComposer;
+        vars(vars: warp_resolver.Variable[]): CreateJobMsgComposer;
+        compose(): warp_controller.CreateJobMsg;
+    }
+    export class EstimateJobMsgComposer {
+        private _recurring;
+        private _vars;
+        private _executions;
+        private _durationDays;
+        static new(): EstimateJobMsgComposer;
+        recurring(recurring: boolean): EstimateJobMsgComposer;
+        durationDays(durationDays: string): EstimateJobMsgComposer;
+        executions(executions: Execution[]): EstimateJobMsgComposer;
+        vars(vars: warp_resolver.Variable[]): EstimateJobMsgComposer;
+        compose(): EstimateJobMsg;
+    }
+    export class JobComposer {
+        create(): CreateJobMsgComposer;
+        estimate(): EstimateJobMsgComposer;
+    }
+}
+declare module "composers/msg" {
+    import { warp_resolver } from "types/index";
+    export class MessageComposer {
+        send(amount: warp_resolver.Coin[], to_address: string): warp_resolver.WarpMsg;
+        burn(amount: warp_resolver.Coin[]): warp_resolver.WarpMsg;
+        delegate(amount: warp_resolver.Coin, validator: string): warp_resolver.WarpMsg;
+        undelegate(amount: warp_resolver.Coin, validator: string): warp_resolver.WarpMsg;
+        redelegate(amount: warp_resolver.Coin, dst_validator: string, src_validator: string): warp_resolver.WarpMsg;
+        setWithdrawAddress(address: string): warp_resolver.WarpMsg;
+        withdrawDelegatorReward(validator: string): warp_resolver.WarpMsg;
+        transfer(amount: warp_resolver.Coin, channel_id: string, timeout: warp_resolver.IbcTimeout, to_address: string): warp_resolver.WarpMsg;
+        sendPacket<T>(channel_id: string, data: T, timeout: warp_resolver.IbcTimeout): warp_resolver.WarpMsg;
+        closeChannel(channel_id: string): warp_resolver.WarpMsg;
+        execute<T>(contract_addr: string, msg: T, funds?: warp_resolver.Coin[]): warp_resolver.WarpMsg;
+        instantiate<T>(admin: string | null, code_id: number, label: string, msg: T, funds?: warp_resolver.Coin[]): warp_resolver.WarpMsg;
+        migrate<T>(contract_addr: string, msg: T, new_code_id: number): warp_resolver.WarpMsg;
+        update_admin(admin: string, contract_addr: string): warp_resolver.WarpMsg;
+        clear_admin(contract_addr: string): warp_resolver.WarpMsg;
+        vote(proposal_id: number, vote: warp_resolver.VoteOption): warp_resolver.WarpMsg;
+        withdrawAssets(msg: warp_resolver.WithdrawAssetsMsg): warp_resolver.WarpMsg;
+        ibcTransfer(msg: warp_resolver.IbcTransferMsg): warp_resolver.WarpMsg;
+    }
+}
+declare module "composers/template" {
+    import { Execution, warp_resolver, warp_templates } from "types/index";
+    export class SubmitTemplateMsgComposer {
+        private _executions;
+        private _formattedStr;
+        private _msgs;
+        private _name;
+        private _vars;
+        static new(): SubmitTemplateMsgComposer;
+        formattedStr(formattedStr: string): SubmitTemplateMsgComposer;
+        name(name: string): SubmitTemplateMsgComposer;
+        var(variable: warp_resolver.Variable): SubmitTemplateMsgComposer;
+        executions(executions: Execution[]): SubmitTemplateMsgComposer;
+        compose(): warp_templates.SubmitTemplateMsg;
+    }
+    export class TemplateComposer {
+        submit(): SubmitTemplateMsgComposer;
+    }
+}
+declare module "composers/variable" {
+    import { warp_resolver } from "types/index";
+    class StaticVariableComposer {
+        private variable;
+        constructor();
+        kind(kind: warp_resolver.VariableKind): StaticVariableComposer;
+        name(name: string): StaticVariableComposer;
+        value(value: string): StaticVariableComposer;
+        encode(value: boolean): StaticVariableComposer;
+        reinitialize(value: boolean): StaticVariableComposer;
+        onInit(value: warp_resolver.FnValue): StaticVariableComposer;
+        onSuccess(fn: warp_resolver.FnValue): StaticVariableComposer;
+        onError(fn: warp_resolver.FnValue): StaticVariableComposer;
+        compose(): warp_resolver.Variable;
+    }
+    class ExternalVariableComposer {
+        private variable;
+        constructor();
+        kind(kind: warp_resolver.VariableKind): ExternalVariableComposer;
+        name(name: string): ExternalVariableComposer;
+        value(value: string): ExternalVariableComposer;
+        reinitialize(value: boolean): ExternalVariableComposer;
+        encode(value: boolean): ExternalVariableComposer;
+        onInit(value: warp_resolver.ExternalExpr): ExternalVariableComposer;
+        onSuccess(fn: warp_resolver.FnValue): ExternalVariableComposer;
+        onError(fn: warp_resolver.FnValue): ExternalVariableComposer;
+        compose(): warp_resolver.Variable;
+    }
+    class QueryVariableComposer {
+        private variable;
+        constructor();
+        kind(kind: warp_resolver.VariableKind): QueryVariableComposer;
+        name(name: string): QueryVariableComposer;
+        value(value: string): QueryVariableComposer;
+        reinitialize(value: boolean): QueryVariableComposer;
+        encode(value: boolean): QueryVariableComposer;
+        onInit(value: warp_resolver.QueryExpr): QueryVariableComposer;
+        onSuccess(fn: warp_resolver.FnValue): QueryVariableComposer;
+        onError(fn: warp_resolver.FnValue): QueryVariableComposer;
+        compose(): warp_resolver.Variable;
+    }
+    export class VariableComposer {
+        static(): StaticVariableComposer;
+        external(): ExternalVariableComposer;
+        query(): QueryVariableComposer;
+        ref(v: warp_resolver.Variable): string;
+    }
+}
+declare module "composers/timestamp" {
+    export class TimestampComposer {
+        date(date: Date): string;
+        seconds(amount: number): string;
+        minutes(amount: number): string;
+        hours(amount: number): string;
+        days(amount: number): string;
+    }
+}
+declare module "composers/query" {
+    import { warp_resolver } from "types/index";
+    export class QueryComposer {
+        balance(address: string, denom: string): warp_resolver.QueryRequestFor_String;
+        allBalances(address: string): warp_resolver.QueryRequestFor_String;
+        bondedDenom(): warp_resolver.QueryRequestFor_String;
+        allDelegations(delegator: string): warp_resolver.QueryRequestFor_String;
+        delegation(delegator: string, validator: string): warp_resolver.QueryRequestFor_String;
+        allValidators(): warp_resolver.QueryRequestFor_String;
+        validator(address: string): warp_resolver.QueryRequestFor_String;
+        stargate<T extends {}>(data: T, path: string): warp_resolver.QueryRequestFor_String;
+        portId(): warp_resolver.QueryRequestFor_String;
+        listChannels(port_id?: string | null): warp_resolver.QueryRequestFor_String;
+        channel(channel_id: string, port_id?: string | null): warp_resolver.QueryRequestFor_String;
+        smart<T extends {}>(contract_addr: string, msg: T): warp_resolver.QueryRequestFor_String;
+        raw(contract_addr: string, key: warp_resolver.Binary): warp_resolver.QueryRequestFor_String;
+        contractInfo(contract_addr: string): warp_resolver.QueryRequestFor_String;
+        custom(customQuery: string): warp_resolver.QueryRequestFor_String;
+    }
+}
+declare module "composers/account" {
+    import { warp_account, warp_resolver } from "types/index";
+    export class AccountComposer {
+        msgs(msgs: warp_resolver.WarpMsg[]): Extract<warp_account.ExecuteMsg, {
+            warp_msgs: {};
+        }>;
+    }
+}
+declare module "composers/index" {
+    import { ConditionComposer, DecimalValueComposer, IntValueComposer, StringValueComposer, UintValueComposer, UpdateFnComposer } from "composers/condition";
+    import { JobComposer } from "composers/job";
+    import { MessageComposer } from "composers/msg";
+    import { TemplateComposer } from "composers/template";
+    import { VariableComposer } from "composers/variable";
+    import { TimestampComposer } from "composers/timestamp";
+    import { QueryComposer } from "composers/query";
+    import { AccountComposer } from "composers/account";
+    export * from "composers/condition";
+    export * from "composers/job";
+    export * from "composers/msg";
+    export * from "composers/template";
+    export * from "composers/variable";
+    export const decimal: DecimalValueComposer;
+    export const uint: UintValueComposer;
+    export const int: IntValueComposer;
+    export const string: StringValueComposer;
+    export const cond: ConditionComposer;
+    export const fn: UpdateFnComposer;
+    export const msg: MessageComposer;
+    export const template: TemplateComposer;
+    export const job: JobComposer;
+    export const variable: VariableComposer;
+    export const ts: TimestampComposer;
+    export const query: QueryComposer;
+    export const account: AccountComposer;
+    export const composers: {
+        decimal: DecimalValueComposer;
+        uint: UintValueComposer;
+        int: IntValueComposer;
+        string: StringValueComposer;
+        cond: ConditionComposer;
+        fn: UpdateFnComposer;
+        msg: {};
+        template: TemplateComposer;
+        job: JobComposer;
+        variable: VariableComposer;
+        ts: TimestampComposer;
+        query: QueryComposer;
+        account: AccountComposer;
+    };
+}
+declare module "modules/tx" {
+    import { warp_controller, warp_account, warp_resolver, warp_templates } from "types/contracts/index";
+    import { Token } from "utils/index";
+    import { Coins, CreateTxOptions } from '@terra-money/feather.js';
+    import { WarpSdk } from "sdk";
+    export class TxModule {
+        private warpSdk;
+        constructor(warpSdk: WarpSdk);
+        createJob(sender: string, msg: warp_controller.CreateJobMsg, coins?: Coins.Input): Promise<CreateTxOptions>;
+        createJobSequence(sender: string, sequence: warp_controller.CreateJobMsg[], coins?: Coins.Input): Promise<CreateTxOptions>;
+        deleteJob(sender: string, jobId: string): Promise<CreateTxOptions>;
+        updateJob(sender: string, msg: warp_controller.UpdateJobMsg): Promise<CreateTxOptions>;
+        evictJob(sender: string, jobId: string): Promise<CreateTxOptions>;
+        executeJob(sender: string, jobId: string): Promise<CreateTxOptions>;
+        createFundingAccount(sender: string, funds?: Coins.Input): Promise<CreateTxOptions>;
+        submitTemplate(sender: string, msg: warp_templates.SubmitTemplateMsg): Promise<CreateTxOptions>;
+        deleteTemplate(sender: string, templateId: string): Promise<CreateTxOptions>;
+        executeSimulateQuery(sender: string, msg: warp_resolver.ExecuteSimulateQueryMsg): Promise<CreateTxOptions>;
+        executeHydrateVars(sender: string, msg: warp_resolver.ExecuteHydrateVarsMsg): Promise<CreateTxOptions>;
+        executeHydrateMsgs(sender: string, msg: warp_resolver.ExecuteHydrateMsgsMsg): Promise<CreateTxOptions>;
+        executeValidateJobCreation(sender: string, msg: warp_resolver.ExecuteValidateJobCreationMsg): Promise<CreateTxOptions>;
+        executeResolveCondition(sender: string, msg: warp_resolver.ExecuteResolveConditionMsg): Promise<CreateTxOptions>;
+        executeApplyVarFn(sender: string, msg: warp_resolver.ExecuteApplyVarFnMsg): Promise<CreateTxOptions>;
+        editTemplate(sender: string, msg: warp_templates.EditTemplateMsg): Promise<CreateTxOptions>;
+        transferCwToController(sender: string, funds: warp_controller.CwFund[]): Promise<CreateTxOptions>;
+        withdrawAssets(sender: string, job_id: string, msg: warp_account.WithdrawAssetsMsg): Promise<CreateTxOptions>;
+        depositToAccount(sender: string, account: string, token: Token, amount: string): Promise<CreateTxOptions>;
+        withdrawFromAccount(sender: string, account: string, receiver: string, token: Token, amount: string): Promise<CreateTxOptions>;
+    }
+}
+declare module "modules/chain" {
+    import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
+    export type ChainName = 'terra' | 'injective' | 'neutron' | 'nibiru' | 'migaloo';
+    export type NetworkName = 'testnet' | 'mainnet';
+    interface ContractDefinition {
+        codeId: string;
+        address: string;
+    }
+    type ContractNames = 'warp-controller' | 'warp-resolver' | 'warp-templates' | 'warp-account-tracker';
+    type NetworkConfig = {
+        [contract in ContractNames]: ContractDefinition;
+    };
+    type Refs = {
+        testnet: NetworkConfig;
+        mainnet: NetworkConfig;
+    };
+    export type ChainMetadata = {
+        name: ChainName;
+        mainnet: string;
+        mainnetConfig: LCDClientConfig;
+        testnet: string;
+        testnetConfig: LCDClientConfig;
+        refs: Refs;
+    };
+    export const TERRA_CHAIN: ChainMetadata;
+    export const NEUTRON_CHAIN: ChainMetadata;
+    export const INJECTIVE_CHAIN: ChainMetadata;
+    export const NIBIRU_CHAIN: ChainMetadata;
+    export const MIGALOO_CHAIN: ChainMetadata;
+    export const SUPPORTED_CHAINS: ChainMetadata[];
+    export interface ContractAddresses {
+        controller: string;
+        resolver: string;
+        templates: string;
+        accountTracker: string;
+    }
+    export class ChainModule {
+        config: LCDClientConfig;
+        metadata: ChainMetadata;
+        contracts: ContractAddresses;
+        constructor(config: LCDClientConfig);
+        static lcdClientConfig(networks?: NetworkName[], chains?: ChainName[]): Record<string, LCDClientConfig>;
+        static lcdClient(input?: {
+            chains?: ChainName[];
+            networks?: NetworkName[];
+        }): LCDClient;
+        static chainMetadata(chainName: ChainName): ChainMetadata;
+        static supportedChains(): ChainMetadata[];
+        static chainMetadataFromChainId(chainId: string): ChainMetadata;
+        static networkNameFromChainId(chainId: string): NetworkName;
+        static contractsFromChainId(chainId: string): NetworkConfig;
+        static contractAddress(contract: keyof ContractAddresses, chainId: string): string;
+    }
+}
+declare module "modules/index" {
+    export * from "modules/tx";
+    export * from "modules/chain";
+}
+declare module "utils/token" {
+    import { LCDClient } from '@terra-money/feather.js';
+    import { BigSource } from 'big.js';
+    export type TokenBase = {
+        key: string;
+        name: string;
+        symbol: string;
+        icon: string;
+        decimals: number;
+        coinGeckoId?: string;
+    };
+    export type NativeToken = TokenBase & {
+        type: 'native';
+        denom: string;
+    };
+    export type NominalType<T extends BigSource> = {
+        __type: T;
+    };
+    export type CW20Addr = string & NominalType<'CW20Addr'>;
+    export type CW20Token = TokenBase & {
+        type: 'cw20';
+        protocol: string;
+        token: CW20Addr;
+    };
+    export type IBCToken = TokenBase & {
+        type: 'ibc';
+        path: string;
+        base_denom: string;
+        denom: string;
+    };
+    export type Token = NativeToken | CW20Token | IBCToken;
+    export const LUNA: NativeToken;
+    export const NEUTRON: NativeToken;
+    export const INJ: NativeToken;
+    export const NATIVE_TOKENS: {
+        LUNA: NativeToken;
+        INJ: NativeToken;
+        NEUTRON: NativeToken;
+    };
+    export const nativeTokenDenom: (lcd: LCDClient, chainId: string) => Promise<string>;
+}
+declare module "utils/mapping" {
+    import { warp_resolver } from "types/index";
+    import { Msg } from '@terra-money/feather.js';
+    export function cosmosMsgToCreateTxMsg(sender: string, input: warp_resolver.CosmosMsgFor_Empty): Msg;
+}
+declare module "utils/fee" {
+    import Big from 'big.js';
+    import { warp_controller } from "types/index";
+    export function computeCreationFee(queueSize: Big, config: warp_controller.Config): Big;
+    export function computeMaintenanceFee(durationDays: Big, config: warp_controller.Config): Big;
+    export function computeBurnFee(jobReward: Big, config: warp_controller.Config): Big;
+    export function calculateDurationDaysAdjustmentFactor(durationDays: Big): Big;
+}
+declare module "utils/index" {
+    export * from "utils/contract";
+    export * from "utils/token";
+    export * from "utils/mapping";
+    export * from "utils/fee";
+}
+declare module "condition" {
+    import { warp_resolver } from "types/contracts/index";
+    import { Big } from 'big.js';
+    import { Wallet } from "wallet/index";
+    import { ContractAddresses } from "modules/chain";
+    import { Job } from "types/index";
+    import { WarpSdk } from "sdk";
+    export class Condition {
+        wallet: Wallet;
+        contracts: ContractAddresses;
+        sdk: WarpSdk;
+        constructor(wallet: Wallet, contracts: ContractAddresses, sdk: WarpSdk);
+        resolveCond: (cond: warp_resolver.Condition, job: Job) => Promise<boolean>;
+        resolveExpr: (expr: warp_resolver.Expr, job: Job) => Promise<boolean>;
+        resolveExprTimestamp: (expr: warp_resolver.TimeExpr) => Promise<boolean>;
+        resolveExprBlockheight: (expr: warp_resolver.BlockExpr) => Promise<boolean>;
+        resolveExprString: (expr: warp_resolver.GenExprFor_StringValueFor_StringAnd_StringOp, job: Job) => Promise<boolean>;
+        resolveStringValue: (value: warp_resolver.StringValueFor_String, job: Job) => Promise<string>;
+        resolveExprNum: (expr: warp_resolver.GenExprFor_NumValueForInt128And_NumExprOpAnd_IntFnOpAnd_NumOp | warp_resolver.GenExprFor_NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOpAnd_NumOp | warp_resolver.GenExprFor_NumValueFor_Uint256And_NumExprOpAnd_IntFnOpAnd_NumOp, job: Job) => Promise<boolean>;
+        resolveNumValue: (value: warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp, job: Job) => Promise<Big>;
+        resolveNumFn(fn: warp_resolver.NumFnValueForInt128And_NumExprOpAnd_IntFnOp | warp_resolver.NumFnValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp | warp_resolver.NumFnValueFor_Uint256And_NumExprOpAnd_IntFnOp, job: Job): Promise<Big>;
+        resolveNumExpr(expr: warp_resolver.NumExprValueForInt128And_NumExprOpAnd_IntFnOp | warp_resolver.NumExprValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp | warp_resolver.NumExprValueFor_Uint256And_NumExprOpAnd_IntFnOp, job: Job): Promise<Big>;
+        variable(ref: string, job: Job): warp_resolver.Variable;
+        resolveExprBool(ref: string, job: Job): Promise<boolean>;
+        resolveVariable<T>(variable: warp_resolver.Variable, cast: (val: string) => T): Promise<T>;
+        resolveQueryVariable(query: warp_resolver.QueryVariable): Promise<string>;
+        resolveStringOp: (left: string, right: string, op: warp_resolver.StringOp) => Promise<boolean>;
+        resolveNumOp: (left: Big, right: Big, op: warp_resolver.NumOp) => Promise<boolean>;
+    }
+}
+declare module "sdk" {
+    import { warp_controller, warp_resolver, warp_account } from "types/contracts/index";
+    import { WalletLike, Wallet } from "wallet/index";
+    import { Condition } from "condition";
+    import { Token } from "utils/index";
+    import { TxInfo, LCDClientConfig, LCDClient, Coins, Coin } from '@terra-money/feather.js';
+    import { TxModule, ChainModule, ChainName, NetworkName } from "modules/index";
+    import { warp_templates } from "types/contracts/warp_templates";
+    import { Job } from "types/job";
+    import { warp_account_tracker } from "types/contracts/index";
+    export type EstimateJobMsg = {
+        vars: string;
+        recurring: boolean;
+        executions: warp_controller.Execution[];
+        duration_days: string;
+    };
+    export class WarpSdk {
+        wallet: Wallet;
+        condition: Condition;
+        tx: TxModule;
+        chain: ChainModule;
+        constructor(walletLike: WalletLike, chainConfig: LCDClientConfig);
+        static lcdClientConfig(networks?: NetworkName[], chains?: ChainName[]): Record<string, LCDClientConfig>;
+        static lcdClient(input?: {
+            chains?: ChainName[];
+            networks?: NetworkName[];
+        }): LCDClient;
+        isJobActive(jobId: string): Promise<boolean>;
+        jobs(opts?: warp_controller.QueryJobsMsg): Promise<Job[]>;
+        job(id: string): Promise<Job>;
+        templates(opts?: warp_templates.QueryTemplatesMsg): Promise<warp_templates.Template[]>;
+        template(id: string): Promise<warp_templates.Template>;
+        simulateQuery(query: warp_resolver.QueryRequestFor_String): Promise<object>;
+        validateJobCreation(msg: warp_resolver.QueryValidateJobCreationMsg): Promise<string>;
+        hydrateVars(msg: warp_resolver.QueryHydrateVarsMsg): Promise<string>;
+        resolveCondition(msg: warp_resolver.QueryResolveConditionMsg): Promise<boolean>;
+        applyVarFn(msg: warp_resolver.QueryApplyVarFnMsg): Promise<string>;
+        hydrateMsgs(msg: warp_resolver.QueryHydrateMsgsMsg): Promise<warp_resolver.WarpMsg[]>;
+        jobAccounts(msg: warp_account_tracker.QueryJobAccountsMsg): Promise<warp_account_tracker.JobAccountsResponse>;
+        firstFreeJobAccount(msg: warp_account_tracker.QueryFirstFreeJobAccountMsg): Promise<warp_account_tracker.JobAccountResponse>;
+        firstFreeFundingAccount(msg: warp_account_tracker.QueryFirstFreeJobAccountMsg): Promise<warp_account_tracker.FundingAccountResponse>;
+        fundingAccounts(msg: warp_account_tracker.QueryFundingAccountsMsg): Promise<warp_account_tracker.FundingAccountsResponse>;
+        config(): Promise<warp_controller.Config & warp_templates.Config>;
+        state(): Promise<warp_controller.State>;
+        estimateJobFee(sender: string, estimateJobMsg: EstimateJobMsg, reward?: string): Promise<Coin>;
+        estimateJobReward(sender: string, estimateJobMsg: EstimateJobMsg): Promise<Coin>;
+        estimateJobExecutionReward(sender: string, estimateJobMsg: EstimateJobMsg, execution: warp_controller.Execution): Promise<Coin>;
+        nativeTokenDenom(): Promise<string>;
+        createJob(sender: string, msg: warp_controller.CreateJobMsg, coins?: Coins.Input): Promise<TxInfo>;
+        createJobSequence(sender: string, sequence: warp_controller.CreateJobMsg[], coins?: Coins.Input): Promise<TxInfo>;
+        deleteJob(sender: string, jobId: string): Promise<TxInfo>;
+        updateJob(sender: string, msg: warp_controller.UpdateJobMsg): Promise<TxInfo>;
+        evictJob(sender: string, jobId: string): Promise<TxInfo>;
+        executeJob(sender: string, jobId: string): Promise<TxInfo>;
+        createFundingAccount(sender: string, funds?: Coins.Input): Promise<TxInfo>;
+        submitTemplate(sender: string, msg: warp_templates.SubmitTemplateMsg): Promise<TxInfo>;
+        deleteTemplate(sender: string, templateId: string): Promise<TxInfo>;
+        editTemplate(sender: string, msg: warp_templates.EditTemplateMsg): Promise<TxInfo>;
+        withdrawAssets(sender: string, job_id: string, msg: warp_account.WithdrawAssetsMsg): Promise<TxInfo>;
+        depositToAccount(sender: string, account: string, token: Token, amount: string): Promise<TxInfo>;
+        withdrawFromAccount(sender: string, account: string, receiver: string, token: Token, amount: string): Promise<TxInfo>;
+    }
+}
+declare module "bot" {
+    import { MsgExecuteContract, WaitTxBroadcastResult, Wallet } from '@terra-money/feather.js';
+    export const tryExecute: (wallet: Wallet, msgs: MsgExecuteContract[]) => Promise<WaitTxBroadcastResult | string>;
+}
+declare module "index" {
+    export * from "sdk";
+    export * from "modules/index";
+    export * from "wallet/index";
+    export * from "utils/index";
+    export * from "types/index";
+    export * from "condition";
+    export * from "variables";
+    export * from "composers/index";
+}
+declare module "examples/example_astro" {
+    export { TerraTxError } from "wallet/utils";
+}
+declare module "examples/example_cross_chain" {
+    export { TerraTxError } from "wallet/utils";
+}
+declare module "examples/example_eris" { }
+declare module "examples/example_mito" { }
+declare module "migrate/migrate_finished_jobs" {
+    import { MsgExecuteContract, WaitTxBroadcastResult, Wallet } from '@terra-money/feather.js';
+    export const tryExecute: (wallet: Wallet, msgs: MsgExecuteContract[]) => Promise<WaitTxBroadcastResult | string>;
+}
+declare module "migrate/migrate_pending_jobs" {
+    import { MsgExecuteContract, WaitTxBroadcastResult, Wallet } from '@terra-money/feather.js';
+    export const tryExecute: (wallet: Wallet, msgs: MsgExecuteContract[]) => Promise<WaitTxBroadcastResult | string>;
+}
+declare module "test/externalVariable.test" { }
+declare module "utils/big" {
+    import Big from 'big.js';
+    export function max(a: Big, b: Big): Big;
+    export function min(a: Big, b: Big): Big;
+}
