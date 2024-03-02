@@ -5,8 +5,9 @@ import { Text } from 'components/primitives';
 import MonacoEditor from '@monaco-editor/react';
 import { editor as Editor } from 'monaco-editor';
 
-import featherjsTypes from './featherjs-types.txt';
-import sdkTypes from './sdk-types.txt';
+import featherjsTypes from './types/featherjs.txt';
+import sdkTypes from './types/sdk.txt';
+import { useExamples } from './useExamples';
 
 // Define a type for the output state
 type OutputState = string;
@@ -74,6 +75,8 @@ export const Playground = (props: PlaygroundProps) => {
     }
   };
 
+  const examples = useExamples();
+
   return (
     <Container direction="column" className={styles.root}>
       <Text variant="heading1" className={styles.title}>
@@ -83,7 +86,7 @@ export const Playground = (props: PlaygroundProps) => {
         <MonacoEditor
           height="400px"
           defaultLanguage="typescript"
-          defaultValue="// write your code here"
+          defaultValue={examples.eris}
           theme="vs-dark"
           onMount={async (editor, monaco) => {
             editorRef.current = editor;
@@ -95,8 +98,6 @@ export const Playground = (props: PlaygroundProps) => {
               composeLibPath: (libName: string) => string
             ) {
               try {
-                // const response = await fetch(typeDefsUrl);
-                // const typeDefs = await response.text();
                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
                   target: monaco.languages.typescript.ScriptTarget.ES2015,
                   allowNonTsExtensions: true,
@@ -104,8 +105,6 @@ export const Playground = (props: PlaygroundProps) => {
                   noEmit: true,
                   esModuleInterop: true,
                 });
-
-                console.log({ typeDefs });
 
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(
                   composeModule(libName, typeDefs),
