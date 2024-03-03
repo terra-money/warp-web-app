@@ -2,10 +2,15 @@ import astro from './examples/astro.txt';
 import eris from './examples/eris.txt';
 import simulate from './examples/simulate.txt';
 
-export const useExamples = () => {
+export type Example = {
+  name: string;
+  code: string;
+};
+
+export const useExamples = (): { [key: string]: Example } => {
   return {
-    astro: astro as string,
-    eris: eris as string,
-    simulate: simulate as string,
+    simulate: { name: 'simulate', code: simulate as string },
+    astro: { name: 'astro', code: astro as string },
+    eris: { name: 'eris', code: eris as string },
   };
 };
