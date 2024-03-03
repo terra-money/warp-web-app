@@ -1,13 +1,15 @@
 import { useState, useRef } from 'react';
 import styles from './Playground.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
-import { Text } from 'components/primitives';
+import { Button, Text } from 'components/primitives';
 import MonacoEditor from '@monaco-editor/react';
 import { editor as Editor } from 'monaco-editor';
 
 import featherjsTypes from './types/featherjs.txt';
 import sdkTypes from './types/sdk.txt';
 import { useExamples } from './useExamples';
+import { compileAndRunTS } from './compile';
+import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 
 // Define a type for the output state
 type OutputState = string;
@@ -17,61 +19,27 @@ type EditorInstance = Editor.IStandaloneCodeEditor | null;
 
 type PlaygroundProps = UIElementProps & {};
 
-declare const ts: any; // Assuming the TypeScript compiler is loaded globally
-
-function transpileTypeScript(code: string): string {
-  const result = ts.transpileModule(code, {
-    compilerOptions: {
-      module: ts.ModuleKind.None, // No module system, you could simulate it if necessary
-      strict: true,
-      esModuleInterop: true,
-      target: ts.ScriptTarget.ES2015, // Target ES5 for browser compatibility
-    },
-  });
-  return result.outputText;
-}
-
-function executeJavaScript(jsCode: string): string {
-  const originalConsoleLog = console.log;
-  let capturedLogs: string[] = [];
-
-  // Override console.log
-  console.log = (...messages: any[]) => {
-    capturedLogs.push(messages.join(' '));
-  };
-
-  try {
-    // eslint-disable-next-line no-new-func
-    new Function(jsCode)();
-  } catch (error) {
-    console.error('Error executing script: ', error);
-    capturedLogs.push(`Error executing script: ${error}`);
-  }
-
-  // Restore original console.log
-  console.log = originalConsoleLog;
-
-  return capturedLogs.join('\n');
-}
-
-function executeTypeScriptCode(tsCode: string): string {
-  const jsCode = transpileTypeScript(tsCode);
-  return executeJavaScript(jsCode);
-}
-
 export const Playground = (props: PlaygroundProps) => {
   const [output, setOutput] = useState<OutputState>('');
+  const [isRunning, setIsRunning] = useState<boolean>(false);
   const editorRef = useRef<EditorInstance>(null);
 
-  const runCode = (): void => {
+  const runCode = async () => {
     const model = editorRef.current?.getModel();
     const code = model?.getValue() || '';
 
     try {
-      const result: string = executeTypeScriptCode(code);
+      setIsRunning(true);
+
+      const result: string = await compileAndRunTS(code);
+
+      console.log({ result });
+
       setOutput(result);
     } catch (error: any) {
       setOutput(error.toString());
+    } finally {
+      setIsRunning(false);
     }
   };
 
@@ -82,11 +50,11 @@ export const Playground = (props: PlaygroundProps) => {
       <Text variant="heading1" className={styles.title}>
         Playground
       </Text>
-      <div className={styles.editorContainer}>
+      <Container className={styles.center} direction="row">
         <MonacoEditor
-          height="400px"
+          className={styles.editor}
           defaultLanguage="typescript"
-          defaultValue={examples.eris}
+          defaultValue={examples.simulate}
           theme="vs-dark"
           onMount={async (editor, monaco) => {
             editorRef.current = editor;
@@ -118,11 +86,7 @@ export const Playground = (props: PlaygroundProps) => {
             addLibraryToMonacoEditor(
               '@terra-money/warp-sdk',
               sdkTypes as any,
-              (libName, typeDefs) => `declare module "${libName}" { 
-              export * from "index";
-            }
-            
-            ${typeDefs}`,
+              (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
               (libName) => `${libName}.d.ts`
             );
 
@@ -135,20 +99,38 @@ export const Playground = (props: PlaygroundProps) => {
           }}
           options={{
             selectOnLineNumbers: true,
-            roundedSelection: false,
+            roundedSelection: true,
             readOnly: false,
             cursorStyle: 'line',
             automaticLayout: true,
+            minimap: { enabled: false },
+            scrollbar: {
+              vertical: 'hidden',
+              horizontal: 'hidden',
+              useShadows: false,
+            },
+            lineNumbers: 'on',
+            folding: false,
+            glyphMargin: false,
+            overviewRulerBorder: false,
+            hideCursorInOverviewRuler: true,
+            renderLineHighlight: 'none',
           }}
         />
-      </div>
-      <button onClick={runCode} className={styles.runButton}>
-        Run
-      </button>
-      <div className={styles.outputContainer}>
-        <Text variant="text">Console Output:</Text>
-        <div>{output}</div>
-      </div>
+        <Container className={styles.right} direction="column">
+          <Button onClick={runCode} variant="primary" className={styles.run} loading={isRunning}>
+            Run code
+          </Button>
+          <EditorInput
+            rootClassName={styles.msg}
+            className={styles.msg_editor}
+            value={output}
+            placeholder="Output will be rendered here."
+            readOnly={true}
+            label="Console output"
+          />
+        </Container>
+      </Container>
     </Container>
   );
 };

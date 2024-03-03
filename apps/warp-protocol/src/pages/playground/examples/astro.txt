@@ -13,7 +13,7 @@ const lcd = new LCDClient({
   'pisco-1': piscoLcdClientConfig,
 });
 
-const wallet = new Wallet(lcd, new MnemonicKey({ mnemonic: '...' }));
+const wallet = new Wallet(lcd, new MnemonicKey({ mnemonic: 'tip country must fashion mansion drive modify control grab illegal fly pole range scorpion weekend badge remain vendor board addict label airport picture six' }));
 
 const sdk = new WarpSdk(wallet, piscoLcdClientConfig);
 const sender = wallet.key.accAddress(piscoLcdClientConfig.prefix);
