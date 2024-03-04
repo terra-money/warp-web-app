@@ -35,8 +35,6 @@ export const Playground = (props: PlaygroundProps) => {
 
       const result: string = await compileAndRunTS(code);
 
-      console.log({ result });
-
       setOutput(result);
     } catch (error: any) {
       setOutput(error.toString());

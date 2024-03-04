@@ -2,9 +2,10 @@ import * as esbuild from 'esbuild-wasm';
 
 declare global {
   interface Window {
-    WarpSDK: any; // Specify more accurate types if available
-    FeatherJS: any; // Specify more accurate types if available
+    WarpSDK: any;
+    FeatherJS: any;
     require: NodeRequire;
+    signalExecutionComplete: any;
   }
 }
 
@@ -75,11 +76,31 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
       return originalRequire(moduleName);
     };
 
+    // Define a promise that will be resolved when the eval code signals completion
+    const executionCompletePromise = new Promise<string>((resolve) => {
+      // Signal function to indicate completion
+      window.signalExecutionComplete = () => {
+        resolve(capturedLogs.join('\n'));
+      };
+    });
+
+    const extendedCode = `
+    ${tsCode}
+  
+    (async () => {      
+      try {
+        await main();
+      } finally {
+        window.signalExecutionComplete();
+      }
+    })();
+  `;
+
     const result = await esbuild.build({
       entryPoints: ['index.ts'],
       bundle: true,
       write: false,
-      plugins: [customResolverPlugin(tsCode)],
+      plugins: [customResolverPlugin(extendedCode)],
       define: { 'process.env.NODE_ENV': '"production"' },
       format: 'iife',
       globalName: 'sandboxedCode',
@@ -96,8 +117,8 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
       // eslint-disable-next-line no-eval
       eval(result.outputFiles![0].text);
 
-      const res = (await new Promise((resolve) => setTimeout(() => resolve(capturedLogs.join('\n')), 3000))) as string;
-
+      // Wait for the signal that the execution is complete
+      const res = await executionCompletePromise;
       return res;
     } catch (error) {
       console.error('Error executing script: ', error);
@@ -111,5 +132,6 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
   } finally {
     console.log = originalConsoleLog;
     window.require = originalRequire;
+    delete window.signalExecutionComplete;
   }
 }

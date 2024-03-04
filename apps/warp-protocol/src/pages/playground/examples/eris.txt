@@ -52,7 +52,9 @@ const estimateJobRewardMsg = job
   .executions(executions)
   .compose();
 
-const main = async () => {
+// Ensure a `main` function is defined and exported as below; 
+// this is crucial for correct execution in the sandbox environment.
+export const main = async () => {
   try {
     const reward = await sdk.estimateJobReward(sender, estimateJobRewardMsg);
 
@@ -76,5 +78,3 @@ const main = async () => {
     console.log(err);
   }
 };
-
-main();
