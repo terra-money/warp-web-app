@@ -10,7 +10,7 @@ export type Example = {
 export const useExamples = (): { [key: string]: Example } => {
   return {
     simulate: { name: 'simulate', code: simulate as string },
-    astro: { name: 'astro', code: astro as string },
     eris: { name: 'eris', code: eris as string },
+    astro: { name: 'astro', code: astro as string },
   };
 };
