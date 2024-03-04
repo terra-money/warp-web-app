@@ -6,10 +6,24 @@
     "build": "react-app-rewired build",
     "format": "prettier --write \"**/*.{js,ts,tsx}\"",
     "generate-types": "node --experimental-specifier-resolution=node --loader ts-node/esm ../../scripts/generate-types.ts warp-protocol",
+    "generate-dts": "node --experimental-specifier-resolution=node --loader ts-node/esm ../../scripts/generate-dts.ts",
     "lint": "eslint \"./src/{**/*,*}.{ts,tsx}\"",
     "start": "PORT=4002 react-app-rewired start",
     "test": "react-app-rewired test --passWithNoTests"
   },
+  "generate-dts": {
+    "deps": [
+      {
+        "path": "../../../warp-sdk",
+        "name": "@terra-money/warp-sdk"
+      },
+      {
+        "path": "../../../feather.js",
+        "name": "@terra-money/feather.js"
+      }
+    ],
+    "output": "src/pages/playground/types"
+  },   
   "lint-staged": {
     "./src/{**/*,*}.{ts,tsx}": [
       "prettier --write",
