@@ -1,9 +1,9 @@
 import * as esbuild from 'esbuild-wasm';
+import { dependencies } from './types/dependencies';
 
 declare global {
   interface Window {
-    WarpSDK: any;
-    FeatherJS: any;
+    [key: string]: any;
     require: NodeRequire;
     signalExecutionComplete: any;
     signalExecutionFailed: any;
@@ -13,21 +13,25 @@ declare global {
 // Ensure ESBuild is initialized
 let initialized = false;
 
+// Call the modified loadDependencies function
 loadDependencies();
 initializeEsbuild();
 
 // Dynamically load dependencies and provide them globally
 async function loadDependencies() {
   try {
-    // Assuming these modules attach themselves to the window or a similar global object
-    const [warpSDK, featherJS] = await Promise.all([
-      import('@terra-money/warp-sdk'),
-      import('@terra-money/feather.js'),
-    ]);
+    // Iterate over the dependencyImports keys to load each module dynamically
+    const loadedModules = await Promise.all(
+      dependencies.map(async (dep) => {
+        const module = await dep.import;
+        return { safeName: dep.safeName, module };
+      })
+    );
 
-    // Optionally attach to global scope if necessary
-    window.WarpSDK = warpSDK;
-    window.FeatherJS = featherJS;
+    // Attach the loaded modules to the window object
+    loadedModules.forEach(({ safeName, module }) => {
+      window[safeName] = module;
+    });
   } catch (error) {
     console.error('Failed to load dependencies:', error);
     throw error;
@@ -54,7 +58,16 @@ function customResolverPlugin(tsCode: string): esbuild.Plugin {
       // Return the TypeScript code for the virtual entry point.
       build.onLoad({ filter: /.*/, namespace: 'ts-code' }, () => ({ contents: tsCode, loader: 'ts' }));
 
-      build.onResolve({ filter: /^@terra-money\// }, (args) => ({ path: args.path, external: true }));
+      // Mark all dependencies as external
+      // Directly mark dependencies as external based on the dependencies array
+      build.onResolve({ filter: /.*/ }, (args) => {
+        // Check if the imported module matches any libName in dependencies
+        const isExternalDependency = dependencies.some((dep) => dep.libName === args.path);
+        if (isExternalDependency) {
+          return { path: args.path, external: true };
+        }
+        // Return undefined for non-external modules, allowing normal resolution
+      });
     },
   };
 }
@@ -65,15 +78,12 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
   const originalRequire = window.require;
 
   try {
-    // await initializeEsbuild();
-    // await loadDependencies();
-
     // @ts-ignore
     window.require = function (moduleName) {
-      if (moduleName === '@terra-money/warp-sdk') {
-        return window.WarpSDK; // Assuming WarpSDK is loaded globally
-      } else if (moduleName === '@terra-money/feather.js') {
-        return window.FeatherJS; // Assuming FeatherJS is loaded globally
+      const module = dependencies.find((d) => d.libName === moduleName);
+
+      if (module) {
+        return window[module.safeName];
       }
       return originalRequire(moduleName);
     };

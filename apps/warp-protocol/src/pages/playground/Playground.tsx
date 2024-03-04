@@ -5,13 +5,12 @@ import { Button, Link, Text } from 'components/primitives';
 import MonacoEditor from '@monaco-editor/react';
 import { editor as Editor } from 'monaco-editor';
 
-import featherjsTypes from './types/featherjs.txt';
-import sdkTypes from './types/sdk.txt';
 import { Example, useExamples } from './useExamples';
 import { compileAndRunTS } from './compile';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
 import classNames from 'classnames';
 import { useCopy } from 'hooks';
+import { dependencies } from './types/dependencies';
 
 // Define a type for the output state
 type OutputState = string;
@@ -115,19 +114,15 @@ export const Playground = (props: PlaygroundProps) => {
                 }
               }
 
-              addLibraryToMonacoEditor(
-                '@terra-money/warp-sdk',
-                sdkTypes as any,
-                (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
-                (libName) => `${libName}.d.ts`
-              );
-
-              addLibraryToMonacoEditor(
-                '@terra-money/feather.js',
-                featherjsTypes as any,
-                (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
-                (libName) => `${libName}.d.ts`
-              );
+              // Iterate over each dependency and add it to the Monaco editor
+              dependencies.forEach(({ libName, typeDefs }) => {
+                addLibraryToMonacoEditor(
+                  libName,
+                  typeDefs,
+                  (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
+                  (libName) => `${libName}.d.ts`
+                );
+              });
             }}
             options={{
               selectOnLineNumbers: true,

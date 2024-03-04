@@ -23,7 +23,7 @@
       }
     ],
     "output": "src/pages/playground/types"
-  },   
+  },
   "lint-staged": {
     "./src/{**/*,*}.{ts,tsx}": [
       "prettier --write",
