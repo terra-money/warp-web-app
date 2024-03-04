@@ -6,6 +6,7 @@ declare global {
     FeatherJS: any;
     require: NodeRequire;
     signalExecutionComplete: any;
+    signalExecutionFailed: any;
   }
 }
 
@@ -13,6 +14,7 @@ declare global {
 let initialized = false;
 
 loadDependencies();
+initializeEsbuild();
 
 // Dynamically load dependencies and provide them globally
 async function loadDependencies() {
@@ -63,8 +65,8 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
   const originalRequire = window.require;
 
   try {
-    await initializeEsbuild();
-    await loadDependencies();
+    // await initializeEsbuild();
+    // await loadDependencies();
 
     // @ts-ignore
     window.require = function (moduleName) {
@@ -77,10 +79,14 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
     };
 
     // Define a promise that will be resolved when the eval code signals completion
-    const executionCompletePromise = new Promise<string>((resolve) => {
+    const executionCompletePromise = new Promise<string>((resolve, reject) => {
       // Signal function to indicate completion
       window.signalExecutionComplete = () => {
         resolve(capturedLogs.join('\n'));
+      };
+
+      window.signalExecutionFailed = (err: any) => {
+        reject(err);
       };
     });
 
@@ -90,6 +96,8 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
     (async () => {      
       try {
         await main();
+      } catch (err) {
+        window.signalExecutionFailed(err);
       } finally {
         window.signalExecutionComplete();
       }
@@ -120,9 +128,13 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
       // Wait for the signal that the execution is complete
       const res = await executionCompletePromise;
       return res;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error executing script: ', error);
       capturedLogs.push(`Error executing script: ${error}`);
+
+      if (error.name === 'AxiosError') {
+        capturedLogs.push(error.response.data.message);
+      }
     }
 
     return capturedLogs.join('\n');
@@ -133,5 +145,6 @@ export async function compileAndRunTS(tsCode: string): Promise<string> {
     console.log = originalConsoleLog;
     window.require = originalRequire;
     delete window.signalExecutionComplete;
+    delete window.signalExecutionFailed;
   }
 }

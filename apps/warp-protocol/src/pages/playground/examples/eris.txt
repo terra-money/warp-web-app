@@ -55,26 +55,22 @@ const estimateJobRewardMsg = job
 // Ensure a `main` function is defined and exported as below; 
 // this is crucial for correct execution in the sandbox environment.
 export const main = async () => {
-  try {
-    const reward = await sdk.estimateJobReward(sender, estimateJobRewardMsg);
+  const reward = await sdk.estimateJobReward(sender, estimateJobRewardMsg);
 
-    const operationalAmount = await sdk.estimateJobFee(sender, estimateJobRewardMsg, reward.amount.toString());
+  const operationalAmount = await sdk.estimateJobFee(sender, estimateJobRewardMsg, reward.amount.toString());
 
-    const createJobMsg = job
-      .create()
-      .name('eris-harvest')
-      .description('This job harvests rewards for eris protoocl vaults each day.')
-      .labels([])
-      .recurring(recurring)
-      .reward(reward.amount.toString())
-      .operationalAmount(operationalAmount.amount.toString())
-      .vars(vars)
-      .durationDays(durationDays)
-      .executions(executions)
-      .compose();
+  const createJobMsg = job
+    .create()
+    .name('eris-harvest')
+    .description('This job harvests rewards for eris protoocl vaults each day.')
+    .labels([])
+    .recurring(recurring)
+    .reward(reward.amount.toString())
+    .operationalAmount(operationalAmount.amount.toString())
+    .vars(vars)
+    .durationDays(durationDays)
+    .executions(executions)
+    .compose();
 
-    console.log(JSON.stringify(createJobMsg, null, 2));
-  } catch (err) {
-    console.log(err);
-  }
+  console.log(JSON.stringify(createJobMsg, null, 2));
 };
