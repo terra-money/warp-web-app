@@ -2,7 +2,7 @@ import { useState, useRef, useMemo } from 'react';
 import styles from './Playground.module.sass';
 import { Container, UIElementProps } from '@terra-money/apps/components';
 import { Button, Link, Text } from 'components/primitives';
-import MonacoEditor from '@monaco-editor/react';
+import MonacoEditor, { Monaco } from '@monaco-editor/react';
 import { editor as Editor } from 'monaco-editor';
 
 import { Example, useExamples } from './useExamples';
@@ -19,6 +19,43 @@ type OutputState = string;
 type EditorInstance = Editor.IStandaloneCodeEditor | null;
 
 type PlaygroundProps = UIElementProps & {};
+
+async function addDependency(
+  monaco: Monaco,
+  libName: string,
+  typeDefs: string,
+  composeModule: (libName: string, typeDefs: string) => string,
+  composeLibPath: (libName: string) => string
+) {
+  try {
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2015,
+      allowNonTsExtensions: true,
+      module: monaco.languages.typescript.ModuleKind.ES2015,
+      noEmit: true,
+      esModuleInterop: true,
+    });
+
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+      composeModule(libName, typeDefs),
+      composeLibPath(libName)
+    );
+  } catch (error) {
+    console.error('Failed to load type definitions:', error);
+  }
+}
+
+async function addDependencies(monaco: Monaco) {
+  dependencies.forEach(({ libName, typeDefs }) => {
+    addDependency(
+      monaco,
+      libName,
+      typeDefs,
+      (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
+      (libName) => `${libName}.d.ts`
+    );
+  });
+}
 
 export const Playground = (props: PlaygroundProps) => {
   const [output, setOutput] = useState<OutputState>('');
@@ -89,40 +126,7 @@ export const Playground = (props: PlaygroundProps) => {
             theme="vs-dark"
             onMount={async (editor, monaco) => {
               editorRef.current = editor;
-
-              async function addLibraryToMonacoEditor(
-                libName: string,
-                typeDefs: string,
-                composeModule: (libName: string, typeDefs: string) => string,
-                composeLibPath: (libName: string) => string
-              ) {
-                try {
-                  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-                    target: monaco.languages.typescript.ScriptTarget.ES2015,
-                    allowNonTsExtensions: true,
-                    module: monaco.languages.typescript.ModuleKind.ES2015,
-                    noEmit: true,
-                    esModuleInterop: true,
-                  });
-
-                  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-                    composeModule(libName, typeDefs),
-                    composeLibPath(libName)
-                  );
-                } catch (error) {
-                  console.error('Failed to load type definitions:', error);
-                }
-              }
-
-              // Iterate over each dependency and add it to the Monaco editor
-              dependencies.forEach(({ libName, typeDefs }) => {
-                addLibraryToMonacoEditor(
-                  libName,
-                  typeDefs,
-                  (libName, typeDefs) => `declare module "${libName}" { ${typeDefs} }`,
-                  (libName) => `${libName}.d.ts`
-                );
-              });
+              addDependencies(monaco);
             }}
             options={{
               selectOnLineNumbers: true,
