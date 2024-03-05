@@ -6,6 +6,7 @@ import { ReactComponent as DashboardIcon } from 'components/assets/Dashboard.svg
 import { ReactComponent as LightningStrokeIcon } from 'components/assets/LightningStroke.svg';
 import { ReactComponent as DotsCircleIcon } from 'components/assets/DotsCircle.svg';
 import { ReactComponent as TerminalIcon } from 'components/assets/Terminal.svg';
+import { ReactComponent as CodeIcon } from 'components/assets/Code.svg';
 import { NavLink } from 'react-router-dom';
 import styles from './NavigationMenu.module.sass';
 import { useNewActionDialog } from './dialogs/NewActionDialog';
@@ -23,7 +24,7 @@ const routes: RouteProps[] = [
   { to: '/funding-accounts', label: 'Funding Accounts', icon: <DotsCircleIcon /> },
   { to: '/variables', label: 'Variables', icon: <LightningStrokeIcon /> },
   { to: '/templates', label: 'Templates', icon: <TerminalIcon /> },
-  { to: '/playground', label: 'Playground', icon: <TerminalIcon /> },
+  { to: '/playground', label: 'Playground', icon: <CodeIcon className={styles.code_icon} /> },
 ];
 
 interface RouteTooltipProps {
@@ -40,7 +41,7 @@ const Route = (props: RouteProps) => {
   return (
     <NavLink className={classNames(styles.route, 'route')} to={to}>
       <div className={styles.iconWrapper}>
-        <span className={styles.icon}>{icon}</span>
+        {icon}
         <RouteTooltip label={label} />
       </div>
     </NavLink>
