@@ -4,11 +4,12 @@ import { useCallback } from 'react';
 import { useCopyToClipboard } from 'react-use';
 import { CopySnackbar } from 'components/snackbar/copy/CopySnackbar';
 
-type CopyField = 'address' | 'message';
+type CopyField = 'address' | 'message' | 'code';
 
 const copyFieldToText: Record<CopyField, string> = {
   address: 'Address copied to clipboard!',
   message: 'Message copied to clipboard!',
+  code: 'Code copied to clipboard!',
 };
 
 export const useCopy = (field: CopyField, walletAddress?: string) => {

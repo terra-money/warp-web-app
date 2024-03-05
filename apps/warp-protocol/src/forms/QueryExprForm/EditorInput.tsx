@@ -42,7 +42,7 @@ export interface EditorInputProps {
   onEditorCursorChange?: (editor: IAceEditor) => void;
 }
 
-const defaultExample = (
+export const defaultExample = (
   contractAddress: string,
   query: warp_resolver.QueryRequestFor_String
 ): warp_resolver.WarpMsg => ({
@@ -65,8 +65,6 @@ const EditorInput = (props: EditorInputProps) => {
   const sdk = useWarpSdk();
 
   const queryExample = useQueryExample();
-
-  console.log({ contracts: sdk.chain.contracts });
 
   const {
     endLabel,

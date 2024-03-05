@@ -1,6 +1,6 @@
 import { Button, Text } from 'components/primitives';
 import { useDialog, DialogProps } from '@terra-money/apps/hooks';
-import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
+import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import { ReactComponent as ArrowLinkIcon } from 'components/assets/ArrowLink.svg';
 import styles from './FeedbackDialog.module.sass';
 
@@ -14,11 +14,11 @@ export const FeedbackDialog = (props: DialogProps<FeedbackDialogProps, boolean>)
       <DialogHeader title="We'd love to hear from you!" onClose={() => closeDialog(undefined)} />
       <DialogBody className={styles.body}>
         <Text variant="label" className={styles.description}>
-          We want to keep improving Warp Protocol for our community. Share your thoughts about existing features and
-          ideas for the future by clicking a button below.
+          At Warp Protocol, your feedback is crucial for product enhancement and shaping future innovations. Whether you
+          have insights on our existing features or are interested in discussing potential integrations, we're eager to
+          collaborate and explore new possibilities together.
         </Text>
-      </DialogBody>
-      <DialogFooter>
+
         <Button
           variant="secondary"
           className={styles.btn}
@@ -27,10 +27,21 @@ export const FeedbackDialog = (props: DialogProps<FeedbackDialogProps, boolean>)
             closeDialog(undefined);
           }}
         >
-          <Text variant="text">Feedback form</Text>
+          <Text variant="text">Feedback</Text>
           <ArrowLinkIcon />
         </Button>
-      </DialogFooter>
+        <Button
+          variant="secondary"
+          className={styles.btn}
+          onClick={async () => {
+            window.open('https://forms.gle/AVfrfDStd95qjnGQ9');
+            closeDialog(undefined);
+          }}
+        >
+          <Text variant="text">Partnerships</Text>
+          <ArrowLinkIcon />
+        </Button>
+      </DialogBody>
     </Dialog>
   );
 };

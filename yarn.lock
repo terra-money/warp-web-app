@@ -3719,6 +3719,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@monaco-editor/loader@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@monaco-editor/loader@npm:1.4.0"
+  dependencies:
+    state-local: ^1.0.6
+  peerDependencies:
+    monaco-editor: ">= 0.21.0 < 1"
+  checksum: 374ec0ea872ee15b33310e105a43217148161480d3955c5cece87d0f801754cd2c45a3f6c539a75da18a066c1615756fb87eaf1003f1df6a64a0cbce5d2c3749
+  languageName: node
+  linkType: hard
+
+"@monaco-editor/react@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@monaco-editor/react@npm:4.6.0"
+  dependencies:
+    "@monaco-editor/loader": ^1.4.0
+  peerDependencies:
+    monaco-editor: ">= 0.25.0 < 1"
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 9d44e76c5baad6db5f84c90a5540fbd3c9af691b97d76cf2a99b3c8273004d0efe44c2572d80e9d975c9af10022c21e4a66923924950a5201e82017c8b20428c
+  languageName: node
+  linkType: hard
+
 "@mui/base@npm:5.0.0-alpha.108":
   version: 5.0.0-alpha.108
   resolution: "@mui/base@npm:5.0.0-alpha.108"
@@ -4322,7 +4346,7 @@ __metadata:
     "@mui/material": ^5.10.2
     "@terra-money/feather.js": ^1.0.11
     "@terra-money/wallet-kit": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.2
+    "@terra-money/warp-sdk": ^0.2.10
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -4497,9 +4521,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/warp-sdk@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@terra-money/warp-sdk@npm:0.2.2"
+"@terra-money/warp-sdk@npm:^0.2.10":
+  version: 0.2.10
+  resolution: "@terra-money/warp-sdk@npm:0.2.10"
   dependencies:
     "@terra-money/feather.js": ^1.0.11
     "@types/node": ^16.11.56
@@ -4512,7 +4536,7 @@ __metadata:
     lodash: ^4.17.21
     pino: ^8.4.2
     typescript: ^4.8.2
-  checksum: b4a85a140fe728e87415d1d457d00860390be1f9cdb682698fbd174cd3926cdf29e97f32584f1b9b063bf3f5332155026af51d9d1bbc2b0db325dc0919676bab
+  checksum: 1e41c08c950b38554f4695bb87d2d27ea853f1f0d9d1f542fd3b3399556a6c4bdbf2517d4c7125985820877b5fa369e9078a8e613fcf885ee2901775b523dad4
   languageName: node
   linkType: hard
 
@@ -5597,13 +5621,14 @@ __metadata:
   dependencies:
     "@emotion/react": ^11.10.0
     "@emotion/styled": ^11.10.0
+    "@monaco-editor/react": ^4.6.0
     "@mui/icons-material": ^5.10.2
     "@mui/material": ^5.10.2
     "@popperjs/core": ^2.11.6
     "@terra-money/feather.js": ^1.0.11
     "@terra-money/terra-station-mobile": 1.0.8
     "@terra-money/wallet-kit": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.2
+    "@terra-money/warp-sdk": ^0.2.10
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -5631,6 +5656,7 @@ __metadata:
     customize-cra: ^1.0.0
     d3-ease: ^3.0.1
     d3-timer: ^3.0.1
+    esbuild-wasm: ^0.20.1
     eslint: ^8.23.0
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
@@ -5640,12 +5666,14 @@ __metadata:
     json-schema-to-typescript: ^11.0.2
     jsonpath: ^1.1.1
     lint-staged: ^13.0.3
+    monaco-editor: ^0.46.0
     notistack: ^2.0.5
     os-browserify: ^0.3.0
     parse-duration: ^1.0.2
     path-browserify: ^1.0.1
     prettier: ^2.7.1
     process: ^0.11.10
+    raw-loader: ^4.0.2
     react: ^18.2.0
     react-ace: ^10.1.0
     react-app-rewired: ^2.2.1
@@ -5680,7 +5708,7 @@ __metadata:
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
     "@terra-money/feather.js": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.2
+    "@terra-money/warp-sdk": ^0.2.10
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^1.1.2
@@ -9135,6 +9163,15 @@ __metadata:
   version: 0.14.54
   resolution: "esbuild-sunos-64@npm:0.14.54"
   conditions: os=sunos & cpu=x64
+  languageName: node
+  linkType: hard
+
+"esbuild-wasm@npm:^0.20.1":
+  version: 0.20.1
+  resolution: "esbuild-wasm@npm:0.20.1"
+  bin:
+    esbuild: bin/esbuild
+  checksum: 33cdd42c50b8b437c949700929d45458b2f3e9e02c825caeb92e6b93d9c58154e9fd3759341e012a56157409b1e9be2e7d24ec740687e860b3509b13572e813a
   languageName: node
   linkType: hard
 
@@ -13307,6 +13344,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"monaco-editor@npm:^0.46.0":
+  version: 0.46.0
+  resolution: "monaco-editor@npm:0.46.0"
+  checksum: be7aaa2747b8d3a3537f56c9353ebe779b188eb1480f6453fa1e346d8ccdd27068cb4508c8f6f3b8cc07ac0f792a3d6df36168d54cd6e074742182525115be86
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -15368,6 +15412,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"raw-loader@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "raw-loader@npm:4.0.2"
+  dependencies:
+    loader-utils: ^2.0.0
+    schema-utils: ^3.0.0
+  peerDependencies:
+    webpack: ^4.0.0 || ^5.0.0
+  checksum: 51cc1b0d0e8c37c4336b5318f3b2c9c51d6998ad6f56ea09612afcfefc9c1f596341309e934a744ae907177f28efc9f1654eacd62151e82853fcc6d37450e795
+  languageName: node
+  linkType: hard
+
 "react-ace@npm:^10.1.0":
   version: 10.1.0
   resolution: "react-ace@npm:10.1.0"
@@ -16870,6 +16926,13 @@ __metadata:
     stack-generator: ^2.0.5
     stacktrace-gps: ^3.0.4
   checksum: 081e786d56188ac04ac6604c09cd863b3ca2b4300ec061366cf68c3e4ad9edaa34fb40deea03cc23a05f442aa341e9171f47313f19bd588f9bec6c505a396286
+  languageName: node
+  linkType: hard
+
+"state-local@npm:^1.0.6":
+  version: 1.0.7
+  resolution: "state-local@npm:1.0.7"
+  checksum: d1afcf1429e7e6eb08685b3a94be8797db847369316d4776fd51f3962b15b984dacc7f8e401ad20968e5798c9565b4b377afedf4e4c4d60fe7495e1cbe14a251
   languageName: node
   linkType: hard
 
