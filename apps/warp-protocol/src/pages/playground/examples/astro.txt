@@ -19,9 +19,8 @@ const sdk = new WarpSdk(wallet, piscoLcdClientConfig);
 const sender = wallet.key.accAddress(piscoLcdClientConfig.prefix);
 
 const limitOrder = {
-  maxSpread: 0.15,
   lunaOfferAmount: '1000000',
-  astroPurchaseAmount: '9500000000',
+  astroPurchaseAmount: '10000',
   astroTokenContract: 'terra167dsqkh2alurx997wmycw9ydkyu54gyswe3ygmrs4lwume3vmwks8ruqnv',
 };
 
@@ -67,7 +66,6 @@ const executions = [
         astroportContract,
         {
           execute_swap_operations: {
-            max_spread: limitOrder.maxSpread,
             minimum_receive: limitOrder.astroPurchaseAmount,
             operations: [
               {
