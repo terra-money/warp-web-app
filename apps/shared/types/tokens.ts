@@ -69,6 +69,17 @@ export const INJ: NativeToken = {
   coinGeckoId: 'injective-protocol',
 };
 
+export const OSMO: NativeToken = {
+  key: 'uosmo',
+  type: 'native',
+  denom: 'uosmo',
+  name: 'Osmosis',
+  symbol: 'OSMO',
+  decimals: 6,
+  icon: 'https://station-assets.terra.dev/img/chains/Osmosis.svg',
+  coinGeckoId: 'osmosis',
+};
+
 export interface NativeTokensResponse {
   [tokenAddr: string]: NativeToken;
 }
