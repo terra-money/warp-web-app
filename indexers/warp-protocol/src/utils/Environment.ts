@@ -79,6 +79,21 @@ export class Environment {
       }
     }
 
+    if (chainName === 'osmosis') {
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 14266867,
+          timestamp: 1710262192,
+        };
+      } else {
+        // testnet (this is mainnet, switch with testnet data when testnet is added)
+        return {
+          height: 14266867,
+          timestamp: 1710262192,
+        };
+      }
+    }
+
     // if (chainName === 'migaloo') {
     //   if (process.env.NETWORK === 'testnet') {
     //     // testnet

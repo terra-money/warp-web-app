@@ -1,5 +1,5 @@
 import { useChainSelector } from '@terra-money/apps/hooks';
-import { INJ, LUNA, NativeToken, NEUTRON, NIBIRU, WHALE } from '@terra-money/apps/types';
+import { INJ, LUNA, NativeToken, NEUTRON, NIBIRU, OSMO, WHALE } from '@terra-money/apps/types';
 import { useMemo } from 'react';
 
 export const useNativeToken = (): NativeToken => {
@@ -17,6 +17,8 @@ export const useNativeToken = (): NativeToken => {
         return NIBIRU;
       case 'migaloo':
         return WHALE;
+      case 'osmosis':
+        return OSMO;
     }
   }, [selectedChain.name]);
 };

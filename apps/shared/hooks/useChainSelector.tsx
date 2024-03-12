@@ -6,6 +6,7 @@ import { ReactComponent as InjectiveIcon } from 'components/assets/Injective.svg
 import { ReactComponent as NeutronIcon } from 'components/assets/Neutron.svg';
 import { ReactComponent as NibiruIcon } from 'components/assets/Nibiru.svg';
 import { ReactComponent as MigalooIcon } from 'components/assets/Migaloo.svg';
+import { ReactComponent as OsmoIcon } from 'components/assets/Osmo.svg';
 import {
   ChainMetadata as SdkChainMetadata,
   TERRA_CHAIN,
@@ -42,6 +43,8 @@ const getChainMetadata = (sdkMetadata: SdkChainMetadata) => {
       return { ...sdkMetadata, icon: <NibiruIcon className={styles.chain_icon} /> };
     case 'migaloo':
       return { ...sdkMetadata, icon: <MigalooIcon className={styles.chain_icon} /> };
+    case 'osmosis':
+      return { ...sdkMetadata, icon: <OsmoIcon className={styles.chain_icon} /> };
   }
 };
 

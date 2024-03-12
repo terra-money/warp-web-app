@@ -7,6 +7,7 @@ const injectiveFinderTxUrl = (network: string, txHash: string) =>
     ? `https://explorer.injective.network/transaction/${txHash}`
     : `https://testnet.explorer.injective.network/transaction/${txHash}`;
 const neutronFinderTxUrl = (chainId: string, txHash: string) => `https://neutron.celat.one/${chainId}/txs/${txHash}`;
+const osmoFinderTxUrl = (chainId: string, txHash: string) => `https://celatone.osmosis.zone/${chainId}/txs/${txHash}`;
 
 export const useFinderTxUrl = () => {
   const { connectedWallet, chain, chainId } = useLocalWallet();
@@ -24,6 +25,8 @@ export const useFinderTxUrl = () => {
           return neutronFinderTxUrl(chainId, txHash);
         case 'injective':
           return injectiveFinderTxUrl(connectedWallet.network!, txHash);
+        case 'osmosis':
+          return osmoFinderTxUrl(connectedWallet.network!, txHash);
         // TODO: add nibiru and whale when supported
       }
     },
