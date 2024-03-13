@@ -70,7 +70,7 @@ __metadata:
   dependencies:
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
-    "@terra-money/feather.js": ^1.0.11
+    "@terra-money/feather.js": 1.0.11
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^0.27.2
@@ -4344,9 +4344,9 @@ __metadata:
     "@emotion/react": ^11.10.0
     "@emotion/styled": ^11.10.0
     "@mui/material": ^5.10.2
-    "@terra-money/feather.js": ^1.0.11
-    "@terra-money/wallet-kit": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.13
+    "@terra-money/feather.js": 1.0.11
+    "@terra-money/wallet-kit": 1.0.11
+    "@terra-money/warp-sdk": ^0.2.14
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -4393,7 +4393,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@terra-money/feather.js@npm:^1.0.11":
+"@terra-money/feather.js@npm:1.0.11":
   version: 1.0.11
   resolution: "@terra-money/feather.js@npm:1.0.11"
   dependencies:
@@ -4507,7 +4507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/wallet-kit@npm:^1.0.11":
+"@terra-money/wallet-kit@npm:1.0.11":
   version: 1.0.11
   resolution: "@terra-money/wallet-kit@npm:1.0.11"
   dependencies:
@@ -4521,11 +4521,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/warp-sdk@npm:^0.2.13":
-  version: 0.2.13
-  resolution: "@terra-money/warp-sdk@npm:0.2.13"
+"@terra-money/warp-sdk@npm:^0.2.14":
+  version: 0.2.14
+  resolution: "@terra-money/warp-sdk@npm:0.2.14"
   dependencies:
-    "@terra-money/feather.js": ^1.0.11
+    "@terra-money/feather.js": 1.0.11
     "@types/node": ^16.11.56
     axios: ^1.1.2
     big.js: ^6.2.1
@@ -4536,7 +4536,7 @@ __metadata:
     lodash: ^4.17.21
     pino: ^8.4.2
     typescript: ^4.8.2
-  checksum: c37e3ef3e334bd2dfaf30aa3577f3cc83fb755c23961fa7b2ee69e64cbb7c1c65d74df3d1d82ca1a19ac64f69d8cb29c7ba22cf6b3eb053f762e0b488cf9a861
+  checksum: b1b7520d3020ab0aa4496db054a94a02ec02d468a68f5a7bd8c1de08f4b51f7f98d71e385cec5f11bc7dea811e991735f6f937f2ae288719a9f7eb10f647e059
   languageName: node
   linkType: hard
 
@@ -5625,10 +5625,10 @@ __metadata:
     "@mui/icons-material": ^5.10.2
     "@mui/material": ^5.10.2
     "@popperjs/core": ^2.11.6
-    "@terra-money/feather.js": ^1.0.11
+    "@terra-money/feather.js": 1.0.11
     "@terra-money/terra-station-mobile": 1.0.8
-    "@terra-money/wallet-kit": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.13
+    "@terra-money/wallet-kit": 1.0.11
+    "@terra-money/warp-sdk": ^0.2.14
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
@@ -5707,8 +5707,8 @@ __metadata:
     "@apps-shared/indexers": "workspace:^"
     "@aws-sdk/client-dynamodb": ^3.159.0
     "@aws-sdk/util-dynamodb": ^3.159.0
-    "@terra-money/feather.js": ^1.0.11
-    "@terra-money/warp-sdk": ^0.2.13
+    "@terra-money/feather.js": 1.0.11
+    "@terra-money/warp-sdk": ^0.2.14
     "@types/d3-array": ^3.0.3
     "@types/node": ^16.11.56
     axios: ^1.1.2
@@ -5731,7 +5731,7 @@ __metadata:
     "@emotion/react": ^11.10.0
     "@emotion/styled": ^11.10.0
     "@mui/material": ^5.10.2
-    "@terra-money/wallet-kit": ^1.0.11
+    "@terra-money/wallet-kit": 1.0.11
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^13.5.0
