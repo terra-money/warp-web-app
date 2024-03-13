@@ -90,6 +90,8 @@ const ChainSelectorProvider = (props: ChainSelectorProviderProps) => {
 
   const network = useMemo(() => addNibiru(prevNetwork), [prevNetwork]);
 
+  // console.log({ network })
+
   const [selectedChainMetadata, setSelectedChainMetadata] = useLocalStorage<SdkChainMetadata>(
     '__warp_selected_chain',
     TERRA_CHAIN
