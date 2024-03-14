@@ -89,9 +89,9 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .executions(executions)
         .compose();
 
-      const createJobV2Tx = await sdkv2.tx.createJob(wallet.walletAddress, createJobMsg, [
-        new Coin(nativeTokenDenom, operationalAmount),
-      ]);
+      const coins = fundingAccount ? [] : [new Coin(nativeTokenDenom, operationalAmount)];
+
+      const createJobV2Tx = await sdkv2.tx.createJob(wallet.walletAddress, createJobMsg, coins);
       const deleteJobV1Tx = await sdkv1.tx.deleteJob(wallet.walletAddress, job.info.id);
 
       const msgs = [...createJobV2Tx.msgs, ...deleteJobV1Tx.msgs];
