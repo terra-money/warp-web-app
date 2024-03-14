@@ -62,7 +62,9 @@ export const useCreateJobTx = () => {
         .executions(executions)
         .compose();
 
-      return sdk.tx.createJob(wallet.walletAddress, createJobMsg, [new Coin(nativeTokenDenom, operationalAmount)]);
+      const coins = fundingAccount ? [] : [new Coin(nativeTokenDenom, operationalAmount)];
+
+      return sdk.tx.createJob(wallet.walletAddress, createJobMsg, coins);
     },
     {
       txKey: TX_KEY.CREATE_JOB,
