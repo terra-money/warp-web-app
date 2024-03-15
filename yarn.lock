@@ -5656,7 +5656,7 @@ __metadata:
     customize-cra: ^1.0.0
     d3-ease: ^3.0.1
     d3-timer: ^3.0.1
-    esbuild-wasm: ^0.20.1
+    esbuild-wasm: 0.20.1
     eslint: ^8.23.0
     eslint-config-prettier: ^8.5.0
     eslint-config-react-app: ^7.0.1
@@ -9166,7 +9166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-wasm@npm:^0.20.1":
+"esbuild-wasm@npm:0.20.1":
   version: 0.20.1
   resolution: "esbuild-wasm@npm:0.20.1"
   bin:

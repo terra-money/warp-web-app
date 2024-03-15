@@ -10,15 +10,15 @@ declare global {
   }
 }
 
-// Ensure ESBuild is initialized
 let initialized = false;
-
-// Call the modified loadDependencies function
-loadDependencies();
-initializeEsbuild();
+let modulesLoaded = false;
 
 // Dynamically load dependencies and provide them globally
 async function loadDependencies() {
+  if (modulesLoaded) {
+    return;
+  }
+
   try {
     // Iterate over the dependencyImports keys to load each module dynamically
     const loadedModules = await Promise.all(
@@ -32,6 +32,8 @@ async function loadDependencies() {
     loadedModules.forEach(({ safeName, module }) => {
       window[safeName] = module;
     });
+
+    modulesLoaded = true;
   } catch (error) {
     console.error('Failed to load dependencies:', error);
     throw error;
@@ -41,7 +43,7 @@ async function loadDependencies() {
 async function initializeEsbuild(): Promise<void> {
   if (!initialized) {
     await esbuild.initialize({
-      wasmURL: 'https://unpkg.com/esbuild-wasm/esbuild.wasm',
+      wasmURL: 'https://unpkg.com/esbuild-wasm@0.20.1/esbuild.wasm',
     });
     initialized = true;
   }
@@ -74,6 +76,9 @@ function customResolverPlugin(tsCode: string): esbuild.Plugin {
 
 // Function to compile and execute the TypeScript code
 export async function compileAndRunTS(tsCode: string): Promise<string> {
+  await initializeEsbuild();
+  await loadDependencies();
+
   const originalConsoleLog = console.log;
   const originalRequire = window.require;
 
