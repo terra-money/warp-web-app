@@ -3,6 +3,7 @@
   overflow: auto
   display: block
   width: 100%
+  padding-right: 200px
 
 .title_container
   position: relative
@@ -20,14 +21,36 @@
   margin-top: 24px
   line-height: 22px
 
-.msg_input
-  height: 320px
-
-.msg_input_inner
-  height: calc(320px - 32px)
-
 .link
   margin-left: 4px !important
 
 .eviction_warning
   margin-left: 4px !important
+
+.form
+  display: grid
+  grid-template-columns: repeat(4, 1fr)
+  grid-template-rows: auto auto
+  gap: 20px
+  width: 100%
+  margin: 0 auto
+
+.msg_input
+  grid-column: 1 / span 2
+  grid-row: 1 / span 2
+  height: 420px
+
+.msg_input_inner
+  height: calc(420px - 32px)
+
+
+.token_amount_container
+  display: flex
+  flex-direction: row
+  grid-column: 3 / span 2
+  grid-row: 1
+  gap: 20px
+  width: 100%
+
+.token_input, .amount_input
+  flex: 1
