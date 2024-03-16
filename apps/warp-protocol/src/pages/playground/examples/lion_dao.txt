@@ -1,0 +1,85 @@
+import { LCDClient, LCDClientConfig, MnemonicKey, Wallet } from '@terra-money/feather.js';
+import { uint, cond, fn, msg, variable, job, ts, WarpSdk, base64encode } from '@terra-money/warp-sdk';
+
+const phoenixLcdClientConfig: LCDClientConfig = {
+  chainID: 'phoenix-1',
+  lcd: 'https://phoenix-lcd.terra.dev',
+  gasAdjustment: 1.75,
+  gasPrices: { uluna: 0.015 },
+  prefix: 'terra',
+};
+
+const lcd = new LCDClient({
+  'phoenix-1': phoenixLcdClientConfig,
+});
+
+const wallet = new Wallet(lcd, new MnemonicKey({ mnemonic: 'tip country must fashion mansion drive modify control grab illegal fly pole range scorpion weekend badge remain vendor board addict label airport picture six' }));
+
+const sdk = new WarpSdk(wallet, phoenixLcdClientConfig);
+const sender = wallet.key.accAddress(phoenixLcdClientConfig.prefix);
+
+const nextExecution = variable
+  .static()
+  .kind('uint')
+  .name('next_execution')
+  .onInit({
+    uint: {
+      simple: ts.date(new Date('2024-03-14T12:30:00.000Z')),
+    },
+  })
+  .onSuccess(fn.uint(uint.expr(uint.simple(ts.days(1)), 'add', uint.env('time'))))
+  .onError(fn.uint(uint.expr(uint.simple(ts.hours(1)), 'add', uint.env('time'))))
+  .compose();
+
+const condition = cond.uint(uint.env('time'), 'gt', uint.ref(nextExecution));
+
+const executions = [
+  {
+    condition,
+    msgs: [
+      msg.execute('terra1lxx40s29qvkrcj8fsa3yzyehy7w50umdvvnls2r830rys6lu2zns63eelv', {
+        send: {
+          amount: '50000000000000',
+          contract: 'terra16j3yxfwzytjm7xq7kcdmfyessz8vg6r938hrfkk64nq9dyyqcd9qczudmr',
+          msg: base64encode({ distribute: {} }),
+        },
+      }),
+    ],
+  },
+];
+
+const recurring = true;
+const durationDays = '3';
+const vars = [nextExecution];
+
+const estimateJobRewardMsg = job
+  .estimate()
+  .recurring(recurring)
+  .durationDays(durationDays)
+  .vars(vars)
+  .executions(executions)
+  .compose();
+
+// Ensure a `main` function is defined and exported as below; 
+// this is crucial for correct execution in the sandbox environment.
+export const main = async () => {
+  const reward = '184544';
+
+  const operationalAmount = await sdk.estimateJobFee(sender, estimateJobRewardMsg, reward);
+
+  const createJobMsg = job
+    .create()
+    .name('lion-dao--staking-rewards')
+    .description('This job distributes rewards to LionDAO stakers each day.')
+    .fundingAccount('terra1ydxt522k9wph8l79h4u7k9f8633tl0gtxrnyldfhv35py5jq25sslyjvlc')
+    .labels([])
+    .recurring(recurring)
+    .reward(reward)
+    .operationalAmount(operationalAmount.amount.toString())
+    .vars(vars)
+    .durationDays(durationDays)
+    .executions(executions)
+    .compose();
+
+  console.log(JSON.stringify(createJobMsg, null, 2));
+};
