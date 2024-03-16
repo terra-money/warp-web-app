@@ -9,13 +9,14 @@ import styles from './TokenInput.module.sass';
 
 interface TokenInputProps extends UIElementProps {
   label: string;
+  optional?: boolean;
   placeholder?: string;
   value?: Token;
   onChange: (value: Token) => void;
 }
 
 const TokenInput = (props: TokenInputProps) => {
-  const { className, placeholder = 'Select a token', label, value, onChange } = props;
+  const { className, placeholder = 'Select a token', label, value, onChange, optional } = props;
 
   const openTokenList = useTokenListDialog();
 
@@ -32,7 +33,7 @@ const TokenInput = (props: TokenInputProps) => {
     );
 
   return (
-    <FormControl className={classNames(className, styles.root)} label={label}>
+    <FormControl className={classNames(className, styles.root)} label={label} optional={optional}>
       <Container
         className={styles.container}
         direction="row"

@@ -4,12 +4,16 @@ import { useWarpSdk, useWarpSdkv2 } from '@terra-money/apps/hooks';
 import { Job } from 'types';
 import { composers, warp_resolver as warp_resolver_v2, Execution } from '@terra-money/warp-sdk-v2';
 import { warp_resolver } from '@terra-money/warp-sdk';
-import { Coin } from '@terra-money/feather.js';
+import { Coin, Coins } from '@terra-money/feather.js';
+import { Token, u } from '@terra-money/apps/types';
+import Big from 'big.js';
 
 interface MigrateJobTxProps {
   job: Job;
   durationDays: string;
   fundingAccount?: string;
+  amount?: u<Big>;
+  token?: Token;
 }
 
 const mapVars = (vars: warp_resolver.Variable[]): warp_resolver_v2.Variable[] => {
@@ -45,7 +49,7 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
 
   return useTx<MigrateJobTxProps>(
     async (options) => {
-      const { wallet, job, durationDays, fundingAccount } = options;
+      const { wallet, job, durationDays, fundingAccount, token, amount } = options;
 
       const walletAddress = wallet.walletAddress;
 
@@ -75,7 +79,7 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
 
       const operationalAmount = operationalAmountEstimate.amount.toString();
 
-      const createJobMsg = composers.job
+      let createJobMsg = composers.job
         .create()
         .name(job.info.name)
         .labels(job.info.labels)
@@ -89,7 +93,26 @@ export const useMigrateJobTx = (waitForCompletion?: boolean) => {
         .executions(executions)
         .compose();
 
-      const coins = fundingAccount ? [] : [new Coin(nativeTokenDenom, operationalAmount)];
+      let coins = new Coins();
+
+      if (token && amount) {
+        if (token.type === 'cw20') {
+          createJobMsg.cw_funds = [
+            {
+              cw20: {
+                contract_addr: token.token,
+                amount: amount.toString(),
+              },
+            },
+          ];
+        } else {
+          coins = coins.add(new Coin(token.denom, amount.toString()));
+        }
+      }
+
+      if (!fundingAccount) {
+        coins = coins.add(new Coin(nativeTokenDenom, operationalAmount.toString()));
+      }
 
       const createJobV2Tx = await sdkv2.tx.createJob(wallet.walletAddress, createJobMsg, coins);
       const deleteJobV1Tx = await sdkv1.tx.deleteJob(wallet.walletAddress, job.info.id);
