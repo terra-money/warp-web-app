@@ -30,7 +30,6 @@ export const ListItem = (props: ListChildComponentProps<ListData>) => {
       <Text className={styles.id} variant="text" weight="bold">
         ID#{job.info.id}
       </Text>
-      )
     </div>
   );
 };
