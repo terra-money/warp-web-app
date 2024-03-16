@@ -72,7 +72,7 @@ export const MigrateFundsDialog = (props: DialogProps<MigrateFundsDialogProps, b
             }
           }}
         >
-          Migrate funds & Create Funding Account
+          Migrate Funds & Create Funding Account
         </Button>
       </DialogFooter>
     </Dialog>

@@ -48,7 +48,7 @@ const MigrateJobsDialog = (props: DialogProps<void, string>) => {
             variant="primary"
             onClick={() => openMigrateFundsDialog({})}
           >
-            Migrate funds
+            Migrate Funds
           </Button>
         </Container>
         {isLoading && <Throbber className={styles.throbber} />}
