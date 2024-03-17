@@ -9,7 +9,7 @@ export const useTokenBalanceQuery = (walletAddress: string, token: Token): UseQu
   const localWallet = useLocalWallet();
 
   const query = useQuery(
-    [QUERY_KEY.BALANCE, localWallet.chainId, token, walletAddress],
+    [QUERY_KEY.BALANCE, localWallet.chainId, token.key, walletAddress],
     async ({ queryKey }) => {
       if (!localWallet.connectedWallet || !walletAddress) {
         return undefined;
