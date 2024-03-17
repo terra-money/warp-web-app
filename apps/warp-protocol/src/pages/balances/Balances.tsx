@@ -4,12 +4,14 @@ import { BalanceCard } from './BalanceCard';
 import styles from './Balances.module.sass';
 import { useBalances } from './useBalances';
 import { useTokenListDialog } from './token-list';
+import { IfConnected } from 'components/if-connected';
+import { NotConnected } from 'components/not-connected';
 
 interface BalancesProps {
   fundingAccountAddress: string;
 }
 
-export const Balances = (props: BalancesProps) => {
+const BalancesInner = (props: BalancesProps) => {
   const { fundingAccountAddress } = props;
 
   const { balances, saveAll } = useBalances(fundingAccountAddress);
@@ -52,4 +54,8 @@ export const Balances = (props: BalancesProps) => {
       </Container>
     </Container>
   );
+};
+
+export const Balances = (props: BalancesProps) => {
+  return <IfConnected then={<BalancesInner {...props} />} else={<NotConnected />} />;
 };

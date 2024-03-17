@@ -11,12 +11,14 @@ import { warp_account_tracker } from '@terra-money/warp-sdk';
 import { useState } from 'react';
 import { useLocalWallet } from '@terra-money/apps/hooks';
 import classNames from 'classnames';
+import { IfConnected } from 'components/if-connected';
+import { NotConnected } from 'components/not-connected';
 
 interface FundingAccountsProps {}
 
 const accountStatuses = ['taken', 'free'] as warp_account_tracker.AccountStatus[];
 
-export const FundingAccounts = (props: FundingAccountsProps) => {
+const FundingAccountsInner = (props: FundingAccountsProps) => {
   const [selectedAccountStatus, setSelectedAccountStatus] = useState<warp_account_tracker.AccountStatus>('taken');
 
   const { walletAddress } = useLocalWallet();
@@ -68,4 +70,8 @@ export const FundingAccounts = (props: FundingAccountsProps) => {
       {!isLoading && fundingAccounts.length === 0 && <EmptyView status={selectedAccountStatus} />}
     </Container>
   );
+};
+
+export const FundingAccounts = (props: FundingAccountsProps) => {
+  return <IfConnected then={<FundingAccountsInner {...props} />} else={<NotConnected />} />;
 };
