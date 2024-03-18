@@ -32,6 +32,8 @@ export const useJobStorage = () => {
         message: JSON.stringify(job.msgs, null, 2),
         recurring: job.info.recurring,
         fundingAccount: job.info.funding_account ?? undefined,
+        amount: undefined,
+        token: undefined,
       };
 
       setDetailsInput(details);

@@ -2,8 +2,10 @@ import { useTx } from '@terra-money/apps/libs/transactions';
 import { TX_KEY } from './txKey';
 import { containsAllReferencedVars, orderVarsByReferencing } from 'utils/msgs';
 import { useWarpSdk } from '@terra-money/apps/hooks';
-import { composers, warp_resolver } from '@terra-money/warp-sdk';
-import { Coin } from '@terra-money/feather.js';
+import { Token, composers, warp_resolver } from '@terra-money/warp-sdk';
+import { Coin, Coins } from '@terra-money/feather.js';
+import Big from 'big.js';
+import { u } from '@terra-money/apps/types';
 
 export interface CreateJobTxProps {
   name: string;
@@ -16,6 +18,8 @@ export interface CreateJobTxProps {
   reward: string;
   recurring: boolean;
   fundingAccount?: string;
+  token?: Token;
+  amount?: u<Big>;
 }
 
 export const useCreateJobTx = () => {
@@ -35,6 +39,8 @@ export const useCreateJobTx = () => {
         operationalAmount,
         reward,
         fundingAccount,
+        token,
+        amount,
       } = options;
 
       if (!containsAllReferencedVars(vars, msgs, condition)) {
@@ -62,7 +68,27 @@ export const useCreateJobTx = () => {
         .executions(executions)
         .compose();
 
-      const coins = fundingAccount ? [] : [new Coin(nativeTokenDenom, operationalAmount)];
+      let coins = new Coins();
+
+      if (token && amount) {
+        if (token.type === 'cw20') {
+          createJobMsg.cw_funds = [
+            {
+              cw20: {
+                contract_addr: token.token,
+                amount: amount.toString(),
+              },
+            },
+          ];
+        } else {
+          coins = coins.add(new Coin(token.denom, amount.toString()));
+        }
+      }
+
+      // If funding account is not provided, add operational amount to Coins
+      if (!createJobMsg.funding_account) {
+        coins = coins.add(new Coin(nativeTokenDenom, createJobMsg.operational_amount));
+      }
 
       return sdk.tx.createJob(wallet.walletAddress, createJobMsg, coins);
     },

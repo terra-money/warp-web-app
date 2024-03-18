@@ -10,11 +10,12 @@ interface FundingAccountInputProps extends UIElementProps {
   label: string;
   placeholder?: string;
   value?: string;
+  optional?: boolean;
   onChange: (value: string) => void;
 }
 
 const FundingAccountInput = (props: FundingAccountInputProps) => {
-  const { className, placeholder = 'Select a funding account', label, value, onChange } = props;
+  const { className, placeholder = 'Select a funding account', label, value, onChange, optional } = props;
 
   const openFundingAccountList = useFundingAccountListDialog();
 
@@ -26,7 +27,7 @@ const FundingAccountInput = (props: FundingAccountInputProps) => {
     );
 
   return (
-    <FormControl className={classNames(className, styles.root)} label={label}>
+    <FormControl className={classNames(className, styles.root)} label={label} optional={optional}>
       <Container
         className={styles.container}
         direction="row"

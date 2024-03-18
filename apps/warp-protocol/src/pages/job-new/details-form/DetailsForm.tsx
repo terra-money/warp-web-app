@@ -20,6 +20,9 @@ import { useJobStorage } from '../useJobStorage';
 import { ToggleInput } from 'pages/dashboard/jobs-widget/inputs/ToggleInput';
 import { NumericInput } from 'components/primitives/numeric-input';
 import { FundingAccountInput } from './funding-account-input/FundingAccountInput';
+import { TokenInput } from 'pages/balances/token-input/TokenInput';
+import { AmountInput } from 'pages/dashboard/jobs-widget/inputs/AmountInput';
+import { demicrofy } from '@terra-money/apps/libs/formatting';
 
 type DetailsFormProps = UIElementProps & {
   onNext: (props: DetailsFormInput & { variables: warp_resolver.Variable[] }) => void;
@@ -50,6 +53,12 @@ export const DetailsForm = (props: DetailsFormProps) => {
       submitDisabled,
       fundingAccount,
       recurring,
+      tokenBalance,
+      tokenBalanceLoading,
+      token,
+      amount,
+      amountError,
+      amountValid,
     },
   ] = useDetailsForm(detailsInput);
 
@@ -82,8 +91,9 @@ export const DetailsForm = (props: DetailsFormProps) => {
           Back
         </Link>
         <Text className={styles.description} variant="label">
-          Below you may enter job information including the Cosmos message payload, duration of stay in job queue and an
-          optional funding account (used for fees and keeper reward).
+          Below you may enter job information including the message payload, duration of stay in job queue, an optional
+          funding account and provide funds to be used in job's execution. In case a funding account is set, it will be
+          used to pay for fees.
         </Text>
       </Container>
       <Form className={styles.form}>
@@ -106,7 +116,7 @@ export const DetailsForm = (props: DetailsFormProps) => {
             }}
           />
         </FormControl>
-        <FormControl className={styles.amount_input} label="Duration (in days)">
+        <FormControl className={styles.duration_days_input} label="Duration (in days)">
           <NumericInput
             placeholder="Type number of days"
             value={durationDays}
@@ -150,10 +160,45 @@ export const DetailsForm = (props: DetailsFormProps) => {
         />
 
         <FundingAccountInput
+          optional={true}
           className={styles.funding_account}
           label="Funding account"
           value={fundingAccount}
           onChange={(acc) => input({ fundingAccount: acc })}
+        />
+
+        <TokenInput
+          optional={true}
+          className={styles.token_input}
+          label="Token"
+          value={token}
+          onChange={(token) => {
+            input({ token });
+          }}
+        />
+
+        <AmountInput
+          optional={true}
+          label="Amount"
+          className={styles.amount_input}
+          value={amount}
+          onChange={(value) =>
+            input({
+              amount: value.target.value,
+            })
+          }
+          onBalanceClick={(value) => {
+            if (token) {
+              input({
+                amount: demicrofy(value, token?.decimals).toString(),
+              });
+            }
+          }}
+          error={amountError}
+          balance={tokenBalance}
+          balanceLoading={tokenBalanceLoading}
+          token={token}
+          valid={amountValid}
         />
 
         <Container className={styles.tabs} direction="row">
@@ -228,6 +273,8 @@ export const DetailsForm = (props: DetailsFormProps) => {
                 description,
                 recurring,
                 fundingAccount,
+                amount,
+                token,
               });
             }
           }}

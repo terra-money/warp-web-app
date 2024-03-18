@@ -20,6 +20,7 @@ import { TokenAmount } from 'components/token-amount';
 import { u } from '@terra-money/apps/types';
 import Big from 'big.js';
 import { useNativeToken } from 'hooks/useNativeToken';
+import { microfy } from '@terra-money/apps/libs/formatting';
 
 type SummaryFormProps = UIElementProps & {};
 
@@ -107,6 +108,22 @@ export const SummaryForm = (props: SummaryFormProps) => {
             {detailsInput?.recurring ? 'Yes' : 'No'}
           </Text>
         </FormControl>
+        <FormControl labelVariant="secondary" label="Job funds" className={styles.job_funds}>
+          {detailsInput && detailsInput.amount && detailsInput.token ? (
+            <TokenAmount
+              className={styles.text}
+              variant="text"
+              decimals={2}
+              token={detailsInput?.token}
+              amount={microfy(detailsInput?.amount, detailsInput?.token.decimals)}
+              showSymbol={true}
+            />
+          ) : (
+            <Text variant="text" className={styles.text}>
+              --
+            </Text>
+          )}
+        </FormControl>
         <FormControl labelVariant="secondary" label="Reward" className={styles.reward}>
           {reward ? (
             <TokenAmount
@@ -116,7 +133,6 @@ export const SummaryForm = (props: SummaryFormProps) => {
               token={nativeToken}
               amount={Big(reward) as u<Big>}
               showSymbol={true}
-              showUsdAmount={true}
             />
           ) : (
             <Text variant="text" className={styles.text}>
@@ -133,7 +149,6 @@ export const SummaryForm = (props: SummaryFormProps) => {
               token={nativeToken}
               amount={Big(operationalAmount) as u<Big>}
               showSymbol={true}
-              showUsdAmount={true}
             />
           ) : (
             <Text variant="text" className={styles.text}>
@@ -159,11 +174,14 @@ export const SummaryForm = (props: SummaryFormProps) => {
           disabled={!reward || !operationalAmount}
           onClick={async () => {
             if (detailsInput && operationalAmount && reward) {
-              const { name, message, description, recurring, durationDays, fundingAccount } = detailsInput;
+              const { name, message, description, recurring, durationDays, fundingAccount, token, amount } =
+                detailsInput;
 
               const msgs = parseMsgs(message);
 
               const vars = filterUnreferencedVariables(variables, msgs, cond);
+
+              let parsedAmount = token && amount ? microfy(Big(amount), token?.decimals) : undefined;
 
               const resp = await createJobTx({
                 name,
@@ -176,6 +194,8 @@ export const SummaryForm = (props: SummaryFormProps) => {
                 reward,
                 durationDays,
                 fundingAccount,
+                amount: parsedAmount,
+                token,
               });
 
               if (resp.code !== 0) {

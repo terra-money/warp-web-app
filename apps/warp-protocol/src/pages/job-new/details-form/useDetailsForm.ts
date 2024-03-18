@@ -15,6 +15,7 @@ import { isEmpty } from 'lodash';
 import { templateVariables } from 'utils/variable';
 import { useNativeToken } from 'hooks/useNativeToken';
 import { Template } from 'types';
+import { microfy } from '@terra-money/apps/libs/formatting';
 
 export interface DetailsFormInput {
   name: string;
@@ -24,6 +25,8 @@ export interface DetailsFormInput {
   recurring: boolean;
   fundingAccount?: string;
   template?: Template;
+  token?: Token;
+  amount?: string;
   selectedTabType?: 'template' | 'message';
 }
 
@@ -76,6 +79,8 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       nativeBalance: Big(0) as u<Big>,
       nativeBalanceLoading: false,
       recurring: input?.recurring ?? false,
+      token: input?.token ?? undefined,
+      amount: input?.amount ?? undefined,
     }),
     [input]
   );
@@ -89,7 +94,6 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
     }
 
     dispatchBalance(dispatch, wallet, nativeToken, 'native');
-    dispatchBalance(dispatch, wallet, nativeToken, 'token');
   };
 
   const form: FormFunction<DetailsFormInput, DetailsFormState> = async (input, getState, dispatch) => {
@@ -97,6 +101,10 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       ...getState(),
       ...input,
     };
+
+    if ('token' in input && input.token) {
+      dispatchBalance(dispatch, wallet, input.token, 'token');
+    }
 
     let messageError = undefined;
 
@@ -107,6 +115,12 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
         messageError = 'Message format invalid.';
       }
     }
+
+    const uAmount = state.token && state.amount ? microfy(state.amount, state.token.decimals) : Big(0);
+
+    const amountError = uAmount.gt(state.tokenBalance) ? 'The amount can not exceed the maximum balance' : undefined;
+
+    const amountValid = uAmount.gt(0) && amountError === undefined;
 
     const nameError = state.name.length > 140 ? 'The name can not exceed the maximum of 140 characters' : undefined;
 
@@ -119,26 +133,30 @@ export const useDetailsForm = (input?: DetailsFormInput) => {
       ? 'All variables must be filled.'
       : undefined;
 
-    const submitDisabled = Boolean(
-      state.name === undefined ||
-        state.name === null ||
-        state.name.length < 1 ||
-        state.durationDays === undefined ||
-        state.durationDays === null ||
-        state.durationDays.length < 1 ||
-        nameError ||
-        descriptionError ||
-        state.message === undefined ||
-        messageError ||
-        !messageValid ||
-        templateError
-    );
+    const submitDisabled =
+      Boolean(state.token && !amountValid) ||
+      Boolean(
+        state.name === undefined ||
+          state.name === null ||
+          state.name.length < 1 ||
+          state.durationDays === undefined ||
+          state.durationDays === null ||
+          state.durationDays.length < 1 ||
+          nameError ||
+          descriptionError ||
+          state.message === undefined ||
+          messageError ||
+          !messageValid ||
+          templateError
+      );
 
     dispatch({
       ...state,
       nameError,
       messageValid,
       messageError,
+      amountError,
+      amountValid,
       descriptionError,
       templateError,
       submitDisabled,
