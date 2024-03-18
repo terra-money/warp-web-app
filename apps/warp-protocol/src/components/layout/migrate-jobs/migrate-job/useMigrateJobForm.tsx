@@ -75,7 +75,7 @@ export const useMigrateJobForm = () => {
       ...input,
     };
 
-    const uAmount = state.token && input.amount ? microfy(input.amount, state.token.decimals) : Big(0);
+    const uAmount = state.token && state.amount ? microfy(state.amount, state.token.decimals) : Big(0);
 
     const amountError = uAmount.gt(state.balance) ? 'The amount can not exceed the maximum balance' : undefined;
 
