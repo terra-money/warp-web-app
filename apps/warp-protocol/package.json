@@ -57,7 +57,7 @@
     "@terra-money/feather.js": "1.0.11",
     "@terra-money/terra-station-mobile": "1.0.8",
     "@terra-money/wallet-kit": "1.0.11",
-    "@terra-money/warp-sdk": "^0.2.15",
+    "@terra-money/warp-sdk": "^0.2.16",
     "assert": "^2.0.0",
     "big.js": "^6.2.1",
     "brace": "^0.11.1",
