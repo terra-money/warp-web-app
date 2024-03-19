@@ -1,18 +1,17 @@
 import { Button, Text } from 'components/primitives';
 import { DialogProps, useDialog } from '@terra-money/apps/hooks';
 import { useEditJobForm } from './useEditJobForm';
-import { isMatch, isEmpty } from 'lodash';
+import { isMatch } from 'lodash';
 import { useMemo } from 'react';
 import { InputAdornment } from '@mui/material';
 import { TextInput } from 'components/primitives/text-input';
 import { FormControl } from 'components/form-control/FormControl';
 import { Form } from 'components/form/Form';
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
-import { AmountInput } from '../../inputs/AmountInput';
-import { microfy } from '@terra-money/apps/libs/formatting';
 import { Job } from 'types/job';
 import { useEditJobTx } from 'tx';
-import { useNativeToken } from 'hooks/useNativeToken';
+
+import styles from './EditJobDialog.module.sass';
 
 export type EditJobDialogProps = {
   job: Job;
@@ -23,21 +22,9 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
 
   const [txResult, editJobTx] = useEditJobTx();
 
-  const [input, { name, nameError, reward, rewardError, rewardValid, submitDisabled, balance, balanceLoading }] =
-    useEditJobForm(job);
+  const [input, { name, nameError, submitDisabled, description, descriptionError }] = useEditJobForm(job);
 
-  const updatedJob = useMemo(
-    () => ({
-      ...job,
-      name,
-      reward,
-    }),
-    [job, name, reward]
-  );
-
-  const jobModified = useMemo(() => !isMatch(updatedJob, job), [updatedJob, job]);
-
-  const nativeToken = useNativeToken();
+  const jobModified = useMemo(() => !isMatch(job, { name, description }), [name, description, job]);
 
   return (
     <Dialog>
@@ -63,20 +50,29 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
               }}
             />
           </FormControl>
-          <AmountInput
-            label="Increase reward by"
-            value={reward}
-            onChange={(value) =>
-              input({
-                reward: value.target.value,
-              })
-            }
-            balance={balance}
-            balanceLoading={balanceLoading}
-            error={rewardError}
-            token={nativeToken}
-            valid={rewardValid}
-          />
+          <FormControl label="Description" className={styles.description_input}>
+            <TextInput
+              placeholder="Type a comprehensive description of the job. Your precise details will help us tailor AI assistance."
+              margin="none"
+              className={styles.description_inner}
+              multiline={true}
+              value={description}
+              onChange={(value) => {
+                input({ description: value.target.value });
+              }}
+              helperText={descriptionError}
+              error={descriptionError !== undefined}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {description && description.length > 0 && (
+                      <Text className={styles.textarea_label} variant="label">{`${description?.length ?? 0}/200`}</Text>
+                    )}
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
         </DialogBody>
         <DialogFooter>
           <Button
@@ -87,8 +83,8 @@ export const EditJobDialog = (props: DialogProps<EditJobDialogProps>) => {
               if (jobModified) {
                 const resp = await editJobTx({
                   name,
+                  description,
                   jobId: job.info.id,
-                  reward: !isEmpty(reward) ? microfy(reward, nativeToken.decimals) : undefined,
                 });
 
                 if (resp.code !== 0) {
