@@ -50,5 +50,13 @@ export const UpdateFnValue = (props: UpdateFnValueProps) => {
     );
   }
 
+  if ('string' in value) {
+    return (
+      <span>
+        String: <ExpressionValue value={value.string} variables={variables} />
+      </span>
+    );
+  }
+
   return null;
 };

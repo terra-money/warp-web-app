@@ -6,7 +6,8 @@ import { operatorLabel } from '../../../operatorLabel';
 type ExprValue =
   | warp_resolver.NumValueFor_Uint256And_NumExprOpAnd_IntFnOp
   | warp_resolver.NumValueFor_Decimal256And_NumExprOpAnd_DecimalFnOp
-  | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp;
+  | warp_resolver.NumValueForInt128And_NumExprOpAnd_IntFnOp
+  | warp_resolver.StringValueFor_String;
 
 export type ExpressionValueProps = {
   value: ExprValue;
