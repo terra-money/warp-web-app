@@ -1,6 +1,5 @@
 import { useWallet } from '@terra-money/wallet-kit';
 import { Button, Text } from 'components/primitives';
-import { useState } from 'react';
 import { useDialog, DialogProps } from '@terra-money/apps/hooks';
 import { Dialog, DialogBody, DialogHeader } from 'components/dialog';
 import styles from './ConnectWalletDialog.module.sass';
@@ -10,14 +9,9 @@ type ConnectWalletDialogProps = {
   subtitle?: string;
 };
 
-// TODO: filter for supported available wallets
-// TODO: add wallet connect
-
 export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps, boolean>) => {
   const { closeDialog, title, subtitle } = props;
   const { connect, availableWallets } = useWallet();
-
-  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <Dialog className={styles.root}>
@@ -31,12 +25,11 @@ export const ConnectWalletDialog = (props: DialogProps<ConnectWalletDialogProps,
         {availableWallets.map((c, idx) => {
           return (
             <Button
-              loading={loading}
               className={styles.connection}
               key={idx}
               onClick={() => {
                 connect(c.id);
-                setLoading(true);
+                closeDialog(undefined);
               }}
             >
               {fixName(c.name)}
