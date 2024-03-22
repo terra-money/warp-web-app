@@ -7,11 +7,16 @@ import { useState } from 'react';
 import styles from './VariableDrawer.module.sass';
 import { variableName } from 'utils/variable';
 import { useCachedVariables } from '../useCachedVariables';
+import { useVariableDisplayDialog } from 'pages/job-page/panels/Condition/typed-expressions/dialogs/useVariableDisplayDialog';
 
-type VariableDrawerProps = UIElementProps & {};
+type VariableDrawerProps = UIElementProps & {
+  readOnly?: boolean;
+  open?: boolean;
+};
 
 export const VariableDrawer = (props: VariableDrawerProps) => {
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
+  const { readOnly, open = true } = props;
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(open);
   const onToggleDrawer = () => {
     setDrawerOpen((open) => !open);
   };
@@ -19,6 +24,7 @@ export const VariableDrawer = (props: VariableDrawerProps) => {
   const { variables, saveVariable, removeVariable, updateVariable } = useCachedVariables();
 
   const openEditVariableDialog = useEditVariableDialog();
+  const openVariableDisplayDialog = useVariableDisplayDialog();
 
   return (
     <Drawer
@@ -35,13 +41,18 @@ export const VariableDrawer = (props: VariableDrawerProps) => {
       <Nav
         className={styles.variables}
         variables={variables}
+        readOnly={readOnly}
         saveVariable={(v) => saveVariable(v)}
         deleteVariable={(v) => removeVariable(variableName(v))}
         onVariableClick={async (v) => {
-          const resp = await openEditVariableDialog(v);
+          if (readOnly) {
+            await openVariableDisplayDialog(v, variables);
+          } else {
+            const resp = await openEditVariableDialog(v);
 
-          if (resp) {
-            updateVariable(resp, v);
+            if (resp) {
+              updateVariable(resp, v);
+            }
           }
         }}
       />

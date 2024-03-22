@@ -17,10 +17,11 @@ type NavProps = UIElementProps & {
   saveVariable: (v: warp_resolver.Variable) => void;
   deleteVariable: (v: warp_resolver.Variable) => void;
   onVariableClick: (variable: warp_resolver.Variable) => void;
+  readOnly?: boolean;
 };
 
 export const Nav = (props: NavProps) => {
-  const { className, variables, selectedVariable, onVariableClick, saveVariable, deleteVariable } = props;
+  const { className, variables, selectedVariable, onVariableClick, saveVariable, deleteVariable, readOnly } = props;
 
   const openNewVariableDialog = useNewVariableDialog();
 
@@ -43,28 +44,32 @@ export const Nav = (props: NavProps) => {
                 {variableName(v)}
               </Text>
               <VariablePill className={styles.pill} variable={v} />
-              <DropdownMenu menuClass={styles.menu} action={<MoreVertIcon className={styles.menu_btn} />}>
-                <MenuAction onClick={() => onVariableClick(v)}>Edit</MenuAction>
-                <MenuAction onClick={() => deleteVariable(v)}>Delete</MenuAction>
-              </DropdownMenu>
+              {!readOnly && (
+                <DropdownMenu menuClass={styles.menu} action={<MoreVertIcon className={styles.menu_btn} />}>
+                  <MenuAction onClick={() => onVariableClick(v)}>Edit</MenuAction>
+                  <MenuAction onClick={() => deleteVariable(v)}>Delete</MenuAction>
+                </DropdownMenu>
+              )}
             </div>
           ))}
         </Container>
       )}
       {variables.length === 0 && <div className={styles.empty}>No variables created yet.</div>}
-      <Button
-        variant="secondary"
-        className={styles.new}
-        onClick={async () => {
-          const v = await openNewVariableDialog({});
+      {!readOnly && (
+        <Button
+          variant="secondary"
+          className={styles.new}
+          onClick={async () => {
+            const v = await openNewVariableDialog({});
 
-          if (v) {
-            saveVariable(v);
-          }
-        }}
-      >
-        New
-      </Button>
+            if (v) {
+              saveVariable(v);
+            }
+          }}
+        >
+          New
+        </Button>
+      )}
     </Panel>
   );
 };
