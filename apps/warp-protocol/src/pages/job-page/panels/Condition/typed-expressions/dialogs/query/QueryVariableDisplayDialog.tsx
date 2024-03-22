@@ -1,22 +1,79 @@
-import { DialogProps, useDialog } from '@terra-money/apps/hooks';
+import { DialogProps, useDialog, useWarpSdk } from '@terra-money/apps/hooks';
 
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from 'components/dialog';
 
 import styles from './QueryVariableDisplayDialog.module.sass';
 
-import { Button, Text } from 'components/primitives';
-import { warp_resolver } from '@terra-money/warp-sdk';
+import { Button, Text, Throbber } from 'components/primitives';
+import { Job, variableName, warp_resolver } from '@terra-money/warp-sdk';
 import { UpdateFnValue } from '../expression/UpdateFnValue';
 import { FormControl } from 'components/form-control/FormControl';
 import { EditorInput } from 'forms/QueryExprForm/EditorInput';
+import { usePreviewQueryDialog } from 'components/dialog/preview-query/PreviewQueryDialog';
+import { useEffect, useMemo, useState } from 'react';
 
 export type QueryVariableDisplayDialogProps = {
   variable: warp_resolver.QueryVariable;
   variables: warp_resolver.Variable[];
 };
 
+type LoadingState = 'waiting' | 'loading' | 'loaded' | 'error';
+
 export const QueryVariableDisplayDialog = (props: DialogProps<QueryVariableDisplayDialogProps>) => {
   const { closeDialog, variable, variables } = props;
+
+  const openPreview = usePreviewQueryDialog();
+
+  const warpSdk = useWarpSdk();
+
+  const [hydratedVars, setHydratedVars] = useState<warp_resolver.Variable[]>([]);
+  const [loadingState, setLoadingState] = useState<LoadingState>('waiting');
+
+  useEffect(() => {
+    async function load() {
+      setLoadingState('loading');
+
+      try {
+        const job = await warpSdk.replaceVariableReferences({ vars: variables } as Job);
+
+        setHydratedVars(job.vars);
+        setLoadingState('loaded');
+      } catch (err) {
+        setLoadingState('error');
+      }
+    }
+
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const endLabel = useMemo(() => {
+    if (loadingState === 'loaded') {
+      const hydratedVar = hydratedVars.find((v) => variableName(v) === variable.name)! as {
+        query: warp_resolver.QueryVariable;
+      };
+
+      return (
+        <Text
+          variant="label"
+          onClick={() => openPreview({ query: JSON.stringify(hydratedVar.query.init_fn.query) })}
+          className={styles.preview}
+        >
+          Preview Query Result
+        </Text>
+      );
+    }
+
+    if (loadingState === 'loading') {
+      return <Throbber />;
+    }
+
+    if (loadingState === 'error') {
+      return <Text variant="text">Could not fetch query result</Text>;
+    }
+
+    return undefined;
+  }, [hydratedVars, loadingState, openPreview, variable.name]);
 
   return (
     <Dialog className={styles.dialog}>
@@ -35,6 +92,7 @@ export const QueryVariableDisplayDialog = (props: DialogProps<QueryVariableDispl
           <Text variant="text">{variable.reinitialize ? 'true' : 'false'}</Text>
         </FormControl>
         <FormControl className={styles.query} labelVariant="secondary" label="Query">
+          <div className={styles.preview_result}>{endLabel}</div>
           <EditorInput
             rootClassName={styles.msg}
             className={styles.msg_editor}

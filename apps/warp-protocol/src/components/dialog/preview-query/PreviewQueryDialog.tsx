@@ -23,7 +23,7 @@ export const PreviewQueryDialog = (props: DialogProps<PreviewQueryDialogProps, P
         <EditorInput
           rootClassName={styles.msg}
           className={styles.msg_editor}
-          value={query}
+          value={JSON.stringify(JSON.parse(query), null, 2)}
           readOnly={true}
           label="Query"
         />
