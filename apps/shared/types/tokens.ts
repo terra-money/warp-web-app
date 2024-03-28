@@ -80,6 +80,28 @@ export const OSMO: NativeToken = {
   coinGeckoId: 'osmosis',
 };
 
+export const ARCHWAY: NativeToken = {
+  key: 'aarch',
+  type: 'native',
+  denom: 'aarch',
+  name: 'Archway',
+  symbol: 'ARCH',
+  decimals: 18,
+  icon: 'https://station-assets.terra.dev/img/chains/Osmosis.svg',
+  coinGeckoId: 'archway',
+};
+
+export const ARCHWAY_TESTNET: NativeToken = {
+  key: 'aconst',
+  type: 'native',
+  denom: 'aconst',
+  name: 'Constantine',
+  symbol: 'CONST',
+  decimals: 18,
+  icon: 'https://station-assets.terra.dev/img/chains/Osmosis.svg',
+  coinGeckoId: 'archway',
+};
+
 export interface NativeTokensResponse {
   [tokenAddr: string]: NativeToken;
 }

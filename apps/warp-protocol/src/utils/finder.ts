@@ -9,6 +9,14 @@ const injectiveFinderTxUrl = (network: string, txHash: string) =>
 const neutronFinderTxUrl = (chainId: string, txHash: string) => `https://neutron.celat.one/${chainId}/txs/${txHash}`;
 const osmoFinderTxUrl = (chainId: string, txHash: string) => `https://celatone.osmosis.zone/${chainId}/txs/${txHash}`;
 
+const archwayFinderTxUrl = (chainId: string, txHash: string) => {
+  if (chainId === 'archway-1') {
+    return `https://www.mintscan.io/archway/tx/${txHash}`;
+  }
+
+  return `https://www.mintscan.io/archway-testnet/tx/${txHash}`;
+};
+
 export const useFinderTxUrl = () => {
   const { connectedWallet, chain, chainId } = useLocalWallet();
 
@@ -27,6 +35,8 @@ export const useFinderTxUrl = () => {
           return injectiveFinderTxUrl(connectedWallet.network!, txHash);
         case 'osmosis':
           return osmoFinderTxUrl(connectedWallet.network!, txHash);
+        case 'archway':
+          return archwayFinderTxUrl(connectedWallet.network!, txHash);
         // TODO: add nibiru and whale when supported
       }
     },

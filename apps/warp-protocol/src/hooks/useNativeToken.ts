@@ -1,11 +1,25 @@
 import { useChainSelector } from '@terra-money/apps/hooks';
-import { INJ, LUNA, NativeToken, NEUTRON, NIBIRU, OSMO, WHALE } from '@terra-money/apps/types';
+import {
+  ARCHWAY,
+  ARCHWAY_TESTNET,
+  INJ,
+  LUNA,
+  NativeToken,
+  NEUTRON,
+  NIBIRU,
+  OSMO,
+  WHALE,
+} from '@terra-money/apps/types';
 import { useMemo } from 'react';
 
 export const useNativeToken = (): NativeToken => {
-  const { selectedChain } = useChainSelector();
+  const { selectedChain, selectedChainId } = useChainSelector();
 
   return useMemo(() => {
+    if (selectedChain.name === 'archway' && selectedChainId === 'constantine-3') {
+      return ARCHWAY_TESTNET;
+    }
+
     switch (selectedChain.name) {
       case 'terra':
         return LUNA;
@@ -19,6 +33,8 @@ export const useNativeToken = (): NativeToken => {
         return WHALE;
       case 'osmosis':
         return OSMO;
+      case 'archway':
+        return ARCHWAY;
     }
-  }, [selectedChain.name]);
+  }, [selectedChain.name, selectedChainId]);
 };

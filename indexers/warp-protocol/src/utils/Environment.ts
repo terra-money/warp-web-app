@@ -94,6 +94,21 @@ export class Environment {
       }
     }
 
+    if (chainName === 'archway') {
+      // this is testnet, switch with mainnet data when deployed
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 3905130,
+          timestamp: 1711632224,
+        };
+      } else {
+        return {
+          height: 5159503,
+          timestamp: 1711559554,
+        };
+      }
+    }
+
     // if (chainName === 'migaloo') {
     //   if (process.env.NETWORK === 'testnet') {
     //     // testnet
