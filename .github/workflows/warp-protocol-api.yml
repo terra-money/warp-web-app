@@ -7,7 +7,7 @@ on:
       - main
       - test
       - beta
-      
+
     paths:
       - indexers/warp-protocol/src/**
       - apps/warp-protocol-api/src/**
@@ -204,6 +204,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           file: ${{ env.API_DOCKERFILE }}
           context: ${{ env.API_CONTEXT_PATH }}
+          provenance: false
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.API_ECR_REPO }}:${{ env.DOCKER_IMAGE_TAG }}
 
