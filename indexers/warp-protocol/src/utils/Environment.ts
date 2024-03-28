@@ -94,6 +94,36 @@ export class Environment {
       }
     }
 
+    if (chainName === 'osmosis') {
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 14266867,
+          timestamp: 1710262192,
+        };
+      } else {
+        // testnet (this is mainnet, switch with testnet data when testnet is added)
+        return {
+          height: 14266867,
+          timestamp: 1710262192,
+        };
+      }
+    }
+
+    if (chainName === 'archway') {
+      // this is testnet, switch with mainnet data when deployed
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 5159503,
+          timestamp: 1711559554,
+        };
+      } else {
+        return {
+          height: 5159503,
+          timestamp: 1711559554,
+        };
+      }
+    }
+
     // if (chainName === 'migaloo') {
     //   if (process.env.NETWORK === 'testnet') {
     //     // testnet
