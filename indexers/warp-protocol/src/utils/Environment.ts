@@ -109,18 +109,17 @@ export class Environment {
       }
     }
 
-
     if (chainName === 'oraichain') {
-      // TODO: this is placeholder data, fill with real data from controller contract deployments
       if (process.env.NETWORK === 'mainnet') {
         return {
-          height: 3905130,
-          timestamp: 1711632224,
+          height: 17469400,
+          timestamp: 1711987779,
         };
       } else {
+        // TODO: this is placeholder data, fill with testnet data
         return {
-          height: 5159503,
-          timestamp: 1711559554,
+          height: 17469400,
+          timestamp: 1711987779,
         };
       }
     }
