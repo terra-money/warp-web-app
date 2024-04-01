@@ -116,10 +116,9 @@ export class Environment {
           timestamp: 1711987779,
         };
       } else {
-        // TODO: this is placeholder data, fill with testnet data
         return {
-          height: 17469400,
-          timestamp: 1711987779,
+          height: 20424285,
+          timestamp: 1711986354,
         };
       }
     }
