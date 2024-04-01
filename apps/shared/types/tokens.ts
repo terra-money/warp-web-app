@@ -102,6 +102,18 @@ export const ARCHWAY_TESTNET: NativeToken = {
   coinGeckoId: 'archway',
 };
 
+
+export const ORAICHAIN: NativeToken = {
+  key: 'orai',
+  type: 'native',
+  denom: 'orai',
+  name: 'Oraichain',
+  symbol: 'ORAI',
+  decimals: 6,
+  icon: 'https://station-assets.terra.dev/img/chains/orai.svg',
+  coinGeckoId: 'oraichain-token',
+};
+
 export interface NativeTokensResponse {
   [tokenAddr: string]: NativeToken;
 }

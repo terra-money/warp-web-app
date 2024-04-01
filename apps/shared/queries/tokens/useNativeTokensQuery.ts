@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import { useChainSelector } from '../../hooks';
-import { INJ, LUNA, NativeTokensResponse, NEUTRON, NIBIRU, WHALE, OSMO, ARCHWAY, ARCHWAY_TESTNET } from '../../types';
+import { INJ, LUNA, NativeTokensResponse, NEUTRON, NIBIRU, WHALE, OSMO, ARCHWAY, ARCHWAY_TESTNET, ORAICHAIN } from '../../types';
 
 export const useNativeTokensQuery = (
   queryName: string = 'QUERY:NATIVE_TOKENS'
@@ -31,6 +31,7 @@ export const useNativeTokensQuery = (
         ...(selectedChain.name === 'nibiru' && { [NIBIRU.key]: NIBIRU }),
         ...(selectedChain.name === 'migaloo' && { [WHALE.key]: WHALE }),
         ...(selectedChain.name === 'osmosis' && { [OSMO.key]: OSMO }),
+        ...(selectedChain.name === 'oraichain' && { [ORAICHAIN.key]: ORAICHAIN }),
         ...archwayTokens,
       };
     },

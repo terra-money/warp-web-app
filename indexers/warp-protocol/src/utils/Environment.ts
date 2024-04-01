@@ -109,6 +109,22 @@ export class Environment {
       }
     }
 
+
+    if (chainName === 'oraichain') {
+      // TODO: this is placeholder data, fill with real data from controller contract deployments
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 3905130,
+          timestamp: 1711632224,
+        };
+      } else {
+        return {
+          height: 5159503,
+          timestamp: 1711559554,
+        };
+      }
+    }
+
     // if (chainName === 'migaloo') {
     //   if (process.env.NETWORK === 'testnet') {
     //     // testnet
