@@ -17,6 +17,14 @@ const archwayFinderTxUrl = (chainId: string, txHash: string) => {
   return `https://www.mintscan.io/archway-testnet/tx/${txHash}`;
 };
 
+const oraichainFinderTxUrl = (chainId: string, txHash: string) => {
+  if (chainId === 'Oraichain') {
+    return `https://scan.orai.io/txs/${txHash}`;
+  }
+
+  return `https://testnet.scan.orai.io/txs/${txHash}`;
+};
+
 export const useFinderTxUrl = () => {
   const { connectedWallet, chain, chainId } = useLocalWallet();
 
@@ -34,9 +42,11 @@ export const useFinderTxUrl = () => {
         case 'injective':
           return injectiveFinderTxUrl(connectedWallet.network!, txHash);
         case 'osmosis':
-          return osmoFinderTxUrl(connectedWallet.network!, txHash);
+          return osmoFinderTxUrl(chainId, txHash);
         case 'archway':
-          return archwayFinderTxUrl(connectedWallet.network!, txHash);
+          return archwayFinderTxUrl(chainId, txHash);
+        case 'oraichain':
+          return oraichainFinderTxUrl(chainId, txHash);
         // TODO: add nibiru and whale when supported
       }
     },

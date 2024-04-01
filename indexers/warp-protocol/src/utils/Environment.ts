@@ -109,6 +109,20 @@ export class Environment {
       }
     }
 
+    if (chainName === 'oraichain') {
+      if (process.env.NETWORK === 'mainnet') {
+        return {
+          height: 17469400,
+          timestamp: 1711987779,
+        };
+      } else {
+        return {
+          height: 20424285,
+          timestamp: 1711986354,
+        };
+      }
+    }
+
     // if (chainName === 'migaloo') {
     //   if (process.env.NETWORK === 'testnet') {
     //     // testnet

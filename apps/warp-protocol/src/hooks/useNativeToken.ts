@@ -7,6 +7,7 @@ import {
   NativeToken,
   NEUTRON,
   NIBIRU,
+  ORAICHAIN,
   OSMO,
   WHALE,
 } from '@terra-money/apps/types';
@@ -35,6 +36,8 @@ export const useNativeToken = (): NativeToken => {
         return OSMO;
       case 'archway':
         return ARCHWAY;
+      case 'oraichain':
+        return ORAICHAIN;
     }
   }, [selectedChain.name, selectedChainId]);
 };
