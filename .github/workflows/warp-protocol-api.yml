@@ -130,7 +130,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      
+
       - name: Set tags
         run: |
           if [ ${GITHUB_REF} == "refs/heads/main" ]; then
@@ -213,7 +213,6 @@ jobs:
     needs: [idx-delivery, api-delivery]
 
     steps:
-
       - name: Set Remote ref
         run: |
           if [ ${GITHUB_REF} == "refs/heads/main" ]; then
@@ -225,7 +224,7 @@ jobs:
           fi
 
       - name: Invoke Terraform Workflow
-        uses: aurelien-baudet/workflow-dispatch@v2
+        uses: the-actions-org/workflow-dispatch@v2.1.1
         with:
           repo: ${{ env.TERRAFORM_REPO }}
           ref: ${{ env.TF_GITHUB_REF }}
